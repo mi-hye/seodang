@@ -1,4 +1,5 @@
 export type UserType = "korean_learner" | "japanese_student";
+export type AppLocale = "ko" | "ja";
 
 export type CharacterProgress = {
   characterId: string;
@@ -11,6 +12,7 @@ export type CharacterProgress = {
 };
 
 export type PersistedAppState = {
+  locale: AppLocale;
   userType: UserType;
   progressByCharacter: Record<string, CharacterProgress>;
   recordedAttemptIds: string[];

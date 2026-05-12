@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { WritingCanvas } from "../../src/components/practice/WritingCanvas";
 import { Screen, ScreenHandle } from "../../src/components/common/Screen";
-import { getCharacterById } from "../../src/data/characters";
+import { getCharacterById, getCharacterMeaning } from "../../src/data/characters";
 import {
   buttonStyles,
   chipStyles,
@@ -13,6 +13,7 @@ import {
   surfaceStyles,
   textStyles,
 } from "../../src/design/theme";
+import { useI18n } from "../../src/i18n/useI18n";
 import { evaluatePractice } from "../../src/domain/practice/evaluatePractice";
 import { useKanjiStrokeDataQuery } from "../../src/queries/useKanjiStrokeDataQuery";
 import { CanvasSize, InputStroke } from "../../src/types/practice";
@@ -21,6 +22,7 @@ export default function PracticeScreen() {
   const router = useRouter();
   const { characterId } = useLocalSearchParams<{ characterId: string }>();
   const character = getCharacterById(characterId);
+  const { locale, t } = useI18n();
   const screenRef = useRef<ScreenHandle>(null);
   const [showGuide, setShowGuide] = useState(false);
   const [strokes, setStrokes] = useState<InputStroke[]>([]);
@@ -37,7 +39,7 @@ export default function PracticeScreen() {
   if (!character) {
     return (
       <Screen>
-        <Text style={styles.errorTitle}>연습 대상을 불러오지 못했습니다.</Text>
+        <Text style={styles.errorTitle}>{t("practice.missing")}</Text>
       </Screen>
     );
   }
@@ -47,6 +49,7 @@ export default function PracticeScreen() {
       strokes,
       template: kanjiStrokeData?.strokes,
       canvasSize,
+      locale,
     });
 
     router.push({
@@ -68,15 +71,15 @@ export default function PracticeScreen() {
   return (
     <Screen ref={screenRef}>
       <View style={styles.headerCard}>
-        <Text style={styles.caption}>목표 한자</Text>
+        <Text style={styles.caption}>{t("practice.target")}</Text>
         <Text style={styles.literal}>{character.literal}</Text>
-        <Text style={styles.meaning}>{character.meaningKo}</Text>
+        <Text style={styles.meaning}>{getCharacterMeaning(character, locale)}</Text>
       </View>
 
       <View style={styles.toolbar}>
         <View style={styles.toolChip}>
           <Text style={styles.toolChipText}>
-            현재 획 {strokes.length} / {character.strokeCount}
+            {t("practice.currentStrokes", { count: strokes.length, total: character.strokeCount })}
           </Text>
         </View>
         <Pressable
@@ -89,7 +92,7 @@ export default function PracticeScreen() {
               showGuide && styles.toolChipTextActive,
             ]}
           >
-            {showGuide ? "획 숨기기" : "획 보기"}
+            {showGuide ? t("practice.hideGuide") : t("practice.showGuide")}
           </Text>
         </Pressable>
         <Pressable
@@ -100,7 +103,7 @@ export default function PracticeScreen() {
           onPress={() => setStrokes((current) => current.slice(0, -1))}
           disabled={strokes.length === 0}
         >
-          <Text style={styles.toolChipText}>한 획 지우기</Text>
+          <Text style={styles.toolChipText}>{t("practice.undoStroke")}</Text>
         </Pressable>
       </View>
 
@@ -114,20 +117,15 @@ export default function PracticeScreen() {
           onInteractionStart={() => screenRef.current?.setScrollEnabled(false)}
           onInteractionEnd={() => screenRef.current?.setScrollEnabled(true)}
         />
-        <Text style={styles.canvasHint}>
-          한 획을 쓸 때마다 손을 떼면 다음 획으로 기록됩니다. 지금은 획 수,
-          방향, 시작/끝 위치를 기준 데이터와 비교합니다.
-        </Text>
+        <Text style={styles.canvasHint}>{t("practice.canvasHint")}</Text>
         {isGuideLoading ? (
-          <Text style={styles.canvasSubHint}>기준 획 데이터를 불러오는 중입니다.</Text>
+          <Text style={styles.canvasSubHint}>{t("practice.loadingGuide")}</Text>
         ) : null}
         {isGuideLoadError ? (
-          <Text style={styles.canvasSubHint}>획 데이터를 아직 불러오지 못했습니다.</Text>
+          <Text style={styles.canvasSubHint}>{t("practice.loadGuideError")}</Text>
         ) : null}
         {!isGuideLoading && !isGuideLoadError && !kanjiStrokeData ? (
-          <Text style={styles.canvasSubHint}>
-            이 한자는 아직 Supabase 기준 획 데이터가 연결되지 않았습니다.
-          </Text>
+          <Text style={styles.canvasSubHint}>{t("practice.missingGuide")}</Text>
         ) : null}
       </View>
 
@@ -136,7 +134,7 @@ export default function PracticeScreen() {
           style={styles.secondaryButton}
           onPress={() => setStrokes([])}
         >
-          <Text style={styles.secondaryLabel}>다시 쓰기</Text>
+          <Text style={styles.secondaryLabel}>{t("practice.reset")}</Text>
         </Pressable>
         <Pressable
           style={[
@@ -146,7 +144,7 @@ export default function PracticeScreen() {
           onPress={handleSubmit}
           disabled={strokes.length === 0}
         >
-          <Text style={styles.primaryLabel}>제출</Text>
+          <Text style={styles.primaryLabel}>{t("practice.submit")}</Text>
         </Pressable>
       </View>
     </Screen>

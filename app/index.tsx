@@ -2,7 +2,7 @@ import { Link, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
-import { sampleCharacters } from "../src/data/characters";
+import { getCharacterMeaning, sampleCharacters } from "../src/data/characters";
 import {
   buttonStyles,
   chipStyles,
@@ -13,31 +13,43 @@ import {
   surfaceStyles,
   textStyles,
 } from "../src/design/theme";
+import { useI18n } from "../src/i18n/useI18n";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function HomeScreen() {
   const router = useRouter();
   const featured = sampleCharacters[0];
   const { hydrated, reviewCount, setUserType, userType } = useAppState();
+  const { locale, setLocale, t } = useI18n();
 
   return (
     <Screen>
       <View style={styles.hero}>
-        <Text style={styles.eyebrow}>Japanese Kanji Writing Practice</Text>
-        <Text style={styles.title}>손으로 익히는 일본어 한자</Text>
-        <Text style={styles.subtitle}>
-          한국인 학습자와 일본 초중등 사용자를 함께 고려한 쓰기 연습 앱 프로토타입
-        </Text>
+        <View style={styles.languageRow}>
+          <Pressable
+            style={[styles.languageChip, locale === "ko" && styles.languageChipActive]}
+            onPress={() => setLocale("ko")}
+          >
+            <Text style={styles.languageChipText}>{t("common.languageKorean")}</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.languageChip, locale === "ja" && styles.languageChipActive]}
+            onPress={() => setLocale("ja")}
+          >
+            <Text style={styles.languageChipText}>{t("common.languageJapanese")}</Text>
+          </Pressable>
+        </View>
+        <Text style={styles.eyebrow}>{t("home.eyebrow")}</Text>
+        <Text style={styles.title}>{t("home.title")}</Text>
+        <Text style={styles.subtitle}>{t("home.subtitle")}</Text>
       </View>
 
       <Pressable
         onPress={() => router.push("/list")}
         style={[styles.primaryCard, styles.shadow]}
       >
-        <Text style={styles.primaryLabel}>오늘의 학습 시작</Text>
-        <Text style={styles.primaryBody}>
-          기초 한자부터 획순 확인, 쓰기 연습, 복습까지 바로 시작합니다.
-        </Text>
+        <Text style={styles.primaryLabel}>{t("home.start")}</Text>
+        <Text style={styles.primaryBody}>{t("home.startBody")}</Text>
       </Pressable>
 
       <View style={styles.row}>
@@ -46,7 +58,7 @@ export default function HomeScreen() {
           style={[styles.miniCard, styles.shadow]}
         >
           <Text style={styles.miniNumber}>{hydrated ? reviewCount : "-"}</Text>
-          <Text style={styles.miniLabel}>복습 필요</Text>
+          <Text style={styles.miniLabel}>{t("home.reviewNeeded")}</Text>
         </Pressable>
 
         <Pressable
@@ -54,12 +66,12 @@ export default function HomeScreen() {
           style={[styles.miniCard, styles.shadow]}
         >
           <Text style={styles.miniNumber}>{featured.literal}</Text>
-          <Text style={styles.miniLabel}>추천 한자</Text>
+          <Text style={styles.miniLabel}>{t("home.featured")}</Text>
         </Pressable>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>학습 트랙</Text>
+        <Text style={styles.sectionTitle}>{t("home.tracks")}</Text>
         <View style={styles.trackList}>
           <Pressable
             style={[
@@ -68,8 +80,8 @@ export default function HomeScreen() {
             ]}
             onPress={() => setUserType("korean_learner")}
           >
-            <Text style={styles.trackTitle}>한국인 학습자</Text>
-            <Text style={styles.trackBody}>뜻, 음독/훈독, JLPT 기준으로 학습</Text>
+            <Text style={styles.trackTitle}>{t("home.koreanTrack")}</Text>
+            <Text style={styles.trackBody}>{t("home.koreanTrackBody")}</Text>
           </Pressable>
           <Pressable
             style={[
@@ -78,14 +90,14 @@ export default function HomeScreen() {
             ]}
             onPress={() => setUserType("japanese_student")}
           >
-            <Text style={styles.trackTitle}>일본 초중등</Text>
-            <Text style={styles.trackBody}>학년별 반복 훈련과 오답 복습 중심</Text>
+            <Text style={styles.trackTitle}>{t("home.japaneseTrack")}</Text>
+            <Text style={styles.trackBody}>{t("home.japaneseTrackBody")}</Text>
           </Pressable>
         </View>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>추천 세트</Text>
+        <Text style={styles.sectionTitle}>{t("home.recommended")}</Text>
         {sampleCharacters.slice(0, 3).map((character) => (
           <Link
             key={character.id}
@@ -95,9 +107,9 @@ export default function HomeScreen() {
             <Pressable style={styles.listCard}>
               <Text style={styles.listKanji}>{character.literal}</Text>
               <View style={styles.listContent}>
-                <Text style={styles.listTitle}>{character.meaningKo}</Text>
+                <Text style={styles.listTitle}>{getCharacterMeaning(character, locale)}</Text>
                 <Text style={styles.listMeta}>
-                  JLPT {character.jlptLevel} · {character.strokeCount}획
+                  {t("common.jlpt")} {character.jlptLevel} · {t("common.strokes", { count: character.strokeCount })}
                 </Text>
               </View>
             </Pressable>
@@ -112,6 +124,18 @@ const styles = StyleSheet.create({
   hero: {
     marginBottom: spacing[7],
     gap: spacing[2] + 2,
+  },
+  languageRow: {
+    flexDirection: "row",
+    gap: spacing[2],
+    marginBottom: spacing[2],
+  },
+  languageChip: chipStyles.base,
+  languageChipActive: chipStyles.active,
+  languageChipText: {
+    ...textStyles.meta,
+    fontWeight: "700",
+    color: colors.accentWarmMuted,
   },
   eyebrow: textStyles.eyebrow,
   title: textStyles.displayLg,

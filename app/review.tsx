@@ -2,6 +2,7 @@ import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
+import { getCharacterMeaning } from "../src/data/characters";
 import {
   buttonStyles,
   colors,
@@ -9,25 +10,23 @@ import {
   surfaceStyles,
   textStyles,
 } from "../src/design/theme";
+import { useI18n } from "../src/i18n/useI18n";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function ReviewScreen() {
   const { getProgress, getReviewCharacters, hydrated } = useAppState();
   const items = getReviewCharacters();
+  const { locale, t } = useI18n();
 
   return (
     <Screen>
-      <Text style={styles.title}>복습 노트</Text>
-      <Text style={styles.subtitle}>
-        틀린 횟수와 최근 학습 시점을 기반으로 다시 연습할 대상을 모아둔 자리입니다.
-      </Text>
+      <Text style={styles.title}>{t("review.title")}</Text>
+      <Text style={styles.subtitle}>{t("review.subtitle")}</Text>
 
       {hydrated && items.length === 0 ? (
         <View style={styles.emptyCard}>
-          <Text style={styles.emptyTitle}>아직 복습할 한자가 없습니다.</Text>
-          <Text style={styles.emptyBody}>
-            연습 결과가 쌓이면 이 화면에서 다시 쓰기 대상을 모아 보여줍니다.
-          </Text>
+          <Text style={styles.emptyTitle}>{t("review.emptyTitle")}</Text>
+          <Text style={styles.emptyBody}>{t("review.emptyBody")}</Text>
         </View>
       ) : null}
 
@@ -37,14 +36,18 @@ export default function ReviewScreen() {
             <View style={styles.left}>
               <Text style={styles.literal}>{character.literal}</Text>
               <View>
-                <Text style={styles.meaning}>{character.meaningKo}</Text>
+                <Text style={styles.meaning}>{getCharacterMeaning(character, locale)}</Text>
                 <Text style={styles.meta}>
-                  우선순위 {index + 1} · 실패 {getProgress(character.id)?.failures ?? 0}회 · 최근 점수 {getProgress(character.id)?.lastScore ?? "-"}
+                  {t("review.priority", {
+                    priority: index + 1,
+                    failures: getProgress(character.id)?.failures ?? 0,
+                    score: getProgress(character.id)?.lastScore ?? "-",
+                  })}
                 </Text>
               </View>
             </View>
             <View style={styles.badge}>
-              <Text style={styles.badgeText}>다시 쓰기</Text>
+              <Text style={styles.badgeText}>{t("review.retryWrite")}</Text>
             </View>
           </Pressable>
         </Link>

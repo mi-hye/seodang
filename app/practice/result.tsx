@@ -11,6 +11,7 @@ import {
   surfaceStyles,
   textStyles,
 } from "../../src/design/theme";
+import { useI18n } from "../../src/i18n/useI18n";
 import { useAppState } from "../../src/state/AppStateProvider";
 
 export default function PracticeResultScreen() {
@@ -29,6 +30,7 @@ export default function PracticeResultScreen() {
   const didPass = passed === "true";
   const numericScore = Number(score ?? 0);
   const { recordAttempt } = useAppState();
+  const { t } = useI18n();
   const feedbackLines = feedback ? feedback.split("\n").filter(Boolean) : [];
 
   useEffect(() => {
@@ -46,19 +48,22 @@ export default function PracticeResultScreen() {
   return (
     <Screen>
       <View style={[styles.heroCard, didPass ? styles.passCard : styles.failCard]}>
-        <Text style={styles.status}>{didPass ? "성공!" : "다시 연습"}</Text>
-        <Text style={styles.score}>{score}점</Text>
+        <Text style={styles.status}>{didPass ? t("result.success") : t("result.retry")}</Text>
+        <Text style={styles.score}>{t("result.score", { score })}</Text>
         <Text style={styles.summary}>
-          {summary || `${character?.literal ?? "이 한자"} 연습 결과입니다.`}
+          {summary || t("result.fallbackSummary", { literal: character?.literal ?? "-" })}
         </Text>
       </View>
 
       <View style={styles.feedbackCard}>
-        <Text style={styles.feedbackTitle}>피드백</Text>
+        <Text style={styles.feedbackTitle}>{t("result.feedback")}</Text>
         <Text style={styles.feedbackLine}>
-          - 입력 획수 {drawnStrokes ?? "-"} / 목표 획수 {expectedStrokes ?? "-"}
+          - {t("result.strokeInput", {
+            drawn: drawnStrokes ?? "-",
+            expected: expectedStrokes ?? "-",
+          })}
         </Text>
-        <Text style={styles.feedbackLine}>- 현재 판정 기준: 획 수, 획 방향, 시작/끝 위치</Text>
+        <Text style={styles.feedbackLine}>- {t("result.rubric")}</Text>
         {feedbackLines.map((line) => (
           <Text key={line} style={styles.feedbackLine}>
             - {line}
@@ -68,13 +73,13 @@ export default function PracticeResultScreen() {
 
       <Link href={characterId ? `/practice/${characterId}` : "/list"} asChild>
         <Pressable style={styles.secondaryButton}>
-          <Text style={styles.secondaryLabel}>다시 연습</Text>
+          <Text style={styles.secondaryLabel}>{t("result.practiceAgain")}</Text>
         </Pressable>
       </Link>
 
       <Link href="/list" asChild>
         <Pressable style={styles.primaryButton}>
-          <Text style={styles.primaryLabel}>다음 한자 보기</Text>
+          <Text style={styles.primaryLabel}>{t("result.nextCharacter")}</Text>
         </Pressable>
       </Link>
     </Screen>

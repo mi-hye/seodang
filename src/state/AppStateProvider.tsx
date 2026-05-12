@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getLocales } from "expo-localization";
 import {
   createContext,
   PropsWithChildren,
@@ -9,16 +10,24 @@ import {
 } from "react";
 
 import { sampleCharacters } from "../data/characters";
-import { CharacterProgress, PersistedAppState, UserType } from "../types/app-state";
+import {
+  AppLocale,
+  CharacterProgress,
+  PersistedAppState,
+  UserType,
+} from "../types/app-state";
 
 const STORAGE_KEY = "kanzi-app-state-v1";
 const MAX_RECORDED_ATTEMPTS = 50;
+const DEVICE_LOCALE = resolveInitialLocale();
 
 type AppStateContextValue = {
   hydrated: boolean;
+  locale: AppLocale;
   userType: UserType;
   progressByCharacter: Record<string, CharacterProgress>;
   reviewCount: number;
+  setLocale: (locale: AppLocale) => void;
   setUserType: (userType: UserType) => void;
   recordAttempt: (input: {
     attemptId: string;
@@ -32,6 +41,7 @@ type AppStateContextValue = {
 };
 
 const defaultState: PersistedAppState = {
+  locale: DEVICE_LOCALE,
   userType: "korean_learner",
   progressByCharacter: {},
   recordedAttemptIds: [],
@@ -81,6 +91,10 @@ export function AppStateProvider({ children }: PropsWithChildren) {
   }, [hydrated, state]);
 
   const value = useMemo<AppStateContextValue>(() => {
+    const setLocale = (locale: AppLocale) => {
+      setState((current) => ({ ...current, locale }));
+    };
+
     const setUserType = (userType: UserType) => {
       setState((current) => ({ ...current, userType }));
     };
@@ -150,9 +164,11 @@ export function AppStateProvider({ children }: PropsWithChildren) {
 
     return {
       hydrated,
+      locale: state.locale,
       userType: state.userType,
       progressByCharacter: state.progressByCharacter,
       reviewCount,
+      setLocale,
       setUserType,
       recordAttempt,
       getProgress,
@@ -171,4 +187,9 @@ export function useAppState() {
   }
 
   return context;
+}
+
+function resolveInitialLocale(): AppLocale {
+  const [locale] = getLocales();
+  return locale?.languageCode === "ja" ? "ja" : "ko";
 }

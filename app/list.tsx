@@ -2,27 +2,27 @@ import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
-import { sampleCharacters } from "../src/data/characters";
+import { getCharacterMeaning, sampleCharacters } from "../src/data/characters";
 import {
   chipStyles,
   spacing,
   surfaceStyles,
   textStyles,
 } from "../src/design/theme";
+import { useI18n } from "../src/i18n/useI18n";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function CharacterListScreen() {
   const { getProgress } = useAppState();
+  const { locale, t } = useI18n();
 
   return (
     <Screen>
-      <Text style={styles.title}>기초 한자 세트</Text>
-      <Text style={styles.subtitle}>
-        MVP 단계에서는 샘플 데이터로 흐름을 먼저 검증합니다.
-      </Text>
+      <Text style={styles.title}>{t("list.title")}</Text>
+      <Text style={styles.subtitle}>{t("list.subtitle")}</Text>
 
       <View style={styles.filters}>
-        {["JLPT N5", "초등 1학년", "자주 쓰는 한자"].map((filter) => (
+        {[t("list.filterJlpt"), t("list.filterGrade"), t("list.filterCommon")].map((filter) => (
           <View key={filter} style={styles.filterChip}>
             <Text style={styles.filterText}>{filter}</Text>
           </View>
@@ -34,16 +34,19 @@ export default function CharacterListScreen() {
           <Pressable style={styles.card}>
             <Text style={styles.literal}>{character.literal}</Text>
             <View style={styles.content}>
-              <Text style={styles.meaning}>{character.meaningKo}</Text>
+              <Text style={styles.meaning}>{getCharacterMeaning(character, locale)}</Text>
               <Text style={styles.reading}>
-                음독 {character.onyomi.join(", ")} · 훈독 {character.kunyomi.join(", ")}
+                {t("list.onyomi")} {character.onyomi.join(", ")} · {t("list.kunyomi")} {character.kunyomi.join(", ")}
               </Text>
               <Text style={styles.meta}>
-                {character.strokeCount}획 · JLPT {character.jlptLevel}
+                {t("common.strokes", { count: character.strokeCount })} · {t("common.jlpt")} {character.jlptLevel}
               </Text>
               {getProgress(character.id) ? (
                 <Text style={styles.progressMeta}>
-                  최근 점수 {getProgress(character.id)?.lastScore} · 시도 {getProgress(character.id)?.attempts}회
+                  {t("list.recentScore", {
+                    score: getProgress(character.id)?.lastScore,
+                    attempts: getProgress(character.id)?.attempts,
+                  })}
                 </Text>
               ) : null}
             </View>
