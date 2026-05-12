@@ -3,6 +3,12 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
 import { sampleCharacters } from "../src/data/characters";
+import {
+  chipStyles,
+  spacing,
+  surfaceStyles,
+  textStyles,
+} from "../src/design/theme";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function CharacterListScreen() {
@@ -50,37 +56,26 @@ export default function CharacterListScreen() {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 28,
-    fontWeight: "800",
-    color: "#173221",
-    marginBottom: 8,
+    ...textStyles.displayMd,
+    marginBottom: spacing[2],
   },
   subtitle: {
-    fontSize: 14,
-    lineHeight: 21,
-    color: "#5f695e",
+    ...textStyles.bodySm,
     marginBottom: 18,
   },
   filters: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
-    marginBottom: 20,
+    gap: spacing[2],
+    marginBottom: spacing[6],
   },
-  filterChip: {
-    backgroundColor: "#efe4d3",
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 999,
-  },
+  filterChip: chipStyles.base,
   filterText: {
-    color: "#6d583f",
+    ...textStyles.meta,
     fontWeight: "700",
-    fontSize: 12,
   },
   card: {
-    backgroundColor: "#fffaf3",
-    borderRadius: 24,
+    ...surfaceStyles.card,
     padding: 18,
     marginBottom: 12,
     flexDirection: "row",
@@ -90,31 +85,17 @@ const styles = StyleSheet.create({
   literal: {
     width: 52,
     textAlign: "center",
+    ...textStyles.glyphSm,
     fontSize: 30,
-    fontWeight: "800",
-    color: "#173221",
   },
   content: {
     flex: 1,
     gap: 5,
   },
   meaning: {
-    color: "#173221",
-    fontSize: 17,
-    fontWeight: "800",
+    ...textStyles.titleSm,
   },
-  reading: {
-    color: "#5b655c",
-    fontSize: 13,
-  },
-  meta: {
-    color: "#8a8d85",
-    fontSize: 12,
-    fontWeight: "700",
-  },
-  progressMeta: {
-    color: "#4e6153",
-    fontSize: 12,
-    fontWeight: "700",
-  },
+  reading: textStyles.caption,
+  meta: textStyles.meta,
+  progressMeta: textStyles.meta,
 });

@@ -3,6 +3,13 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../../src/components/common/Screen";
 import { getCharacterById } from "../../src/data/characters";
+import {
+  buttonStyles,
+  colors,
+  spacing,
+  surfaceStyles,
+  textStyles,
+} from "../../src/design/theme";
 
 export default function CharacterDetailScreen() {
   const { characterId } = useLocalSearchParams<{ characterId: string }>();
@@ -67,22 +74,20 @@ export default function CharacterDetailScreen() {
 
 const styles = StyleSheet.create({
   heroCard: {
-    backgroundColor: "#1d3b2a",
+    ...surfaceStyles.heroDark,
     borderRadius: 30,
-    padding: 28,
+    padding: spacing[8],
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: spacing[4],
   },
   literal: {
-    fontSize: 72,
-    fontWeight: "800",
-    color: "#f7f1e8",
-    marginBottom: 8,
+    ...textStyles.heroGlyph,
+    marginBottom: spacing[2],
   },
   meaning: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#f7f1e8",
+    color: colors.inkOnDark,
     marginBottom: 6,
   },
   meta: {
@@ -91,51 +96,28 @@ const styles = StyleSheet.create({
     color: "#c9d4cb",
   },
   infoCard: {
-    backgroundColor: "#fffaf3",
-    borderRadius: 24,
+    ...surfaceStyles.card,
     padding: 18,
     marginBottom: 12,
     gap: 8,
   },
-  sectionTitle: {
-    fontSize: 17,
-    fontWeight: "800",
-    color: "#173221",
-  },
-  infoLine: {
-    fontSize: 14,
-    lineHeight: 21,
-    color: "#5d665e",
-  },
+  sectionTitle: textStyles.titleSm,
+  infoLine: textStyles.bodySm,
   exampleRow: {
     paddingTop: 4,
     gap: 2,
   },
-  exampleWord: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#173221",
-  },
-  exampleMeta: {
-    fontSize: 13,
-    color: "#6e746d",
-  },
+  exampleWord: textStyles.titleSm,
+  exampleMeta: textStyles.caption,
   actionButton: {
-    backgroundColor: "#efe4d3",
-    borderRadius: 999,
-    paddingVertical: 18,
-    alignItems: "center",
+    ...buttonStyles.secondary,
     marginTop: 8,
     marginBottom: 20,
   },
   actionLabel: {
-    color: "#6d583f",
+    ...textStyles.buttonLabel,
+    color: colors.accentWarmMuted,
     fontSize: 16,
-    fontWeight: "800",
   },
-  errorTitle: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: "#173221",
-  },
+  errorTitle: textStyles.displaySm,
 });

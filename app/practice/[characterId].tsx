@@ -1,13 +1,38 @@
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { Screen } from "../../src/components/common/Screen";
+import { WritingCanvas } from "../../src/components/practice/WritingCanvas";
+import { Screen, ScreenHandle } from "../../src/components/common/Screen";
 import { getCharacterById } from "../../src/data/characters";
+import {
+  buttonStyles,
+  chipStyles,
+  colors,
+  spacing,
+  surfaceStyles,
+  textStyles,
+} from "../../src/design/theme";
+import { evaluatePractice } from "../../src/domain/practice/evaluatePractice";
+import { useKanjiStrokeDataQuery } from "../../src/queries/useKanjiStrokeDataQuery";
+import { CanvasSize, InputStroke } from "../../src/types/practice";
 
 export default function PracticeScreen() {
   const router = useRouter();
   const { characterId } = useLocalSearchParams<{ characterId: string }>();
   const character = getCharacterById(characterId);
+  const screenRef = useRef<ScreenHandle>(null);
+  const [showGuide, setShowGuide] = useState(false);
+  const [strokes, setStrokes] = useState<InputStroke[]>([]);
+  const [canvasSize, setCanvasSize] = useState<CanvasSize>({
+    width: 0,
+    height: 0,
+  });
+  const {
+    data: kanjiStrokeData,
+    isLoading: isGuideLoading,
+    isError: isGuideLoadError,
+  } = useKanjiStrokeDataQuery(character?.literal);
 
   if (!character) {
     return (
@@ -18,22 +43,30 @@ export default function PracticeScreen() {
   }
 
   const handleSubmit = () => {
-    const generatedScore = Math.floor(Math.random() * 26) + 70;
+    const evaluation = evaluatePractice({
+      strokes,
+      template: kanjiStrokeData?.strokes,
+      canvasSize,
+    });
 
     router.push({
       pathname: "/practice/result",
       params: {
         characterId: character.id,
-        score: String(generatedScore),
-        passed: String(generatedScore >= 80),
+        score: String(evaluation.score),
+        passed: String(evaluation.passed),
         attemptId: `${character.id}-${Date.now()}`,
         practicedAt: new Date().toISOString(),
+        drawnStrokes: String(evaluation.drawnStrokes),
+        expectedStrokes: String(evaluation.expectedStrokes),
+        summary: evaluation.summary,
+        feedback: evaluation.feedback.join("\n"),
       },
     });
   };
 
   return (
-    <Screen>
+    <Screen ref={screenRef}>
       <View style={styles.headerCard}>
         <Text style={styles.caption}>목표 한자</Text>
         <Text style={styles.literal}>{character.literal}</Text>
@@ -43,29 +76,76 @@ export default function PracticeScreen() {
       <View style={styles.toolbar}>
         <View style={styles.toolChip}>
           <Text style={styles.toolChipText}>
-            현재 획 3 / {character.strokeCount}
+            현재 획 {strokes.length} / {character.strokeCount}
           </Text>
         </View>
-        <View style={styles.toolChip}>
-          <Text style={styles.toolChipText}>획순 힌트</Text>
-        </View>
+        <Pressable
+          style={[styles.toolChip, showGuide && styles.toolChipActive]}
+          onPress={() => setShowGuide((current) => !current)}
+        >
+          <Text
+            style={[
+              styles.toolChipText,
+              showGuide && styles.toolChipTextActive,
+            ]}
+          >
+            {showGuide ? "획 숨기기" : "획 보기"}
+          </Text>
+        </Pressable>
+        <Pressable
+          style={[
+            styles.toolChip,
+            strokes.length === 0 && styles.toolChipDisabled,
+          ]}
+          onPress={() => setStrokes((current) => current.slice(0, -1))}
+          disabled={strokes.length === 0}
+        >
+          <Text style={styles.toolChipText}>한 획 지우기</Text>
+        </Pressable>
       </View>
 
       <View style={styles.canvasCard}>
-        <View style={styles.canvasGrid}>
-          <Text style={styles.canvasGuide}>{character.literal}</Text>
-        </View>
+        <WritingCanvas
+          showGuide={showGuide}
+          guideData={kanjiStrokeData}
+          strokes={strokes}
+          onChange={setStrokes}
+          onCanvasLayout={setCanvasSize}
+          onInteractionStart={() => screenRef.current?.setScrollEnabled(false)}
+          onInteractionEnd={() => screenRef.current?.setScrollEnabled(true)}
+        />
         <Text style={styles.canvasHint}>
-          실제 쓰기 캔버스와 stroke 판정 로직은 다음 구현 단계에서 이 영역에
-          들어갑니다.
+          한 획을 쓸 때마다 손을 떼면 다음 획으로 기록됩니다. 지금은 획 수,
+          방향, 시작/끝 위치를 기준 데이터와 비교합니다.
         </Text>
+        {isGuideLoading ? (
+          <Text style={styles.canvasSubHint}>기준 획 데이터를 불러오는 중입니다.</Text>
+        ) : null}
+        {isGuideLoadError ? (
+          <Text style={styles.canvasSubHint}>획 데이터를 아직 불러오지 못했습니다.</Text>
+        ) : null}
+        {!isGuideLoading && !isGuideLoadError && !kanjiStrokeData ? (
+          <Text style={styles.canvasSubHint}>
+            이 한자는 아직 Supabase 기준 획 데이터가 연결되지 않았습니다.
+          </Text>
+        ) : null}
       </View>
 
       <View style={styles.actions}>
-        <Pressable style={styles.secondaryButton}>
+        <Pressable
+          style={styles.secondaryButton}
+          onPress={() => setStrokes([])}
+        >
           <Text style={styles.secondaryLabel}>다시 쓰기</Text>
         </Pressable>
-        <Pressable style={styles.primaryButton} onPress={handleSubmit}>
+        <Pressable
+          style={[
+            styles.primaryButton,
+            strokes.length === 0 && styles.primaryButtonDisabled,
+          ]}
+          onPress={handleSubmit}
+          disabled={strokes.length === 0}
+        >
           <Text style={styles.primaryLabel}>제출</Text>
         </Pressable>
       </View>
@@ -75,105 +155,84 @@ export default function PracticeScreen() {
 
 const styles = StyleSheet.create({
   headerCard: {
-    backgroundColor: "#fffaf3",
+    ...surfaceStyles.card,
     borderRadius: 28,
-    padding: 24,
+    padding: spacing[7],
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: spacing[4],
   },
   caption: {
-    fontSize: 12,
-    fontWeight: "800",
-    letterSpacing: 1.2,
-    color: "#8b5e34",
-    textTransform: "uppercase",
+    ...textStyles.eyebrow,
     marginBottom: 10,
   },
   literal: {
-    fontSize: 64,
-    fontWeight: "800",
-    color: "#173221",
+    ...textStyles.glyphLg,
     marginBottom: 6,
   },
   meaning: {
     fontSize: 17,
-    color: "#4e6153",
+    color: colors.inkBody,
     fontWeight: "700",
   },
   toolbar: {
     flexDirection: "row",
-    gap: 10,
-    marginBottom: 16,
+    gap: spacing[2] + 2,
+    marginBottom: spacing[4],
   },
-  toolChip: {
-    backgroundColor: "#efe4d3",
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+  toolChip: chipStyles.base,
+  toolChipActive: {
+    ...chipStyles.active,
   },
   toolChipText: {
-    color: "#6d583f",
-    fontSize: 12,
-    fontWeight: "800",
+    ...textStyles.meta,
+    color: colors.accentWarmMuted,
+  },
+  toolChipDisabled: {
+    opacity: 0.45,
+  },
+  toolChipTextActive: {
+    color: colors.inkOnDark,
   },
   canvasCard: {
-    backgroundColor: "#fffaf3",
+    ...surfaceStyles.card,
     borderRadius: 28,
     padding: 18,
     marginBottom: 16,
   },
-  canvasGrid: {
-    aspectRatio: 1,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: "#ddcfbc",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#fcf7ef",
-    marginBottom: 14,
-  },
-  canvasGuide: {
-    fontSize: 120,
-    color: "#d9c8b1",
-    fontWeight: "700",
-  },
   canvasHint: {
-    fontSize: 14,
-    lineHeight: 21,
-    color: "#6b7168",
+    ...textStyles.bodySm,
+    marginTop: 14,
+  },
+  canvasSubHint: {
+    fontSize: 12,
+    lineHeight: 18,
+    color: colors.accentWarmMuted,
+    marginTop: 6,
+    fontWeight: "700",
   },
   actions: {
     flexDirection: "row",
-    gap: 12,
+    gap: spacing[3],
     marginBottom: 20,
   },
   secondaryButton: {
+    ...buttonStyles.secondary,
     flex: 1,
-    backgroundColor: "#efe4d3",
-    borderRadius: 999,
-    paddingVertical: 18,
-    alignItems: "center",
   },
   secondaryLabel: {
-    color: "#6d583f",
-    fontSize: 15,
-    fontWeight: "800",
+    ...textStyles.buttonLabel,
+    color: colors.accentWarmMuted,
   },
   primaryButton: {
+    ...buttonStyles.primary,
     flex: 1,
-    backgroundColor: "#1d3b2a",
-    borderRadius: 999,
-    paddingVertical: 18,
-    alignItems: "center",
+  },
+  primaryButtonDisabled: {
+    opacity: 0.45,
   },
   primaryLabel: {
-    color: "#f7f1e8",
-    fontSize: 15,
-    fontWeight: "800",
+    ...textStyles.buttonLabel,
+    color: colors.inkOnDark,
   },
-  errorTitle: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: "#173221",
-  },
+  errorTitle: textStyles.displaySm,
 });

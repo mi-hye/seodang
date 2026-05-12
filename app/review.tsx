@@ -2,6 +2,13 @@ import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
+import {
+  buttonStyles,
+  colors,
+  spacing,
+  surfaceStyles,
+  textStyles,
+} from "../src/design/theme";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function ReviewScreen() {
@@ -48,37 +55,23 @@ export default function ReviewScreen() {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 28,
-    fontWeight: "800",
-    color: "#173221",
-    marginBottom: 8,
+    ...textStyles.displayMd,
+    marginBottom: spacing[2],
   },
   subtitle: {
-    fontSize: 14,
-    lineHeight: 21,
-    color: "#5f695e",
-    marginBottom: 20,
+    ...textStyles.bodySm,
+    marginBottom: spacing[6],
   },
   emptyCard: {
-    backgroundColor: "#fffaf3",
-    borderRadius: 24,
-    padding: 20,
+    ...surfaceStyles.card,
+    padding: spacing[6],
     marginBottom: 12,
     gap: 6,
   },
-  emptyTitle: {
-    fontSize: 16,
-    fontWeight: "800",
-    color: "#173221",
-  },
-  emptyBody: {
-    fontSize: 14,
-    lineHeight: 21,
-    color: "#697168",
-  },
+  emptyTitle: textStyles.titleSm,
+  emptyBody: textStyles.bodySm,
   card: {
-    backgroundColor: "#fffaf3",
-    borderRadius: 24,
+    ...surfaceStyles.card,
     padding: 18,
     marginBottom: 12,
     flexDirection: "row",
@@ -93,30 +86,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   literal: {
-    fontSize: 28,
-    fontWeight: "800",
-    color: "#173221",
+    ...textStyles.glyphSm,
     width: 42,
     textAlign: "center",
   },
-  meaning: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#173221",
-  },
+  meaning: textStyles.titleSm,
   meta: {
-    fontSize: 12,
-    color: "#7a7f77",
+    ...textStyles.meta,
     marginTop: 3,
   },
   badge: {
-    backgroundColor: "#1d3b2a",
-    borderRadius: 999,
+    ...buttonStyles.primary,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
   badgeText: {
-    color: "#f7f1e8",
+    color: colors.inkOnDark,
     fontSize: 12,
     fontWeight: "800",
   },

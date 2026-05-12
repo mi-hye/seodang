@@ -3,6 +3,16 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
 import { sampleCharacters } from "../src/data/characters";
+import {
+  buttonStyles,
+  chipStyles,
+  colors,
+  radius,
+  shadows,
+  spacing,
+  surfaceStyles,
+  textStyles,
+} from "../src/design/theme";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function HomeScreen() {
@@ -100,103 +110,76 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   hero: {
-    marginBottom: 24,
-    gap: 10,
+    marginBottom: spacing[7],
+    gap: spacing[2] + 2,
   },
-  eyebrow: {
-    fontSize: 12,
-    fontWeight: "700",
-    letterSpacing: 1.2,
-    color: "#8b5e34",
-    textTransform: "uppercase",
-  },
-  title: {
-    fontSize: 34,
-    lineHeight: 40,
-    fontWeight: "800",
-    color: "#173221",
-  },
-  subtitle: {
-    fontSize: 15,
-    lineHeight: 23,
-    color: "#4d5f52",
-  },
+  eyebrow: textStyles.eyebrow,
+  title: textStyles.displayLg,
+  subtitle: textStyles.bodyMd,
   primaryCard: {
-    backgroundColor: "#1d3b2a",
-    borderRadius: 28,
-    padding: 24,
-    marginBottom: 16,
+    ...surfaceStyles.heroDark,
+    padding: spacing[7],
+    marginBottom: spacing[4],
   },
   primaryLabel: {
-    color: "#f7f1e8",
     fontSize: 22,
     fontWeight: "800",
-    marginBottom: 8,
+    color: colors.inkOnDark,
+    marginBottom: spacing[2],
   },
   primaryBody: {
-    color: "#dce7de",
+    color: colors.inkOnDarkMuted,
     fontSize: 15,
     lineHeight: 22,
   },
   row: {
     flexDirection: "row",
-    gap: 12,
-    marginBottom: 24,
+    gap: spacing[3],
+    marginBottom: spacing[7],
   },
   miniCard: {
     flex: 1,
-    backgroundColor: "#fffaf3",
-    borderRadius: 24,
-    padding: 20,
+    ...surfaceStyles.card,
+    padding: spacing[6],
     minHeight: 120,
     justifyContent: "space-between",
   },
   miniNumber: {
-    fontSize: 36,
-    fontWeight: "800",
-    color: "#173221",
+    ...textStyles.glyphMd,
   },
   miniLabel: {
     fontSize: 14,
     color: "#617565",
     fontWeight: "700",
   },
-  section: {
-    marginBottom: 24,
-  },
+  section: surfaceStyles.pageSection,
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: "800",
-    color: "#173221",
+    ...textStyles.sectionTitle,
     marginBottom: 14,
   },
   trackList: {
-    gap: 12,
+    gap: spacing[3],
   },
   trackCard: {
-    backgroundColor: "#efe4d3",
-    borderRadius: 24,
+    ...surfaceStyles.mutedCard,
     padding: 18,
   },
   trackCardSelected: {
     borderWidth: 2,
-    borderColor: "#173221",
-    backgroundColor: "#e6ddcf",
+    borderColor: colors.borderStrong,
+    backgroundColor: colors.bgMutedStrong,
   },
   trackTitle: {
-    color: "#173221",
-    fontSize: 17,
-    fontWeight: "800",
+    ...textStyles.titleSm,
     marginBottom: 6,
   },
   trackBody: {
-    color: "#5f695e",
-    fontSize: 14,
+    ...textStyles.bodySm,
     lineHeight: 20,
   },
   listCard: {
-    backgroundColor: "#fffaf3",
-    borderRadius: 22,
+    ...surfaceStyles.card,
+    borderRadius: radius.sm,
     padding: 18,
     marginBottom: 10,
     flexDirection: "row",
@@ -205,9 +188,7 @@ const styles = StyleSheet.create({
   },
   listKanji: {
     width: 54,
-    fontSize: 28,
-    fontWeight: "800",
-    color: "#173221",
+    ...textStyles.glyphSm,
     textAlign: "center",
   },
   listContent: {
@@ -215,19 +196,9 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   listTitle: {
-    fontSize: 16,
+    ...textStyles.titleSm,
     fontWeight: "700",
-    color: "#173221",
   },
-  listMeta: {
-    fontSize: 13,
-    color: "#6f756b",
-  },
-  shadow: {
-    shadowColor: "#5f4b32",
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 8 },
-    shadowRadius: 18,
-    elevation: 3,
-  },
+  listMeta: textStyles.caption,
+  shadow: shadows.card,
 });
