@@ -5,7 +5,7 @@ import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning } from "../src/data/characters";
 import { spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
-import { useKanjiCharactersByIdsQuery } from "../src/queries/useKanjiCharactersByIdsQuery";
+import { useKanjiCharactersByIdsQuery } from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function ReviewScreen() {

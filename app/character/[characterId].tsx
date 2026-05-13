@@ -8,7 +8,7 @@ import {
 } from "../../src/data/characters";
 import { spacing, useTheme } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
-import { useKanjiCharacterQuery } from "../../src/queries/useKanjiCharacterQuery";
+import { useKanjiCharacterQuery } from "../../src/queries/kanjiQueries";
 
 export default function CharacterDetailScreen() {
   const { characterId, categoryKey } = useLocalSearchParams<{

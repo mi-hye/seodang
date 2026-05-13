@@ -8,8 +8,10 @@ import { getCharacterMeaning } from "../../src/data/characters";
 import { spacing, useTheme } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
 import { evaluatePractice } from "../../src/domain/practice/evaluatePractice";
-import { useKanjiCharacterQuery } from "../../src/queries/useKanjiCharacterQuery";
-import { useKanjiStrokeDataQuery } from "../../src/queries/useKanjiStrokeDataQuery";
+import {
+  useKanjiCharacterQuery,
+  useKanjiStrokeDataQuery,
+} from "../../src/queries/kanjiQueries";
 import { CanvasSize, InputStroke } from "../../src/types/practice";
 
 export default function PracticeScreen() {

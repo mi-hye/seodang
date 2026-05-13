@@ -43,3 +43,6 @@ yarn-error.*
 
 # imported datasets
 /data/*
+
+# Supabase local CLI state
+/supabase/.temp/

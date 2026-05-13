@@ -7,7 +7,7 @@ import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning } from "../src/data/characters";
 import { radius, spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
-import { useFeaturedKanjiCharactersQuery } from "../src/queries/useFeaturedKanjiCharactersQuery";
+import { useFeaturedKanjiCharactersQuery } from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function HomeScreen() {

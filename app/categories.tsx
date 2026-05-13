@@ -4,12 +4,12 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Screen } from "../src/components/common/Screen";
 import { radius, spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
-import { useKanjiCategoryGroupsQuery } from "../src/queries/useKanjiCategoryGroupsQuery";
+import { useKanjiCategoryGroupsQuery } from "../src/queries/kanjiQueries";
 
 export default function CategoriesScreen() {
   const router = useRouter();
   const { locale, t } = useI18n();
-  const { data, isLoading, isError } = useKanjiCategoryGroupsQuery();
+  const { data, isLoading, isError } = useKanjiCategoryGroupsQuery(locale);
   const { colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ colors, surfaceStyles, textStyles });
   const visibleGroups = (data ?? [])
@@ -54,13 +54,9 @@ export default function CategoriesScreen() {
             <View key={group.id} style={styles.groupSection}>
               <View style={styles.groupHeader}>
                 <Text style={styles.groupTitle}>
-                  {locale === "ja" ? group.labelJa : group.labelKo}
+                  {group.label}
                 </Text>
-                {(locale === "ja" ? group.descriptionJa : group.descriptionKo) ? (
-                  <Text style={styles.groupBody}>
-                    {locale === "ja" ? group.descriptionJa : group.descriptionKo}
-                  </Text>
-                ) : null}
+                {group.description ? <Text style={styles.groupBody}>{group.description}</Text> : null}
               </View>
 
                 <View style={styles.chipRow}>
@@ -76,7 +72,7 @@ export default function CategoriesScreen() {
                       }
                     >
                       <Text style={styles.categoryChipText}>
-                        {locale === "ja" ? category.labelJa : category.labelKo}
+                        {category.label}
                       </Text>
                     </Pressable>
                   ))}

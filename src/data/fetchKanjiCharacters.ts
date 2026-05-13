@@ -1,4 +1,5 @@
 import { KanjiCharacter, KanjiCharacterMetadata } from "./characters";
+import { KanjiCategory } from "./fetchKanjiCategories";
 
 type KanjiCharacterRow = {
   id: string;
@@ -18,12 +19,9 @@ type KanjiCharacterRow = {
   metadata: KanjiCharacterMetadata | null;
 };
 
-type KanjiCategoryRow = {
-  id: string;
-};
-
-type KanjiCharacterCategoryRow = {
-  character_id: string;
+export type KanjiCategoryCharactersPayload = {
+  category: KanjiCategory;
+  characters: KanjiCharacter[];
 };
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
@@ -31,20 +29,30 @@ const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 const characterSelect =
   "id,literal,stroke_count,meaning_ko,meaning_ja,onyomi,kunyomi,jlpt_level,japanese_school_level,japanese_grade,example_ja,example_ko,sort_order,is_joyo,metadata";
 
-export async function fetchKanjiCharactersByCategoryKey(categoryKey?: string) {
+export async function fetchKanjiCategoryCharactersByKey(
+  categoryKey: string | undefined,
+  locale: "ko" | "ja"
+): Promise<KanjiCategoryCharactersPayload | null> {
   if (!supabaseUrl || !supabaseAnonKey || !categoryKey) {
-    return [];
+    return null;
   }
 
-  const category = await fetchCategoryByKey(categoryKey);
-  if (!category) {
-    return [];
+  const params = new URLSearchParams({
+    locale,
+    categoryKey,
+  });
+  const response = await fetch(
+    `${supabaseUrl}/functions/v1/kanji-catalog?${params.toString()}`,
+    {
+      headers: buildHeaders(),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch kanji category characters: ${response.status}`);
   }
 
-  const mappings = await fetchCharacterCategoryMappings(category.id);
-  const characterIds = mappings.map((row) => row.character_id);
-
-  return fetchKanjiCharactersByIds(characterIds);
+  return (await response.json()) as KanjiCategoryCharactersPayload | null;
 }
 
 export async function fetchKanjiCharactersByIds(characterIds: string[]) {
@@ -118,45 +126,6 @@ export async function fetchFeaturedKanjiCharacters(limit = 3) {
 
   const rows = (await response.json()) as KanjiCharacterRow[];
   return rows.map(mapKanjiCharacter);
-}
-
-async function fetchCategoryByKey(categoryKey: string) {
-  const params = new URLSearchParams({
-    select: "id",
-    category_key: `eq.${categoryKey}`,
-    limit: "1",
-  });
-
-  const response = await fetch(`${supabaseUrl}/rest/v1/kanji_categories?${params.toString()}`, {
-    headers: buildHeaders(),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch kanji category: ${response.status}`);
-  }
-
-  const rows = (await response.json()) as KanjiCategoryRow[];
-  return rows[0] ?? null;
-}
-
-async function fetchCharacterCategoryMappings(categoryId: string) {
-  const params = new URLSearchParams({
-    select: "character_id",
-    category_id: `eq.${categoryId}`,
-  });
-
-  const response = await fetch(
-    `${supabaseUrl}/rest/v1/kanji_character_categories?${params.toString()}`,
-    {
-      headers: buildHeaders(),
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch kanji category mappings: ${response.status}`);
-  }
-
-  return (await response.json()) as KanjiCharacterCategoryRow[];
 }
 
 function mapKanjiCharacter(row: KanjiCharacterRow): KanjiCharacter {
