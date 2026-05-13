@@ -1,5 +1,7 @@
 import { Link, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning, sampleCharacters } from "../src/data/characters";
@@ -19,123 +21,99 @@ import { useAppState } from "../src/state/AppStateProvider";
 export default function HomeScreen() {
   const router = useRouter();
   const featured = sampleCharacters[0];
-  const { hydrated, reviewCount, setUserType, userType } = useAppState();
-  const { locale, setLocale, t } = useI18n();
+  const { hydrated, reviewCount } = useAppState();
+  const { locale, t } = useI18n();
 
   return (
-    <Screen>
-      <View style={styles.hero}>
-        <View style={styles.languageRow}>
-          <Pressable
-            style={[styles.languageChip, locale === "ko" && styles.languageChipActive]}
-            onPress={() => setLocale("ko")}
-          >
-            <Text style={styles.languageChipText}>{t("common.languageKorean")}</Text>
-          </Pressable>
-          <Pressable
-            style={[styles.languageChip, locale === "ja" && styles.languageChipActive]}
-            onPress={() => setLocale("ja")}
-          >
-            <Text style={styles.languageChipText}>{t("common.languageJapanese")}</Text>
-          </Pressable>
-        </View>
-        <Text style={styles.eyebrow}>{t("home.eyebrow")}</Text>
-        <Text style={styles.title}>{t("home.title")}</Text>
-        <Text style={styles.subtitle}>{t("home.subtitle")}</Text>
-      </View>
-
-      <Pressable
-        onPress={() => router.push("/list")}
-        style={[styles.primaryCard, styles.shadow]}
-      >
-        <Text style={styles.primaryLabel}>{t("home.start")}</Text>
-        <Text style={styles.primaryBody}>{t("home.startBody")}</Text>
-      </Pressable>
-
-      <View style={styles.row}>
-        <Pressable
-          onPress={() => router.push("/review")}
-          style={[styles.miniCard, styles.shadow]}
-        >
-          <Text style={styles.miniNumber}>{hydrated ? reviewCount : "-"}</Text>
-          <Text style={styles.miniLabel}>{t("home.reviewNeeded")}</Text>
-        </Pressable>
-
-        <Pressable
-          onPress={() => router.push(`/character/${featured.id}`)}
-          style={[styles.miniCard, styles.shadow]}
-        >
-          <Text style={styles.miniNumber}>{featured.literal}</Text>
-          <Text style={styles.miniLabel}>{t("home.featured")}</Text>
-        </Pressable>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t("home.tracks")}</Text>
-        <View style={styles.trackList}>
-          <Pressable
-            style={[
-              styles.trackCard,
-              userType === "korean_learner" && styles.trackCardSelected,
-            ]}
-            onPress={() => setUserType("korean_learner")}
-          >
-            <Text style={styles.trackTitle}>{t("home.koreanTrack")}</Text>
-            <Text style={styles.trackBody}>{t("home.koreanTrackBody")}</Text>
-          </Pressable>
-          <Pressable
-            style={[
-              styles.trackCard,
-              userType === "japanese_student" && styles.trackCardSelected,
-            ]}
-            onPress={() => setUserType("japanese_student")}
-          >
-            <Text style={styles.trackTitle}>{t("home.japaneseTrack")}</Text>
-            <Text style={styles.trackBody}>{t("home.japaneseTrackBody")}</Text>
-          </Pressable>
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t("home.recommended")}</Text>
-        {sampleCharacters.slice(0, 3).map((character) => (
-          <Link
-            key={character.id}
-            href={`/character/${character.id}`}
-            asChild
-          >
-            <Pressable style={styles.listCard}>
-              <Text style={styles.listKanji}>{character.literal}</Text>
-              <View style={styles.listContent}>
-                <Text style={styles.listTitle}>{getCharacterMeaning(character, locale)}</Text>
-                <Text style={styles.listMeta}>
-                  {t("common.jlpt")} {character.jlptLevel} · {t("common.strokes", { count: character.strokeCount })}
-                </Text>
-              </View>
+    <SafeAreaView style={styles.safeArea}>
+      <Screen>
+        <View style={styles.hero}>
+          <View style={styles.heroTopRow}>
+            <Text style={styles.eyebrow}>{t("home.eyebrow")}</Text>
+            <Pressable
+              onPress={() => router.push("/settings")}
+              style={styles.settingsButton}
+            >
+              <Ionicons name="settings-outline" size={18} color={colors.inkStrongAlt} />
             </Pressable>
-          </Link>
-        ))}
-      </View>
-    </Screen>
+          </View>
+          <Text style={styles.title}>{t("home.title")}</Text>
+          <Text style={styles.subtitle}>{t("home.subtitle")}</Text>
+        </View>
+
+        <Pressable
+          onPress={() => router.push("/categories")}
+          style={[styles.primaryCard, styles.shadow]}
+        >
+          <Text style={styles.primaryLabel}>{t("home.start")}</Text>
+          <Text style={styles.primaryBody}>{t("home.startBody")}</Text>
+        </Pressable>
+
+        <View style={styles.row}>
+          <Pressable
+            onPress={() => router.push("/review")}
+            style={[styles.miniCard, styles.shadow]}
+          >
+            <Text style={styles.miniNumber}>{hydrated ? reviewCount : "-"}</Text>
+            <Text style={styles.miniLabel}>{t("home.reviewNeeded")}</Text>
+          </Pressable>
+
+          <Pressable
+            onPress={() => router.push(`/character/${featured.id}`)}
+            style={[styles.miniCard, styles.shadow]}
+          >
+            <Text style={styles.miniNumber}>{featured.literal}</Text>
+            <Text style={styles.miniLabel}>{t("home.featured")}</Text>
+          </Pressable>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t("home.recommended")}</Text>
+          {sampleCharacters.slice(0, 3).map((character) => (
+            <Link
+              key={character.id}
+              href={`/character/${character.id}`}
+              asChild
+            >
+              <Pressable style={styles.listCard}>
+                <Text style={styles.listKanji}>{character.literal}</Text>
+                <View style={styles.listContent}>
+                  <Text style={styles.listTitle}>{getCharacterMeaning(character, locale)}</Text>
+                  <Text style={styles.listMeta}>
+                    {t("common.jlpt")} {character.jlptLevel} · {t("common.strokes", { count: character.strokeCount })}
+                  </Text>
+                </View>
+              </Pressable>
+            </Link>
+          ))}
+        </View>
+      </Screen>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.bgCanvas,
+  },
   hero: {
     marginBottom: spacing[7],
     gap: spacing[2] + 2,
   },
-  languageRow: {
+  heroTopRow: {
     flexDirection: "row",
-    gap: spacing[2],
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: spacing[2],
+    gap: spacing[3],
   },
-  languageChip: chipStyles.base,
-  languageChipActive: chipStyles.active,
-  languageChipText: {
-    ...textStyles.meta,
-    fontWeight: "700",
-    color: colors.accentWarmMuted,
+  settingsButton: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    alignItems: "center",
+    justifyContent: "center",
   },
   eyebrow: textStyles.eyebrow,
   title: textStyles.displayLg,
@@ -180,26 +158,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     ...textStyles.sectionTitle,
     marginBottom: 14,
-  },
-  trackList: {
-    gap: spacing[3],
-  },
-  trackCard: {
-    ...surfaceStyles.mutedCard,
-    padding: 18,
-  },
-  trackCardSelected: {
-    borderWidth: 2,
-    borderColor: colors.borderStrong,
-    backgroundColor: colors.bgMutedStrong,
-  },
-  trackTitle: {
-    ...textStyles.titleSm,
-    marginBottom: 6,
-  },
-  trackBody: {
-    ...textStyles.bodySm,
-    lineHeight: 20,
   },
   listCard: {
     ...surfaceStyles.card,

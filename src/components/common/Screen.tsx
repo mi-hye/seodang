@@ -4,8 +4,7 @@ import {
   useImperativeHandle,
   useRef,
 } from "react";
-import { ScrollView, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { colors, layout } from "../../design/theme";
 
 type ScreenProps = PropsWithChildren<{
@@ -18,7 +17,7 @@ export type ScreenHandle = {
 
 export const Screen = forwardRef<ScreenHandle, ScreenProps>(function Screen(
   { children, scrollEnabled = true },
-  ref
+  ref,
 ) {
   const scrollRef = useRef<ScrollView>(null);
 
@@ -29,7 +28,7 @@ export const Screen = forwardRef<ScreenHandle, ScreenProps>(function Screen(
   }));
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       <ScrollView
         ref={scrollRef}
         contentContainerStyle={styles.content}
@@ -38,7 +37,7 @@ export const Screen = forwardRef<ScreenHandle, ScreenProps>(function Screen(
       >
         {children}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 });
 

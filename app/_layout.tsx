@@ -52,6 +52,14 @@ function RootNavigator() {
           name="practice/result"
           options={{ title: t("nav.result"), presentation: "card" }}
         />
+        <Stack.Screen
+          name="settings"
+          options={{ title: t("nav.settings") }}
+        />
+        <Stack.Screen
+          name="categories"
+          options={{ title: t("nav.categories") }}
+        />
       </Stack>
     </>
   );
