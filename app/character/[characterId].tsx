@@ -3,22 +3,32 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../../src/components/common/Screen";
 import {
-  getCharacterById,
+  getCharacterExample,
   getCharacterMeaning,
-  getExampleMeaning,
 } from "../../src/data/characters";
-import {
-  spacing,
-  useTheme,
-} from "../../src/design/theme";
+import { spacing, useTheme } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
+import { useKanjiCharacterQuery } from "../../src/queries/useKanjiCharacterQuery";
 
 export default function CharacterDetailScreen() {
-  const { characterId } = useLocalSearchParams<{ characterId: string }>();
-  const character = getCharacterById(characterId);
+  const { characterId, categoryKey } = useLocalSearchParams<{
+    characterId: string;
+    categoryKey?: string;
+  }>();
+  const normalizedCategoryKey = Array.isArray(categoryKey) ? categoryKey[0] : categoryKey;
+  const { data: character, isLoading } = useKanjiCharacterQuery(characterId);
   const { locale, t } = useI18n();
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ buttonStyles, colors, surfaceStyles, textStyles });
+  const example = character ? getCharacterExample(character, locale) : null;
+
+  if (isLoading) {
+    return (
+      <Screen>
+        <Text style={styles.infoLine}>{t("common.loading")}</Text>
+      </Screen>
+    );
+  }
 
   if (!character) {
     return (
@@ -34,29 +44,32 @@ export default function CharacterDetailScreen() {
         <Text style={styles.literal}>{character.literal}</Text>
         <Text style={styles.meaning}>{getCharacterMeaning(character, locale)}</Text>
         <Text style={styles.meta}>
-          {t("common.jlpt")} {character.jlptLevel} · {t("common.strokes", { count: character.strokeCount })}
+          {character.jlptLevel ? `${t("common.jlpt")} ${character.jlptLevel} · ` : ""}
+          {character.strokeCount != null
+            ? t("common.strokes", { count: character.strokeCount })
+            : "-"}
         </Text>
       </View>
 
       <View style={styles.infoCard}>
         <Text style={styles.sectionTitle}>{t("detail.reading")}</Text>
-        <Text style={styles.infoLine}>{t("detail.onyomi", { value: character.onyomi.join(", ") })}</Text>
         <Text style={styles.infoLine}>
-          {t("detail.kunyomi", { value: character.kunyomi.join(", ") })}
+          {t("detail.onyomi", { value: character.onyomi.join(", ") || "-" })}
+        </Text>
+        <Text style={styles.infoLine}>
+          {t("detail.kunyomi", { value: character.kunyomi.join(", ") || "-" })}
         </Text>
       </View>
 
-      <View style={styles.infoCard}>
-        <Text style={styles.sectionTitle}>{t("detail.examples")}</Text>
-        {character.examples.map((example) => (
-          <View key={example.word} style={styles.exampleRow}>
-            <Text style={styles.exampleWord}>{example.word}</Text>
-            <Text style={styles.exampleMeta}>
-              {example.reading} · {getExampleMeaning(example, locale)}
-            </Text>
+      {example ? (
+        <View style={styles.infoCard}>
+          <Text style={styles.sectionTitle}>{t("detail.examples")}</Text>
+          <View style={styles.exampleRow}>
+            <Text style={styles.exampleWord}>{character.exampleJa ?? character.literal}</Text>
+            <Text style={styles.exampleMeta}>{example}</Text>
           </View>
-        ))}
-      </View>
+        </View>
+      ) : null}
 
       <View style={styles.infoCard}>
         <Text style={styles.sectionTitle}>{t("detail.ready")}</Text>
@@ -64,7 +77,16 @@ export default function CharacterDetailScreen() {
         <Text style={styles.infoLine}>{t("detail.readyBody2")}</Text>
       </View>
 
-      <Link href={`/practice/${character.id}`} asChild>
+      <Link
+        href={{
+          pathname: "/practice/[characterId]",
+          params: {
+            characterId: character.id,
+            categoryKey: normalizedCategoryKey,
+          },
+        }}
+        asChild
+      >
         <Pressable style={styles.actionButton}>
           <Text style={styles.actionLabel}>{t("detail.startPractice")}</Text>
         </Pressable>
@@ -73,12 +95,7 @@ export default function CharacterDetailScreen() {
   );
 }
 
-function createStyles({
-  buttonStyles,
-  colors,
-  surfaceStyles,
-  textStyles,
-}: any) {
+function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) {
   return StyleSheet.create({
     heroCard: {
       ...surfaceStyles.heroDark,

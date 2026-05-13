@@ -5,11 +5,13 @@ import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning } from "../src/data/characters";
 import { spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
+import { useKanjiCharactersByIdsQuery } from "../src/queries/useKanjiCharactersByIdsQuery";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function ReviewScreen() {
-  const { getProgress, getReviewCharacters, hydrated } = useAppState();
-  const items = getReviewCharacters();
+  const { getProgress, getReviewCharacterIds, hydrated } = useAppState();
+  const characterIds = getReviewCharacterIds();
+  const { data: items = [], isLoading } = useKanjiCharactersByIdsQuery(characterIds);
   const { locale, t } = useI18n();
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ buttonStyles, colors, surfaceStyles, textStyles });
@@ -19,7 +21,14 @@ export default function ReviewScreen() {
       <Text style={styles.title}>{t("review.title")}</Text>
       <Text style={styles.subtitle}>{t("review.subtitle")}</Text>
 
-      {hydrated && items.length === 0 ? (
+      {isLoading ? (
+        <View style={styles.emptyCard}>
+          <Text style={styles.emptyTitle}>{t("common.loading")}</Text>
+          <Text style={styles.emptyBody}>{t("review.loadingBody")}</Text>
+        </View>
+      ) : null}
+
+      {hydrated && !isLoading && items.length === 0 ? (
         <View style={styles.emptyCard}>
           <Text style={styles.emptyTitle}>{t("review.emptyTitle")}</Text>
           <Text style={styles.emptyBody}>{t("review.emptyBody")}</Text>

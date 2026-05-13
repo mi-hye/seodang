@@ -4,20 +4,22 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { WritingCanvas } from "../../src/components/practice/WritingCanvas";
 import { Screen, ScreenHandle } from "../../src/components/common/Screen";
-import { getCharacterById, getCharacterMeaning } from "../../src/data/characters";
-import {
-  spacing,
-  useTheme,
-} from "../../src/design/theme";
+import { getCharacterMeaning } from "../../src/data/characters";
+import { spacing, useTheme } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
 import { evaluatePractice } from "../../src/domain/practice/evaluatePractice";
+import { useKanjiCharacterQuery } from "../../src/queries/useKanjiCharacterQuery";
 import { useKanjiStrokeDataQuery } from "../../src/queries/useKanjiStrokeDataQuery";
 import { CanvasSize, InputStroke } from "../../src/types/practice";
 
 export default function PracticeScreen() {
   const router = useRouter();
-  const { characterId } = useLocalSearchParams<{ characterId: string }>();
-  const character = getCharacterById(characterId);
+  const { characterId, categoryKey } = useLocalSearchParams<{
+    characterId: string;
+    categoryKey?: string;
+  }>();
+  const normalizedCategoryKey = Array.isArray(categoryKey) ? categoryKey[0] : categoryKey;
+  const { data: character, isLoading: isCharacterLoading } = useKanjiCharacterQuery(characterId);
   const { locale, t } = useI18n();
   const { buttonStyles, chipStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ buttonStyles, chipStyles, colors, surfaceStyles, textStyles });
@@ -33,6 +35,14 @@ export default function PracticeScreen() {
     isLoading: isGuideLoading,
     isError: isGuideLoadError,
   } = useKanjiStrokeDataQuery(character?.literal);
+
+  if (isCharacterLoading) {
+    return (
+      <Screen>
+        <Text style={styles.errorTitle}>{t("common.loading")}</Text>
+      </Screen>
+    );
+  }
 
   if (!character) {
     return (
@@ -54,6 +64,8 @@ export default function PracticeScreen() {
       pathname: "/practice/result",
       params: {
         characterId: character.id,
+        categoryKey: normalizedCategoryKey,
+        literal: character.literal,
         score: String(evaluation.score),
         passed: String(evaluation.passed),
         attemptId: `${character.id}-${Date.now()}`,
@@ -77,7 +89,10 @@ export default function PracticeScreen() {
       <View style={styles.toolbar}>
         <View style={styles.toolChip}>
           <Text style={styles.toolChipText}>
-            {t("practice.currentStrokes", { count: strokes.length, total: character.strokeCount })}
+            {t("practice.currentStrokes", {
+              count: strokes.length,
+              total: character.strokeCount ?? "-",
+            })}
           </Text>
         </View>
         <Pressable

@@ -26,7 +26,7 @@
 ## 3. 디렉터리 구조 제안
 
 ```text
-kanzi/
+seodang/
 ├─ app/
 │  ├─ _layout.tsx
 │  ├─ index.tsx

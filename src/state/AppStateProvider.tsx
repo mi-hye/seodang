@@ -9,7 +9,6 @@ import {
   useState,
 } from "react";
 
-import { sampleCharacters } from "../data/characters";
 import {
   AppLocale,
   CharacterProgress,
@@ -18,7 +17,7 @@ import {
   UserType,
 } from "../types/app-state";
 
-const STORAGE_KEY = "kanzi-app-state-v1";
+const STORAGE_KEY = "seodang-app-state-v1";
 const MAX_RECORDED_ATTEMPTS = 50;
 const DEVICE_LOCALE = resolveInitialLocale();
 
@@ -40,7 +39,7 @@ type AppStateContextValue = {
     practicedAt: string;
   }) => void;
   getProgress: (characterId: string) => CharacterProgress | undefined;
-  getReviewCharacters: () => typeof sampleCharacters;
+  getReviewCharacterIds: () => string[];
 };
 
 const defaultState: PersistedAppState = {
@@ -151,24 +150,18 @@ export function AppStateProvider({ children }: PropsWithChildren) {
 
     const getProgress = (characterId: string) => state.progressByCharacter[characterId];
 
-    const getReviewCharacters = () =>
-      [...sampleCharacters]
-        .filter((character) => {
-          const progress = state.progressByCharacter[character.id];
-          return progress ? progress.failures > 0 || progress.lastScore < 80 : false;
-        })
+    const getReviewCharacterIds = () =>
+      Object.values(state.progressByCharacter)
+        .filter((progress) => progress.failures > 0 || progress.lastScore < 80)
         .sort((left, right) => {
-          const leftProgress = state.progressByCharacter[left.id];
-          const rightProgress = state.progressByCharacter[right.id];
-
-          const leftWeight = (leftProgress?.failures ?? 0) * 100 - (leftProgress?.lastScore ?? 0);
-          const rightWeight =
-            (rightProgress?.failures ?? 0) * 100 - (rightProgress?.lastScore ?? 0);
+          const leftWeight = left.failures * 100 - left.lastScore;
+          const rightWeight = right.failures * 100 - right.lastScore;
 
           return rightWeight - leftWeight;
-        });
+        })
+        .map((progress) => progress.characterId);
 
-    const reviewCount = getReviewCharacters().length;
+    const reviewCount = getReviewCharacterIds().length;
 
     return {
       hydrated,
@@ -182,7 +175,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       setUserType,
       recordAttempt,
       getProgress,
-      getReviewCharacters,
+      getReviewCharacterIds,
     };
   }, [hydrated, state]);
 

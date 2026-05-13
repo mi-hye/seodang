@@ -1,13 +1,25 @@
-import { StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
-import { spacing, useTheme } from "../src/design/theme";
+import { radius, spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
+import { useKanjiCategoryGroupsQuery } from "../src/queries/useKanjiCategoryGroupsQuery";
 
 export default function CategoriesScreen() {
-  const { t } = useI18n();
-  const { surfaceStyles, textStyles } = useTheme();
-  const styles = createStyles({ surfaceStyles, textStyles });
+  const router = useRouter();
+  const { locale, t } = useI18n();
+  const { data, isLoading, isError } = useKanjiCategoryGroupsQuery();
+  const { colors, surfaceStyles, textStyles } = useTheme();
+  const styles = createStyles({ colors, surfaceStyles, textStyles });
+  const visibleGroups = (data ?? [])
+    .map((group) => ({
+      ...group,
+      categories: group.categories.filter((category) =>
+        category.visibleLocales.includes(locale)
+      ),
+    }))
+    .filter((group) => group.categories.length > 0);
 
   return (
     <Screen>
@@ -16,15 +28,68 @@ export default function CategoriesScreen() {
         <Text style={styles.subtitle}>{t("categories.subtitle")}</Text>
       </View>
 
-      <View style={styles.placeholderCard}>
-        <Text style={styles.placeholderTitle}>{t("categories.placeholder")}</Text>
-        <Text style={styles.placeholderBody}>{t("categories.helper")}</Text>
-      </View>
+      {isLoading ? (
+        <View style={styles.placeholderCard}>
+          <Text style={styles.placeholderTitle}>{t("common.loading")}</Text>
+          <Text style={styles.placeholderBody}>{t("categories.loadingBody")}</Text>
+        </View>
+      ) : null}
+
+      {isError ? (
+        <View style={styles.placeholderCard}>
+          <Text style={styles.placeholderTitle}>{t("categories.errorTitle")}</Text>
+          <Text style={styles.placeholderBody}>{t("categories.errorBody")}</Text>
+        </View>
+      ) : null}
+
+      {!isLoading && !isError && !visibleGroups.length ? (
+        <View style={styles.placeholderCard}>
+          <Text style={styles.placeholderTitle}>{t("categories.emptyTitle")}</Text>
+          <Text style={styles.placeholderBody}>{t("categories.emptyBody")}</Text>
+        </View>
+      ) : null}
+
+      {!isLoading && !isError
+        ? visibleGroups.map((group) => (
+            <View key={group.id} style={styles.groupSection}>
+              <View style={styles.groupHeader}>
+                <Text style={styles.groupTitle}>
+                  {locale === "ja" ? group.labelJa : group.labelKo}
+                </Text>
+                {(locale === "ja" ? group.descriptionJa : group.descriptionKo) ? (
+                  <Text style={styles.groupBody}>
+                    {locale === "ja" ? group.descriptionJa : group.descriptionKo}
+                  </Text>
+                ) : null}
+              </View>
+
+                <View style={styles.chipRow}>
+                  {group.categories.map((category) => (
+                    <Pressable
+                      key={category.id}
+                      style={styles.categoryChip}
+                      onPress={() =>
+                        router.push({
+                          pathname: "/list",
+                          params: { categoryKey: category.categoryKey },
+                        })
+                      }
+                    >
+                      <Text style={styles.categoryChipText}>
+                        {locale === "ja" ? category.labelJa : category.labelKo}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+            </View>
+          ))
+        : null}
     </Screen>
   );
 }
 
 function createStyles({
+  colors,
   surfaceStyles,
   textStyles,
 }: any) {
@@ -39,8 +104,35 @@ function createStyles({
       ...surfaceStyles.card,
       padding: spacing[7],
       gap: spacing[2],
+      marginBottom: spacing[6],
     },
     placeholderTitle: textStyles.titleMd,
     placeholderBody: textStyles.bodySm,
+    groupSection: {
+      marginBottom: spacing[7],
+      gap: spacing[3],
+    },
+    groupHeader: {
+      gap: spacing[1],
+    },
+    groupTitle: textStyles.sectionTitle,
+    groupBody: textStyles.bodySm,
+    chipRow: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: spacing[2],
+    },
+    categoryChip: {
+      backgroundColor: colors.bgMuted,
+      borderWidth: 1,
+      borderColor: colors.borderSoft,
+      borderRadius: radius.sm,
+      paddingHorizontal: 14,
+      paddingVertical: 10,
+    },
+    categoryChipText: {
+      ...textStyles.meta,
+      color: colors.inkStrong,
+    },
   });
 }

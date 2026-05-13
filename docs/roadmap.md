@@ -1,8 +1,8 @@
-# kanzi 개발 로드맵
+# seodang 개발 로드맵
 
 ## 1. 문서 목적
 
-이 문서는 현재 `kanzi` 앱의 개발 상태를 기준으로, 앞으로 무엇을 어떤 순서로 정리하고 확장할지 정리한 로드맵이다.
+이 문서는 현재 `seodang` 앱의 개발 상태를 기준으로, 앞으로 무엇을 어떤 순서로 정리하고 확장할지 정리한 로드맵이다.
 
 목표는 다음과 같다.
 
@@ -53,6 +53,7 @@
 
 - `kanji_characters`를 앱 기준 테이블로 확장
 - 뜻, 음독/훈독, JLPT, 학년, 예문 등 메타데이터 구조 추가
+- `kanji_categories` / `kanji_character_categories`를 추가해 한자가 여러 카테고리에 동시에 속할 수 있게 구성
 - `useKanjiListQuery`
 - `useKanjiDetailQuery`
 - `useKanjiStrokeDataQuery`

@@ -3,17 +3,27 @@ import { Link, useLocalSearchParams } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../../src/components/common/Screen";
-import { getCharacterById } from "../../src/data/characters";
-import {
-  spacing,
-  useTheme,
-} from "../../src/design/theme";
+import { spacing, useTheme } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
 import { useAppState } from "../../src/state/AppStateProvider";
 
 export default function PracticeResultScreen() {
-  const { characterId, score, passed, attemptId, practicedAt, drawnStrokes, expectedStrokes, summary, feedback } = useLocalSearchParams<{
+  const {
+    characterId,
+    categoryKey,
+    literal,
+    score,
+    passed,
+    attemptId,
+    practicedAt,
+    drawnStrokes,
+    expectedStrokes,
+    summary,
+    feedback,
+  } = useLocalSearchParams<{
     characterId: string;
+    categoryKey?: string;
+    literal?: string;
     score: string;
     passed: string;
     attemptId: string;
@@ -23,7 +33,8 @@ export default function PracticeResultScreen() {
     summary: string;
     feedback: string;
   }>();
-  const character = getCharacterById(characterId);
+  const normalizedCategoryKey = Array.isArray(categoryKey) ? categoryKey[0] : categoryKey;
+  const normalizedLiteral = Array.isArray(literal) ? literal[0] : literal;
   const didPass = passed === "true";
   const numericScore = Number(score ?? 0);
   const { recordAttempt } = useAppState();
@@ -50,7 +61,7 @@ export default function PracticeResultScreen() {
         <Text style={styles.status}>{didPass ? t("result.success") : t("result.retry")}</Text>
         <Text style={styles.score}>{t("result.score", { score })}</Text>
         <Text style={styles.summary}>
-          {summary || t("result.fallbackSummary", { literal: character?.literal ?? "-" })}
+          {summary || t("result.fallbackSummary", { literal: normalizedLiteral ?? "-" })}
         </Text>
       </View>
 
@@ -70,13 +81,34 @@ export default function PracticeResultScreen() {
         ))}
       </View>
 
-      <Link href={characterId ? `/practice/${characterId}` : "/list"} asChild>
+      <Link
+        href={
+          characterId
+            ? {
+                pathname: "/practice/[characterId]",
+                params: {
+                  characterId,
+                  categoryKey: normalizedCategoryKey,
+                },
+              }
+            : "/list"
+        }
+        asChild
+      >
         <Pressable style={styles.secondaryButton}>
           <Text style={styles.secondaryLabel}>{t("result.practiceAgain")}</Text>
         </Pressable>
       </Link>
 
-      <Link href="/list" asChild>
+      <Link
+        href={{
+          pathname: "/list",
+          params: {
+            categoryKey: normalizedCategoryKey,
+          },
+        }}
+        asChild
+      >
         <Pressable style={styles.primaryButton}>
           <Text style={styles.primaryLabel}>{t("result.nextCharacter")}</Text>
         </Pressable>

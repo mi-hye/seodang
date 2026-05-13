@@ -4,14 +4,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Screen } from "../src/components/common/Screen";
-import { getCharacterMeaning, sampleCharacters } from "../src/data/characters";
+import { getCharacterMeaning } from "../src/data/characters";
 import { radius, spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
+import { useFeaturedKanjiCharactersQuery } from "../src/queries/useFeaturedKanjiCharactersQuery";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function HomeScreen() {
   const router = useRouter();
-  const featured = sampleCharacters[0];
+  const { data: featuredCharacters = [], isLoading } = useFeaturedKanjiCharactersQuery(3);
+  const featured = featuredCharacters[0];
   const { hydrated, reviewCount } = useAppState();
   const { locale, t } = useI18n();
   const { colors, textStyles, surfaceStyles, shadows } = useTheme();
@@ -58,17 +60,24 @@ export default function HomeScreen() {
           </Pressable>
 
           <Pressable
-            onPress={() => router.push(`/character/${featured.id}`)}
+            onPress={() =>
+              featured
+                ? router.push(`/character/${featured.id}`)
+                : router.push("/categories")
+            }
             style={[styles.miniCard, styles.shadow]}
           >
-            <Text style={styles.miniNumber}>{featured.literal}</Text>
+            <Text style={styles.miniNumber}>{featured?.literal ?? "..."}</Text>
             <Text style={styles.miniLabel}>{t("home.featured")}</Text>
           </Pressable>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t("home.recommended")}</Text>
-          {sampleCharacters.slice(0, 3).map((character) => (
+          {isLoading ? (
+            <Text style={styles.loadingText}>{t("common.loading")}</Text>
+          ) : null}
+          {featuredCharacters.map((character) => (
             <Link
               key={character.id}
               href={`/character/${character.id}`}
@@ -81,8 +90,10 @@ export default function HomeScreen() {
                     {getCharacterMeaning(character, locale)}
                   </Text>
                   <Text style={styles.listMeta}>
-                    {t("common.jlpt")} {character.jlptLevel} ·{" "}
-                    {t("common.strokes", { count: character.strokeCount })}
+                    {character.jlptLevel ? `${t("common.jlpt")} ${character.jlptLevel} · ` : ""}
+                    {character.strokeCount != null
+                      ? t("common.strokes", { count: character.strokeCount })
+                      : "-"}
                   </Text>
                 </View>
               </Pressable>
@@ -185,6 +196,7 @@ function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
       fontWeight: "700",
     },
     listMeta: textStyles.caption,
+    loadingText: textStyles.bodySm,
     shadow: shadows.card,
   });
 }

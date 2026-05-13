@@ -10,18 +10,18 @@ export default function SettingsScreen() {
   const { locale, setLocale, t } = useI18n();
   const { setTheme } = useAppState();
   const { themeMode, colors, chipStyles, surfaceStyles, textStyles } = useTheme();
-  const styles = createStyles({ colors, chipStyles, surfaceStyles, textStyles });
+  const styles = createStyles({
+    themeMode,
+    colors,
+    chipStyles,
+    surfaceStyles,
+    textStyles,
+  });
 
   return (
     <Screen>
-      <View style={styles.hero}>
-        <Text style={styles.title}>{t("settings.title")}</Text>
-        <Text style={styles.subtitle}>{t("settings.subtitle")}</Text>
-      </View>
-
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t("settings.language")}</Text>
-        <Text style={styles.sectionBody}>{t("settings.languageBody")}</Text>
       </View>
 
       <View style={styles.optionList}>
@@ -40,7 +40,6 @@ export default function SettingsScreen() {
               </View>
             ) : null}
           </View>
-          <Text style={styles.optionBody}>{t("settings.koreanBody")}</Text>
         </Pressable>
 
         <Pressable
@@ -58,13 +57,11 @@ export default function SettingsScreen() {
               </View>
             ) : null}
           </View>
-          <Text style={styles.optionBody}>{t("settings.japaneseBody")}</Text>
         </Pressable>
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t("settings.theme")}</Text>
-        <Text style={styles.sectionBody}>{t("settings.themeBody")}</Text>
       </View>
 
       <View style={styles.optionList}>
@@ -83,7 +80,6 @@ export default function SettingsScreen() {
               </View>
             ) : null}
           </View>
-          <Text style={styles.optionBody}>{t("settings.themeLightBody")}</Text>
         </Pressable>
 
         <Pressable
@@ -101,7 +97,6 @@ export default function SettingsScreen() {
               </View>
             ) : null}
           </View>
-          <Text style={styles.optionBody}>{t("settings.themeDarkBody")}</Text>
         </Pressable>
       </View>
 
@@ -113,24 +108,17 @@ export default function SettingsScreen() {
 }
 
 function createStyles({
+  themeMode,
   colors,
   chipStyles,
   surfaceStyles,
   textStyles,
 }: any) {
   return StyleSheet.create({
-    hero: {
-      marginBottom: spacing[7],
-      gap: spacing[2],
-    },
-    title: textStyles.displayMd,
-    subtitle: textStyles.bodyMd,
     section: {
       marginBottom: spacing[4],
-      gap: spacing[1],
     },
     sectionTitle: textStyles.sectionTitle,
-    sectionBody: textStyles.bodySm,
     optionList: {
       gap: spacing[3],
       marginBottom: spacing[6],
@@ -138,9 +126,10 @@ function createStyles({
     optionCard: {
       ...surfaceStyles.card,
       padding: spacing[6],
-      gap: spacing[2],
       borderWidth: 1,
       borderColor: colors.borderSoft,
+      minHeight: 76,
+      justifyContent: "center",
     },
     optionCardActive: {
       backgroundColor: colors.bgMutedStrong,
@@ -157,10 +146,9 @@ function createStyles({
       gap: spacing[2],
     },
     optionTitle: textStyles.titleMd,
-    optionBody: textStyles.bodySm,
     selectedChip: {
       ...chipStyles.base,
-      backgroundColor: colors.accentWarm,
+      backgroundColor: themeMode === "dark" ? colors.accentWarm : colors.inkStrongAlt,
     },
     selectedChipText: {
       ...textStyles.meta,

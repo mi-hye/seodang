@@ -42,5 +42,4 @@ yarn-error.*
 /android
 
 # imported datasets
-/data/vendor/
-/data/generated/
+/data/*
