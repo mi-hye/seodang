@@ -25,13 +25,15 @@ function RootNavigator() {
       <Stack
         screenOptions={{
           headerShadowVisible: false,
+          headerBackButtonDisplayMode: "minimal",
           headerStyle: {
             backgroundColor: colors.bgCanvas,
           },
-          headerTintColor: colors.inkStrongAlt,
+          headerTintColor: colors.inkStrong,
           headerTitleStyle: {
             fontSize: 18,
             fontWeight: "700",
+            color: colors.inkStrong,
           },
           contentStyle: {
             backgroundColor: colors.bgCanvas,

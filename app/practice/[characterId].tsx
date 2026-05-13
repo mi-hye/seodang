@@ -185,6 +185,7 @@ function createStyles({
     toolChip: chipStyles.base,
     toolChipActive: {
       ...chipStyles.active,
+      backgroundColor: colors.accentWarm,
     },
     toolChipText: {
       ...textStyles.meta,
@@ -228,6 +229,7 @@ function createStyles({
     },
     primaryButton: {
       ...buttonStyles.primary,
+      backgroundColor: colors.accentWarm,
       flex: 1,
     },
     primaryButtonDisabled: {

@@ -5,11 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning, sampleCharacters } from "../src/data/characters";
-import {
-  radius,
-  spacing,
-  useTheme,
-} from "../src/design/theme";
+import { radius, spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import { useAppState } from "../src/state/AppStateProvider";
 
@@ -31,7 +27,11 @@ export default function HomeScreen() {
               onPress={() => router.push("/settings")}
               style={styles.settingsButton}
             >
-              <Ionicons name="settings-outline" size={18} color={colors.inkStrongAlt} />
+              <Ionicons
+                name="settings-outline"
+                size={18}
+                color={colors.inkStrong}
+              />
             </Pressable>
           </View>
           <Text style={styles.title}>{t("home.title")}</Text>
@@ -51,7 +51,9 @@ export default function HomeScreen() {
             onPress={() => router.push("/review")}
             style={[styles.miniCard, styles.shadow]}
           >
-            <Text style={styles.miniNumber}>{hydrated ? reviewCount : "-"}</Text>
+            <Text style={styles.miniNumber}>
+              {hydrated ? reviewCount : "-"}
+            </Text>
             <Text style={styles.miniLabel}>{t("home.reviewNeeded")}</Text>
           </Pressable>
 
@@ -75,9 +77,12 @@ export default function HomeScreen() {
               <Pressable style={styles.listCard}>
                 <Text style={styles.listKanji}>{character.literal}</Text>
                 <View style={styles.listContent}>
-                  <Text style={styles.listTitle}>{getCharacterMeaning(character, locale)}</Text>
+                  <Text style={styles.listTitle}>
+                    {getCharacterMeaning(character, locale)}
+                  </Text>
                   <Text style={styles.listMeta}>
-                    {t("common.jlpt")} {character.jlptLevel} · {t("common.strokes", { count: character.strokeCount })}
+                    {t("common.jlpt")} {character.jlptLevel} ·{" "}
+                    {t("common.strokes", { count: character.strokeCount })}
                   </Text>
                 </View>
               </Pressable>
@@ -89,12 +94,7 @@ export default function HomeScreen() {
   );
 }
 
-function createStyles({
-  colors,
-  textStyles,
-  surfaceStyles,
-  shadows,
-}: any) {
+function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
   return StyleSheet.create({
     safeArea: {
       flex: 1,

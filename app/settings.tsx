@@ -143,8 +143,6 @@ function createStyles({
       borderColor: colors.borderSoft,
     },
     optionCardActive: {
-      borderWidth: 2,
-      borderColor: colors.borderStrong,
       backgroundColor: colors.bgMutedStrong,
     },
     optionHeader: {
@@ -162,7 +160,7 @@ function createStyles({
     optionBody: textStyles.bodySm,
     selectedChip: {
       ...chipStyles.base,
-      backgroundColor: colors.inkStrong,
+      backgroundColor: colors.accentWarm,
     },
     selectedChipText: {
       ...textStyles.meta,
