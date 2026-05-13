@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { AppStateProvider } from "../src/state/AppStateProvider";
-import { colors } from "../src/design/theme";
+import { useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import { QueryProvider } from "../src/state/QueryProvider";
 
@@ -17,10 +17,11 @@ export default function RootLayout() {
 
 function RootNavigator() {
   const { t } = useI18n();
+  const { colors, themeMode } = useTheme();
 
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style={themeMode === "dark" ? "light" : "dark"} />
       <Stack
         screenOptions={{
           headerShadowVisible: false,

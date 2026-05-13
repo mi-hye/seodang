@@ -6,12 +6,8 @@ import { WritingCanvas } from "../../src/components/practice/WritingCanvas";
 import { Screen, ScreenHandle } from "../../src/components/common/Screen";
 import { getCharacterById, getCharacterMeaning } from "../../src/data/characters";
 import {
-  buttonStyles,
-  chipStyles,
-  colors,
   spacing,
-  surfaceStyles,
-  textStyles,
+  useTheme,
 } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
 import { evaluatePractice } from "../../src/domain/practice/evaluatePractice";
@@ -23,6 +19,8 @@ export default function PracticeScreen() {
   const { characterId } = useLocalSearchParams<{ characterId: string }>();
   const character = getCharacterById(characterId);
   const { locale, t } = useI18n();
+  const { buttonStyles, chipStyles, colors, surfaceStyles, textStyles } = useTheme();
+  const styles = createStyles({ buttonStyles, chipStyles, colors, surfaceStyles, textStyles });
   const screenRef = useRef<ScreenHandle>(null);
   const [showGuide, setShowGuide] = useState(false);
   const [strokes, setStrokes] = useState<InputStroke[]>([]);
@@ -151,86 +149,94 @@ export default function PracticeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  headerCard: {
-    ...surfaceStyles.card,
-    borderRadius: 28,
-    padding: spacing[7],
-    alignItems: "center",
-    marginBottom: spacing[4],
-  },
-  caption: {
-    ...textStyles.eyebrow,
-    marginBottom: 10,
-  },
-  literal: {
-    ...textStyles.glyphLg,
-    marginBottom: 6,
-  },
-  meaning: {
-    fontSize: 17,
-    color: colors.inkBody,
-    fontWeight: "700",
-  },
-  toolbar: {
-    flexDirection: "row",
-    gap: spacing[2] + 2,
-    marginBottom: spacing[4],
-  },
-  toolChip: chipStyles.base,
-  toolChipActive: {
-    ...chipStyles.active,
-  },
-  toolChipText: {
-    ...textStyles.meta,
-    color: colors.accentWarmMuted,
-  },
-  toolChipDisabled: {
-    opacity: 0.45,
-  },
-  toolChipTextActive: {
-    color: colors.inkOnDark,
-  },
-  canvasCard: {
-    ...surfaceStyles.card,
-    borderRadius: 28,
-    padding: 18,
-    marginBottom: 16,
-  },
-  canvasHint: {
-    ...textStyles.bodySm,
-    marginTop: 14,
-  },
-  canvasSubHint: {
-    fontSize: 12,
-    lineHeight: 18,
-    color: colors.accentWarmMuted,
-    marginTop: 6,
-    fontWeight: "700",
-  },
-  actions: {
-    flexDirection: "row",
-    gap: spacing[3],
-    marginBottom: 20,
-  },
-  secondaryButton: {
-    ...buttonStyles.secondary,
-    flex: 1,
-  },
-  secondaryLabel: {
-    ...textStyles.buttonLabel,
-    color: colors.accentWarmMuted,
-  },
-  primaryButton: {
-    ...buttonStyles.primary,
-    flex: 1,
-  },
-  primaryButtonDisabled: {
-    opacity: 0.45,
-  },
-  primaryLabel: {
-    ...textStyles.buttonLabel,
-    color: colors.inkOnDark,
-  },
-  errorTitle: textStyles.displaySm,
-});
+function createStyles({
+  buttonStyles,
+  chipStyles,
+  colors,
+  surfaceStyles,
+  textStyles,
+}: any) {
+  return StyleSheet.create({
+    headerCard: {
+      ...surfaceStyles.card,
+      borderRadius: 28,
+      padding: spacing[7],
+      alignItems: "center",
+      marginBottom: spacing[4],
+    },
+    caption: {
+      ...textStyles.eyebrow,
+      marginBottom: 10,
+    },
+    literal: {
+      ...textStyles.glyphLg,
+      marginBottom: 6,
+    },
+    meaning: {
+      fontSize: 17,
+      color: colors.inkBody,
+      fontWeight: "700",
+    },
+    toolbar: {
+      flexDirection: "row",
+      gap: spacing[2] + 2,
+      marginBottom: spacing[4],
+    },
+    toolChip: chipStyles.base,
+    toolChipActive: {
+      ...chipStyles.active,
+    },
+    toolChipText: {
+      ...textStyles.meta,
+      color: colors.accentWarmMuted,
+    },
+    toolChipDisabled: {
+      opacity: 0.45,
+    },
+    toolChipTextActive: {
+      color: colors.inkOnDark,
+    },
+    canvasCard: {
+      ...surfaceStyles.card,
+      borderRadius: 28,
+      padding: 18,
+      marginBottom: 16,
+    },
+    canvasHint: {
+      ...textStyles.bodySm,
+      marginTop: 14,
+    },
+    canvasSubHint: {
+      fontSize: 12,
+      lineHeight: 18,
+      color: colors.accentWarmMuted,
+      marginTop: 6,
+      fontWeight: "700",
+    },
+    actions: {
+      flexDirection: "row",
+      gap: spacing[3],
+      marginBottom: 20,
+    },
+    secondaryButton: {
+      ...buttonStyles.secondary,
+      flex: 1,
+    },
+    secondaryLabel: {
+      ...textStyles.buttonLabel,
+      color: colors.accentWarmMuted,
+    },
+    primaryButton: {
+      ...buttonStyles.primary,
+      flex: 1,
+    },
+    primaryButtonDisabled: {
+      opacity: 0.45,
+    },
+    primaryLabel: {
+      ...textStyles.buttonLabel,
+      color: colors.inkOnDark,
+    },
+    errorTitle: textStyles.displaySm,
+  });
+}

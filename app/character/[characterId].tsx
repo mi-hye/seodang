@@ -8,11 +8,8 @@ import {
   getExampleMeaning,
 } from "../../src/data/characters";
 import {
-  buttonStyles,
-  colors,
   spacing,
-  surfaceStyles,
-  textStyles,
+  useTheme,
 } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
 
@@ -20,6 +17,8 @@ export default function CharacterDetailScreen() {
   const { characterId } = useLocalSearchParams<{ characterId: string }>();
   const character = getCharacterById(characterId);
   const { locale, t } = useI18n();
+  const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
+  const styles = createStyles({ buttonStyles, colors, surfaceStyles, textStyles });
 
   if (!character) {
     return (
@@ -74,52 +73,59 @@ export default function CharacterDetailScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  heroCard: {
-    ...surfaceStyles.heroDark,
-    borderRadius: 30,
-    padding: spacing[8],
-    alignItems: "center",
-    marginBottom: spacing[4],
-  },
-  literal: {
-    ...textStyles.heroGlyph,
-    marginBottom: spacing[2],
-  },
-  meaning: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: colors.inkOnDark,
-    marginBottom: 6,
-  },
-  meta: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: "#c9d4cb",
-  },
-  infoCard: {
-    ...surfaceStyles.card,
-    padding: 18,
-    marginBottom: 12,
-    gap: 8,
-  },
-  sectionTitle: textStyles.titleSm,
-  infoLine: textStyles.bodySm,
-  exampleRow: {
-    paddingTop: 4,
-    gap: 2,
-  },
-  exampleWord: textStyles.titleSm,
-  exampleMeta: textStyles.caption,
-  actionButton: {
-    ...buttonStyles.secondary,
-    marginTop: 8,
-    marginBottom: 20,
-  },
-  actionLabel: {
-    ...textStyles.buttonLabel,
-    color: colors.accentWarmMuted,
-    fontSize: 16,
-  },
-  errorTitle: textStyles.displaySm,
-});
+function createStyles({
+  buttonStyles,
+  colors,
+  surfaceStyles,
+  textStyles,
+}: any) {
+  return StyleSheet.create({
+    heroCard: {
+      ...surfaceStyles.heroDark,
+      borderRadius: 30,
+      padding: spacing[8],
+      alignItems: "center",
+      marginBottom: spacing[4],
+    },
+    literal: {
+      ...textStyles.heroGlyph,
+      marginBottom: spacing[2],
+    },
+    meaning: {
+      fontSize: 20,
+      fontWeight: "700",
+      color: colors.inkOnDark,
+      marginBottom: 6,
+    },
+    meta: {
+      fontSize: 13,
+      fontWeight: "700",
+      color: colors.inkOnDarkMuted,
+    },
+    infoCard: {
+      ...surfaceStyles.card,
+      padding: 18,
+      marginBottom: 12,
+      gap: 8,
+    },
+    sectionTitle: textStyles.titleSm,
+    infoLine: textStyles.bodySm,
+    exampleRow: {
+      paddingTop: 4,
+      gap: 2,
+    },
+    exampleWord: textStyles.titleSm,
+    exampleMeta: textStyles.caption,
+    actionButton: {
+      ...buttonStyles.secondary,
+      marginTop: 8,
+      marginBottom: 20,
+    },
+    actionLabel: {
+      ...textStyles.buttonLabel,
+      color: colors.accentWarmMuted,
+      fontSize: 16,
+    },
+    errorTitle: textStyles.displaySm,
+  });
+}

@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
-import { spacing, surfaceStyles, textStyles } from "../src/design/theme";
+import { spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 
 export default function CategoriesScreen() {
   const { t } = useI18n();
+  const { surfaceStyles, textStyles } = useTheme();
+  const styles = createStyles({ surfaceStyles, textStyles });
 
   return (
     <Screen>
@@ -22,18 +24,23 @@ export default function CategoriesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  hero: {
-    marginBottom: spacing[7],
-    gap: spacing[2],
-  },
-  title: textStyles.displayMd,
-  subtitle: textStyles.bodyMd,
-  placeholderCard: {
-    ...surfaceStyles.card,
-    padding: spacing[7],
-    gap: spacing[2],
-  },
-  placeholderTitle: textStyles.titleMd,
-  placeholderBody: textStyles.bodySm,
-});
+function createStyles({
+  surfaceStyles,
+  textStyles,
+}: any) {
+  return StyleSheet.create({
+    hero: {
+      marginBottom: spacing[7],
+      gap: spacing[2],
+    },
+    title: textStyles.displayMd,
+    subtitle: textStyles.bodyMd,
+    placeholderCard: {
+      ...surfaceStyles.card,
+      padding: spacing[7],
+      gap: spacing[2],
+    },
+    placeholderTitle: textStyles.titleMd,
+    placeholderBody: textStyles.bodySm,
+  });
+}

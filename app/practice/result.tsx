@@ -5,11 +5,8 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Screen } from "../../src/components/common/Screen";
 import { getCharacterById } from "../../src/data/characters";
 import {
-  buttonStyles,
-  colors,
   spacing,
-  surfaceStyles,
-  textStyles,
+  useTheme,
 } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
 import { useAppState } from "../../src/state/AppStateProvider";
@@ -31,6 +28,8 @@ export default function PracticeResultScreen() {
   const numericScore = Number(score ?? 0);
   const { recordAttempt } = useAppState();
   const { t } = useI18n();
+  const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
+  const styles = createStyles({ buttonStyles, colors, surfaceStyles, textStyles });
   const feedbackLines = feedback ? feedback.split("\n").filter(Boolean) : [];
 
   useEffect(() => {
@@ -86,57 +85,64 @@ export default function PracticeResultScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  heroCard: {
-    borderRadius: 28,
-    padding: spacing[7],
-    marginBottom: 14,
-  },
-  passCard: {
-    backgroundColor: colors.success,
-  },
-  failCard: {
-    backgroundColor: colors.danger,
-  },
-  status: {
-    color: colors.inkOnDark,
-    fontSize: 24,
-    fontWeight: "800",
-    marginBottom: 8,
-  },
-  score: {
-    color: colors.inkOnDark,
-    fontSize: 52,
-    fontWeight: "800",
-    marginBottom: 8,
-  },
-  summary: {
-    color: "#dbe4dc",
-    fontSize: 14,
-    lineHeight: 21,
-  },
-  feedbackCard: {
-    ...surfaceStyles.card,
-    padding: 18,
-    marginBottom: 16,
-    gap: 8,
-  },
-  feedbackTitle: textStyles.titleMd,
-  feedbackLine: textStyles.bodySm,
-  secondaryButton: {
-    ...buttonStyles.secondary,
-    marginBottom: 10,
-  },
-  secondaryLabel: {
-    ...textStyles.buttonLabel,
-    color: colors.accentWarmMuted,
-  },
-  primaryButton: {
-    ...buttonStyles.warm,
-    marginBottom: 20,
-  },
-  primaryLabel: {
-    ...textStyles.buttonLabel,
-    color: colors.inkOnDark,
-  },
-});
+function createStyles({
+  buttonStyles,
+  colors,
+  surfaceStyles,
+  textStyles,
+}: any) {
+  return StyleSheet.create({
+    heroCard: {
+      borderRadius: 28,
+      padding: spacing[7],
+      marginBottom: 14,
+    },
+    passCard: {
+      backgroundColor: colors.success,
+    },
+    failCard: {
+      backgroundColor: colors.danger,
+    },
+    status: {
+      color: colors.inkOnDark,
+      fontSize: 24,
+      fontWeight: "800",
+      marginBottom: 8,
+    },
+    score: {
+      color: colors.inkOnDark,
+      fontSize: 52,
+      fontWeight: "800",
+      marginBottom: 8,
+    },
+    summary: {
+      color: colors.inkOnDarkMuted,
+      fontSize: 14,
+      lineHeight: 21,
+    },
+    feedbackCard: {
+      ...surfaceStyles.card,
+      padding: 18,
+      marginBottom: 16,
+      gap: 8,
+    },
+    feedbackTitle: textStyles.titleMd,
+    feedbackLine: textStyles.bodySm,
+    secondaryButton: {
+      ...buttonStyles.secondary,
+      marginBottom: 10,
+    },
+    secondaryLabel: {
+      ...textStyles.buttonLabel,
+      color: colors.accentWarmMuted,
+    },
+    primaryButton: {
+      ...buttonStyles.warm,
+      marginBottom: 20,
+    },
+    primaryLabel: {
+      ...textStyles.buttonLabel,
+      color: colors.inkOnDark,
+    },
+  });
+}

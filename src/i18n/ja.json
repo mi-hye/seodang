@@ -76,6 +76,12 @@
   "settings.koreanBody": "韓国語話者の学習者向けの文言でアプリを表示します。",
   "settings.japaneseTitle": "日本語",
   "settings.japaneseBody": "日本語のUI文言でアプリを表示します。",
+  "settings.theme": "テーマ",
+  "settings.themeBody": "アプリ画面に適用するカラーテーマを選択します。",
+  "settings.themeLightTitle": "ライトテーマ",
+  "settings.themeLightBody": "今の紙のような質感とあたたかい緑のトーンを維持します。",
+  "settings.themeDarkTitle": "ダークテーマ",
+  "settings.themeDarkBody": "深い緑の背景と落ち着いた黄土色のアクセントで夜でも見やすいテーマです。",
   "settings.selected": "選択中",
   "settings.comingSoon": "学習レベル、判定難易度、通知設定は次の段階で追加します。"
 }

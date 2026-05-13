@@ -3,18 +3,15 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning, sampleCharacters } from "../src/data/characters";
-import {
-  chipStyles,
-  spacing,
-  surfaceStyles,
-  textStyles,
-} from "../src/design/theme";
+import { spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function CharacterListScreen() {
   const { getProgress } = useAppState();
   const { locale, t } = useI18n();
+  const { chipStyles, surfaceStyles, textStyles } = useTheme();
+  const styles = createStyles({ chipStyles, surfaceStyles, textStyles });
 
   return (
     <Screen>
@@ -57,48 +54,54 @@ export default function CharacterListScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  title: {
-    ...textStyles.displayMd,
-    marginBottom: spacing[2],
-  },
-  subtitle: {
-    ...textStyles.bodySm,
-    marginBottom: 18,
-  },
-  filters: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: spacing[2],
-    marginBottom: spacing[6],
-  },
-  filterChip: chipStyles.base,
-  filterText: {
-    ...textStyles.meta,
-    fontWeight: "700",
-  },
-  card: {
-    ...surfaceStyles.card,
-    padding: 18,
-    marginBottom: 12,
-    flexDirection: "row",
-    gap: 16,
-    alignItems: "center",
-  },
-  literal: {
-    width: 52,
-    textAlign: "center",
-    ...textStyles.glyphSm,
-    fontSize: 30,
-  },
-  content: {
-    flex: 1,
-    gap: 5,
-  },
-  meaning: {
-    ...textStyles.titleSm,
-  },
-  reading: textStyles.caption,
-  meta: textStyles.meta,
-  progressMeta: textStyles.meta,
-});
+function createStyles({
+  chipStyles,
+  surfaceStyles,
+  textStyles,
+}: any) {
+  return StyleSheet.create({
+    title: {
+      ...textStyles.displayMd,
+      marginBottom: spacing[2],
+    },
+    subtitle: {
+      ...textStyles.bodySm,
+      marginBottom: 18,
+    },
+    filters: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: spacing[2],
+      marginBottom: spacing[6],
+    },
+    filterChip: chipStyles.base,
+    filterText: {
+      ...textStyles.meta,
+      fontWeight: "700",
+    },
+    card: {
+      ...surfaceStyles.card,
+      padding: 18,
+      marginBottom: 12,
+      flexDirection: "row",
+      gap: 16,
+      alignItems: "center",
+    },
+    literal: {
+      width: 52,
+      textAlign: "center",
+      ...textStyles.glyphSm,
+      fontSize: 30,
+    },
+    content: {
+      flex: 1,
+      gap: 5,
+    },
+    meaning: {
+      ...textStyles.titleSm,
+    },
+    reading: textStyles.caption,
+    meta: textStyles.meta,
+    progressMeta: textStyles.meta,
+  });
+}

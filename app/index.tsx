@@ -6,14 +6,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning, sampleCharacters } from "../src/data/characters";
 import {
-  buttonStyles,
-  chipStyles,
-  colors,
   radius,
-  shadows,
   spacing,
-  surfaceStyles,
-  textStyles,
+  useTheme,
 } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import { useAppState } from "../src/state/AppStateProvider";
@@ -23,6 +18,8 @@ export default function HomeScreen() {
   const featured = sampleCharacters[0];
   const { hydrated, reviewCount } = useAppState();
   const { locale, t } = useI18n();
+  const { colors, textStyles, surfaceStyles, shadows } = useTheme();
+  const styles = createStyles({ colors, textStyles, surfaceStyles, shadows });
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -92,95 +89,102 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.bgCanvas,
-  },
-  hero: {
-    marginBottom: spacing[7],
-    gap: spacing[2] + 2,
-  },
-  heroTopRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: spacing[2],
-    gap: spacing[3],
-  },
-  settingsButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  eyebrow: textStyles.eyebrow,
-  title: textStyles.displayLg,
-  subtitle: textStyles.bodyMd,
-  primaryCard: {
-    ...surfaceStyles.heroDark,
-    padding: spacing[7],
-    marginBottom: spacing[4],
-  },
-  primaryLabel: {
-    fontSize: 22,
-    fontWeight: "800",
-    color: colors.inkOnDark,
-    marginBottom: spacing[2],
-  },
-  primaryBody: {
-    color: colors.inkOnDarkMuted,
-    fontSize: 15,
-    lineHeight: 22,
-  },
-  row: {
-    flexDirection: "row",
-    gap: spacing[3],
-    marginBottom: spacing[7],
-  },
-  miniCard: {
-    flex: 1,
-    ...surfaceStyles.card,
-    padding: spacing[6],
-    minHeight: 120,
-    justifyContent: "space-between",
-  },
-  miniNumber: {
-    ...textStyles.glyphMd,
-  },
-  miniLabel: {
-    fontSize: 14,
-    color: "#617565",
-    fontWeight: "700",
-  },
-  section: surfaceStyles.pageSection,
-  sectionTitle: {
-    ...textStyles.sectionTitle,
-    marginBottom: 14,
-  },
-  listCard: {
-    ...surfaceStyles.card,
-    borderRadius: radius.sm,
-    padding: 18,
-    marginBottom: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-  },
-  listKanji: {
-    width: 54,
-    ...textStyles.glyphSm,
-    textAlign: "center",
-  },
-  listContent: {
-    flex: 1,
-    gap: 4,
-  },
-  listTitle: {
-    ...textStyles.titleSm,
-    fontWeight: "700",
-  },
-  listMeta: textStyles.caption,
-  shadow: shadows.card,
-});
+function createStyles({
+  colors,
+  textStyles,
+  surfaceStyles,
+  shadows,
+}: any) {
+  return StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.bgCanvas,
+    },
+    hero: {
+      marginBottom: spacing[7],
+      gap: spacing[2] + 2,
+    },
+    heroTopRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: spacing[2],
+      gap: spacing[3],
+    },
+    settingsButton: {
+      width: 42,
+      height: 42,
+      borderRadius: 21,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    eyebrow: textStyles.eyebrow,
+    title: textStyles.displayLg,
+    subtitle: textStyles.bodyMd,
+    primaryCard: {
+      ...surfaceStyles.heroDark,
+      padding: spacing[7],
+      marginBottom: spacing[4],
+    },
+    primaryLabel: {
+      fontSize: 22,
+      fontWeight: "800",
+      color: colors.inkOnDark,
+      marginBottom: spacing[2],
+    },
+    primaryBody: {
+      color: colors.inkOnDarkMuted,
+      fontSize: 15,
+      lineHeight: 22,
+    },
+    row: {
+      flexDirection: "row",
+      gap: spacing[3],
+      marginBottom: spacing[7],
+    },
+    miniCard: {
+      flex: 1,
+      ...surfaceStyles.card,
+      padding: spacing[6],
+      minHeight: 120,
+      justifyContent: "space-between",
+    },
+    miniNumber: {
+      ...textStyles.glyphMd,
+    },
+    miniLabel: {
+      fontSize: 14,
+      color: colors.inkMuted,
+      fontWeight: "700",
+    },
+    section: surfaceStyles.pageSection,
+    sectionTitle: {
+      ...textStyles.sectionTitle,
+      marginBottom: 14,
+    },
+    listCard: {
+      ...surfaceStyles.card,
+      borderRadius: radius.sm,
+      padding: 18,
+      marginBottom: 10,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 14,
+    },
+    listKanji: {
+      width: 54,
+      ...textStyles.glyphSm,
+      textAlign: "center",
+    },
+    listContent: {
+      flex: 1,
+      gap: 4,
+    },
+    listTitle: {
+      ...textStyles.titleSm,
+      fontWeight: "700",
+    },
+    listMeta: textStyles.caption,
+    shadow: shadows.card,
+  });
+}

@@ -5,7 +5,7 @@ import {
   useRef,
 } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { colors, layout } from "../../design/theme";
+import { layout, useTheme } from "../../design/theme";
 
 type ScreenProps = PropsWithChildren<{
   scrollEnabled?: boolean;
@@ -20,6 +20,7 @@ export const Screen = forwardRef<ScreenHandle, ScreenProps>(function Screen(
   ref,
 ) {
   const scrollRef = useRef<ScrollView>(null);
+  const { colors } = useTheme();
 
   useImperativeHandle(ref, () => ({
     setScrollEnabled(enabled: boolean) {
@@ -28,7 +29,7 @@ export const Screen = forwardRef<ScreenHandle, ScreenProps>(function Screen(
   }));
 
   return (
-    <View style={styles.safeArea}>
+    <View style={[styles.safeArea, { backgroundColor: colors.bgCanvas }]}>
       <ScrollView
         ref={scrollRef}
         contentContainerStyle={styles.content}
@@ -44,7 +45,6 @@ export const Screen = forwardRef<ScreenHandle, ScreenProps>(function Screen(
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.bgCanvas,
   },
   content: {
     paddingHorizontal: layout.screenPaddingX,

@@ -3,13 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning } from "../src/data/characters";
-import {
-  buttonStyles,
-  colors,
-  spacing,
-  surfaceStyles,
-  textStyles,
-} from "../src/design/theme";
+import { spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import { useAppState } from "../src/state/AppStateProvider";
 
@@ -17,6 +11,8 @@ export default function ReviewScreen() {
   const { getProgress, getReviewCharacters, hydrated } = useAppState();
   const items = getReviewCharacters();
   const { locale, t } = useI18n();
+  const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
+  const styles = createStyles({ buttonStyles, colors, surfaceStyles, textStyles });
 
   return (
     <Screen>
@@ -56,56 +52,63 @@ export default function ReviewScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  title: {
-    ...textStyles.displayMd,
-    marginBottom: spacing[2],
-  },
-  subtitle: {
-    ...textStyles.bodySm,
-    marginBottom: spacing[6],
-  },
-  emptyCard: {
-    ...surfaceStyles.card,
-    padding: spacing[6],
-    marginBottom: 12,
-    gap: 6,
-  },
-  emptyTitle: textStyles.titleSm,
-  emptyBody: textStyles.bodySm,
-  card: {
-    ...surfaceStyles.card,
-    padding: 18,
-    marginBottom: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 12,
-  },
-  left: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    flex: 1,
-  },
-  literal: {
-    ...textStyles.glyphSm,
-    width: 42,
-    textAlign: "center",
-  },
-  meaning: textStyles.titleSm,
-  meta: {
-    ...textStyles.meta,
-    marginTop: 3,
-  },
-  badge: {
-    ...buttonStyles.primary,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  badgeText: {
-    color: colors.inkOnDark,
-    fontSize: 12,
-    fontWeight: "800",
-  },
-});
+function createStyles({
+  buttonStyles,
+  colors,
+  surfaceStyles,
+  textStyles,
+}: any) {
+  return StyleSheet.create({
+    title: {
+      ...textStyles.displayMd,
+      marginBottom: spacing[2],
+    },
+    subtitle: {
+      ...textStyles.bodySm,
+      marginBottom: spacing[6],
+    },
+    emptyCard: {
+      ...surfaceStyles.card,
+      padding: spacing[6],
+      marginBottom: 12,
+      gap: 6,
+    },
+    emptyTitle: textStyles.titleSm,
+    emptyBody: textStyles.bodySm,
+    card: {
+      ...surfaceStyles.card,
+      padding: 18,
+      marginBottom: 12,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 12,
+    },
+    left: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 14,
+      flex: 1,
+    },
+    literal: {
+      ...textStyles.glyphSm,
+      width: 42,
+      textAlign: "center",
+    },
+    meaning: textStyles.titleSm,
+    meta: {
+      ...textStyles.meta,
+      marginTop: 3,
+    },
+    badge: {
+      ...buttonStyles.primary,
+      paddingHorizontal: 14,
+      paddingVertical: 10,
+    },
+    badgeText: {
+      color: colors.inkOnDark,
+      fontSize: 12,
+      fontWeight: "800",
+    },
+  });
+}

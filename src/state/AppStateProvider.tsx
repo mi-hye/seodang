@@ -14,6 +14,7 @@ import {
   AppLocale,
   CharacterProgress,
   PersistedAppState,
+  ThemeMode,
   UserType,
 } from "../types/app-state";
 
@@ -24,10 +25,12 @@ const DEVICE_LOCALE = resolveInitialLocale();
 type AppStateContextValue = {
   hydrated: boolean;
   locale: AppLocale;
+  theme: ThemeMode;
   userType: UserType;
   progressByCharacter: Record<string, CharacterProgress>;
   reviewCount: number;
   setLocale: (locale: AppLocale) => void;
+  setTheme: (theme: ThemeMode) => void;
   setUserType: (userType: UserType) => void;
   recordAttempt: (input: {
     attemptId: string;
@@ -42,6 +45,7 @@ type AppStateContextValue = {
 
 const defaultState: PersistedAppState = {
   locale: DEVICE_LOCALE,
+  theme: "light",
   userType: "korean_learner",
   progressByCharacter: {},
   recordedAttemptIds: [],
@@ -93,6 +97,10 @@ export function AppStateProvider({ children }: PropsWithChildren) {
   const value = useMemo<AppStateContextValue>(() => {
     const setLocale = (locale: AppLocale) => {
       setState((current) => ({ ...current, locale }));
+    };
+
+    const setTheme = (theme: ThemeMode) => {
+      setState((current) => ({ ...current, theme }));
     };
 
     const setUserType = (userType: UserType) => {
@@ -165,10 +173,12 @@ export function AppStateProvider({ children }: PropsWithChildren) {
     return {
       hydrated,
       locale: state.locale,
+      theme: state.theme,
       userType: state.userType,
       progressByCharacter: state.progressByCharacter,
       reviewCount,
       setLocale,
+      setTheme,
       setUserType,
       recordAttempt,
       getProgress,
