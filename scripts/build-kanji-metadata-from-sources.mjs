@@ -17,14 +17,14 @@ const jlptMap = buildJlptMapFromOpenSourceJson(jlptSource);
 
 const characters = parseKanjidicCharacters(kanjidicXml);
 const metadataRows = buildMetadataRows(characters, jlptMap);
-const mappingRows = buildJlptCategoryMappings(characters, jlptMap);
+const mappingRows = buildCategoryMappings(characters, jlptMap);
 
 await mkdir(generatedDir, { recursive: true });
 await writeJson(metadataOutputPath, metadataRows);
 await writeJson(mappingsOutputPath, mappingRows);
 
 console.log(
-  `Generated ${metadataRows.length} kanji metadata rows and ${mappingRows.length} JLPT category mappings.`
+  `Generated ${metadataRows.length} kanji metadata rows and ${mappingRows.length} category mappings.`
 );
 
 function parseKanjidicCharacters(xml) {
@@ -100,6 +100,54 @@ function buildMetadataRows(characters, jlptMap) {
     .sort((left, right) => left.literal.localeCompare(right.literal, "ja"));
 }
 
+function buildCategoryMappings(characters, jlptMap) {
+  const rows = [
+    ...buildSchoolCategoryMappings(characters),
+    ...buildNameUseCategoryMappings(characters),
+    ...buildJlptCategoryMappings(characters, jlptMap),
+  ];
+
+  return uniqueRows(rows, (row) => `${row.characterId}:${row.categoryId}`).sort((left, right) =>
+    left.characterId.localeCompare(right.characterId, "en")
+  );
+}
+
+function buildSchoolCategoryMappings(characters) {
+  const rows = [];
+
+  for (const character of characters) {
+    const schoolCategoryId = toSchoolCategoryId(character.grade);
+    if (!schoolCategoryId) {
+      continue;
+    }
+
+    rows.push({
+      characterId: character.id,
+      categoryId: schoolCategoryId,
+    });
+  }
+
+  return rows;
+}
+
+function buildNameUseCategoryMappings(characters) {
+  const rows = [];
+
+  for (const character of characters) {
+    const nameUseCategoryId = toNameUseCategoryId(character.grade);
+    if (!nameUseCategoryId) {
+      continue;
+    }
+
+    rows.push({
+      characterId: character.id,
+      categoryId: nameUseCategoryId,
+    });
+  }
+
+  return rows;
+}
+
 function buildJlptCategoryMappings(characters, jlptMap) {
   const availableIds = new Set(characters.map((character) => character.id));
   const rows = [];
@@ -121,9 +169,7 @@ function buildJlptCategoryMappings(characters, jlptMap) {
     }
   }
 
-  return uniqueRows(rows, (row) => `${row.characterId}:${row.categoryId}`).sort((left, right) =>
-    left.characterId.localeCompare(right.characterId, "en")
-  );
+  return rows;
 }
 
 function createJlptLookup(jlptMap) {
@@ -211,6 +257,30 @@ function mapJapaneseSchoolInfo(grade) {
 
 function isJoyoGrade(grade) {
   return grade >= 1 && grade <= 6 || grade === 8;
+}
+
+function toSchoolCategoryId(grade) {
+  if (grade >= 1 && grade <= 6) {
+    return `cat_jp_elementary_${grade}`;
+  }
+
+  if (grade === 8) {
+    return "cat_jp_junior_high";
+  }
+
+  return null;
+}
+
+function toNameUseCategoryId(grade) {
+  if (grade === 9) {
+    return "cat_name_jinmeiyo";
+  }
+
+  if (grade === 10) {
+    return "cat_name_jinmeiyo_variant";
+  }
+
+  return null;
 }
 
 function extractMeaningEn(block) {
