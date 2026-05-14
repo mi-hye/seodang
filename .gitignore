@@ -42,8 +42,7 @@ yarn-error.*
 /android
 
 # imported datasets
-/data/generated/
-/data/import/
+/data/
 
 # Supabase local CLI state
 /supabase/.temp/
