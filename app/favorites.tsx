@@ -88,9 +88,6 @@ export default function FavoritesScreen() {
       {hydrated && !isLoading && items.length === 0 ? (
         <View style={styles.emptyCard}>
           <Text style={styles.emptyTitle}>{t("favorites.emptyTitle")}</Text>
-          {t("favorites.emptyBody") ? (
-            <Text style={styles.emptyBody}>{t("favorites.emptyBody")}</Text>
-          ) : null}
         </View>
       ) : null}
 
