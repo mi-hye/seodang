@@ -25,6 +25,7 @@
   "categories.emptyTitle": "아직 카테고리가 없습니다.",
   "categories.emptyBody": "카테고리 그룹과 항목 데이터를 먼저 넣으면 여기서 바로 보입니다.",
   "list.title": "한자 목록",
+  "list.totalCharacters": "총 %{count}개의 한자가 있습니다.",
   "list.subtitle": "한자를 눌러 학습해보세요.",
   "list.loadingBody": "선택한 카테고리의 한자 목록을 불러오는 중입니다.",
   "list.errorTitle": "한자 목록을 불러오지 못했습니다.",

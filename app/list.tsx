@@ -32,6 +32,10 @@ export default function CharacterListScreen() {
   const selectedCategory = firstPage?.category;
   const items = pages.flatMap((page) => page?.characters ?? []);
   const headerTitle = selectedCategory?.label ?? t("list.title");
+  const categoryTotal = firstPage?.total ?? null;
+  const subtitle = categoryTotal != null
+    ? `${t("list.totalCharacters", { count: categoryTotal })} ${t("list.subtitle")}`
+    : t("list.subtitle");
 
   if (isLoading) {
     return <KanjiLoadingScreen />;
@@ -64,7 +68,7 @@ export default function CharacterListScreen() {
         ListHeaderComponent={
           <View style={styles.header}>
             <Text style={styles.title}>{headerTitle}</Text>
-            <Text style={styles.subtitle}>{t("list.subtitle")}</Text>
+            <Text style={styles.subtitle}>{subtitle}</Text>
           </View>
         }
         ListEmptyComponent={

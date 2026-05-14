@@ -103,7 +103,6 @@ function buildMetadataRows(characters, jlptMap) {
 function buildCategoryMappings(characters, jlptMap) {
   const rows = [
     ...buildSchoolCategoryMappings(characters),
-    ...buildNameUseCategoryMappings(characters),
     ...buildJlptCategoryMappings(characters, jlptMap),
   ];
 
@@ -124,24 +123,6 @@ function buildSchoolCategoryMappings(characters) {
     rows.push({
       characterId: character.id,
       categoryId: schoolCategoryId,
-    });
-  }
-
-  return rows;
-}
-
-function buildNameUseCategoryMappings(characters) {
-  const rows = [];
-
-  for (const character of characters) {
-    const nameUseCategoryId = toNameUseCategoryId(character.grade);
-    if (!nameUseCategoryId) {
-      continue;
-    }
-
-    rows.push({
-      characterId: character.id,
-      categoryId: nameUseCategoryId,
     });
   }
 
@@ -266,18 +247,6 @@ function toSchoolCategoryId(grade) {
 
   if (grade === 8) {
     return "cat_jp_junior_high";
-  }
-
-  return null;
-}
-
-function toNameUseCategoryId(grade) {
-  if (grade === 9) {
-    return "cat_name_jinmeiyo";
-  }
-
-  if (grade === 10) {
-    return "cat_name_jinmeiyo_variant";
   }
 
   return null;

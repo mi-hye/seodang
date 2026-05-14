@@ -1,0 +1,22 @@
+[
+  {
+    "id": "group_japanese_school",
+    "groupKey": "japanese_school",
+    "labelKo": "일본 학교 한자",
+    "labelJa": "日本の学年",
+    "descriptionKo": "일본 초등학교와 중학교 교육과정 기준 한자 분류",
+    "descriptionJa": "日本の小中高校の学年ごとに見る漢字分類",
+    "sortOrder": 1,
+    "isActive": true
+  },
+  {
+    "id": "group_jlpt",
+    "groupKey": "jlpt",
+    "labelKo": "JLPT",
+    "labelJa": "JLPT",
+    "descriptionKo": "JLPT 급수 기준으로 보는 학습 카테고리",
+    "descriptionJa": "JLPTレベルごとに見る学習カテゴリ",
+    "sortOrder": 2,
+    "isActive": true
+  }
+]

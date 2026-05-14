@@ -25,6 +25,7 @@
   "categories.emptyTitle": "まだカテゴリがありません。",
   "categories.emptyBody": "カテゴリグループと項目データを入れると、ここに表示されます。",
   "list.title": "漢字一覧",
+  "list.totalCharacters": "全%{count}字の漢字があります。",
   "list.subtitle": "漢字を押して学習してみましょう。",
   "list.loadingBody": "選択したカテゴリの漢字一覧を読み込んでいます。",
   "list.errorTitle": "漢字一覧を読み込めませんでした。",

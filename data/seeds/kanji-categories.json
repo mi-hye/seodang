@@ -1,0 +1,188 @@
+[
+  {
+    "id": "cat_jp_elementary_1",
+    "groupId": "group_japanese_school",
+    "categoryKey": "jp_elementary_1",
+    "labelKo": "초1",
+    "labelJa": "日本の小1",
+    "descriptionKo": "일본 초등학교 1학년 범위",
+    "descriptionJa": "日本の小学校1年生の範囲",
+    "sortOrder": 1,
+    "isActive": true,
+    "metadata": {
+      "visibleLocales": ["ko", "ja"],
+      "schoolLevel": "elementary",
+      "grade": 1
+    }
+  },
+  {
+    "id": "cat_jp_elementary_2",
+    "groupId": "group_japanese_school",
+    "categoryKey": "jp_elementary_2",
+    "labelKo": "초2",
+    "labelJa": "日本の小2",
+    "descriptionKo": "일본 초등학교 2학년 범위",
+    "descriptionJa": "日本の小学校2年生の範囲",
+    "sortOrder": 2,
+    "isActive": true,
+    "metadata": {
+      "visibleLocales": ["ko", "ja"],
+      "schoolLevel": "elementary",
+      "grade": 2
+    }
+  },
+  {
+    "id": "cat_jp_elementary_3",
+    "groupId": "group_japanese_school",
+    "categoryKey": "jp_elementary_3",
+    "labelKo": "초3",
+    "labelJa": "日本の小3",
+    "descriptionKo": "일본 초등학교 3학년 범위",
+    "descriptionJa": "日本の小学校3年生の範囲",
+    "sortOrder": 3,
+    "isActive": true,
+    "metadata": {
+      "visibleLocales": ["ko", "ja"],
+      "schoolLevel": "elementary",
+      "grade": 3
+    }
+  },
+  {
+    "id": "cat_jp_elementary_4",
+    "groupId": "group_japanese_school",
+    "categoryKey": "jp_elementary_4",
+    "labelKo": "초4",
+    "labelJa": "日本の小4",
+    "descriptionKo": "일본 초등학교 4학년 범위",
+    "descriptionJa": "日本の小学校4年生の範囲",
+    "sortOrder": 4,
+    "isActive": true,
+    "metadata": {
+      "visibleLocales": ["ko", "ja"],
+      "schoolLevel": "elementary",
+      "grade": 4
+    }
+  },
+  {
+    "id": "cat_jp_elementary_5",
+    "groupId": "group_japanese_school",
+    "categoryKey": "jp_elementary_5",
+    "labelKo": "초5",
+    "labelJa": "日本の小5",
+    "descriptionKo": "일본 초등학교 5학년 범위",
+    "descriptionJa": "日本の小学校5年生の範囲",
+    "sortOrder": 5,
+    "isActive": true,
+    "metadata": {
+      "visibleLocales": ["ko", "ja"],
+      "schoolLevel": "elementary",
+      "grade": 5
+    }
+  },
+  {
+    "id": "cat_jp_elementary_6",
+    "groupId": "group_japanese_school",
+    "categoryKey": "jp_elementary_6",
+    "labelKo": "초6",
+    "labelJa": "日本の小6",
+    "descriptionKo": "일본 초등학교 6학년 범위",
+    "descriptionJa": "日本の小学校6年生の範囲",
+    "sortOrder": 6,
+    "isActive": true,
+    "metadata": {
+      "visibleLocales": ["ko", "ja"],
+      "schoolLevel": "elementary",
+      "grade": 6
+    }
+  },
+  {
+    "id": "cat_jp_junior_high",
+    "groupId": "group_japanese_school",
+    "categoryKey": "jp_junior_high",
+    "labelKo": "중학교",
+    "labelJa": "日本の中学校",
+    "descriptionKo": "일본 중학교 범위의 상용한자",
+    "descriptionJa": "日本の中学校で学ぶ常用漢字の範囲",
+    "sortOrder": 7,
+    "isActive": true,
+    "metadata": {
+      "visibleLocales": ["ko", "ja"],
+      "schoolLevel": "junior_high"
+    }
+  },
+  {
+    "id": "cat_jlpt_n5",
+    "groupId": "group_jlpt",
+    "categoryKey": "jlpt_n5",
+    "labelKo": "JLPT N5",
+    "labelJa": "JLPT N5",
+    "descriptionKo": "JLPT N5 범위",
+    "descriptionJa": "JLPT N5範囲",
+    "sortOrder": 1,
+    "isActive": true,
+    "metadata": {
+      "visibleLocales": ["ko"],
+      "jlptLevel": "N5"
+    }
+  },
+  {
+    "id": "cat_jlpt_n4",
+    "groupId": "group_jlpt",
+    "categoryKey": "jlpt_n4",
+    "labelKo": "JLPT N4",
+    "labelJa": "JLPT N4",
+    "descriptionKo": "JLPT N4 범위",
+    "descriptionJa": "JLPT N4範囲",
+    "sortOrder": 2,
+    "isActive": true,
+    "metadata": {
+      "visibleLocales": ["ko"],
+      "jlptLevel": "N4"
+    }
+  },
+  {
+    "id": "cat_jlpt_n3",
+    "groupId": "group_jlpt",
+    "categoryKey": "jlpt_n3",
+    "labelKo": "JLPT N3",
+    "labelJa": "JLPT N3",
+    "descriptionKo": "JLPT N3 범위",
+    "descriptionJa": "JLPT N3範囲",
+    "sortOrder": 3,
+    "isActive": true,
+    "metadata": {
+      "visibleLocales": ["ko"],
+      "jlptLevel": "N3"
+    }
+  },
+  {
+    "id": "cat_jlpt_n2",
+    "groupId": "group_jlpt",
+    "categoryKey": "jlpt_n2",
+    "labelKo": "JLPT N2",
+    "labelJa": "JLPT N2",
+    "descriptionKo": "JLPT N2 범위",
+    "descriptionJa": "JLPT N2範囲",
+    "sortOrder": 4,
+    "isActive": true,
+    "metadata": {
+      "visibleLocales": ["ko"],
+      "jlptLevel": "N2"
+    }
+  },
+  {
+    "id": "cat_jlpt_n1",
+    "groupId": "group_jlpt",
+    "categoryKey": "jlpt_n1",
+    "labelKo": "JLPT N1",
+    "labelJa": "JLPT N1",
+    "descriptionKo": "JLPT N1 범위",
+    "descriptionJa": "JLPT N1範囲",
+    "sortOrder": 5,
+    "isActive": true,
+    "metadata": {
+      "visibleLocales": ["ko"],
+      "jlptLevel": "N1"
+    }
+  }
+]
