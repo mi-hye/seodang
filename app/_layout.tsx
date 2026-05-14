@@ -66,7 +66,6 @@ function RootNavigator() {
       >
         <Stack.Screen name="index" options={{ title: t("common.appName"), headerShown: false }} />
         <Stack.Screen name="list" options={{ title: t("nav.list") }} />
-        <Stack.Screen name="review" options={{ title: t("nav.review") }} />
         <Stack.Screen
           name="character/[characterId]"
           options={{ title: t("nav.detail") }}
