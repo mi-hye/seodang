@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Feather, FontAwesome } from "@expo/vector-icons";
 
+import { FavoriteButton } from "../../src/components/common/FavoriteButton";
 import { Screen } from "../../src/components/common/Screen";
 import { spacing, useTheme } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
@@ -40,7 +40,7 @@ export default function PracticeResultScreen() {
   const normalizedLiteral = Array.isArray(literal) ? literal[0] : literal;
   const didPass = passed === "true";
   const numericScore = Number(score ?? 0);
-  const { recordAttempt, isFavorite, toggleFavorite } = useAppState();
+  const { recordAttempt } = useAppState();
   const { locale, t } = useI18n();
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ buttonStyles, colors, surfaceStyles, textStyles });
@@ -49,8 +49,6 @@ export default function PracticeResultScreen() {
   const characters = data?.pages.flatMap((page) => page?.characters ?? []) ?? [];
   const currentIndex = characters.findIndex((item) => item.id === characterId);
   const nextCharacter = currentIndex >= 0 ? characters[currentIndex + 1] : undefined;
-  const favorited = characterId ? isFavorite(characterId) : false;
-
   useEffect(() => {
     if (!characterId || !attemptId) return;
 
@@ -76,27 +74,7 @@ export default function PracticeResultScreen() {
 
       <View style={styles.feedbackCard}>
         {characterId ? (
-          <Pressable
-            style={styles.favoriteButton}
-            onPress={() => toggleFavorite(characterId)}
-          >
-            {favorited ? (
-              <FontAwesome
-                name="star"
-                size={18}
-                color={colors.accentWarm}
-              />
-            ) : (
-              <Feather
-                name="star"
-                size={18}
-                color={colors.inkMuted}
-              />
-            )}
-            <Text style={styles.favoriteLabel}>
-              {favorited ? t("favorites.saved") : t("favorites.save")}
-            </Text>
-          </Pressable>
+          <FavoriteButton characterId={characterId} showLabel style={styles.favoriteButton} />
         ) : null}
         <Text style={styles.feedbackTitle}>{t("result.feedback")}</Text>
         <Text style={styles.feedbackLine}>
@@ -201,14 +179,7 @@ function createStyles({
     },
     favoriteButton: {
       alignSelf: "flex-start",
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 6,
       marginBottom: 4,
-    },
-    favoriteLabel: {
-      ...textStyles.meta,
-      color: colors.inkMuted,
     },
     feedbackTitle: textStyles.titleMd,
     feedbackLine: textStyles.bodySm,

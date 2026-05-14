@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Link } from "expo-router";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
-import { Feather, FontAwesome } from "@expo/vector-icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { FavoriteButton } from "../src/components/common/FavoriteButton";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning } from "../src/data/characters";
 import { spacing, useTheme } from "../src/design/theme";
@@ -11,8 +11,6 @@ import { useI18n } from "../src/i18n/useI18n";
 import { useFavoriteKanjiCharactersQuery } from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
 import { KanjiCharacter } from "../src/data/characters";
-
-const STAR_SIZE = 22;
 
 export default function FavoritesScreen() {
   const { getFavoriteCharacterIds, hydrated, isFavorite, toggleFavorite } =
@@ -120,25 +118,13 @@ export default function FavoritesScreen() {
                   </Text>
                 </View>
               </View>
-              <Pressable
+              <FavoriteButton
+                characterId={character.id}
+                favorited={isFavorite(character.id)}
                 style={styles.favoriteButton}
-                onPress={() => unfavoriteMutation.mutate(character.id)}
                 hitSlop={8}
-              >
-                {isFavorite(character.id) ? (
-                  <FontAwesome
-                    name="star"
-                    size={STAR_SIZE}
-                    color={colors.accentWarm}
-                  />
-                ) : (
-                  <Feather
-                    name="star"
-                    size={STAR_SIZE}
-                    color={colors.inkMuted}
-                  />
-                )}
-              </Pressable>
+                onPress={() => unfavoriteMutation.mutate(character.id)}
+              />
             </Pressable>
           </Link>
         ))}
