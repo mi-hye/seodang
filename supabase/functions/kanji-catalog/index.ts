@@ -74,9 +74,11 @@ Deno.serve(async (request) => {
     const url = new URL(request.url);
     const locale = normalizeLocale(url.searchParams.get("locale"));
     const categoryKey = url.searchParams.get("categoryKey");
+    const limit = normalizeLimit(url.searchParams.get("limit"));
+    const offset = normalizeOffset(url.searchParams.get("offset"));
 
     if (categoryKey) {
-      const payload = await fetchCategoryCharacters(categoryKey, locale);
+      const payload = await fetchCategoryCharacters(categoryKey, locale, limit, offset);
       return json(payload);
     }
 
@@ -137,7 +139,12 @@ async function fetchCategoryGroups(locale: Locale) {
     .filter((group) => group.categories.length > 0);
 }
 
-async function fetchCategoryCharacters(categoryKey: string, locale: Locale) {
+async function fetchCategoryCharacters(
+  categoryKey: string,
+  locale: Locale,
+  limit: number,
+  offset: number
+) {
   const categoryRows = await fetchRows<CategoryRow>(
     `kanji_categories?select=id,group_id,category_key,label_ko,label_ja,description_ko,description_ja,sort_order,metadata&category_key=eq.${encodeURIComponent(categoryKey)}&limit=1`
   );
@@ -147,8 +154,11 @@ async function fetchCategoryCharacters(categoryKey: string, locale: Locale) {
     return null;
   }
 
-  const mappings = await fetchRows<CharacterCategoryRow>(
+  const total = await fetchExactCount(
     `kanji_character_categories?select=character_id&category_id=eq.${encodeURIComponent(category.id)}`
+  );
+  const mappings = await fetchRows<CharacterCategoryRow>(
+    `kanji_character_categories?select=character_id&category_id=eq.${encodeURIComponent(category.id)}&order=character_id.asc&offset=${offset}&limit=${limit}`
   );
   const characterIds = mappings.map((row) => row.character_id);
   const characters = await fetchCharactersByIds(characterIds);
@@ -168,6 +178,10 @@ async function fetchCategoryCharacters(categoryKey: string, locale: Locale) {
       visibleLocales: category.metadata?.visibleLocales ?? ["ko", "ja"],
     },
     characters,
+    total,
+    limit,
+    offset,
+    hasMore: offset + characters.length < total,
   };
 }
 
@@ -223,6 +237,25 @@ async function fetchRows<T>(path: string): Promise<T[]> {
   return (await response.json()) as T[];
 }
 
+async function fetchExactCount(path: string): Promise<number> {
+  const response = await fetch(`${supabaseUrl}/rest/v1/${path}`, {
+    method: "HEAD",
+    headers: {
+      apikey: serviceRoleKey ?? "",
+      Authorization: `Bearer ${serviceRoleKey ?? ""}`,
+      Prefer: "count=exact",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to count ${path}: ${response.status} ${await response.text()}`);
+  }
+
+  const contentRange = response.headers.get("content-range");
+  const total = contentRange?.split("/")[1];
+  return total ? Number(total) || 0 : 0;
+}
+
 function selectLocalizedText(locale: Locale, ko: string, ja: string) {
   return locale === "ja" ? ja : ko;
 }
@@ -237,6 +270,24 @@ function selectLocalizedNullableText(
 
 function normalizeLocale(value: string | null): Locale {
   return value === "ja" ? "ja" : "ko";
+}
+
+function normalizeLimit(value: string | null) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) {
+    return 20;
+  }
+
+  return Math.min(Math.max(Math.trunc(parsed), 1), 50);
+}
+
+function normalizeOffset(value: string | null) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) {
+    return 0;
+  }
+
+  return Math.max(Math.trunc(parsed), 0);
 }
 
 function json(payload: unknown, status = 200) {

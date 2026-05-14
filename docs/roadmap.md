@@ -60,6 +60,14 @@
   형태로 query hook 분리
 - 목록 / 상세 / 연습 화면을 Supabase 기준으로 통일
 
+차후 todo:
+
+- `Mazii`를 `KanjiVG` 보완용 stroke 소스로 쓸 수 있는지 조사
+- 조사 기준은 [mazii-stroke-source-checklist.md](/Users/kangmihye/Desktop/study/seodang/docs/mazii-stroke-source-checklist.md:1)를 따른다
+- 목표는 `KanjiVG`에 없는 한자의 `stroke order / path`를 안정적으로 확보할 수 있는지 판단하는 것
+- 라이선스, 추출 안정성, 현재 `kanji_strokes` 스키마 변환 가능성까지 함께 검토
+- 같은 작업 묶음에서 현재 `meaning_ko`, `meaning_ja`가 `뜻미상`으로 남아 있는 항목도 함께 보강
+
 완료 기준:
 
 - 앱에서 한자 정보를 로컬 샘플 없이 불러온다.
