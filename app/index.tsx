@@ -1,23 +1,33 @@
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning } from "../src/data/characters";
-import { radius, spacing, useTheme } from "../src/design/theme";
+import { spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
-import { useFeaturedKanjiCharactersQuery } from "../src/queries/kanjiQueries";
+import {
+  useKanjiCategoryGroupsQuery,
+  useKanjiCharacterQuery,
+} from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { data: featuredCharacters = [], isLoading } = useFeaturedKanjiCharactersQuery(3);
-  const featured = featuredCharacters[0];
-  const { hydrated, reviewCount } = useAppState();
+  const { hydrated, favoriteCount, lastCompletedPractice } = useAppState();
   const { locale, t } = useI18n();
+  const { data: lastCharacter } = useKanjiCharacterQuery(
+    lastCompletedPractice?.characterId,
+  );
+  const { data: categoryGroups = [] } = useKanjiCategoryGroupsQuery(locale);
   const { colors, textStyles, surfaceStyles, shadows } = useTheme();
   const styles = createStyles({ colors, textStyles, surfaceStyles, shadows });
+  const lastCategory = categoryGroups
+    .flatMap((group) => group.categories)
+    .find(
+      (category) => category.categoryKey === lastCompletedPractice?.categoryKey,
+    );
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -50,55 +60,46 @@ export default function HomeScreen() {
 
         <View style={styles.row}>
           <Pressable
-            onPress={() => router.push("/review")}
-            style={[styles.miniCard, styles.shadow]}
+            onPress={() => router.push("/favorites")}
+            style={[styles.actionCard, styles.shadow]}
           >
-            <Text style={styles.miniNumber}>
-              {hydrated ? reviewCount : "-"}
-            </Text>
-            <Text style={styles.miniLabel}>{t("home.reviewNeeded")}</Text>
+            <View style={styles.actionCardTop}>
+              <Text style={styles.actionTitle}>{t("home.favorites")}</Text>
+              <Text style={styles.actionValue}>
+                {hydrated ? favoriteCount : "-"}
+              </Text>
+            </View>
+            <Text style={styles.actionBody}>{t("home.favoritesBody")}</Text>
           </Pressable>
 
           <Pressable
             onPress={() =>
-              featured
-                ? router.push(`/character/${featured.id}`)
+              lastCompletedPractice?.characterId
+                ? router.push({
+                    pathname: "/practice/[characterId]",
+                    params: {
+                      characterId: lastCompletedPractice.characterId,
+                      categoryKey: lastCompletedPractice.categoryKey,
+                    },
+                  })
                 : router.push("/categories")
             }
-            style={[styles.miniCard, styles.shadow]}
+            style={[styles.actionCard, styles.shadow]}
           >
-            <Text style={styles.miniNumber}>{featured?.literal ?? "..."}</Text>
-            <Text style={styles.miniLabel}>{t("home.featured")}</Text>
+            <View style={styles.actionCardTop}>
+              <Text style={styles.actionTitle}>{t("home.recentPractice")}</Text>
+              <Text style={styles.actionValue}>
+                {lastCharacter?.literal ?? "-"}
+              </Text>
+            </View>
+            <Text style={styles.actionBody}>
+              {lastCharacter
+                ? t("home.recentPracticeBodyReady", {
+                    category: lastCategory?.label ?? t("nav.categories"),
+                  })
+                : t("home.recentPracticeBodyEmpty")}
+            </Text>
           </Pressable>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t("home.recommended")}</Text>
-          {isLoading ? (
-            <Text style={styles.loadingText}>{t("common.loading")}</Text>
-          ) : null}
-          {featuredCharacters.map((character) => (
-            <Link
-              key={character.id}
-              href={`/character/${character.id}`}
-              asChild
-            >
-              <Pressable style={styles.listCard}>
-                <Text style={styles.listKanji}>{character.literal}</Text>
-                <View style={styles.listContent}>
-                  <Text style={styles.listTitle}>
-                    {getCharacterMeaning(character, locale)}
-                  </Text>
-                  <Text style={styles.listMeta}>
-                    {character.jlptLevel ? `${t("common.jlpt")} ${character.jlptLevel} · ` : ""}
-                    {character.strokeCount != null
-                      ? t("common.strokes", { count: character.strokeCount })
-                      : "-"}
-                  </Text>
-                </View>
-              </Pressable>
-            </Link>
-          ))}
         </View>
       </Screen>
     </SafeAreaView>
@@ -151,52 +152,30 @@ function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
     row: {
       flexDirection: "row",
       gap: spacing[3],
-      marginBottom: spacing[7],
+      marginBottom: spacing[4],
     },
-    miniCard: {
+    actionCard: {
       flex: 1,
       ...surfaceStyles.card,
       padding: spacing[6],
-      minHeight: 120,
+      minHeight: 136,
       justifyContent: "space-between",
     },
-    miniNumber: {
-      ...textStyles.glyphMd,
+    actionCardTop: {
+      gap: spacing[2],
     },
-    miniLabel: {
-      fontSize: 14,
-      color: colors.inkMuted,
-      fontWeight: "700",
-    },
-    section: surfaceStyles.pageSection,
-    sectionTitle: {
-      ...textStyles.sectionTitle,
-      marginBottom: 14,
-    },
-    listCard: {
-      ...surfaceStyles.card,
-      borderRadius: radius.sm,
-      padding: 18,
-      marginBottom: 10,
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 14,
-    },
-    listKanji: {
-      width: 54,
-      ...textStyles.glyphSm,
-      textAlign: "center",
-    },
-    listContent: {
-      flex: 1,
-      gap: 4,
-    },
-    listTitle: {
+    actionTitle: {
       ...textStyles.titleSm,
       fontWeight: "700",
     },
-    listMeta: textStyles.caption,
-    loadingText: textStyles.bodySm,
+    actionValue: {
+      ...textStyles.glyphMd,
+      fontWeight: "700",
+    },
+    actionBody: {
+      ...textStyles.bodySm,
+      color: colors.inkMuted,
+    },
     shadow: shadows.card,
   });
 }

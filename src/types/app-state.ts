@@ -12,10 +12,18 @@ export type CharacterProgress = {
   lastPracticedAt?: string;
 };
 
+export type LastCompletedPractice = {
+  characterId: string;
+  categoryKey?: string;
+  practicedAt: string;
+};
+
 export type PersistedAppState = {
   locale: AppLocale;
   theme: ThemeMode;
   userType: UserType;
   progressByCharacter: Record<string, CharacterProgress>;
   recordedAttemptIds: string[];
+  favoriteCharacterIds: Record<string, true>;
+  lastCompletedPractice?: LastCompletedPractice;
 };

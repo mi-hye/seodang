@@ -12,6 +12,7 @@ import {
 import {
   AppLocale,
   CharacterProgress,
+  LastCompletedPractice,
   PersistedAppState,
   ThemeMode,
   UserType,
@@ -28,18 +29,24 @@ type AppStateContextValue = {
   userType: UserType;
   progressByCharacter: Record<string, CharacterProgress>;
   reviewCount: number;
+  favoriteCount: number;
+  lastCompletedPractice?: LastCompletedPractice;
   setLocale: (locale: AppLocale) => void;
   setTheme: (theme: ThemeMode) => void;
   setUserType: (userType: UserType) => void;
   recordAttempt: (input: {
     attemptId: string;
     characterId: string;
+    categoryKey?: string;
     score: number;
     passed: boolean;
     practicedAt: string;
   }) => void;
   getProgress: (characterId: string) => CharacterProgress | undefined;
   getReviewCharacterIds: () => string[];
+  getFavoriteCharacterIds: () => string[];
+  isFavorite: (characterId: string) => boolean;
+  toggleFavorite: (characterId: string) => void;
 };
 
 const defaultState: PersistedAppState = {
@@ -48,6 +55,8 @@ const defaultState: PersistedAppState = {
   userType: "korean_learner",
   progressByCharacter: {},
   recordedAttemptIds: [],
+  favoriteCharacterIds: {},
+  lastCompletedPractice: undefined,
 };
 
 const AppStateContext = createContext<AppStateContextValue | null>(null);
@@ -109,6 +118,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
     const recordAttempt: AppStateContextValue["recordAttempt"] = ({
       attemptId,
       characterId,
+      categoryKey,
       score,
       passed,
       practicedAt,
@@ -140,6 +150,11 @@ export function AppStateProvider({ children }: PropsWithChildren) {
             ...current.progressByCharacter,
             [characterId]: nextProgress,
           },
+          lastCompletedPractice: {
+            characterId,
+            categoryKey,
+            practicedAt,
+          },
           recordedAttemptIds: [attemptId, ...current.recordedAttemptIds].slice(
             0,
             MAX_RECORDED_ATTEMPTS
@@ -149,6 +164,29 @@ export function AppStateProvider({ children }: PropsWithChildren) {
     };
 
     const getProgress = (characterId: string) => state.progressByCharacter[characterId];
+    const getFavoriteCharacterIds = () => Object.keys(state.favoriteCharacterIds);
+    const isFavorite = (characterId: string) => Boolean(state.favoriteCharacterIds[characterId]);
+    const toggleFavorite = (characterId: string) => {
+      setState((current) => {
+        if (current.favoriteCharacterIds[characterId]) {
+          const nextFavorites = { ...current.favoriteCharacterIds };
+          delete nextFavorites[characterId];
+
+          return {
+            ...current,
+            favoriteCharacterIds: nextFavorites,
+          };
+        }
+
+        return {
+          ...current,
+          favoriteCharacterIds: {
+            ...current.favoriteCharacterIds,
+            [characterId]: true,
+          },
+        };
+      });
+    };
 
     const getReviewCharacterIds = () =>
       Object.values(state.progressByCharacter)
@@ -162,6 +200,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
         .map((progress) => progress.characterId);
 
     const reviewCount = getReviewCharacterIds().length;
+    const favoriteCount = getFavoriteCharacterIds().length;
 
     return {
       hydrated,
@@ -170,12 +209,17 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       userType: state.userType,
       progressByCharacter: state.progressByCharacter,
       reviewCount,
+      favoriteCount,
+      lastCompletedPractice: state.lastCompletedPractice,
       setLocale,
       setTheme,
       setUserType,
       recordAttempt,
       getProgress,
       getReviewCharacterIds,
+      getFavoriteCharacterIds,
+      isFavorite,
+      toggleFavorite,
     };
   }, [hydrated, state]);
 

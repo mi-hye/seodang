@@ -59,10 +59,10 @@ export default function PracticeScreen() {
       strokes,
       template: kanjiStrokeData?.strokes,
       canvasSize,
-      locale,
+      t,
     });
 
-    router.push({
+    router.replace({
       pathname: "/practice/result",
       params: {
         characterId: character.id,
@@ -133,9 +133,6 @@ export default function PracticeScreen() {
           onInteractionEnd={() => screenRef.current?.setScrollEnabled(true)}
         />
         <Text style={styles.canvasHint}>{t("practice.canvasHint")}</Text>
-        {isGuideLoading ? (
-          <Text style={styles.canvasSubHint}>{t("practice.loadingGuide")}</Text>
-        ) : null}
         {isGuideLoadError ? (
           <Text style={styles.canvasSubHint}>{t("practice.loadGuideError")}</Text>
         ) : null}

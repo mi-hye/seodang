@@ -1,9 +1,15 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
 import { AppStateProvider } from "../src/state/AppStateProvider";
 import { useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import { QueryProvider } from "../src/state/QueryProvider";
+import { useAppState } from "../src/state/AppStateProvider";
 
 export default function RootLayout() {
   return (
@@ -16,11 +22,29 @@ export default function RootLayout() {
 }
 
 function RootNavigator() {
+  const { hydrated } = useAppState();
   const { t } = useI18n();
   const { colors, themeMode } = useTheme();
 
+  if (!hydrated) {
+    return null;
+  }
+
+  const navigationTheme = {
+    ...(themeMode === "dark" ? DarkTheme : DefaultTheme),
+    colors: {
+      ...(themeMode === "dark" ? DarkTheme.colors : DefaultTheme.colors),
+      background: colors.bgCanvas,
+      card: colors.bgCanvas,
+      text: colors.inkStrong,
+      border: "transparent",
+      primary: colors.inkStrong,
+      notification: colors.accentWarm,
+    },
+  };
+
   return (
-    <>
+    <ThemeProvider value={navigationTheme}>
       <StatusBar style={themeMode === "dark" ? "light" : "dark"} />
       <Stack
         screenOptions={{
@@ -63,7 +87,11 @@ function RootNavigator() {
           name="categories"
           options={{ title: t("nav.categories") }}
         />
+        <Stack.Screen
+          name="favorites"
+          options={{ title: t("nav.favorites") }}
+        />
       </Stack>
-    </>
+    </ThemeProvider>
   );
 }

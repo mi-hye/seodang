@@ -1,13 +1,16 @@
 import { useEffect } from "react";
-import { Link, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Feather, FontAwesome } from "@expo/vector-icons";
 
 import { Screen } from "../../src/components/common/Screen";
 import { spacing, useTheme } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
+import { useKanjiCharactersByCategoryQuery } from "../../src/queries/kanjiQueries";
 import { useAppState } from "../../src/state/AppStateProvider";
 
 export default function PracticeResultScreen() {
+  const router = useRouter();
   const {
     characterId,
     categoryKey,
@@ -37,11 +40,16 @@ export default function PracticeResultScreen() {
   const normalizedLiteral = Array.isArray(literal) ? literal[0] : literal;
   const didPass = passed === "true";
   const numericScore = Number(score ?? 0);
-  const { recordAttempt } = useAppState();
-  const { t } = useI18n();
+  const { recordAttempt, isFavorite, toggleFavorite } = useAppState();
+  const { locale, t } = useI18n();
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ buttonStyles, colors, surfaceStyles, textStyles });
   const feedbackLines = feedback ? feedback.split("\n").filter(Boolean) : [];
+  const { data } = useKanjiCharactersByCategoryQuery(normalizedCategoryKey, locale);
+  const characters = data?.pages.flatMap((page) => page?.characters ?? []) ?? [];
+  const currentIndex = characters.findIndex((item) => item.id === characterId);
+  const nextCharacter = currentIndex >= 0 ? characters[currentIndex + 1] : undefined;
+  const favorited = characterId ? isFavorite(characterId) : false;
 
   useEffect(() => {
     if (!characterId || !attemptId) return;
@@ -49,6 +57,7 @@ export default function PracticeResultScreen() {
     recordAttempt({
       attemptId,
       characterId,
+      categoryKey: normalizedCategoryKey,
       score: numericScore,
       passed: didPass,
       practicedAt: practicedAt ?? new Date().toISOString(),
@@ -66,6 +75,29 @@ export default function PracticeResultScreen() {
       </View>
 
       <View style={styles.feedbackCard}>
+        {characterId ? (
+          <Pressable
+            style={styles.favoriteButton}
+            onPress={() => toggleFavorite(characterId)}
+          >
+            {favorited ? (
+              <FontAwesome
+                name="star"
+                size={18}
+                color={colors.accentWarm}
+              />
+            ) : (
+              <Feather
+                name="star"
+                size={18}
+                color={colors.inkMuted}
+              />
+            )}
+            <Text style={styles.favoriteLabel}>
+              {favorited ? t("favorites.saved") : t("favorites.save")}
+            </Text>
+          </Pressable>
+        ) : null}
         <Text style={styles.feedbackTitle}>{t("result.feedback")}</Text>
         <Text style={styles.feedbackLine}>
           - {t("result.strokeInput", {
@@ -81,38 +113,47 @@ export default function PracticeResultScreen() {
         ))}
       </View>
 
-      <Link
-        href={
+      <Pressable
+        style={styles.secondaryButton}
+        onPress={() =>
           characterId
-            ? {
+            ? router.replace({
                 pathname: "/practice/[characterId]",
                 params: {
                   characterId,
                   categoryKey: normalizedCategoryKey,
                 },
-              }
-            : "/list"
+              })
+            : router.replace("/list")
         }
-        asChild
       >
-        <Pressable style={styles.secondaryButton}>
-          <Text style={styles.secondaryLabel}>{t("result.practiceAgain")}</Text>
-        </Pressable>
-      </Link>
+        <Text style={styles.secondaryLabel}>{t("result.practiceAgain")}</Text>
+      </Pressable>
 
-      <Link
-        href={{
-          pathname: "/list",
-          params: {
-            categoryKey: normalizedCategoryKey,
-          },
+      <Pressable
+        style={styles.primaryButton}
+        onPress={() => {
+          if (nextCharacter) {
+            router.replace({
+              pathname: "/character/[characterId]",
+              params: {
+                characterId: nextCharacter.id,
+                categoryKey: normalizedCategoryKey,
+              },
+            });
+            return;
+          }
+
+          router.dismissTo({
+            pathname: "/list",
+            params: {
+              categoryKey: normalizedCategoryKey,
+            },
+          });
         }}
-        asChild
       >
-        <Pressable style={styles.primaryButton}>
-          <Text style={styles.primaryLabel}>{t("result.nextCharacter")}</Text>
-        </Pressable>
-      </Link>
+        <Text style={styles.primaryLabel}>{t("result.nextCharacter")}</Text>
+      </Pressable>
     </Screen>
   );
 }
@@ -157,6 +198,17 @@ function createStyles({
       padding: 18,
       marginBottom: 16,
       gap: 8,
+    },
+    favoriteButton: {
+      alignSelf: "flex-start",
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      marginBottom: 4,
+    },
+    favoriteLabel: {
+      ...textStyles.meta,
+      color: colors.inkMuted,
     },
     feedbackTitle: textStyles.titleMd,
     feedbackLine: textStyles.bodySm,

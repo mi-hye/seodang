@@ -1,4 +1,4 @@
-import { Link, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../../src/components/common/Screen";
@@ -11,6 +11,7 @@ import { useI18n } from "../../src/i18n/useI18n";
 import { useKanjiCharacterQuery } from "../../src/queries/kanjiQueries";
 
 export default function CharacterDetailScreen() {
+  const router = useRouter();
   const { characterId, categoryKey } = useLocalSearchParams<{
     characterId: string;
     categoryKey?: string;
@@ -77,20 +78,20 @@ export default function CharacterDetailScreen() {
         <Text style={styles.infoLine}>{t("detail.readyBody2")}</Text>
       </View>
 
-      <Link
-        href={{
-          pathname: "/practice/[characterId]",
-          params: {
-            characterId: character.id,
-            categoryKey: normalizedCategoryKey,
-          },
-        }}
-        asChild
+      <Pressable
+        style={styles.actionButton}
+        onPress={() =>
+          router.replace({
+            pathname: "/practice/[characterId]",
+            params: {
+              characterId: character.id,
+              categoryKey: normalizedCategoryKey,
+            },
+          })
+        }
       >
-        <Pressable style={styles.actionButton}>
-          <Text style={styles.actionLabel}>{t("detail.startPractice")}</Text>
-        </Pressable>
-      </Link>
+        <Text style={styles.actionLabel}>{t("detail.startPractice")}</Text>
+      </Pressable>
     </Screen>
   );
 }

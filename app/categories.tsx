@@ -1,5 +1,6 @@
+import { useEffect, useMemo, useRef } from "react";
 import { useRouter } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
 import { radius, spacing, useTheme } from "../src/design/theme";
@@ -28,12 +29,7 @@ export default function CategoriesScreen() {
         <Text style={styles.subtitle}>{t("categories.subtitle")}</Text>
       </View>
 
-      {isLoading ? (
-        <View style={styles.placeholderCard}>
-          <Text style={styles.placeholderTitle}>{t("common.loading")}</Text>
-          <Text style={styles.placeholderBody}>{t("categories.loadingBody")}</Text>
-        </View>
-      ) : null}
+      {isLoading ? <CategoriesSkeleton /> : null}
 
       {isError ? (
         <View style={styles.placeholderCard}>
@@ -84,6 +80,60 @@ export default function CategoriesScreen() {
   );
 }
 
+function CategoriesSkeleton() {
+  const { colors } = useTheme();
+  const opacity = useRef(new Animated.Value(0.55)).current;
+  const styles = useMemo(() => createSkeletonStyles(colors), [colors]);
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 0.55,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+
+    loop.start();
+    return () => loop.stop();
+  }, [opacity]);
+
+  const skeletonStyle = { opacity } as const;
+  const groups = [
+    [96, 82, 74, 88],
+    [108, 94, 86],
+  ];
+
+  return (
+    <View style={styles.wrapper}>
+      <Animated.View style={[styles.heroLineWide, skeletonStyle]} />
+      <Animated.View style={[styles.heroLineNarrow, skeletonStyle]} />
+
+      {groups.map((chips, groupIndex) => (
+        <View key={groupIndex} style={styles.groupSection}>
+          <Animated.View style={[styles.groupTitle, skeletonStyle]} />
+          <Animated.View style={[styles.groupBody, skeletonStyle]} />
+          <View style={styles.chipRow}>
+            {chips.map((width, chipIndex) => (
+              <Animated.View
+                key={`${groupIndex}-${chipIndex}`}
+                style={[styles.chip, { width }, skeletonStyle]}
+              />
+            ))}
+          </View>
+        </View>
+      ))}
+    </View>
+  );
+}
+
 function createStyles({
   colors,
   surfaceStyles,
@@ -129,6 +179,54 @@ function createStyles({
     categoryChipText: {
       ...textStyles.meta,
       color: colors.inkStrong,
+    },
+  });
+}
+
+function createSkeletonStyles(colors: any) {
+  return StyleSheet.create({
+    wrapper: {
+      gap: spacing[7],
+    },
+    heroLineWide: {
+      width: "46%",
+      height: 16,
+      borderRadius: radius.pill,
+      backgroundColor: colors.bgMutedStrong,
+    },
+    heroLineNarrow: {
+      width: "62%",
+      height: 12,
+      borderRadius: radius.pill,
+      backgroundColor: colors.bgMuted,
+      marginTop: -spacing[5],
+    },
+    groupSection: {
+      gap: spacing[3],
+    },
+    groupTitle: {
+      width: 112,
+      height: 18,
+      borderRadius: radius.pill,
+      backgroundColor: colors.bgMutedStrong,
+    },
+    groupBody: {
+      width: "58%",
+      height: 12,
+      borderRadius: radius.pill,
+      backgroundColor: colors.bgMuted,
+    },
+    chipRow: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: spacing[2],
+    },
+    chip: {
+      height: 38,
+      borderRadius: radius.sm,
+      backgroundColor: colors.bgMutedStrong,
+      borderWidth: 1,
+      borderColor: colors.borderSoft,
     },
   });
 }

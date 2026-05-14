@@ -1,8 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 import { fetchKanjiCategoryGroups } from "../data/fetchKanjiCategories";
 import {
-  fetchFeaturedKanjiCharacters,
   fetchKanjiCategoryCharactersByKey,
   fetchKanjiCharacterById,
   fetchKanjiCharactersByIds,
@@ -20,9 +19,23 @@ export function useKanjiCharactersByCategoryQuery(
   categoryKey: string | undefined,
   locale: "ko" | "ja"
 ) {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ["kanji-category-characters", categoryKey, locale],
-    queryFn: () => fetchKanjiCategoryCharactersByKey(categoryKey, locale),
+    queryFn: ({ pageParam = 0 }) =>
+      fetchKanjiCategoryCharactersByKey({
+        categoryKey,
+        locale,
+        limit: 20,
+        offset: pageParam,
+      }),
+    getNextPageParam: (lastPage) => {
+      if (!lastPage?.hasMore) {
+        return undefined;
+      }
+
+      return lastPage.offset + lastPage.characters.length;
+    },
+    initialPageParam: 0,
     enabled: Boolean(categoryKey),
   });
 }
@@ -32,6 +45,15 @@ export function useKanjiCharactersByIdsQuery(characterIds: string[]) {
     queryKey: ["kanji-characters", "ids", ...characterIds],
     queryFn: () => fetchKanjiCharactersByIds(characterIds),
     enabled: characterIds.length > 0,
+    placeholderData: (previousData) =>
+      previousData?.filter((character) => characterIds.includes(character.id)) ?? [],
+  });
+}
+
+export function useFavoriteKanjiCharactersQuery(characterIds: string[]) {
+  return useQuery({
+    queryKey: ["kanji-characters", "favorites", ...characterIds],
+    queryFn: () => fetchKanjiCharactersByIds(characterIds),
   });
 }
 
@@ -40,13 +62,6 @@ export function useKanjiCharacterQuery(characterId?: string) {
     queryKey: ["kanji-character", characterId],
     queryFn: () => fetchKanjiCharacterById(characterId),
     enabled: Boolean(characterId),
-  });
-}
-
-export function useFeaturedKanjiCharactersQuery(limit = 3) {
-  return useQuery({
-    queryKey: ["kanji-characters", "featured", limit],
-    queryFn: () => fetchFeaturedKanjiCharacters(limit),
   });
 }
 
