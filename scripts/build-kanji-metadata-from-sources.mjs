@@ -103,6 +103,7 @@ function buildMetadataRows(characters, jlptMap) {
 function buildCategoryMappings(characters, jlptMap) {
   const rows = [
     ...buildSchoolCategoryMappings(characters),
+    ...buildStrokeCountCategoryMappings(characters),
     ...buildJlptCategoryMappings(characters, jlptMap),
   ];
 
@@ -111,19 +112,47 @@ function buildCategoryMappings(characters, jlptMap) {
   );
 }
 
-function buildSchoolCategoryMappings(characters) {
+function buildStrokeCountCategoryMappings(characters) {
   const rows = [];
 
   for (const character of characters) {
-    const schoolCategoryId = toSchoolCategoryId(character.grade);
-    if (!schoolCategoryId) {
+    const categoryId = toStrokeCountCategoryId(character.strokeCount);
+    if (!categoryId) {
       continue;
     }
 
     rows.push({
       characterId: character.id,
-      categoryId: schoolCategoryId,
+      categoryId,
     });
+  }
+
+  return rows;
+}
+
+function buildSchoolCategoryMappings(characters) {
+  const rows = [];
+
+  for (const character of characters) {
+    const schoolCategoryId = toSchoolCategoryId(character.grade);
+    if (schoolCategoryId) {
+      rows.push({
+        characterId: character.id,
+        categoryId: schoolCategoryId,
+      });
+    }
+
+    if (isJoyoGrade(character.grade)) {
+      rows.push({
+        characterId: character.id,
+        categoryId: "cat_jp_joyo",
+      });
+    } else {
+      rows.push({
+        characterId: character.id,
+        categoryId: "cat_jp_other",
+      });
+    }
   }
 
   return rows;
@@ -250,6 +279,34 @@ function toSchoolCategoryId(grade) {
   }
 
   return null;
+}
+
+function toStrokeCountCategoryId(strokeCount) {
+  if (!Number.isFinite(strokeCount) || strokeCount <= 0) {
+    return null;
+  }
+
+  if (strokeCount <= 3) {
+    return "cat_stroke_1_3";
+  }
+
+  if (strokeCount <= 6) {
+    return "cat_stroke_4_6";
+  }
+
+  if (strokeCount <= 9) {
+    return "cat_stroke_7_9";
+  }
+
+  if (strokeCount <= 12) {
+    return "cat_stroke_10_12";
+  }
+
+  if (strokeCount <= 15) {
+    return "cat_stroke_13_15";
+  }
+
+  return "cat_stroke_16_plus";
 }
 
 function extractMeaningEn(block) {

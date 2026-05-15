@@ -3,7 +3,7 @@ import { KanjiVgCharacter, KanjiVgStroke } from "../types/practice";
 type KanjiCharacterRow = {
   id: string;
   literal: string;
-  source: "KanjiVG";
+  source: "KanjiVG" | "AnimCJK";
   license: string;
   view_box_width: number;
   view_box_height: number;

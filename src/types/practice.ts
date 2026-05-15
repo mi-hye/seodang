@@ -49,7 +49,7 @@ export type KanjiVgStroke = ReferenceStroke & {
 export type KanjiVgCharacter = {
   characterId: string;
   literal: string;
-  source: "KanjiVG";
+  source: "KanjiVG" | "AnimCJK";
   license: string;
   viewBox: {
     width: number;

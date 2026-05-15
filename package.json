@@ -9,7 +9,9 @@
     "web": "expo start --web",
     "kanji:build:metadata": "node scripts/build-kanji-metadata-from-sources.mjs",
     "kanji:build:enrichment-review": "node scripts/build-kanji-enrichment-review.mjs",
+    "kanji:build:animcjk-import": "node scripts/build-animcjk-import-from-covered.mjs",
     "kanji:review:update": "node scripts/update-kanji-enrichment-review.mjs",
+    "supabase:upsert:animcjk": "node scripts/supabase-upsert-animcjk-import.mjs",
     "supabase:upsert:enrichment": "node scripts/supabase-upsert-kanji-enrichment.mjs",
     "supabase:upsert:kanji-enrichment": "node scripts/supabase-upsert-kanji-enrichment.mjs",
     "supabase:upsert:metadata": "node scripts/supabase-upsert-kanji-metadata.mjs"

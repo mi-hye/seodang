@@ -67,11 +67,25 @@
 - 목표는 `KanjiVG`에 없는 한자의 `stroke order / path`를 안정적으로 확보할 수 있는지 판단하는 것
 - 라이선스, 추출 안정성, 현재 `kanji_strokes` 스키마 변환 가능성까지 함께 검토
 - 같은 작업 묶음에서 현재 `meaning_ko`, `meaning_ja`가 `뜻미상`으로 남아 있는 항목도 함께 보강
+- `AnimCJK`를 `KanjiVG` 1차 보완 소스로 우선 검토
+- 현재 확인 결과 `reviewOnly 6148` 중 `388`자가 `AnimCJK svgsJa`로 커버된다
+- 비교 결과 파일: [animcjk-covered-reviewonly.generated.json](/Users/kangmihye/Desktop/study/seodang/data/generated/animcjk-covered-reviewonly.generated.json:1)
+- 다음 단계는 `AnimCJK SVG -> kanji_characters / kanji_strokes` 변환 후 적재 테스트
 
 완료 기준:
 
 - 앱에서 한자 정보를 로컬 샘플 없이 불러온다.
 - 연습 화면도 같은 데이터 체계를 사용한다.
+
+현재 관련 스크립트:
+
+- 메타데이터 생성: [build-kanji-metadata-from-sources.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/build-kanji-metadata-from-sources.mjs:1)
+- 메타데이터 업서트: [supabase-upsert-kanji-metadata.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/supabase-upsert-kanji-metadata.mjs:1)
+- 소스 차집합 리포트: [report-kanji-source-set-diff.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/report-kanji-source-set-diff.mjs:1)
+- Mazii 프로브: [probe-mazii-strokes.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/probe-mazii-strokes.mjs:1)
+- Mazii 지원 문자 필터: [filter-mazii-supported-kanji.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/filter-mazii-supported-kanji.mjs:1)
+- AnimCJK 변환: [build-animcjk-import-from-covered.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/build-animcjk-import-from-covered.mjs:1)
+- AnimCJK 업서트: [supabase-upsert-animcjk-import.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/supabase-upsert-animcjk-import.mjs:1)
 
 ### Phase 2. 서버 상태 구조 정리
 
