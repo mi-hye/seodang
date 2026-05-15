@@ -90,6 +90,10 @@ function RootNavigator() {
           name="favorites"
           options={{ title: t("nav.favorites") }}
         />
+        <Stack.Screen
+          name="search"
+          options={{ title: t("nav.search") }}
+        />
       </Stack>
     </ThemeProvider>
   );

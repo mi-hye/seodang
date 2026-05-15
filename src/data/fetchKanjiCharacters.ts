@@ -121,6 +121,49 @@ export async function fetchKanjiCharacterById(characterId?: string) {
   return rows[0] ? mapKanjiCharacter(rows[0]) : null;
 }
 
+export async function fetchAllKanjiCharacters() {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return [];
+  }
+
+  const pageSize = 1000;
+  let offset = 0;
+  const rows: KanjiCharacterRow[] = [];
+
+  while (true) {
+    const params = new URLSearchParams({
+      select: characterSelect,
+      order: "literal.asc",
+    });
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/kanji_characters?${params.toString()}`,
+      {
+        headers: {
+          ...buildHeaders(),
+          Range: `${offset}-${offset + pageSize - 1}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch all kanji characters: ${response.status}`,
+      );
+    }
+
+    const pageRows = (await response.json()) as KanjiCharacterRow[];
+    rows.push(...pageRows);
+
+    if (pageRows.length < pageSize) {
+      break;
+    }
+
+    offset += pageSize;
+  }
+
+  return rows.map(mapKanjiCharacter);
+}
+
 function mapKanjiCharacter(row: KanjiCharacterRow): KanjiCharacter {
   return {
     id: row.id,

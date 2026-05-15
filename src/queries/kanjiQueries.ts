@@ -2,6 +2,7 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 import { fetchKanjiCategoryGroups } from "../data/fetchKanjiCategories";
 import {
+  fetchAllKanjiCharacters,
   fetchKanjiCategoryCharactersByKey,
   fetchKanjiCharacterById,
   fetchKanjiCharactersByIds,
@@ -62,6 +63,14 @@ export function useKanjiCharacterQuery(characterId?: string) {
     queryKey: ["kanji-character", characterId],
     queryFn: () => fetchKanjiCharacterById(characterId),
     enabled: Boolean(characterId),
+  });
+}
+
+export function useAllKanjiCharactersQuery() {
+  return useQuery({
+    queryKey: ["kanji-characters", "all"],
+    queryFn: fetchAllKanjiCharacters,
+    staleTime: 1000 * 60 * 10,
   });
 }
 

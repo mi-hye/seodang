@@ -4,7 +4,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Screen } from "../src/components/common/Screen";
-import { getCharacterMeaning } from "../src/data/characters";
 import { spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import {
@@ -34,19 +33,30 @@ export default function HomeScreen() {
       <Screen>
         <View style={styles.hero}>
           <View style={styles.heroTopRow}>
-            <Text style={styles.eyebrow}>{t("home.eyebrow")}</Text>
-            <Pressable
-              onPress={() => router.push("/settings")}
-              style={styles.settingsButton}
-            >
-              <Ionicons
-                name="settings-outline"
-                size={18}
-                color={colors.inkStrong}
-              />
-            </Pressable>
+            <Text style={styles.title}>{t("home.title")}</Text>
+            <View style={styles.headerActions}>
+              <Pressable
+                onPress={() => router.push("/search")}
+                style={styles.iconButton}
+              >
+                <Ionicons
+                  name="search-outline"
+                  size={18}
+                  color={colors.inkStrong}
+                />
+              </Pressable>
+              <Pressable
+                onPress={() => router.push("/settings")}
+                style={styles.iconButton}
+              >
+                <Ionicons
+                  name="settings-outline"
+                  size={18}
+                  color={colors.inkStrong}
+                />
+              </Pressable>
+            </View>
           </View>
-          <Text style={styles.title}>{t("home.title")}</Text>
           <Text style={styles.subtitle}>{t("home.subtitle")}</Text>
         </View>
 
@@ -120,17 +130,21 @@ function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      marginBottom: spacing[2],
+      marginBottom: spacing[1],
       gap: spacing[3],
     },
-    settingsButton: {
+    headerActions: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing[2],
+    },
+    iconButton: {
       width: 42,
       height: 42,
       borderRadius: 21,
       alignItems: "center",
       justifyContent: "center",
     },
-    eyebrow: textStyles.eyebrow,
     title: textStyles.displayLg,
     subtitle: textStyles.bodyMd,
     primaryCard: {
