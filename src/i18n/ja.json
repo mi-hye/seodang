@@ -27,6 +27,7 @@
   "list.title": "漢字一覧",
   "list.totalCharacters": "全%{count}字の漢字があります。",
   "list.subtitle": "漢字を押して学習してみましょう。",
+  "list.searchPlaceholder": "漢字・意味・読みで検索",
   "list.loadingBody": "選択したカテゴリの漢字一覧を読み込んでいます。",
   "list.errorTitle": "漢字一覧を読み込めませんでした。",
   "list.errorBody": "カテゴリのマッピングや漢字メタデータのアップサート状態を確認してください。",

@@ -1,5 +1,13 @@
 import { Link, useLocalSearchParams } from "expo-router";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { useMemo, useState } from "react";
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
 import { KanjiLoadingScreen } from "../src/components/common/KanjiLoadingScreen";
@@ -18,6 +26,7 @@ export default function CharacterListScreen() {
   const { colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ colors, surfaceStyles, textStyles });
   const { getProgress } = useAppState();
+  const [searchText, setSearchText] = useState("");
   const {
     data,
     isLoading,
@@ -33,9 +42,38 @@ export default function CharacterListScreen() {
   const items = pages.flatMap((page) => page?.characters ?? []);
   const headerTitle = selectedCategory?.label ?? t("list.title");
   const categoryTotal = firstPage?.total ?? null;
-  const subtitle = categoryTotal != null
-    ? `${t("list.totalCharacters", { count: categoryTotal })} ${t("list.subtitle")}`
-    : t("list.subtitle");
+  const subtitle =
+    categoryTotal != null
+      ? `${t("list.totalCharacters", { count: categoryTotal })} ${t(
+          "list.subtitle",
+        )}`
+      : t("list.subtitle");
+  const normalizedSearch = searchText.trim().toLowerCase();
+  const filteredItems = useMemo(
+    () =>
+      items.filter((character) => {
+        if (!normalizedSearch) {
+          return true;
+        }
+
+        const haystack = [
+          character.literal,
+          character.meaningKo,
+          character.meaningJa,
+          character.exampleKo,
+          character.exampleJa,
+          ...character.onyomi,
+          ...character.kunyomi,
+          ...(character.metadata?.meaningEn ?? []),
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+        return haystack.includes(normalizedSearch);
+      }),
+    [items, normalizedSearch],
+  );
 
   if (isLoading) {
     return <KanjiLoadingScreen />;
@@ -55,7 +93,7 @@ export default function CharacterListScreen() {
   return (
     <View style={styles.screen}>
       <FlatList
-        data={items}
+        data={filteredItems}
         keyExtractor={(character) => character.id}
         onEndReached={() => {
           if (hasNextPage && !isFetchingNextPage) {
@@ -69,6 +107,27 @@ export default function CharacterListScreen() {
           <View style={styles.header}>
             <Text style={styles.title}>{headerTitle}</Text>
             <Text style={styles.subtitle}>{subtitle}</Text>
+            <View style={styles.searchRow}>
+              <TextInput
+                value={searchText}
+                onChangeText={setSearchText}
+                placeholder={t("list.searchPlaceholder")}
+                placeholderTextColor={colors.inkMuted}
+                autoCapitalize="none"
+                autoCorrect={false}
+                returnKeyType="search"
+                style={styles.searchInput}
+              />
+              {searchText ? (
+                <Pressable
+                  style={styles.searchClearButton}
+                  onPress={() => setSearchText("")}
+                  hitSlop={8}
+                >
+                  <Text style={styles.searchClearText}>×</Text>
+                </Pressable>
+              ) : null}
+            </View>
           </View>
         }
         ListEmptyComponent={
@@ -185,6 +244,40 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       marginBottom: spacing[2],
     },
     subtitle: textStyles.bodySm,
+    searchRow: {
+      ...surfaceStyles.card,
+      marginTop: spacing[4],
+      paddingHorizontal: spacing[4],
+      paddingVertical: spacing[3],
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing[2],
+    },
+    searchInput: {
+      ...textStyles.bodySm,
+      flex: 1,
+      alignItems: "center",
+      color: colors.inkStrong,
+      height: 28,
+      lineHeight: 16,
+      textAlignVertical: "center",
+      includeFontPadding: false,
+      paddingVertical: 0,
+      paddingHorizontal: 4,
+    },
+    searchClearButton: {
+      width: 28,
+      height: 28,
+      borderRadius: 14,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: colors.bgMuted,
+    },
+    searchClearText: {
+      color: colors.inkMuted,
+      fontSize: 18,
+      lineHeight: 20,
+    },
     emptyCard: {
       ...surfaceStyles.card,
       padding: spacing[6],
