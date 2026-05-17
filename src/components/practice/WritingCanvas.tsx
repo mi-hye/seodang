@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { Dispatch, memo, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import {
   GestureResponderEvent,
   LayoutChangeEvent,
@@ -14,7 +14,7 @@ type WritingCanvasProps = {
   showGuide: boolean;
   guideData?: KanjiVgCharacter;
   strokes: InputStroke[];
-  onChange: (strokes: InputStroke[]) => void;
+  onChange: Dispatch<SetStateAction<InputStroke[]>>;
   onCanvasLayout?: (size: { width: number; height: number }) => void;
   onInteractionStart?: () => void;
   onInteractionEnd?: () => void;
@@ -33,6 +33,7 @@ export const WritingCanvas = memo(function WritingCanvas({
   const [animatedStrokeIndex, setAnimatedStrokeIndex] = useState(0);
   const [animatedProgress, setAnimatedProgress] = useState(0);
   const currentStrokeIdRef = useRef<string | null>(null);
+  const canvasOriginRef = useRef<CanvasPoint | null>(null);
 
   useEffect(() => {
     if (!showGuide || !guideData?.strokes.length) {
@@ -71,19 +72,24 @@ export const WritingCanvas = memo(function WritingCanvas({
 
   const startStroke = (event: GestureResponderEvent) => {
     onInteractionStart?.();
-    const point = getRelativePoint(event, size.width, size.height);
+    canvasOriginRef.current = getCanvasOrigin(event);
+    const point = getRelativePoint(event, size.width, size.height, canvasOriginRef.current);
     const strokeId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     currentStrokeIdRef.current = strokeId;
-    onChange([...strokes, { id: strokeId, points: [point] }]);
+    onChange((currentStrokes) => [
+      ...currentStrokes,
+      { id: strokeId, points: [point] },
+    ]);
   };
 
   const appendPoint = (event: GestureResponderEvent) => {
     if (!currentStrokeIdRef.current) return;
 
-    const point = getRelativePoint(event, size.width, size.height);
+    onInteractionStart?.();
+    const point = getRelativePoint(event, size.width, size.height, canvasOriginRef.current);
 
-    onChange(
-      strokes.map((stroke) => {
+    onChange((currentStrokes) =>
+      currentStrokes.map((stroke) => {
         if (stroke.id !== currentStrokeIdRef.current) {
           return stroke;
         }
@@ -103,6 +109,7 @@ export const WritingCanvas = memo(function WritingCanvas({
 
   const endStroke = () => {
     currentStrokeIdRef.current = null;
+    canvasOriginRef.current = null;
     onInteractionEnd?.();
   };
 
@@ -110,13 +117,23 @@ export const WritingCanvas = memo(function WritingCanvas({
     () =>
       PanResponder.create({
         onStartShouldSetPanResponder: () => true,
+        onStartShouldSetPanResponderCapture: () => {
+          onInteractionStart?.();
+          return true;
+        },
         onMoveShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponderCapture: () => {
+          onInteractionStart?.();
+          return true;
+        },
         onPanResponderGrant: startStroke,
         onPanResponderMove: appendPoint,
         onPanResponderRelease: endStroke,
         onPanResponderTerminate: endStroke,
+        onPanResponderTerminationRequest: () => false,
+        onShouldBlockNativeResponder: () => true,
       }),
-    [strokes, size.width, size.height]
+    [onChange, onInteractionStart, onInteractionEnd, size.width, size.height]
   );
 
   const handleLayout = (event: LayoutChangeEvent) => {
@@ -126,7 +143,14 @@ export const WritingCanvas = memo(function WritingCanvas({
   };
 
   return (
-    <View style={styles.canvas} onLayout={handleLayout} {...panResponder.panHandlers}>
+    <View
+      collapsable={false}
+      style={styles.canvas}
+      onLayout={handleLayout}
+      onPointerDownCapture={onInteractionStart}
+      onPointerMoveCapture={onInteractionStart}
+      {...panResponder.panHandlers}
+    >
       <Grid />
       {showGuide ? (
         <View pointerEvents="none" style={styles.guideOverlay}>
@@ -229,13 +253,25 @@ function Grid() {
 function getRelativePoint(
   event: GestureResponderEvent,
   width: number,
-  height: number
+  height: number,
+  origin?: CanvasPoint | null
 ): CanvasPoint {
-  const { locationX, locationY } = event.nativeEvent;
+  const { locationX, locationY, pageX, pageY } = event.nativeEvent;
+  const x = origin ? pageX - origin.x : locationX;
+  const y = origin ? pageY - origin.y : locationY;
 
   return {
-    x: clamp(locationX, 8, Math.max(width - 8, 8)),
-    y: clamp(locationY, 8, Math.max(height - 8, 8)),
+    x: clamp(x, 8, Math.max(width - 8, 8)),
+    y: clamp(y, 8, Math.max(height - 8, 8)),
+  };
+}
+
+function getCanvasOrigin(event: GestureResponderEvent): CanvasPoint {
+  const { locationX, locationY, pageX, pageY } = event.nativeEvent;
+
+  return {
+    x: pageX - locationX,
+    y: pageY - locationY,
   };
 }
 

@@ -1,8 +1,10 @@
 import {
   forwardRef,
   PropsWithChildren,
+  useEffect,
   useImperativeHandle,
   useRef,
+  useState,
 } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { layout, useTheme } from "../../design/theme";
@@ -20,10 +22,16 @@ export const Screen = forwardRef<ScreenHandle, ScreenProps>(function Screen(
   ref,
 ) {
   const scrollRef = useRef<ScrollView>(null);
+  const [isScrollEnabled, setIsScrollEnabled] = useState(scrollEnabled);
   const { colors } = useTheme();
+
+  useEffect(() => {
+    setIsScrollEnabled(scrollEnabled);
+  }, [scrollEnabled]);
 
   useImperativeHandle(ref, () => ({
     setScrollEnabled(enabled: boolean) {
+      setIsScrollEnabled(enabled);
       scrollRef.current?.setNativeProps({ scrollEnabled: enabled });
     },
   }));
@@ -34,7 +42,7 @@ export const Screen = forwardRef<ScreenHandle, ScreenProps>(function Screen(
         ref={scrollRef}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        scrollEnabled={scrollEnabled}
+        scrollEnabled={isScrollEnabled}
       >
         {children}
       </ScrollView>

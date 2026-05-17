@@ -1,5 +1,5 @@
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { WritingCanvas } from "../../src/components/practice/WritingCanvas";
@@ -14,6 +14,8 @@ import {
 } from "../../src/queries/kanjiQueries";
 import { CanvasSize, InputStroke } from "../../src/types/practice";
 
+const SCROLL_RESTORE_DELAY_MS = 1200;
+
 export default function PracticeScreen() {
   const router = useRouter();
   const { characterId, categoryKey } = useLocalSearchParams<{
@@ -26,6 +28,7 @@ export default function PracticeScreen() {
   const { buttonStyles, chipStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ buttonStyles, chipStyles, colors, surfaceStyles, textStyles });
   const screenRef = useRef<ScreenHandle>(null);
+  const scrollRestoreTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showGuide, setShowGuide] = useState(false);
   const [strokes, setStrokes] = useState<InputStroke[]>([]);
   const [canvasSize, setCanvasSize] = useState<CanvasSize>({
@@ -37,6 +40,34 @@ export default function PracticeScreen() {
     isLoading: isGuideLoading,
     isError: isGuideLoadError,
   } = useKanjiStrokeDataQuery(character?.literal);
+
+  useEffect(() => {
+    return () => {
+      if (scrollRestoreTimerRef.current) {
+        clearTimeout(scrollRestoreTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleCanvasInteractionStart = () => {
+    if (scrollRestoreTimerRef.current) {
+      clearTimeout(scrollRestoreTimerRef.current);
+      scrollRestoreTimerRef.current = null;
+    }
+
+    screenRef.current?.setScrollEnabled(false);
+  };
+
+  const handleCanvasInteractionEnd = () => {
+    if (scrollRestoreTimerRef.current) {
+      clearTimeout(scrollRestoreTimerRef.current);
+    }
+
+    scrollRestoreTimerRef.current = setTimeout(() => {
+      screenRef.current?.setScrollEnabled(true);
+      scrollRestoreTimerRef.current = null;
+    }, SCROLL_RESTORE_DELAY_MS);
+  };
 
   if (isCharacterLoading) {
     return (
@@ -129,8 +160,8 @@ export default function PracticeScreen() {
           strokes={strokes}
           onChange={setStrokes}
           onCanvasLayout={setCanvasSize}
-          onInteractionStart={() => screenRef.current?.setScrollEnabled(false)}
-          onInteractionEnd={() => screenRef.current?.setScrollEnabled(true)}
+          onInteractionStart={handleCanvasInteractionStart}
+          onInteractionEnd={handleCanvasInteractionEnd}
         />
         <Text style={styles.canvasHint}>{t("practice.canvasHint")}</Text>
         {isGuideLoadError ? (
