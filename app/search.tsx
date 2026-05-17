@@ -1,6 +1,7 @@
-import { Link, useLocalSearchParams } from "expo-router";
-import { useMemo, useState } from "react";
+import { Link } from "expo-router";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import {
+  Animated,
   FlatList,
   Pressable,
   StyleSheet,
@@ -10,52 +11,30 @@ import {
 } from "react-native";
 
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
-import { KanjiLoadingScreen } from "../src/components/common/KanjiLoadingScreen";
-import { getCharacterMeaning, KanjiCharacter } from "../src/data/characters";
+import { getCharacterMeaning } from "../src/data/characters";
+import { KanjiCharacter } from "../src/data/characters";
 import { layout, spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
-import { useKanjiCharactersByCategoryQuery } from "../src/queries/kanjiQueries";
+import { useAllKanjiCharactersQuery } from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
 
-export default function CharacterListScreen() {
-  const { categoryKey } = useLocalSearchParams<{ categoryKey?: string }>();
-  const normalizedCategoryKey = Array.isArray(categoryKey)
-    ? categoryKey[0]
-    : categoryKey;
+export default function SearchScreen() {
   const { locale, t } = useI18n();
   const { colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ colors, surfaceStyles, textStyles });
   const { getProgress } = useAppState();
   const [searchText, setSearchText] = useState("");
-  const {
-    data,
-    isLoading,
-    isError,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useKanjiCharactersByCategoryQuery(normalizedCategoryKey, locale);
+  const deferredSearch = useDeferredValue(searchText.trim().toLowerCase());
+  const { data: allCharacters = [], isLoading, isError } =
+    useAllKanjiCharactersQuery();
 
-  const pages = data?.pages ?? [];
-  const firstPage = pages[0] ?? null;
-  const selectedCategory = firstPage?.category;
-  const items = pages.flatMap((page) => page?.characters ?? []);
-  const headerTitle = selectedCategory?.label ?? t("list.title");
-  const categoryTotal = firstPage?.total ?? null;
-  const subtitle =
-    categoryTotal != null
-      ? `${t("list.totalCharacters", { count: categoryTotal })} ${t(
-          "list.subtitle",
-        )}`
-      : t("list.subtitle");
-  const normalizedSearch = searchText.trim().toLowerCase();
-  const filteredItems = useMemo(
-    () =>
-      items.filter((character) => {
-        if (!normalizedSearch) {
-          return true;
-        }
+  const filteredItems = useMemo(() => {
+    if (!deferredSearch) {
+      return [];
+    }
 
+    return allCharacters
+      .filter((character) => {
         const haystack = [
           character.literal,
           character.meaningKo,
@@ -70,48 +49,26 @@ export default function CharacterListScreen() {
           .join(" ")
           .toLowerCase();
 
-        return haystack.includes(normalizedSearch);
-      }),
-    [items, normalizedSearch],
-  );
-
-  if (isLoading) {
-    return <KanjiLoadingScreen />;
-  }
-
-  if (isError) {
-    return (
-      <View style={[styles.screen, styles.content]}>
-        <View style={styles.emptyCard}>
-          <Text style={styles.emptyTitle}>{t("list.errorTitle")}</Text>
-          <Text style={styles.emptyBody}>{t("list.errorBody")}</Text>
-        </View>
-      </View>
-    );
-  }
+        return haystack.includes(deferredSearch);
+      })
+      .slice(0, 80);
+  }, [allCharacters, deferredSearch]);
 
   return (
     <View style={styles.screen}>
       <FlatList
         data={filteredItems}
         keyExtractor={(character) => character.id}
-        onEndReached={() => {
-          if (hasNextPage && !isFetchingNextPage) {
-            void fetchNextPage();
-          }
-        }}
-        onEndReachedThreshold={0.4}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
         ListHeaderComponent={
           <View style={styles.header}>
-            <Text style={styles.title}>{headerTitle}</Text>
-            <Text style={styles.subtitle}>{subtitle}</Text>
             <View style={styles.searchRow}>
               <TextInput
                 value={searchText}
                 onChangeText={setSearchText}
-                placeholder={t("list.searchPlaceholder")}
+                placeholder={t("search.placeholder")}
                 placeholderTextColor={colors.inkMuted}
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -131,47 +88,100 @@ export default function CharacterListScreen() {
           </View>
         }
         ListEmptyComponent={
-          <View style={styles.emptyCard}>
-            <Text style={styles.emptyTitle}>{t("list.emptyTitle")}</Text>
-            <Text style={styles.emptyBody}>{t("list.emptyBody")}</Text>
-          </View>
+          isLoading && deferredSearch ? (
+            <SearchResultsSkeleton />
+          ) : (
+            <View style={styles.emptyCard}>
+              <Text style={styles.emptyTitle}>
+                {isError
+                  ? t("search.errorTitle")
+                  : deferredSearch
+                    ? t("search.emptyTitle")
+                    : t("search.idleTitle")}
+              </Text>
+              <Text style={styles.emptyBody}>
+                {isError
+                  ? t("search.errorBody")
+                  : deferredSearch
+                    ? t("search.emptyBody")
+                    : t("search.idleBody")}
+              </Text>
+            </View>
+          )
         }
         renderItem={({ item, index }) => (
-          <CharacterCard
-            categoryKey={normalizedCategoryKey}
+          <SearchResultCard
             character={item}
             index={index}
+            locale={locale}
             getProgress={getProgress}
           />
         )}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
-        ListFooterComponent={
-          isFetchingNextPage ? (
-            <View style={styles.footer}>
-              <Text style={styles.footerText}>{t("common.loading")}</Text>
-            </View>
-          ) : (
-            <View style={styles.footerSpacer} />
-          )
-        }
+        ListFooterComponent={<View style={styles.footerSpacer} />}
       />
     </View>
   );
 }
 
-function CharacterCard({
-  categoryKey,
+function SearchResultsSkeleton() {
+  const { colors } = useTheme();
+  const opacity = useRef(new Animated.Value(0.55)).current;
+  const styles = useMemo(() => createSkeletonStyles(colors), [colors]);
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 0.55,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+
+    loop.start();
+    return () => loop.stop();
+  }, [opacity]);
+
+  const skeletonStyle = { opacity } as const;
+
+  return (
+    <View style={styles.wrapper}>
+      {[0, 1, 2, 3].map((index) => (
+        <Animated.View key={index} style={[styles.card, skeletonStyle]}>
+          <View style={styles.left}>
+            <Animated.View style={[styles.literal, skeletonStyle]} />
+            <View style={styles.content}>
+              <Animated.View style={[styles.title, skeletonStyle]} />
+              <Animated.View style={[styles.meta, skeletonStyle]} />
+            </View>
+          </View>
+          <Animated.View style={[styles.star, skeletonStyle]} />
+        </Animated.View>
+      ))}
+    </View>
+  );
+}
+
+function SearchResultCard({
   character,
   index,
+  locale,
   getProgress,
 }: {
-  categoryKey?: string;
   character: KanjiCharacter;
   index: number;
+  locale: "ko" | "ja";
   getProgress: ReturnType<typeof useAppState>["getProgress"];
 }) {
-  const { locale, t } = useI18n();
   const { colors, surfaceStyles, textStyles } = useTheme();
+  const { t } = useI18n();
   const styles = createStyles({ colors, surfaceStyles, textStyles });
   const progress = getProgress(character.id);
 
@@ -179,10 +189,7 @@ function CharacterCard({
     <Link
       href={{
         pathname: "/character/[characterId]",
-        params: {
-          characterId: character.id,
-          categoryKey,
-        },
+        params: { characterId: character.id },
       }}
       asChild
     >
@@ -212,14 +219,12 @@ function CharacterCard({
             ) : null}
           </View>
         </View>
-        <View style={styles.actions}>
-          <FavoriteButton
-            characterId={character.id}
-            iconSize={18}
-            style={styles.favoriteButton}
-            hitSlop={8}
-          />
-        </View>
+        <FavoriteButton
+          characterId={character.id}
+          iconSize={18}
+          style={styles.favoriteButton}
+          hitSlop={8}
+        />
       </Pressable>
     </Link>
   );
@@ -239,14 +244,8 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
     header: {
       marginBottom: spacing[6],
     },
-    title: {
-      ...textStyles.displayMd,
-      marginBottom: spacing[2],
-    },
-    subtitle: textStyles.bodySm,
     searchRow: {
       ...surfaceStyles.card,
-      marginTop: spacing[4],
       paddingHorizontal: spacing[4],
       paddingVertical: spacing[3],
       flexDirection: "row",
@@ -256,10 +255,9 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
     searchInput: {
       ...textStyles.bodySm,
       flex: 1,
-      alignItems: "center",
       color: colors.inkStrong,
       height: 28,
-      lineHeight: 16,
+      lineHeight: 20,
       textAlignVertical: "center",
       includeFontPadding: false,
       paddingVertical: 0,
@@ -316,23 +314,66 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       ...textStyles.meta,
       marginTop: 3,
     },
-    actions: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 10,
-    },
     favoriteButton: {
       width: 36,
       height: 36,
       borderRadius: 16,
     },
-    footer: {
-      paddingVertical: spacing[6],
-      alignItems: "center",
-    },
-    footerText: textStyles.meta,
     footerSpacer: {
       height: spacing[6],
+    },
+  });
+}
+
+function createSkeletonStyles(colors: any) {
+  return StyleSheet.create({
+    wrapper: {
+      gap: 12,
+    },
+    card: {
+      backgroundColor: colors.bgSurface,
+      borderWidth: 1,
+      borderColor: colors.borderSoft,
+      borderRadius: 24,
+      padding: 18,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 12,
+    },
+    left: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 14,
+      flex: 1,
+    },
+    literal: {
+      width: 42,
+      height: 42,
+      borderRadius: 16,
+      backgroundColor: colors.bgMutedStrong,
+    },
+    content: {
+      flex: 1,
+      gap: 8,
+    },
+    title: {
+      width: "42%",
+      height: 16,
+      borderRadius: 999,
+      backgroundColor: colors.bgMutedStrong,
+    },
+    meta: {
+      width: "58%",
+      height: 12,
+      borderRadius: 999,
+      backgroundColor: colors.bgMuted,
+    },
+    star: {
+      width: 24,
+      height: 24,
+      borderRadius: 12,
+      backgroundColor: colors.bgMutedStrong,
     },
   });
 }

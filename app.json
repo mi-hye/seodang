@@ -1,11 +1,12 @@
 {
   "expo": {
-    "name": "kanzi",
-    "slug": "kanzi",
+    "name": "Seodang",
+    "slug": "seodang",
+    "scheme": "seodang",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
@@ -27,7 +28,8 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-localization"
     ]
   }
 }

@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getLocales } from "expo-localization";
 import {
   createContext,
   PropsWithChildren,
@@ -8,33 +9,52 @@ import {
   useState,
 } from "react";
 
-import { sampleCharacters } from "../data/characters";
-import { CharacterProgress, PersistedAppState, UserType } from "../types/app-state";
+import {
+  AppLocale,
+  CharacterProgress,
+  LastCompletedPractice,
+  PersistedAppState,
+  ThemeMode,
+  UserType,
+} from "../types/app-state";
 
-const STORAGE_KEY = "kanzi-app-state-v1";
+const STORAGE_KEY = "seodang-app-state-v1";
 const MAX_RECORDED_ATTEMPTS = 50;
+const DEVICE_LOCALE = resolveInitialLocale();
 
 type AppStateContextValue = {
   hydrated: boolean;
+  locale: AppLocale;
+  theme: ThemeMode;
   userType: UserType;
   progressByCharacter: Record<string, CharacterProgress>;
-  reviewCount: number;
+  favoriteCount: number;
+  lastCompletedPractice?: LastCompletedPractice;
+  setLocale: (locale: AppLocale) => void;
+  setTheme: (theme: ThemeMode) => void;
   setUserType: (userType: UserType) => void;
   recordAttempt: (input: {
     attemptId: string;
     characterId: string;
+    categoryKey?: string;
     score: number;
     passed: boolean;
     practicedAt: string;
   }) => void;
   getProgress: (characterId: string) => CharacterProgress | undefined;
-  getReviewCharacters: () => typeof sampleCharacters;
+  getFavoriteCharacterIds: () => string[];
+  isFavorite: (characterId: string) => boolean;
+  toggleFavorite: (characterId: string) => void;
 };
 
 const defaultState: PersistedAppState = {
+  locale: DEVICE_LOCALE,
+  theme: "light",
   userType: "korean_learner",
   progressByCharacter: {},
   recordedAttemptIds: [],
+  favoriteCharacterIds: {},
+  lastCompletedPractice: undefined,
 };
 
 const AppStateContext = createContext<AppStateContextValue | null>(null);
@@ -81,6 +101,14 @@ export function AppStateProvider({ children }: PropsWithChildren) {
   }, [hydrated, state]);
 
   const value = useMemo<AppStateContextValue>(() => {
+    const setLocale = (locale: AppLocale) => {
+      setState((current) => ({ ...current, locale }));
+    };
+
+    const setTheme = (theme: ThemeMode) => {
+      setState((current) => ({ ...current, theme }));
+    };
+
     const setUserType = (userType: UserType) => {
       setState((current) => ({ ...current, userType }));
     };
@@ -88,6 +116,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
     const recordAttempt: AppStateContextValue["recordAttempt"] = ({
       attemptId,
       characterId,
+      categoryKey,
       score,
       passed,
       practicedAt,
@@ -119,6 +148,11 @@ export function AppStateProvider({ children }: PropsWithChildren) {
             ...current.progressByCharacter,
             [characterId]: nextProgress,
           },
+          lastCompletedPractice: {
+            characterId,
+            categoryKey,
+            practicedAt,
+          },
           recordedAttemptIds: [attemptId, ...current.recordedAttemptIds].slice(
             0,
             MAX_RECORDED_ATTEMPTS
@@ -128,35 +162,48 @@ export function AppStateProvider({ children }: PropsWithChildren) {
     };
 
     const getProgress = (characterId: string) => state.progressByCharacter[characterId];
+    const getFavoriteCharacterIds = () => Object.keys(state.favoriteCharacterIds);
+    const isFavorite = (characterId: string) => Boolean(state.favoriteCharacterIds[characterId]);
+    const toggleFavorite = (characterId: string) => {
+      setState((current) => {
+        if (current.favoriteCharacterIds[characterId]) {
+          const nextFavorites = { ...current.favoriteCharacterIds };
+          delete nextFavorites[characterId];
 
-    const getReviewCharacters = () =>
-      [...sampleCharacters]
-        .filter((character) => {
-          const progress = state.progressByCharacter[character.id];
-          return progress ? progress.failures > 0 || progress.lastScore < 80 : false;
-        })
-        .sort((left, right) => {
-          const leftProgress = state.progressByCharacter[left.id];
-          const rightProgress = state.progressByCharacter[right.id];
+          return {
+            ...current,
+            favoriteCharacterIds: nextFavorites,
+          };
+        }
 
-          const leftWeight = (leftProgress?.failures ?? 0) * 100 - (leftProgress?.lastScore ?? 0);
-          const rightWeight =
-            (rightProgress?.failures ?? 0) * 100 - (rightProgress?.lastScore ?? 0);
+        return {
+          ...current,
+          favoriteCharacterIds: {
+            ...current.favoriteCharacterIds,
+            [characterId]: true,
+          },
+        };
+      });
+    };
 
-          return rightWeight - leftWeight;
-        });
-
-    const reviewCount = getReviewCharacters().length;
+    const favoriteCount = getFavoriteCharacterIds().length;
 
     return {
       hydrated,
+      locale: state.locale,
+      theme: state.theme,
       userType: state.userType,
       progressByCharacter: state.progressByCharacter,
-      reviewCount,
+      favoriteCount,
+      lastCompletedPractice: state.lastCompletedPractice,
+      setLocale,
+      setTheme,
       setUserType,
       recordAttempt,
       getProgress,
-      getReviewCharacters,
+      getFavoriteCharacterIds,
+      isFavorite,
+      toggleFavorite,
     };
   }, [hydrated, state]);
 
@@ -171,4 +218,9 @@ export function useAppState() {
   }
 
   return context;
+}
+
+function resolveInitialLocale(): AppLocale {
+  const [locale] = getLocales();
+  return locale?.languageCode === "ja" ? "ja" : "ko";
 }

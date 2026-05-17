@@ -1,45 +1,100 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
 import { AppStateProvider } from "../src/state/AppStateProvider";
+import { useTheme } from "../src/design/theme";
+import { useI18n } from "../src/i18n/useI18n";
+import { QueryProvider } from "../src/state/QueryProvider";
+import { useAppState } from "../src/state/AppStateProvider";
 
 export default function RootLayout() {
   return (
-    <AppStateProvider>
-      <>
-        <StatusBar style="dark" />
-        <Stack
-          screenOptions={{
-            headerShadowVisible: false,
-            headerStyle: {
-              backgroundColor: "#f7f1e8",
-            },
-            headerTintColor: "#1d3b2a",
-            headerTitleStyle: {
-              fontSize: 18,
-              fontWeight: "700",
-            },
-            contentStyle: {
-              backgroundColor: "#f7f1e8",
-            },
-          }}
-        >
-          <Stack.Screen name="index" options={{ title: "kanzi", headerShown: false }} />
-          <Stack.Screen name="list" options={{ title: "한자 목록" }} />
-          <Stack.Screen name="review" options={{ title: "복습 노트" }} />
-          <Stack.Screen
-            name="character/[characterId]"
-            options={{ title: "한자 상세" }}
-          />
-          <Stack.Screen
-            name="practice/[characterId]"
-            options={{ title: "쓰기 연습" }}
-          />
-          <Stack.Screen
-            name="practice/result"
-            options={{ title: "연습 결과", presentation: "card" }}
-          />
-        </Stack>
-      </>
-    </AppStateProvider>
+    <QueryProvider>
+      <AppStateProvider>
+        <RootNavigator />
+      </AppStateProvider>
+    </QueryProvider>
+  );
+}
+
+function RootNavigator() {
+  const { hydrated } = useAppState();
+  const { t } = useI18n();
+  const { colors, themeMode } = useTheme();
+
+  if (!hydrated) {
+    return null;
+  }
+
+  const navigationTheme = {
+    ...(themeMode === "dark" ? DarkTheme : DefaultTheme),
+    colors: {
+      ...(themeMode === "dark" ? DarkTheme.colors : DefaultTheme.colors),
+      background: colors.bgCanvas,
+      card: colors.bgCanvas,
+      text: colors.inkStrong,
+      border: "transparent",
+      primary: colors.inkStrong,
+      notification: colors.accentWarm,
+    },
+  };
+
+  return (
+    <ThemeProvider value={navigationTheme}>
+      <StatusBar style={themeMode === "dark" ? "light" : "dark"} />
+      <Stack
+        screenOptions={{
+          headerShadowVisible: false,
+          headerBackButtonDisplayMode: "minimal",
+          headerStyle: {
+            backgroundColor: colors.bgCanvas,
+          },
+          headerTintColor: colors.inkStrong,
+          headerTitleStyle: {
+            fontSize: 18,
+            fontWeight: "700",
+            color: colors.inkStrong,
+          },
+          contentStyle: {
+            backgroundColor: colors.bgCanvas,
+          },
+        }}
+      >
+        <Stack.Screen name="index" options={{ title: t("common.appName"), headerShown: false }} />
+        <Stack.Screen name="list" options={{ title: t("nav.list") }} />
+        <Stack.Screen
+          name="character/[characterId]"
+          options={{ title: t("nav.detail") }}
+        />
+        <Stack.Screen
+          name="practice/[characterId]"
+          options={{ title: t("nav.practice") }}
+        />
+        <Stack.Screen
+          name="practice/result"
+          options={{ title: t("nav.result"), presentation: "card" }}
+        />
+        <Stack.Screen
+          name="settings"
+          options={{ title: t("nav.settings") }}
+        />
+        <Stack.Screen
+          name="categories"
+          options={{ title: t("nav.categories") }}
+        />
+        <Stack.Screen
+          name="favorites"
+          options={{ title: t("nav.favorites") }}
+        />
+        <Stack.Screen
+          name="search"
+          options={{ title: t("nav.search") }}
+        />
+      </Stack>
+    </ThemeProvider>
   );
 }

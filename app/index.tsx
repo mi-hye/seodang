@@ -1,233 +1,195 @@
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Screen } from "../src/components/common/Screen";
-import { sampleCharacters } from "../src/data/characters";
+import { spacing, useTheme } from "../src/design/theme";
+import { useI18n } from "../src/i18n/useI18n";
+import {
+  useKanjiCategoryGroupsQuery,
+  useKanjiCharacterQuery,
+} from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function HomeScreen() {
   const router = useRouter();
-  const featured = sampleCharacters[0];
-  const { hydrated, reviewCount, setUserType, userType } = useAppState();
+  const { hydrated, favoriteCount, lastCompletedPractice } = useAppState();
+  const { locale, t } = useI18n();
+  const { data: lastCharacter } = useKanjiCharacterQuery(
+    lastCompletedPractice?.characterId,
+  );
+  const { data: categoryGroups = [] } = useKanjiCategoryGroupsQuery(locale);
+  const { colors, textStyles, surfaceStyles, shadows } = useTheme();
+  const styles = createStyles({ colors, textStyles, surfaceStyles, shadows });
+  const lastCategory = categoryGroups
+    .flatMap((group) => group.categories)
+    .find(
+      (category) => category.categoryKey === lastCompletedPractice?.categoryKey,
+    );
 
   return (
-    <Screen>
-      <View style={styles.hero}>
-        <Text style={styles.eyebrow}>Japanese Kanji Writing Practice</Text>
-        <Text style={styles.title}>손으로 익히는 일본어 한자</Text>
-        <Text style={styles.subtitle}>
-          한국인 학습자와 일본 초중등 사용자를 함께 고려한 쓰기 연습 앱 프로토타입
-        </Text>
-      </View>
+    <SafeAreaView style={styles.safeArea}>
+      <Screen>
+        <View style={styles.hero}>
+          <View style={styles.heroTopRow}>
+            <Text style={styles.title}>{t("home.title")}</Text>
+            <View style={styles.headerActions}>
+              <Pressable
+                onPress={() => router.push("/search")}
+                style={styles.iconButton}
+              >
+                <Ionicons
+                  name="search-outline"
+                  size={18}
+                  color={colors.inkStrong}
+                />
+              </Pressable>
+              <Pressable
+                onPress={() => router.push("/settings")}
+                style={styles.iconButton}
+              >
+                <Ionicons
+                  name="settings-outline"
+                  size={18}
+                  color={colors.inkStrong}
+                />
+              </Pressable>
+            </View>
+          </View>
+          <Text style={styles.subtitle}>{t("home.subtitle")}</Text>
+        </View>
 
-      <Pressable
-        onPress={() => router.push("/list")}
-        style={[styles.primaryCard, styles.shadow]}
-      >
-        <Text style={styles.primaryLabel}>오늘의 학습 시작</Text>
-        <Text style={styles.primaryBody}>
-          기초 한자부터 획순 확인, 쓰기 연습, 복습까지 바로 시작합니다.
-        </Text>
-      </Pressable>
-
-      <View style={styles.row}>
         <Pressable
-          onPress={() => router.push("/review")}
-          style={[styles.miniCard, styles.shadow]}
+          onPress={() => router.push("/categories")}
+          style={[styles.primaryCard, styles.shadow]}
         >
-          <Text style={styles.miniNumber}>{hydrated ? reviewCount : "-"}</Text>
-          <Text style={styles.miniLabel}>복습 필요</Text>
+          <Text style={styles.primaryLabel}>{t("home.start")}</Text>
+          <Text style={styles.primaryBody}>{t("home.startBody")}</Text>
         </Pressable>
 
-        <Pressable
-          onPress={() => router.push(`/character/${featured.id}`)}
-          style={[styles.miniCard, styles.shadow]}
-        >
-          <Text style={styles.miniNumber}>{featured.literal}</Text>
-          <Text style={styles.miniLabel}>추천 한자</Text>
-        </Pressable>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>학습 트랙</Text>
-        <View style={styles.trackList}>
+        <View style={styles.row}>
           <Pressable
-            style={[
-              styles.trackCard,
-              userType === "korean_learner" && styles.trackCardSelected,
-            ]}
-            onPress={() => setUserType("korean_learner")}
+            onPress={() => router.push("/favorites")}
+            style={[styles.actionCard, styles.shadow]}
           >
-            <Text style={styles.trackTitle}>한국인 학습자</Text>
-            <Text style={styles.trackBody}>뜻, 음독/훈독, JLPT 기준으로 학습</Text>
+            <View style={styles.actionCardTop}>
+              <Text style={styles.actionTitle}>{t("home.favorites")}</Text>
+              <Text style={styles.actionValue}>
+                {hydrated ? favoriteCount : "-"}
+              </Text>
+            </View>
+            <Text style={styles.actionBody}>{t("home.favoritesBody")}</Text>
           </Pressable>
+
           <Pressable
-            style={[
-              styles.trackCard,
-              userType === "japanese_student" && styles.trackCardSelected,
-            ]}
-            onPress={() => setUserType("japanese_student")}
+            onPress={() =>
+              lastCompletedPractice?.characterId
+                ? router.push({
+                    pathname: "/practice/[characterId]",
+                    params: {
+                      characterId: lastCompletedPractice.characterId,
+                      categoryKey: lastCompletedPractice.categoryKey,
+                    },
+                  })
+                : router.push("/categories")
+            }
+            style={[styles.actionCard, styles.shadow]}
           >
-            <Text style={styles.trackTitle}>일본 초중등</Text>
-            <Text style={styles.trackBody}>학년별 반복 훈련과 오답 복습 중심</Text>
+            <View style={styles.actionCardTop}>
+              <Text style={styles.actionTitle}>{t("home.recentPractice")}</Text>
+              <Text style={styles.actionValue}>
+                {lastCharacter?.literal ?? "-"}
+              </Text>
+            </View>
+            <Text style={styles.actionBody}>
+              {lastCharacter
+                ? t("home.recentPracticeBodyReady", {
+                    category: lastCategory?.label ?? t("nav.categories"),
+                  })
+                : t("home.recentPracticeBodyEmpty")}
+            </Text>
           </Pressable>
         </View>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>추천 세트</Text>
-        {sampleCharacters.slice(0, 3).map((character) => (
-          <Link
-            key={character.id}
-            href={`/character/${character.id}`}
-            asChild
-          >
-            <Pressable style={styles.listCard}>
-              <Text style={styles.listKanji}>{character.literal}</Text>
-              <View style={styles.listContent}>
-                <Text style={styles.listTitle}>{character.meaningKo}</Text>
-                <Text style={styles.listMeta}>
-                  JLPT {character.jlptLevel} · {character.strokeCount}획
-                </Text>
-              </View>
-            </Pressable>
-          </Link>
-        ))}
-      </View>
-    </Screen>
+      </Screen>
+    </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  hero: {
-    marginBottom: 24,
-    gap: 10,
-  },
-  eyebrow: {
-    fontSize: 12,
-    fontWeight: "700",
-    letterSpacing: 1.2,
-    color: "#8b5e34",
-    textTransform: "uppercase",
-  },
-  title: {
-    fontSize: 34,
-    lineHeight: 40,
-    fontWeight: "800",
-    color: "#173221",
-  },
-  subtitle: {
-    fontSize: 15,
-    lineHeight: 23,
-    color: "#4d5f52",
-  },
-  primaryCard: {
-    backgroundColor: "#1d3b2a",
-    borderRadius: 28,
-    padding: 24,
-    marginBottom: 16,
-  },
-  primaryLabel: {
-    color: "#f7f1e8",
-    fontSize: 22,
-    fontWeight: "800",
-    marginBottom: 8,
-  },
-  primaryBody: {
-    color: "#dce7de",
-    fontSize: 15,
-    lineHeight: 22,
-  },
-  row: {
-    flexDirection: "row",
-    gap: 12,
-    marginBottom: 24,
-  },
-  miniCard: {
-    flex: 1,
-    backgroundColor: "#fffaf3",
-    borderRadius: 24,
-    padding: 20,
-    minHeight: 120,
-    justifyContent: "space-between",
-  },
-  miniNumber: {
-    fontSize: 36,
-    fontWeight: "800",
-    color: "#173221",
-  },
-  miniLabel: {
-    fontSize: 14,
-    color: "#617565",
-    fontWeight: "700",
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "800",
-    color: "#173221",
-    marginBottom: 14,
-  },
-  trackList: {
-    gap: 12,
-  },
-  trackCard: {
-    backgroundColor: "#efe4d3",
-    borderRadius: 24,
-    padding: 18,
-  },
-  trackCardSelected: {
-    borderWidth: 2,
-    borderColor: "#173221",
-    backgroundColor: "#e6ddcf",
-  },
-  trackTitle: {
-    color: "#173221",
-    fontSize: 17,
-    fontWeight: "800",
-    marginBottom: 6,
-  },
-  trackBody: {
-    color: "#5f695e",
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  listCard: {
-    backgroundColor: "#fffaf3",
-    borderRadius: 22,
-    padding: 18,
-    marginBottom: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-  },
-  listKanji: {
-    width: 54,
-    fontSize: 28,
-    fontWeight: "800",
-    color: "#173221",
-    textAlign: "center",
-  },
-  listContent: {
-    flex: 1,
-    gap: 4,
-  },
-  listTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#173221",
-  },
-  listMeta: {
-    fontSize: 13,
-    color: "#6f756b",
-  },
-  shadow: {
-    shadowColor: "#5f4b32",
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 8 },
-    shadowRadius: 18,
-    elevation: 3,
-  },
-});
+function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
+  return StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.bgCanvas,
+    },
+    hero: {
+      marginBottom: spacing[7],
+      gap: spacing[2] + 2,
+    },
+    heroTopRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: spacing[1],
+      gap: spacing[3],
+    },
+    headerActions: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing[2],
+    },
+    iconButton: {
+      width: 42,
+      height: 42,
+      borderRadius: 21,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    title: textStyles.displayLg,
+    subtitle: textStyles.bodyMd,
+    primaryCard: {
+      ...surfaceStyles.heroDark,
+      padding: spacing[7],
+      marginBottom: spacing[4],
+    },
+    primaryLabel: {
+      fontSize: 22,
+      fontWeight: "800",
+      color: colors.inkOnDark,
+      marginBottom: spacing[2],
+    },
+    primaryBody: {
+      color: colors.inkOnDarkMuted,
+      fontSize: 15,
+      lineHeight: 22,
+    },
+    row: {
+      flexDirection: "row",
+      gap: spacing[3],
+      marginBottom: spacing[4],
+    },
+    actionCard: {
+      flex: 1,
+      ...surfaceStyles.card,
+      padding: spacing[6],
+      minHeight: 136,
+      justifyContent: "space-between",
+    },
+    actionCardTop: {
+      gap: spacing[2],
+    },
+    actionTitle: {
+      ...textStyles.titleSm,
+      fontWeight: "700",
+    },
+    actionValue: {
+      ...textStyles.glyphMd,
+      fontWeight: "700",
+    },
+    actionBody: {
+      ...textStyles.bodySm,
+      color: colors.inkMuted,
+    },
+    shadow: shadows.card,
+  });
+}

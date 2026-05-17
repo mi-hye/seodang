@@ -1,0 +1,234 @@
+# seodang 개발 로드맵
+
+## 1. 문서 목적
+
+이 문서는 현재 `seodang` 앱의 개발 상태를 기준으로, 앞으로 무엇을 어떤 순서로 정리하고 확장할지 정리한 로드맵이다.
+
+목표는 다음과 같다.
+
+- 지금까지 만들어진 구조를 기준으로 다음 작업의 우선순위를 명확히 한다.
+- 주니어 개발자가 무리 없이 따라갈 수 있는 단계로 나눈다.
+- "기능 추가"보다 "흐름 정리"를 먼저 끝내도록 방향을 잡는다.
+
+## 2. 현재 상태 요약
+
+현재 앱은 아래 정도까지 틀이 잡혀 있다.
+
+- Expo Router 기반 화면 구조
+- 홈 / 목록 / 상세 / 연습 / 결과 / 복습 화면
+- AsyncStorage 기반 로컬 학습 기록 저장
+- 쓰기 입력 캔버스
+- KanjiVG 기반 stroke 데이터 적재
+- Supabase 저장소 구축
+- React Query 기반 원격 stroke 데이터 조회 시작
+- 토큰 기반 디자인 시스템 1차 적용
+
+즉 지금은 "아이디어 단계"는 지났고, "데이터와 연습 흐름이 연결된 초기 제품 구조"까지는 와 있다.
+
+## 3. 현재 가장 중요한 방향
+
+지금부터는 새 기능을 계속 붙이기보다 아래 두 가지를 우선해야 한다.
+
+- 데이터 흐름을 한 군데로 통일한다.
+- 연습 코어를 더 믿을 수 있게 만든다.
+
+즉 앞으로의 우선순위는 다음과 같다.
+
+1. 로컬 샘플 의존 제거
+2. Supabase 중심 데이터 구조 정리
+3. React Query 패턴 정착
+4. 연습 판정 엔진 고도화
+5. 게임 모드 확장 준비
+
+## 4. 단계별 로드맵
+
+### Phase 1. 데이터 소스 통일
+
+목표:
+
+- `sampleCharacters` 중심 구조를 없앤다.
+- 목록 / 상세 / 연습 화면이 같은 원격 데이터 기준으로 동작하게 만든다.
+
+해야 할 일:
+
+- `kanji_characters`를 앱 기준 테이블로 확장
+- 뜻, 음독/훈독, JLPT, 학년, 예문 등 메타데이터 구조 추가
+- `kanji_categories` / `kanji_character_categories`를 추가해 한자가 여러 카테고리에 동시에 속할 수 있게 구성
+- `useKanjiListQuery`
+- `useKanjiDetailQuery`
+- `useKanjiStrokeDataQuery`
+  형태로 query hook 분리
+- 목록 / 상세 / 연습 화면을 Supabase 기준으로 통일
+
+차후 todo:
+
+- `Mazii`를 `KanjiVG` 보완용 stroke 소스로 쓸 수 있는지 조사
+- 조사 기준은 [mazii-stroke-source-checklist.md](/Users/kangmihye/Desktop/study/seodang/docs/mazii-stroke-source-checklist.md:1)를 따른다
+- 목표는 `KanjiVG`에 없는 한자의 `stroke order / path`를 안정적으로 확보할 수 있는지 판단하는 것
+- 라이선스, 추출 안정성, 현재 `kanji_strokes` 스키마 변환 가능성까지 함께 검토
+- 같은 작업 묶음에서 현재 `meaning_ko`, `meaning_ja`가 `뜻미상`으로 남아 있는 항목도 함께 보강
+- `AnimCJK`를 `KanjiVG` 1차 보완 소스로 우선 검토
+- 현재 확인 결과 `reviewOnly 6148` 중 `388`자가 `AnimCJK svgsJa`로 커버된다
+- 비교 결과 파일: [animcjk-covered-reviewonly.generated.json](/Users/kangmihye/Desktop/study/seodang/data/generated/animcjk-covered-reviewonly.generated.json:1)
+- 다음 단계는 `AnimCJK SVG -> kanji_characters / kanji_strokes` 변환 후 적재 테스트
+
+완료 기준:
+
+- 앱에서 한자 정보를 로컬 샘플 없이 불러온다.
+- 연습 화면도 같은 데이터 체계를 사용한다.
+
+현재 관련 스크립트:
+
+- 메타데이터 생성: [build-kanji-metadata-from-sources.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/build-kanji-metadata-from-sources.mjs:1)
+- 메타데이터 업서트: [supabase-upsert-kanji-metadata.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/supabase-upsert-kanji-metadata.mjs:1)
+- 소스 차집합 리포트: [report-kanji-source-set-diff.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/report-kanji-source-set-diff.mjs:1)
+- Mazii 프로브: [probe-mazii-strokes.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/probe-mazii-strokes.mjs:1)
+- Mazii 지원 문자 필터: [filter-mazii-supported-kanji.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/filter-mazii-supported-kanji.mjs:1)
+- AnimCJK 변환: [build-animcjk-import-from-covered.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/build-animcjk-import-from-covered.mjs:1)
+- AnimCJK 업서트: [supabase-upsert-animcjk-import.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/supabase-upsert-animcjk-import.mjs:1)
+
+### Phase 2. 서버 상태 구조 정리
+
+목표:
+
+- React Query를 앱 전반의 서버 상태 표준으로 정착시킨다.
+
+해야 할 일:
+
+- query key 규칙 정리
+- stale time / refetch 전략 정리
+- 공통 fetch helper 정리
+- 로딩 / 에러 / empty 상태 UI 패턴 통일
+
+추천 query key 예시:
+
+```text
+["kanji-list", filters]
+["kanji-detail", characterId]
+["kanji-stroke-data", literal]
+```
+
+완료 기준:
+
+- 화면별 직접 `fetch`가 사라진다.
+- 원격 데이터 로딩 방식이 예측 가능해진다.
+
+### Phase 3. 연습 엔진 정리
+
+목표:
+
+- 지금의 1차 판정을 "실제 학습에 쓸 수 있는 수준"으로 끌어올린다.
+
+현재 상태:
+
+- 획 수
+- 획 방향
+- 시작점 / 끝점
+
+앞으로 추가할 것:
+
+- 획 형태 유사도
+- 곡선 / 꺾임 반영
+- 획순 오류 피드백 구체화
+- 난이도별 판정 기준
+  - 쉬움
+  - 보통
+  - 엄격
+
+완료 기준:
+
+- 단순 점수뿐 아니라 "왜 틀렸는지"를 더 납득 가능하게 보여준다.
+
+### Phase 4. 디자인 시스템 확장
+
+목표:
+
+- 지금의 토큰 중심 스타일을 재사용 가능한 컴포넌트 시스템으로 키운다.
+
+해야 할 일:
+
+- `AppText`
+- `AppButton`
+- `Card`
+- `Chip`
+- `SectionHeader`
+  같은 공통 컴포넌트 추가
+- 화면별 중복 스타일 제거
+- spacing / radius / text scale 일관화
+
+완료 기준:
+
+- 새 화면을 만들 때 하드코딩 스타일을 덜 쓰게 된다.
+
+### Phase 5. 오프라인 / 캐시 전략
+
+목표:
+
+- 네트워크가 느리거나 없는 상황에서도 최소 동작을 보장한다.
+
+해야 할 일:
+
+- 자주 보는 한자 캐시 전략
+- 최근 학습 한자 로컬 보존
+- Supabase 조회 실패 시 fallback 정의
+- 초기 로딩 속도 개선
+
+완료 기준:
+
+- 연습 진입 시 체감 속도가 안정적이다.
+- 네트워크 문제에 덜 취약해진다.
+
+### Phase 6. 게임 모드 준비
+
+목표:
+
+- 나중에 미니게임을 붙일 수 있도록 연습 코어와 게임 규칙을 분리한다.
+
+핵심 원칙:
+
+- `한자 데이터`
+- `stroke 판정`
+- `진도 관리`
+- `게임 규칙`
+
+이 네 가지를 분리한다.
+
+예상 게임 모드:
+
+- 떨어지는 한자 쓰기
+- 제한시간 모드
+- 연속 콤보 모드
+- 타자연습 느낌의 속도전 모드
+
+완료 기준:
+
+- 일반 학습 모드 위에 게임 모드를 얹을 수 있는 구조가 된다.
+
+## 5. 추천 우선순위
+
+지금 당장 가장 먼저 할 일은 아래 순서가 맞다.
+
+1. Supabase 메타데이터 구조 확장
+2. 목록 / 상세 / 연습 데이터 소스 통일
+3. React Query hook 구조 정리
+4. `sampleCharacters` 완전 제거
+5. 연습 판정 엔진 고도화
+
+즉 "게임 추가"보다 먼저, "데이터와 연습 흐름을 정리하는 것"이 맞다.
+
+## 6. 이번 프로젝트의 현실적인 중간 목표
+
+가장 현실적인 중간 목표는 다음과 같다.
+
+- Supabase에서 한자 목록을 읽는다.
+- 상세 화면에서 뜻 / 읽기 / 예문 / stroke를 함께 보여준다.
+- 연습 화면이 그 데이터를 기준으로 판정한다.
+- 결과와 복습이 다시 로컬 진도와 연결된다.
+
+이 단계까지만 와도, 앱은 꽤 명확한 MVP가 된다.
+
+## 7. 한 줄 결론
+
+지금은 구조를 갈아엎을 단계가 아니라, 이미 만들어진 틀을 정리하고 확장하는 단계다.
+
+다음 핵심 작업은 `sampleCharacters` 제거와 `Supabase 중심 데이터 통일`이다.
