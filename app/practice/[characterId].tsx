@@ -1,9 +1,9 @@
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { useRef, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 
 import { WritingCanvas } from "../../src/components/practice/WritingCanvas";
-import { Screen, ScreenHandle } from "../../src/components/common/Screen";
+import { Screen } from "../../src/components/common/Screen";
 import { getCharacterMeaning } from "../../src/data/characters";
 import { spacing, useTheme } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
@@ -14,6 +14,8 @@ import {
 } from "../../src/queries/kanjiQueries";
 import { CanvasSize, InputStroke } from "../../src/types/practice";
 
+const SCROLL_RESTORE_DELAY_MS = 1200;
+
 export default function PracticeScreen() {
   const router = useRouter();
   const { characterId, categoryKey } = useLocalSearchParams<{
@@ -23,10 +25,23 @@ export default function PracticeScreen() {
   const normalizedCategoryKey = Array.isArray(categoryKey) ? categoryKey[0] : categoryKey;
   const { data: character, isLoading: isCharacterLoading } = useKanjiCharacterQuery(characterId);
   const { locale, t } = useI18n();
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height && width >= 700;
+  const isCompactLandscape = isLandscape && height < 520;
+  const screenScrollEnabled = !isLandscape;
   const { buttonStyles, chipStyles, colors, surfaceStyles, textStyles } = useTheme();
-  const styles = createStyles({ buttonStyles, chipStyles, colors, surfaceStyles, textStyles });
-  const screenRef = useRef<ScreenHandle>(null);
+  const styles = createStyles({
+    buttonStyles,
+    chipStyles,
+    colors,
+    isCompactLandscape,
+    isLandscape,
+    surfaceStyles,
+    textStyles,
+  });
+  const scrollRestoreTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showGuide, setShowGuide] = useState(false);
+  const [isCanvasInteracting, setIsCanvasInteracting] = useState(false);
   const [strokes, setStrokes] = useState<InputStroke[]>([]);
   const [canvasSize, setCanvasSize] = useState<CanvasSize>({
     width: 0,
@@ -37,6 +52,34 @@ export default function PracticeScreen() {
     isLoading: isGuideLoading,
     isError: isGuideLoadError,
   } = useKanjiStrokeDataQuery(character?.literal);
+
+  useEffect(() => {
+    return () => {
+      if (scrollRestoreTimerRef.current) {
+        clearTimeout(scrollRestoreTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleCanvasInteractionStart = () => {
+    if (scrollRestoreTimerRef.current) {
+      clearTimeout(scrollRestoreTimerRef.current);
+      scrollRestoreTimerRef.current = null;
+    }
+
+    setIsCanvasInteracting(true);
+  };
+
+  const handleCanvasInteractionEnd = () => {
+    if (scrollRestoreTimerRef.current) {
+      clearTimeout(scrollRestoreTimerRef.current);
+    }
+
+    scrollRestoreTimerRef.current = setTimeout(() => {
+      setIsCanvasInteracting(false);
+      scrollRestoreTimerRef.current = null;
+    }, SCROLL_RESTORE_DELAY_MS);
+  };
 
   if (isCharacterLoading) {
     return (
@@ -80,8 +123,8 @@ export default function PracticeScreen() {
     });
   };
 
-  return (
-    <Screen ref={screenRef}>
+  const headerPanel = (
+    <>
       <View style={styles.headerCard}>
         <Text style={styles.caption}>{t("practice.target")}</Text>
         <Text style={styles.literal}>{character.literal}</Text>
@@ -121,44 +164,74 @@ export default function PracticeScreen() {
           <Text style={styles.toolChipText}>{t("practice.undoStroke")}</Text>
         </Pressable>
       </View>
+    </>
+  );
 
-      <View style={styles.canvasCard}>
-        <WritingCanvas
-          showGuide={showGuide}
-          guideData={kanjiStrokeData}
-          strokes={strokes}
-          onChange={setStrokes}
-          onCanvasLayout={setCanvasSize}
-          onInteractionStart={() => screenRef.current?.setScrollEnabled(false)}
-          onInteractionEnd={() => screenRef.current?.setScrollEnabled(true)}
-        />
-        <Text style={styles.canvasHint}>{t("practice.canvasHint")}</Text>
-        {isGuideLoadError ? (
-          <Text style={styles.canvasSubHint}>{t("practice.loadGuideError")}</Text>
-        ) : null}
-        {!isGuideLoading && !isGuideLoadError && !kanjiStrokeData ? (
-          <Text style={styles.canvasSubHint}>{t("practice.missingGuide")}</Text>
-        ) : null}
-      </View>
+  const canvasPanel = (
+    <View style={styles.canvasCard}>
+      <WritingCanvas
+        fillMode={isLandscape}
+        showGuide={showGuide}
+        guideData={kanjiStrokeData}
+        strokes={strokes}
+        onChange={setStrokes}
+        onCanvasLayout={setCanvasSize}
+        onInteractionStart={handleCanvasInteractionStart}
+        onInteractionEnd={handleCanvasInteractionEnd}
+      />
+      <Text style={styles.canvasHint}>{t("practice.canvasHint")}</Text>
+      {isGuideLoadError ? (
+        <Text style={styles.canvasSubHint}>{t("practice.loadGuideError")}</Text>
+      ) : null}
+      {!isGuideLoading && !isGuideLoadError && !kanjiStrokeData ? (
+        <Text style={styles.canvasSubHint}>{t("practice.missingGuide")}</Text>
+      ) : null}
+    </View>
+  );
 
-      <View style={styles.actions}>
-        <Pressable
-          style={styles.secondaryButton}
-          onPress={() => setStrokes([])}
-        >
-          <Text style={styles.secondaryLabel}>{t("practice.reset")}</Text>
-        </Pressable>
-        <Pressable
-          style={[
-            styles.primaryButton,
-            strokes.length === 0 && styles.primaryButtonDisabled,
-          ]}
-          onPress={handleSubmit}
-          disabled={strokes.length === 0}
-        >
-          <Text style={styles.primaryLabel}>{t("practice.submit")}</Text>
-        </Pressable>
-      </View>
+  const actionPanel = (
+    <View style={styles.actions}>
+      <Pressable
+        style={styles.secondaryButton}
+        onPress={() => setStrokes([])}
+      >
+        <Text style={styles.secondaryLabel}>{t("practice.reset")}</Text>
+      </Pressable>
+      <Pressable
+        style={[
+          styles.primaryButton,
+          strokes.length === 0 && styles.primaryButtonDisabled,
+        ]}
+        onPress={handleSubmit}
+        disabled={strokes.length === 0}
+      >
+        <Text style={styles.primaryLabel}>{t("practice.submit")}</Text>
+      </Pressable>
+    </View>
+  );
+
+  return (
+    <Screen
+      scrollContainer={!isLandscape}
+      scrollEnabled={screenScrollEnabled && !isCanvasInteracting}
+    >
+      {isLandscape ? (
+        <View style={styles.landscapeLayout}>
+          <View style={styles.landscapeSide}>
+            {headerPanel}
+            {actionPanel}
+          </View>
+          <View style={styles.landscapeCanvas}>
+            {canvasPanel}
+          </View>
+        </View>
+      ) : (
+        <>
+          {headerPanel}
+          {canvasPanel}
+          {actionPanel}
+        </>
+      )}
     </Screen>
   );
 }
@@ -167,16 +240,34 @@ function createStyles({
   buttonStyles,
   chipStyles,
   colors,
+  isLandscape,
+  isCompactLandscape,
   surfaceStyles,
   textStyles,
 }: any) {
   return StyleSheet.create({
+    landscapeLayout: {
+      flexDirection: "row",
+      alignItems: "stretch",
+      gap: spacing[5],
+      flex: 1,
+      width: "100%",
+    },
+    landscapeSide: {
+      flex: isCompactLandscape ? 0.72 : 0.9,
+      minWidth: isCompactLandscape ? 236 : 280,
+      maxWidth: isCompactLandscape ? 300 : 380,
+    },
+    landscapeCanvas: {
+      flex: 1.2,
+      minWidth: 360,
+    },
     headerCard: {
       ...surfaceStyles.card,
       borderRadius: 28,
-      padding: spacing[7],
+      padding: isCompactLandscape ? spacing[4] : isLandscape ? spacing[5] : spacing[7],
       alignItems: "center",
-      marginBottom: spacing[4],
+      marginBottom: isCompactLandscape ? spacing[3] : spacing[4],
     },
     caption: {
       ...textStyles.eyebrow,
@@ -184,19 +275,25 @@ function createStyles({
     },
     literal: {
       ...textStyles.glyphLg,
+      fontSize: isCompactLandscape ? 42 : isLandscape ? 54 : textStyles.glyphLg.fontSize,
       marginBottom: 6,
     },
     meaning: {
-      fontSize: 17,
+      fontSize: isCompactLandscape ? 14 : 17,
       color: colors.inkBody,
       fontWeight: "700",
     },
     toolbar: {
       flexDirection: "row",
-      gap: spacing[2] + 2,
-      marginBottom: spacing[4],
+      flexWrap: "wrap",
+      gap: isCompactLandscape ? spacing[2] : spacing[2] + 2,
+      marginBottom: isCompactLandscape ? spacing[3] : spacing[4],
     },
-    toolChip: chipStyles.base,
+    toolChip: {
+      ...chipStyles.base,
+      paddingHorizontal: isCompactLandscape ? 10 : chipStyles.base.paddingHorizontal,
+      paddingVertical: isCompactLandscape ? 7 : chipStyles.base.paddingVertical,
+    },
     toolChipActive: {
       ...chipStyles.active,
       backgroundColor: colors.accentWarm,
@@ -214,14 +311,19 @@ function createStyles({
     canvasCard: {
       ...surfaceStyles.card,
       borderRadius: 28,
-      padding: 18,
-      marginBottom: 16,
+      padding: isLandscape ? 10 : 18,
+      marginBottom: isLandscape ? 0 : 16,
+      width: "100%",
+      flex: isLandscape ? 1 : undefined,
+      maxHeight: isLandscape ? "100%" : undefined,
     },
     canvasHint: {
       ...textStyles.bodySm,
+      display: isLandscape ? "none" : "flex",
       marginTop: 14,
     },
     canvasSubHint: {
+      display: isLandscape ? "none" : "flex",
       fontSize: 12,
       lineHeight: 18,
       color: colors.accentWarmMuted,
@@ -230,11 +332,14 @@ function createStyles({
     },
     actions: {
       flexDirection: "row",
-      gap: spacing[3],
-      marginBottom: 20,
+      gap: isCompactLandscape ? spacing[2] : spacing[3],
+      marginTop: isLandscape ? "auto" : 0,
+      marginBottom: isLandscape ? 0 : 20,
+      width: "100%",
     },
     secondaryButton: {
       ...buttonStyles.secondary,
+      paddingVertical: isCompactLandscape ? 10 : buttonStyles.secondary.paddingVertical,
       flex: 1,
     },
     secondaryLabel: {
@@ -244,6 +349,7 @@ function createStyles({
     primaryButton: {
       ...buttonStyles.primary,
       backgroundColor: colors.accentWarm,
+      paddingVertical: isCompactLandscape ? 10 : buttonStyles.primary.paddingVertical,
       flex: 1,
     },
     primaryButtonDisabled: {
