@@ -27,12 +27,14 @@ export default function PracticeScreen() {
   const { locale, t } = useI18n();
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height && width >= 700;
+  const isCompactLandscape = isLandscape && height < 520;
   const screenScrollEnabled = !isLandscape;
   const { buttonStyles, chipStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({
     buttonStyles,
     chipStyles,
     colors,
+    isCompactLandscape,
     isLandscape,
     surfaceStyles,
     textStyles,
@@ -168,6 +170,7 @@ export default function PracticeScreen() {
   const canvasPanel = (
     <View style={styles.canvasCard}>
       <WritingCanvas
+        fillMode={isLandscape}
         showGuide={showGuide}
         guideData={kanjiStrokeData}
         strokes={strokes}
@@ -208,7 +211,10 @@ export default function PracticeScreen() {
   );
 
   return (
-    <Screen scrollEnabled={screenScrollEnabled && !isCanvasInteracting}>
+    <Screen
+      scrollContainer={!isLandscape}
+      scrollEnabled={screenScrollEnabled && !isCanvasInteracting}
+    >
       {isLandscape ? (
         <View style={styles.landscapeLayout}>
           <View style={styles.landscapeSide}>
@@ -235,6 +241,7 @@ function createStyles({
   chipStyles,
   colors,
   isLandscape,
+  isCompactLandscape,
   surfaceStyles,
   textStyles,
 }: any) {
@@ -247,22 +254,20 @@ function createStyles({
       width: "100%",
     },
     landscapeSide: {
-      flex: 0.9,
-      justifyContent: "space-between",
-      minWidth: 280,
-      maxWidth: 380,
+      flex: isCompactLandscape ? 0.72 : 0.9,
+      minWidth: isCompactLandscape ? 236 : 280,
+      maxWidth: isCompactLandscape ? 300 : 380,
     },
     landscapeCanvas: {
       flex: 1.2,
-      justifyContent: "center",
       minWidth: 360,
     },
     headerCard: {
       ...surfaceStyles.card,
       borderRadius: 28,
-      padding: isLandscape ? spacing[5] : spacing[7],
+      padding: isCompactLandscape ? spacing[4] : isLandscape ? spacing[5] : spacing[7],
       alignItems: "center",
-      marginBottom: spacing[4],
+      marginBottom: isCompactLandscape ? spacing[3] : spacing[4],
     },
     caption: {
       ...textStyles.eyebrow,
@@ -270,21 +275,25 @@ function createStyles({
     },
     literal: {
       ...textStyles.glyphLg,
-      fontSize: isLandscape ? 54 : textStyles.glyphLg.fontSize,
+      fontSize: isCompactLandscape ? 42 : isLandscape ? 54 : textStyles.glyphLg.fontSize,
       marginBottom: 6,
     },
     meaning: {
-      fontSize: 17,
+      fontSize: isCompactLandscape ? 14 : 17,
       color: colors.inkBody,
       fontWeight: "700",
     },
     toolbar: {
       flexDirection: "row",
       flexWrap: "wrap",
-      gap: spacing[2] + 2,
-      marginBottom: spacing[4],
+      gap: isCompactLandscape ? spacing[2] : spacing[2] + 2,
+      marginBottom: isCompactLandscape ? spacing[3] : spacing[4],
     },
-    toolChip: chipStyles.base,
+    toolChip: {
+      ...chipStyles.base,
+      paddingHorizontal: isCompactLandscape ? 10 : chipStyles.base.paddingHorizontal,
+      paddingVertical: isCompactLandscape ? 7 : chipStyles.base.paddingVertical,
+    },
     toolChipActive: {
       ...chipStyles.active,
       backgroundColor: colors.accentWarm,
@@ -305,6 +314,7 @@ function createStyles({
       padding: isLandscape ? 10 : 18,
       marginBottom: isLandscape ? 0 : 16,
       width: "100%",
+      flex: isLandscape ? 1 : undefined,
       maxHeight: isLandscape ? "100%" : undefined,
     },
     canvasHint: {
@@ -322,12 +332,14 @@ function createStyles({
     },
     actions: {
       flexDirection: "row",
-      gap: spacing[3],
+      gap: isCompactLandscape ? spacing[2] : spacing[3],
+      marginTop: isLandscape ? "auto" : 0,
       marginBottom: isLandscape ? 0 : 20,
       width: "100%",
     },
     secondaryButton: {
       ...buttonStyles.secondary,
+      paddingVertical: isCompactLandscape ? 10 : buttonStyles.secondary.paddingVertical,
       flex: 1,
     },
     secondaryLabel: {
@@ -337,6 +349,7 @@ function createStyles({
     primaryButton: {
       ...buttonStyles.primary,
       backgroundColor: colors.accentWarm,
+      paddingVertical: isCompactLandscape ? 10 : buttonStyles.primary.paddingVertical,
       flex: 1,
     },
     primaryButtonDisabled: {

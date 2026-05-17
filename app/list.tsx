@@ -82,7 +82,7 @@ export default function CharacterListScreen() {
 
   if (isError) {
     return (
-      <Screen contentStyle={styles.content} scrollEnabled={false}>
+      <Screen contentStyle={styles.content} scrollContainer={false}>
         <View>
           <View style={styles.emptyCard}>
             <Text style={styles.emptyTitle}>{t("list.errorTitle")}</Text>
@@ -94,7 +94,7 @@ export default function CharacterListScreen() {
   }
 
   return (
-    <Screen contentStyle={styles.screenContent} scrollEnabled={false}>
+    <Screen contentStyle={styles.screenContent} scrollContainer={false}>
       <FlatList
         data={filteredItems}
         keyExtractor={(character) => character.id}

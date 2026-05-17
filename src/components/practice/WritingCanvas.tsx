@@ -11,6 +11,7 @@ import Svg, { Line, Path } from "react-native-svg";
 import { CanvasPoint, InputStroke, KanjiVgCharacter } from "../../types/practice";
 
 type WritingCanvasProps = {
+  fillMode?: boolean;
   showGuide: boolean;
   guideData?: KanjiVgCharacter;
   strokes: InputStroke[];
@@ -21,6 +22,7 @@ type WritingCanvasProps = {
 };
 
 export const WritingCanvas = memo(function WritingCanvas({
+  fillMode = false,
   showGuide,
   guideData,
   strokes,
@@ -145,7 +147,7 @@ export const WritingCanvas = memo(function WritingCanvas({
   return (
     <View
       collapsable={false}
-      style={styles.canvas}
+      style={[styles.canvas, fillMode && styles.fillCanvas]}
       onLayout={handleLayout}
       onPointerDownCapture={onInteractionStart}
       onPointerMoveCapture={onInteractionStart}
@@ -318,6 +320,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fcf7ef",
     overflow: "hidden",
     position: "relative",
+  },
+  fillCanvas: {
+    aspectRatio: undefined,
+    flex: 1,
+    minHeight: 0,
   },
   guideOverlay: {
     ...StyleSheet.absoluteFillObject,
