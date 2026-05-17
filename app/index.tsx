@@ -1,7 +1,6 @@
 import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Screen } from "../src/components/common/Screen";
 import { spacing, useTheme } from "../src/design/theme";
@@ -29,99 +28,93 @@ export default function HomeScreen() {
     );
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <Screen>
-        <View style={styles.hero}>
-          <View style={styles.heroTopRow}>
-            <Text style={styles.title}>{t("home.title")}</Text>
-            <View style={styles.headerActions}>
-              <Pressable
-                onPress={() => router.push("/search")}
-                style={styles.iconButton}
-              >
-                <Ionicons
-                  name="search-outline"
-                  size={18}
-                  color={colors.inkStrong}
-                />
-              </Pressable>
-              <Pressable
-                onPress={() => router.push("/settings")}
-                style={styles.iconButton}
-              >
-                <Ionicons
-                  name="settings-outline"
-                  size={18}
-                  color={colors.inkStrong}
-                />
-              </Pressable>
-            </View>
+    <Screen edges={["top", "left", "right", "bottom"]}>
+      <View style={styles.hero}>
+        <View style={styles.heroTopRow}>
+          <Text style={styles.title}>{t("home.title")}</Text>
+          <View style={styles.headerActions}>
+            <Pressable
+              onPress={() => router.push("/search")}
+              style={styles.iconButton}
+            >
+              <Ionicons
+                name="search-outline"
+                size={18}
+                color={colors.inkStrong}
+              />
+            </Pressable>
+            <Pressable
+              onPress={() => router.push("/settings")}
+              style={styles.iconButton}
+            >
+              <Ionicons
+                name="settings-outline"
+                size={18}
+                color={colors.inkStrong}
+              />
+            </Pressable>
           </View>
-          <Text style={styles.subtitle}>{t("home.subtitle")}</Text>
         </View>
+        <Text style={styles.subtitle}>{t("home.subtitle")}</Text>
+      </View>
 
+      <Pressable
+        onPress={() => router.push("/categories")}
+        style={[styles.primaryCard, styles.shadow]}
+      >
+        <Text style={styles.primaryLabel}>{t("home.start")}</Text>
+        <Text style={styles.primaryBody}>{t("home.startBody")}</Text>
+      </Pressable>
+
+      <View style={styles.row}>
         <Pressable
-          onPress={() => router.push("/categories")}
-          style={[styles.primaryCard, styles.shadow]}
+          onPress={() => router.push("/favorites")}
+          style={[styles.actionCard, styles.shadow]}
         >
-          <Text style={styles.primaryLabel}>{t("home.start")}</Text>
-          <Text style={styles.primaryBody}>{t("home.startBody")}</Text>
+          <View style={styles.actionCardTop}>
+            <Text style={styles.actionTitle}>{t("home.favorites")}</Text>
+            <Text style={styles.actionValue}>
+              {hydrated ? favoriteCount : "-"}
+            </Text>
+          </View>
+          <Text style={styles.actionBody}>{t("home.favoritesBody")}</Text>
         </Pressable>
 
-        <View style={styles.row}>
-          <Pressable
-            onPress={() => router.push("/favorites")}
-            style={[styles.actionCard, styles.shadow]}
-          >
-            <View style={styles.actionCardTop}>
-              <Text style={styles.actionTitle}>{t("home.favorites")}</Text>
-              <Text style={styles.actionValue}>
-                {hydrated ? favoriteCount : "-"}
-              </Text>
-            </View>
-            <Text style={styles.actionBody}>{t("home.favoritesBody")}</Text>
-          </Pressable>
-
-          <Pressable
-            onPress={() =>
-              lastCompletedPractice?.characterId
-                ? router.push({
-                    pathname: "/practice/[characterId]",
-                    params: {
-                      characterId: lastCompletedPractice.characterId,
-                      categoryKey: lastCompletedPractice.categoryKey,
-                    },
-                  })
-                : router.push("/categories")
-            }
-            style={[styles.actionCard, styles.shadow]}
-          >
-            <View style={styles.actionCardTop}>
-              <Text style={styles.actionTitle}>{t("home.recentPractice")}</Text>
-              <Text style={styles.actionValue}>
-                {lastCharacter?.literal ?? "-"}
-              </Text>
-            </View>
-            <Text style={styles.actionBody}>
-              {lastCharacter
-                ? t("home.recentPracticeBodyReady", {
-                    category: lastCategory?.label ?? t("nav.categories"),
-                  })
-                : t("home.recentPracticeBodyEmpty")}
+        <Pressable
+          onPress={() =>
+            lastCompletedPractice?.characterId
+              ? router.push({
+                  pathname: "/practice/[characterId]",
+                  params: {
+                    characterId: lastCompletedPractice.characterId,
+                    categoryKey: lastCompletedPractice.categoryKey,
+                  },
+                })
+              : router.push("/categories")
+          }
+          style={[styles.actionCard, styles.shadow]}
+        >
+          <View style={styles.actionCardTop}>
+            <Text style={styles.actionTitle}>{t("home.recentPractice")}</Text>
+            <Text style={styles.actionValue}>
+              {lastCharacter?.literal ?? "-"}
             </Text>
-          </Pressable>
-        </View>
-      </Screen>
-    </SafeAreaView>
+          </View>
+          <Text style={styles.actionBody}>
+            {lastCharacter
+              ? t("home.recentPracticeBodyReady", {
+                  category: lastCategory?.label ?? t("nav.categories"),
+                })
+              : t("home.recentPracticeBodyEmpty")}
+          </Text>
+        </Pressable>
+      </View>
+    </Screen>
   );
 }
 
 function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
   return StyleSheet.create({
-    safeArea: {
-      flex: 1,
-      backgroundColor: colors.bgCanvas,
-    },
     hero: {
       marginBottom: spacing[7],
       gap: spacing[2] + 2,

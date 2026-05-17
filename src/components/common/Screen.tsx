@@ -1,53 +1,54 @@
 import {
-  forwardRef,
   PropsWithChildren,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
 } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  ScrollView,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import type { Edge } from "react-native-safe-area-context";
 import { layout, useTheme } from "../../design/theme";
 
 type ScreenProps = PropsWithChildren<{
+  contentStyle?: StyleProp<ViewStyle>;
+  edges?: Edge[];
   scrollEnabled?: boolean;
 }>;
 
-export type ScreenHandle = {
-  setScrollEnabled: (enabled: boolean) => void;
-};
-
-export const Screen = forwardRef<ScreenHandle, ScreenProps>(function Screen(
-  { children, scrollEnabled = true },
-  ref,
-) {
-  const scrollRef = useRef<ScrollView>(null);
-  const [isScrollEnabled, setIsScrollEnabled] = useState(scrollEnabled);
+export function Screen({
+  children,
+  contentStyle,
+  edges = ["left", "right", "bottom"],
+  scrollEnabled = true,
+}: ScreenProps) {
   const { colors } = useTheme();
 
-  useEffect(() => {
-    setIsScrollEnabled(scrollEnabled);
-  }, [scrollEnabled]);
-
-  useImperativeHandle(ref, () => ({
-    setScrollEnabled(enabled: boolean) {
-      setIsScrollEnabled(enabled);
-      scrollRef.current?.setNativeProps({ scrollEnabled: enabled });
-    },
-  }));
-
   return (
-    <View style={[styles.safeArea, { backgroundColor: colors.bgCanvas }]}>
-      <ScrollView
-        ref={scrollRef}
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-        scrollEnabled={isScrollEnabled}
-      >
-        {children}
-      </ScrollView>
-    </View>
+    <SafeAreaView
+      edges={edges}
+      style={[styles.safeArea, { backgroundColor: colors.bgCanvas }]}
+    >
+      {!scrollEnabled ? (
+        <View style={[styles.content, styles.staticContent, contentStyle]}>
+          {children}
+        </View>
+      ) : (
+        <ScrollView
+          contentContainerStyle={[styles.content, contentStyle]}
+          showsVerticalScrollIndicator={false}
+        >
+          {children}
+        </ScrollView>
+      )}
+    </SafeAreaView>
   );
+}
+
+Object.defineProperty(Screen, "displayName", {
+  value: "Screen",
 });
 
 const styles = StyleSheet.create({
@@ -58,5 +59,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: layout.screenPaddingX,
     paddingTop: layout.screenPaddingTop,
     paddingBottom: layout.screenPaddingBottom,
+  },
+  staticContent: {
+    flex: 1,
   },
 });

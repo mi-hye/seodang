@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useRouter } from "expo-router";
-import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
 import { radius, spacing, useTheme } from "../src/design/theme";
@@ -11,8 +11,10 @@ export default function CategoriesScreen() {
   const router = useRouter();
   const { locale, t } = useI18n();
   const { data, isLoading, isError } = useKanjiCategoryGroupsQuery(locale);
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height && width >= 700;
   const { colors, surfaceStyles, textStyles } = useTheme();
-  const styles = createStyles({ colors, surfaceStyles, textStyles });
+  const styles = createStyles({ colors, isLandscape, surfaceStyles, textStyles });
   const visibleGroups = (data ?? [])
     .map((group) => ({
       ...group,
@@ -23,70 +25,75 @@ export default function CategoriesScreen() {
     .filter((group) => group.categories.length > 0);
 
   return (
-    <Screen>
-      {isLoading ? <CategoriesSkeleton /> : null}
+    <Screen contentStyle={styles.screenContent}>
+      <View style={styles.content}>
+        {isLoading ? <CategoriesSkeleton isLandscape={isLandscape} /> : null}
 
-      {isError ? (
-        <View style={styles.placeholderCard}>
-          <Text style={styles.placeholderTitle}>
-            {t("categories.errorTitle")}
-          </Text>
-          <Text style={styles.placeholderBody}>
-            {t("categories.errorBody")}
-          </Text>
-        </View>
-      ) : null}
+        {isError ? (
+          <View style={styles.placeholderCard}>
+            <Text style={styles.placeholderTitle}>
+              {t("categories.errorTitle")}
+            </Text>
+            <Text style={styles.placeholderBody}>
+              {t("categories.errorBody")}
+            </Text>
+          </View>
+        ) : null}
 
-      {!isLoading && !isError && !visibleGroups.length ? (
-        <View style={styles.placeholderCard}>
-          <Text style={styles.placeholderTitle}>
-            {t("categories.emptyTitle")}
-          </Text>
-          <Text style={styles.placeholderBody}>
-            {t("categories.emptyBody")}
-          </Text>
-        </View>
-      ) : null}
+        {!isLoading && !isError && !visibleGroups.length ? (
+          <View style={styles.placeholderCard}>
+            <Text style={styles.placeholderTitle}>
+              {t("categories.emptyTitle")}
+            </Text>
+            <Text style={styles.placeholderBody}>
+              {t("categories.emptyBody")}
+            </Text>
+          </View>
+        ) : null}
 
-      {!isLoading && !isError
-        ? visibleGroups.map((group) => (
-            <View key={group.id} style={styles.groupSection}>
-              <View style={styles.groupHeader}>
-                <Text style={styles.groupTitle}>{group.label}</Text>
-                {group.description ? (
-                  <Text style={styles.groupBody}>{group.description}</Text>
-                ) : null}
+        {!isLoading && !isError
+          ? visibleGroups.map((group) => (
+              <View key={group.id} style={styles.groupSection}>
+                <View style={styles.groupHeader}>
+                  <Text style={styles.groupTitle}>{group.label}</Text>
+                  {group.description ? (
+                    <Text style={styles.groupBody}>{group.description}</Text>
+                  ) : null}
+                </View>
+
+                <View style={styles.chipRow}>
+                  {group.categories.map((category) => (
+                    <Pressable
+                      key={category.id}
+                      style={styles.categoryChip}
+                      onPress={() =>
+                        router.push({
+                          pathname: "/list",
+                          params: { categoryKey: category.categoryKey },
+                        })
+                      }
+                    >
+                      <Text style={styles.categoryChipText}>
+                        {category.label}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
               </View>
-
-              <View style={styles.chipRow}>
-                {group.categories.map((category) => (
-                  <Pressable
-                    key={category.id}
-                    style={styles.categoryChip}
-                    onPress={() =>
-                      router.push({
-                        pathname: "/list",
-                        params: { categoryKey: category.categoryKey },
-                      })
-                    }
-                  >
-                    <Text style={styles.categoryChipText}>
-                      {category.label}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            </View>
-          ))
-        : null}
+            ))
+          : null}
+      </View>
     </Screen>
   );
 }
 
-function CategoriesSkeleton() {
+function CategoriesSkeleton({ isLandscape }: { isLandscape: boolean }) {
   const { colors } = useTheme();
   const opacity = useRef(new Animated.Value(0.55)).current;
-  const styles = useMemo(() => createSkeletonStyles(colors), [colors]);
+  const styles = useMemo(
+    () => createSkeletonStyles(colors, isLandscape),
+    [colors, isLandscape],
+  );
 
   useEffect(() => {
     const loop = Animated.loop(
@@ -137,14 +144,16 @@ function CategoriesSkeleton() {
   );
 }
 
-function createStyles({ colors, surfaceStyles, textStyles }: any) {
+function createStyles({ colors, isLandscape, surfaceStyles, textStyles }: any) {
   return StyleSheet.create({
-    hero: {
-      marginBottom: spacing[7],
-      gap: spacing[2],
+    content: {
+      alignSelf: "center",
+      width: "100%",
+      maxWidth: isLandscape ? 760 : undefined,
     },
-    title: textStyles.displayMd,
-    subtitle: textStyles.bodyMd,
+    screenContent: {
+      paddingTop: 0,
+    },
     placeholderCard: {
       ...surfaceStyles.card,
       padding: spacing[7],
@@ -156,15 +165,24 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
     groupSection: {
       marginBottom: spacing[7],
       gap: spacing[3],
+      alignItems: isLandscape ? "center" : "stretch",
     },
     groupHeader: {
       gap: spacing[1],
+      alignItems: isLandscape ? "center" : "stretch",
     },
-    groupTitle: textStyles.sectionTitle,
-    groupBody: textStyles.bodySm,
+    groupTitle: {
+      ...textStyles.sectionTitle,
+      textAlign: isLandscape ? "center" : "left",
+    },
+    groupBody: {
+      ...textStyles.bodySm,
+      textAlign: isLandscape ? "center" : "left",
+    },
     chipRow: {
       flexDirection: "row",
       flexWrap: "wrap",
+      justifyContent: isLandscape ? "center" : "flex-start",
       gap: spacing[2],
     },
     categoryChip: {
@@ -182,10 +200,13 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
   });
 }
 
-function createSkeletonStyles(colors: any) {
+function createSkeletonStyles(colors: any, isLandscape: boolean) {
   return StyleSheet.create({
     wrapper: {
+      alignSelf: "center",
       gap: spacing[7],
+      width: "100%",
+      maxWidth: isLandscape ? 760 : undefined,
     },
     heroLineWide: {
       width: "46%",
@@ -202,6 +223,7 @@ function createSkeletonStyles(colors: any) {
     },
     groupSection: {
       gap: spacing[3],
+      alignItems: isLandscape ? "center" : "stretch",
     },
     groupTitle: {
       width: 112,
@@ -218,6 +240,7 @@ function createSkeletonStyles(colors: any) {
     chipRow: {
       flexDirection: "row",
       flexWrap: "wrap",
+      justifyContent: isLandscape ? "center" : "flex-start",
       gap: spacing[2],
     },
     chip: {

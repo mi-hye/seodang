@@ -310,6 +310,8 @@ function buildPath(points: CanvasPoint[]) {
 const styles = StyleSheet.create({
   canvas: {
     aspectRatio: 1,
+    alignSelf: "stretch",
+    flexShrink: 1,
     borderRadius: 24,
     borderWidth: 1,
     borderColor: "#ddcfbc",
@@ -325,12 +327,6 @@ const styles = StyleSheet.create({
   guideSvg: {
     width: "100%",
     height: "100%",
-  },
-  guideCharacter: {
-    fontSize: 144,
-    color: "rgba(137, 110, 73, 0.18)",
-    fontWeight: "700",
-    lineHeight: 156,
   },
   guideLine: {
     position: "absolute",

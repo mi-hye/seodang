@@ -1,5 +1,7 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useMemo } from "react";
+import { Appearance } from "react-native";
 import {
   DarkTheme,
   DefaultTheme,
@@ -26,44 +28,54 @@ function RootNavigator() {
   const { t } = useI18n();
   const { colors, themeMode } = useTheme();
 
+  if (hydrated) {
+    Appearance.setColorScheme(themeMode);
+  }
+
+  const navigationTheme = useMemo(
+    () => ({
+      ...(themeMode === "dark" ? DarkTheme : DefaultTheme),
+      colors: {
+        ...(themeMode === "dark" ? DarkTheme.colors : DefaultTheme.colors),
+        background: colors.bgCanvas,
+        card: colors.bgCanvas,
+        text: colors.inkStrong,
+        border: "transparent",
+        primary: colors.inkStrong,
+        notification: colors.accentWarm,
+      },
+    }),
+    [colors, themeMode],
+  );
+
+  const screenOptions = useMemo(
+    () => ({
+      headerShadowVisible: false,
+      headerBackButtonDisplayMode: "minimal" as const,
+      headerStyle: {
+        backgroundColor: colors.bgCanvas,
+      },
+      headerTintColor: colors.inkStrong,
+      headerTitleStyle: {
+        fontSize: 18,
+        fontWeight: "700" as const,
+        color: colors.inkStrong,
+      },
+      contentStyle: {
+        backgroundColor: colors.bgCanvas,
+      },
+    }),
+    [colors],
+  );
+
   if (!hydrated) {
     return null;
   }
 
-  const navigationTheme = {
-    ...(themeMode === "dark" ? DarkTheme : DefaultTheme),
-    colors: {
-      ...(themeMode === "dark" ? DarkTheme.colors : DefaultTheme.colors),
-      background: colors.bgCanvas,
-      card: colors.bgCanvas,
-      text: colors.inkStrong,
-      border: "transparent",
-      primary: colors.inkStrong,
-      notification: colors.accentWarm,
-    },
-  };
-
   return (
     <ThemeProvider value={navigationTheme}>
       <StatusBar style={themeMode === "dark" ? "light" : "dark"} />
-      <Stack
-        screenOptions={{
-          headerShadowVisible: false,
-          headerBackButtonDisplayMode: "minimal",
-          headerStyle: {
-            backgroundColor: colors.bgCanvas,
-          },
-          headerTintColor: colors.inkStrong,
-          headerTitleStyle: {
-            fontSize: 18,
-            fontWeight: "700",
-            color: colors.inkStrong,
-          },
-          contentStyle: {
-            backgroundColor: colors.bgCanvas,
-          },
-        }}
-      >
+      <Stack screenOptions={screenOptions}>
         <Stack.Screen name="index" options={{ title: t("common.appName"), headerShown: false }} />
         <Stack.Screen name="list" options={{ title: t("nav.list") }} />
         <Stack.Screen

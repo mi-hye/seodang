@@ -11,6 +11,7 @@ import {
 
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
 import { KanjiLoadingScreen } from "../src/components/common/KanjiLoadingScreen";
+import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning, KanjiCharacter } from "../src/data/characters";
 import { layout, spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
@@ -81,17 +82,19 @@ export default function CharacterListScreen() {
 
   if (isError) {
     return (
-      <View style={[styles.screen, styles.content]}>
-        <View style={styles.emptyCard}>
-          <Text style={styles.emptyTitle}>{t("list.errorTitle")}</Text>
-          <Text style={styles.emptyBody}>{t("list.errorBody")}</Text>
+      <Screen contentStyle={styles.content} scrollEnabled={false}>
+        <View>
+          <View style={styles.emptyCard}>
+            <Text style={styles.emptyTitle}>{t("list.errorTitle")}</Text>
+            <Text style={styles.emptyBody}>{t("list.errorBody")}</Text>
+          </View>
         </View>
-      </View>
+      </Screen>
     );
   }
 
   return (
-    <View style={styles.screen}>
+    <Screen contentStyle={styles.screenContent} scrollEnabled={false}>
       <FlatList
         data={filteredItems}
         keyExtractor={(character) => character.id}
@@ -155,7 +158,7 @@ export default function CharacterListScreen() {
           )
         }
       />
-    </View>
+    </Screen>
   );
 }
 
@@ -231,9 +234,15 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       flex: 1,
       backgroundColor: colors.bgCanvas,
     },
+    screenContent: {
+      paddingHorizontal: 0,
+      paddingTop: 0,
+      paddingBottom: 0,
+    },
     content: {
+      flexGrow: 1,
       paddingHorizontal: layout.screenPaddingX,
-      paddingTop: layout.screenPaddingTop,
+      paddingTop: spacing[2],
       paddingBottom: layout.screenPaddingBottom,
     },
     header: {
