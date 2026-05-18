@@ -1,6 +1,13 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "expo-router";
-import { Animated, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import {
+  Animated,
+  Pressable,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
 import { radius, spacing, useTheme } from "../src/design/theme";
@@ -11,10 +18,16 @@ export default function CategoriesScreen() {
   const router = useRouter();
   const { locale, t } = useI18n();
   const { data, isLoading, isError } = useKanjiCategoryGroupsQuery(locale);
+  const [expandedGroupIds, setExpandedGroupIds] = useState<string[]>([]);
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height && width >= 700;
   const { colors, surfaceStyles, textStyles } = useTheme();
-  const styles = createStyles({ colors, isLandscape, surfaceStyles, textStyles });
+  const styles = createStyles({
+    colors,
+    isLandscape,
+    surfaceStyles,
+    textStyles,
+  });
   const visibleGroups = (data ?? [])
     .map((group) => ({
       ...group,
@@ -23,6 +36,14 @@ export default function CategoriesScreen() {
       ),
     }))
     .filter((group) => group.categories.length > 0);
+
+  const isExpanded = (groupId: string) => expandedGroupIds.includes(groupId);
+  const toggleExpanded = (groupId: string) =>
+    setExpandedGroupIds((current) =>
+      current.includes(groupId)
+        ? current.filter((id) => id !== groupId)
+        : [...current, groupId],
+    );
 
   return (
     <Screen contentStyle={styles.screenContent}>
@@ -56,29 +77,53 @@ export default function CategoriesScreen() {
               <View key={group.id} style={styles.groupSection}>
                 <View style={styles.groupHeader}>
                   <Text style={styles.groupTitle}>{group.label}</Text>
-                  {group.description ? (
-                    <Text style={styles.groupBody}>{group.description}</Text>
-                  ) : null}
                 </View>
 
-                <View style={styles.chipRow}>
-                  {group.categories.map((category) => (
-                    <Pressable
-                      key={category.id}
-                      style={styles.categoryChip}
-                      onPress={() =>
-                        router.push({
-                          pathname: "/list",
-                          params: { categoryKey: category.categoryKey },
-                        })
-                      }
-                    >
-                      <Text style={styles.categoryChipText}>
-                        {category.label}
-                      </Text>
-                    </Pressable>
-                  ))}
-                </View>
+                {(() => {
+                  const isRadicalGroup = group.groupKey === "radical";
+                  const shouldCollapse =
+                    isRadicalGroup && group.categories.length > 9;
+                  const categories =
+                    shouldCollapse && !isExpanded(group.id)
+                      ? group.categories.slice(0, 9)
+                      : group.categories;
+
+                  return (
+                    <>
+                      <View style={styles.chipRow}>
+                        {categories.map((category) => (
+                          <Pressable
+                            key={category.id}
+                            style={styles.categoryChip}
+                            onPress={() =>
+                              router.push({
+                                pathname: "/list",
+                                params: { categoryKey: category.categoryKey },
+                              })
+                            }
+                          >
+                            <Text style={styles.categoryChipText}>
+                              {category.label}
+                            </Text>
+                          </Pressable>
+                        ))}
+
+                        {shouldCollapse ? (
+                          <Pressable
+                            style={styles.moreChip}
+                            onPress={() => toggleExpanded(group.id)}
+                          >
+                            <Text style={styles.moreChipText}>
+                              {isExpanded(group.id)
+                                ? t("categories.showLess")
+                                : t("categories.showMore")}
+                            </Text>
+                          </Pressable>
+                        ) : null}
+                      </View>
+                    </>
+                  );
+                })()}
               </View>
             ))
           : null}
@@ -194,6 +239,18 @@ function createStyles({ colors, isLandscape, surfaceStyles, textStyles }: any) {
       paddingVertical: 10,
     },
     categoryChipText: {
+      ...textStyles.meta,
+      color: colors.inkStrong,
+    },
+    moreChip: {
+      backgroundColor: colors.bgCanvas,
+      borderWidth: 1,
+      borderColor: colors.borderStrong,
+      borderRadius: radius.sm,
+      paddingHorizontal: 14,
+      paddingVertical: 10,
+    },
+    moreChipText: {
       ...textStyles.meta,
       color: colors.inkStrong,
     },

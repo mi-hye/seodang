@@ -27,6 +27,16 @@ const rawKanjiMetadata = await readJsonWithFallback(
   path.join(rootDir, "data/generated/kanji-metadata.generated.json"),
   path.join(rootDir, "data/seeds/kanji-metadata.sample.json")
 );
+const generatedRadicalGroup = buildRadicalCategoryGroup();
+const generatedRadicalCategories = buildRadicalCategories();
+const allCategoryGroups = uniqueRows(
+  [...categoryGroups, generatedRadicalGroup],
+  (row) => row.id
+);
+const allCategories = uniqueRows(
+  [...categories, ...generatedRadicalCategories],
+  (row) => row.id
+);
 const existingCharacters = await fetchExistingCharacterBaseRows();
 const existingCharacterMap = new Map(existingCharacters.map((row) => [row.id, row]));
 const kanjiMetadata = rawKanjiMetadata
@@ -37,8 +47,8 @@ const filteredCharacterCategories = characterCategories.filter((row) =>
   validCharacterIds.has(row.characterId)
 );
 
-await upsertRows("kanji_category_groups", categoryGroups.map(mapCategoryGroupRow), "id");
-await upsertRows("kanji_categories", categories.map(mapCategoryRow), "id");
+await upsertRows("kanji_category_groups", allCategoryGroups.map(mapCategoryGroupRow), "id");
+await upsertRows("kanji_categories", allCategories.map(mapCategoryRow), "id");
 await upsertRows("kanji_characters", kanjiMetadata.map(mapKanjiMetadataRow), "id");
 await upsertRows(
   "kanji_character_categories",
@@ -47,7 +57,7 @@ await upsertRows(
 );
 
 console.log(
-  `Upserted ${categoryGroups.length} groups, ${categories.length} categories, ${kanjiMetadata.length} kanji metadata rows, ${filteredCharacterCategories.length} category mappings.`
+  `Upserted ${allCategoryGroups.length} groups, ${allCategories.length} categories, ${kanjiMetadata.length} kanji metadata rows, ${filteredCharacterCategories.length} category mappings.`
 );
 
 async function upsertRows(tableName, rows, conflictColumns) {
@@ -127,6 +137,43 @@ function mapKanjiMetadataRow(character) {
   };
 }
 
+function buildRadicalCategoryGroup() {
+  return {
+    id: "group_radical",
+    groupKey: "radical",
+    labelKo: "부수별",
+    labelJa: "部首別",
+    descriptionKo: "부수 기준으로 한자를 나눠 보는 분류",
+    descriptionJa: "部首を基準に漢字を見る分類",
+    sortOrder: 5,
+    isActive: true,
+  };
+}
+
+function buildRadicalCategories() {
+  return Array.from({ length: 214 }, (_, index) => {
+    const radicalNumber = index + 1;
+    const radicalSymbol = toKangxiRadicalSymbol(radicalNumber);
+
+    return {
+      id: `cat_radical_${String(radicalNumber).padStart(3, "0")}`,
+      groupId: "group_radical",
+      categoryKey: `radical_${String(radicalNumber).padStart(3, "0")}`,
+      labelKo: `${radicalNumber}부 ${radicalSymbol}`,
+      labelJa: `${radicalNumber}部 ${radicalSymbol}`,
+      descriptionKo: `${radicalNumber}부 ${radicalSymbol}에 속한 한자`,
+      descriptionJa: `${radicalNumber}部 ${radicalSymbol} に属する漢字`,
+      sortOrder: radicalNumber,
+      isActive: true,
+      metadata: {
+        visibleLocales: ["ko", "ja"],
+        radicalNumber,
+        radicalSymbol,
+      },
+    };
+  });
+}
+
 async function fetchExistingCharacterBaseRows() {
   const pageSize = 1000;
   let offset = 0;
@@ -183,6 +230,27 @@ function mapCharacterCategoryRow(row) {
     character_id: row.characterId,
     category_id: row.categoryId,
   };
+}
+
+function toKangxiRadicalSymbol(radicalNumber) {
+  if (!Number.isInteger(radicalNumber) || radicalNumber < 1 || radicalNumber > 214) {
+    return null;
+  }
+
+  return String.fromCodePoint(0x2f00 + radicalNumber - 1);
+}
+
+function uniqueRows(rows, keyFn) {
+  const seen = new Set();
+
+  return rows.filter((row) => {
+    const key = keyFn(row);
+    if (seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
 }
 
 async function readJson(filePath) {

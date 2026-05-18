@@ -24,6 +24,8 @@
   "categories.errorBody": "スキーマ適用やシード投入がまだ終わっていない可能性があります。",
   "categories.emptyTitle": "まだカテゴリがありません。",
   "categories.emptyBody": "カテゴリグループと項目データを入れると、ここに表示されます。",
+  "categories.showMore": "もっと見る",
+  "categories.showLess": "閉じる",
   "list.title": "漢字一覧",
   "list.totalCharacters": "全%{count}字の漢字があります。",
   "list.subtitle": "漢字を押して学習してみましょう。",
