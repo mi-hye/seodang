@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Appearance } from "react-native";
 import {
   DarkTheme,
@@ -10,6 +10,7 @@ import {
 import { AppStateProvider } from "../src/state/AppStateProvider";
 import { useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
+import { initializeNotifications } from "../src/lib/notifications";
 import { QueryProvider } from "../src/state/QueryProvider";
 import { useAppState } from "../src/state/AppStateProvider";
 
@@ -31,6 +32,10 @@ function RootNavigator() {
   if (hydrated) {
     Appearance.setColorScheme(themeMode);
   }
+
+  useEffect(() => {
+    void initializeNotifications();
+  }, []);
 
   const navigationTheme = useMemo(
     () => ({

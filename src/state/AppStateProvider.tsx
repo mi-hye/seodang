@@ -13,6 +13,8 @@ import {
   AppLocale,
   CharacterProgress,
   LastCompletedPractice,
+  NotificationRepeat,
+  NotificationSettings,
   PersistedAppState,
   ThemeMode,
   UserType,
@@ -27,12 +29,14 @@ type AppStateContextValue = {
   locale: AppLocale;
   theme: ThemeMode;
   userType: UserType;
+  notifications: NotificationSettings;
   progressByCharacter: Record<string, CharacterProgress>;
   favoriteCount: number;
   lastCompletedPractice?: LastCompletedPractice;
   setLocale: (locale: AppLocale) => void;
   setTheme: (theme: ThemeMode) => void;
   setUserType: (userType: UserType) => void;
+  updateNotifications: (patch: Partial<NotificationSettings>) => void;
   recordAttempt: (input: {
     attemptId: string;
     characterId: string;
@@ -51,6 +55,12 @@ const defaultState: PersistedAppState = {
   locale: DEVICE_LOCALE,
   theme: "light",
   userType: "korean_learner",
+  notifications: {
+    enabled: false,
+    time: "20:00",
+    repeat: "daily",
+    message: "오늘도 한 글자 써볼까요?",
+  },
   progressByCharacter: {},
   recordedAttemptIds: [],
   favoriteCharacterIds: {},
@@ -111,6 +121,16 @@ export function AppStateProvider({ children }: PropsWithChildren) {
 
     const setUserType = (userType: UserType) => {
       setState((current) => ({ ...current, userType }));
+    };
+
+    const updateNotifications = (patch: Partial<NotificationSettings>) => {
+      setState((current) => ({
+        ...current,
+        notifications: {
+          ...current.notifications,
+          ...patch,
+        },
+      }));
     };
 
     const recordAttempt: AppStateContextValue["recordAttempt"] = ({
@@ -193,12 +213,14 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       locale: state.locale,
       theme: state.theme,
       userType: state.userType,
+      notifications: state.notifications,
       progressByCharacter: state.progressByCharacter,
       favoriteCount,
       lastCompletedPractice: state.lastCompletedPractice,
       setLocale,
       setTheme,
       setUserType,
+      updateNotifications,
       recordAttempt,
       getProgress,
       getFavoriteCharacterIds,
