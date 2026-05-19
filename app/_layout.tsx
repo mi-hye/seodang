@@ -104,6 +104,10 @@ function RootNavigator() {
           options={{ title: t("nav.categories") }}
         />
         <Stack.Screen
+          name="category-progress"
+          options={{ title: t("nav.categoryProgress") }}
+        />
+        <Stack.Screen
           name="favorites"
           options={{ title: t("nav.favorites") }}
         />

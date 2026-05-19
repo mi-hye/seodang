@@ -30,6 +30,7 @@ type AppStateContextValue = {
   theme: ThemeMode;
   userType: UserType;
   notifications: NotificationSettings;
+  recentCategoryKeys: string[];
   progressByCharacter: Record<string, CharacterProgress>;
   favoriteCount: number;
   lastCompletedPractice?: LastCompletedPractice;
@@ -44,6 +45,10 @@ type AppStateContextValue = {
     score: number;
     passed: boolean;
     practicedAt: string;
+  }) => void;
+  resetCategoryProgress: (input: {
+    categoryKey: string;
+    characterIds: string[];
   }) => void;
   getProgress: (characterId: string) => CharacterProgress | undefined;
   getFavoriteCharacterIds: () => string[];
@@ -61,6 +66,7 @@ const defaultState: PersistedAppState = {
     repeat: "daily",
     message: "오늘도 한 글자 써볼까요?",
   },
+  recentCategoryKeys: [],
   progressByCharacter: {},
   recordedAttemptIds: [],
   favoriteCharacterIds: {},
@@ -168,6 +174,12 @@ export function AppStateProvider({ children }: PropsWithChildren) {
             ...current.progressByCharacter,
             [characterId]: nextProgress,
           },
+          recentCategoryKeys: categoryKey
+            ? [
+                categoryKey,
+                ...current.recentCategoryKeys.filter((key) => key !== categoryKey),
+              ].slice(0, 10)
+            : current.recentCategoryKeys,
           lastCompletedPractice: {
             characterId,
             categoryKey,
@@ -177,6 +189,31 @@ export function AppStateProvider({ children }: PropsWithChildren) {
             0,
             MAX_RECORDED_ATTEMPTS
           ),
+        };
+      });
+    };
+
+    const resetCategoryProgress: AppStateContextValue["resetCategoryProgress"] = ({
+      categoryKey,
+      characterIds,
+    }) => {
+      setState((current) => {
+        const nextProgressByCharacter = { ...current.progressByCharacter };
+
+        for (const characterId of characterIds) {
+          delete nextProgressByCharacter[characterId];
+        }
+
+        return {
+          ...current,
+          progressByCharacter: nextProgressByCharacter,
+          recentCategoryKeys: current.recentCategoryKeys.filter(
+            (key) => key !== categoryKey,
+          ),
+          lastCompletedPractice:
+            current.lastCompletedPractice?.categoryKey === categoryKey
+              ? undefined
+              : current.lastCompletedPractice,
         };
       });
     };
@@ -214,6 +251,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       theme: state.theme,
       userType: state.userType,
       notifications: state.notifications,
+      recentCategoryKeys: state.recentCategoryKeys,
       progressByCharacter: state.progressByCharacter,
       favoriteCount,
       lastCompletedPractice: state.lastCompletedPractice,
@@ -222,6 +260,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       setUserType,
       updateNotifications,
       recordAttempt,
+      resetCategoryProgress,
       getProgress,
       getFavoriteCharacterIds,
       isFavorite,

@@ -15,7 +15,12 @@ import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning, KanjiCharacter } from "../src/data/characters";
 import { layout, spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
-import { useKanjiCharactersByCategoryQuery } from "../src/queries/kanjiQueries";
+import { buildCategoryProgressMap } from "../src/lib/categoryProgress";
+import {
+  useKanjiCategoryGroupsQuery,
+  useKanjiCategoryProgressMappingsQuery,
+  useKanjiCharactersByCategoryQuery,
+} from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function CharacterListScreen() {
@@ -26,8 +31,19 @@ export default function CharacterListScreen() {
   const { locale, t } = useI18n();
   const { colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ colors, surfaceStyles, textStyles });
-  const { getProgress } = useAppState();
+  const { getProgress, progressByCharacter } = useAppState();
   const [searchText, setSearchText] = useState("");
+  const { data: categoryGroups = [] } = useKanjiCategoryGroupsQuery(locale);
+  const completedCharacterIds = useMemo(
+    () =>
+      Object.values(progressByCharacter)
+        .filter((progress) => progress.successes > 0)
+        .map((progress) => progress.characterId)
+        .sort(),
+    [progressByCharacter],
+  );
+  const { data: categoryProgressMappings = [] } =
+    useKanjiCategoryProgressMappingsQuery(completedCharacterIds);
   const {
     data,
     isLoading,
@@ -42,12 +58,21 @@ export default function CharacterListScreen() {
   const selectedCategory = firstPage?.category;
   const items = pages.flatMap((page) => page?.characters ?? []);
   const headerTitle = selectedCategory?.label ?? t("list.title");
+  const categoryProgressMap = useMemo(
+    () => buildCategoryProgressMap(categoryGroups, categoryProgressMappings),
+    [categoryGroups, categoryProgressMappings],
+  );
+  const currentCategoryProgress = normalizedCategoryKey
+    ? categoryProgressMap.get(normalizedCategoryKey)
+    : undefined;
   const categoryTotal = firstPage?.total ?? null;
+  const completedCount = currentCategoryProgress?.completed ?? 0;
   const subtitle =
     categoryTotal != null
-      ? `${t("list.totalCharacters", { count: categoryTotal })} ${t(
-          "list.subtitle",
-        )}`
+      ? `${t("list.progressSummary", {
+          completed: completedCount,
+          total: categoryTotal,
+        })}`
       : t("list.subtitle");
   const normalizedSearch = searchText.trim().toLowerCase();
   const filteredItems = useMemo(

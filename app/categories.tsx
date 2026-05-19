@@ -237,6 +237,7 @@ function createStyles({ colors, isLandscape, surfaceStyles, textStyles }: any) {
       borderRadius: radius.sm,
       paddingHorizontal: 14,
       paddingVertical: 10,
+      gap: 2,
     },
     categoryChipText: {
       ...textStyles.meta,

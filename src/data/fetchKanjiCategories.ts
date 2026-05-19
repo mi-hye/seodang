@@ -15,6 +15,7 @@ export type KanjiCategory = {
   description?: string | null;
   sortOrder: number;
   visibleLocales: string[];
+  totalCharacters: number;
 };
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;

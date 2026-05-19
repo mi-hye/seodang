@@ -31,6 +31,7 @@ export type PersistedAppState = {
   theme: ThemeMode;
   userType: UserType;
   notifications: NotificationSettings;
+  recentCategoryKeys: string[];
   progressByCharacter: Record<string, CharacterProgress>;
   recordedAttemptIds: string[];
   favoriteCharacterIds: Record<string, true>;
