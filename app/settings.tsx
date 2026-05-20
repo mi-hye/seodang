@@ -46,18 +46,22 @@ export default function SettingsScreen() {
   }, []);
 
   useEffect(() => {
-    if (!notifications.enabled) {
-      return;
-    }
+    const timeout = setTimeout(() => {
+      if (notifications.enabled) {
+        void syncPracticeReminder(notifications);
+        return;
+      }
 
-    void syncPracticeReminder(notifications);
+      void disablePracticeReminder();
+    }, 300);
+
+    return () => clearTimeout(timeout);
   }, [notifications]);
 
   const handleNotificationToggle = async () => {
     if (notifications.enabled) {
       setShowTimePicker(false);
       updateNotifications({ enabled: false });
-      await disablePracticeReminder();
       return;
     }
 
@@ -73,8 +77,7 @@ export default function SettingsScreen() {
       enabled: true,
     };
 
-    updateNotifications({ enabled: true });
-    await syncPracticeReminder(nextSettings);
+    updateNotifications(nextSettings);
   };
 
   return (

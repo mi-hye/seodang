@@ -6,6 +6,7 @@ import { NotificationSettings } from "../types/app-state";
 
 const REMINDER_IDS_KEY = "seodang-practice-reminder-ids-v1";
 const CHANNEL_ID = "practice-reminders";
+let reminderSyncQueue: Promise<void> = Promise.resolve();
 
 export type NotificationPermissionState =
   | "unsupported"
@@ -50,6 +51,34 @@ export async function requestNotificationPermission(): Promise<NotificationPermi
 }
 
 export async function syncPracticeReminder(settings: NotificationSettings) {
+  const snapshot = {
+    ...settings,
+    message: settings.message,
+    time: settings.time,
+    repeat: settings.repeat,
+    enabled: settings.enabled,
+  };
+
+  reminderSyncQueue = reminderSyncQueue
+    .catch(() => {})
+    .then(() => performPracticeReminderSync(snapshot));
+
+  return reminderSyncQueue;
+}
+
+export async function disablePracticeReminder() {
+  if (Platform.OS === "web") {
+    return;
+  }
+
+  reminderSyncQueue = reminderSyncQueue
+    .catch(() => {})
+    .then(() => cancelStoredPracticeReminders());
+
+  return reminderSyncQueue;
+}
+
+async function performPracticeReminderSync(settings: NotificationSettings) {
   if (Platform.OS === "web") {
     return;
   }
@@ -86,14 +115,6 @@ export async function syncPracticeReminder(settings: NotificationSettings) {
   }
 
   await AsyncStorage.setItem(REMINDER_IDS_KEY, JSON.stringify(nextIds));
-}
-
-export async function disablePracticeReminder() {
-  if (Platform.OS === "web") {
-    return;
-  }
-
-  await cancelStoredPracticeReminders();
 }
 
 async function cancelStoredPracticeReminders() {
