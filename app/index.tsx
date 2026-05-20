@@ -1,12 +1,6 @@
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef } from "react";
-import {
-  Animated,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Screen } from "../src/components/common/Screen";
@@ -30,18 +24,18 @@ export default function HomeScreen() {
   const {
     hydrated,
     favoriteCount,
+    homeOnboardingDismissed,
     lastCompletedPractice,
     progressByCharacter,
     recentCategoryKeys,
+    dismissHomeOnboarding,
   } = useAppState();
   const { locale, t } = useI18n();
   const { data: lastCharacter } = useKanjiCharacterQuery(
     lastCompletedPractice?.characterId,
   );
-  const {
-    data: categoryGroups = [],
-    isLoading: isLoadingCategoryGroups,
-  } = useKanjiCategoryGroupsQuery(locale);
+  const { data: categoryGroups = [], isLoading: isLoadingCategoryGroups } =
+    useKanjiCategoryGroupsQuery(locale);
   const completedCharacterIds = useMemo(
     () =>
       Object.values(progressByCharacter)
@@ -97,155 +91,195 @@ export default function HomeScreen() {
     isLoadingCategoryGroups ||
     isLoadingCategoryTotals ||
     isLoadingCategoryProgressMappings;
+  const showOnboarding = hydrated;
 
   return (
     <Screen edges={["top", "left", "right", "bottom"]}>
-      <View style={styles.hero}>
-        <View style={styles.heroTopRow}>
-          <Text style={styles.title}>{t("home.title")}</Text>
-          <View style={styles.headerActions}>
-            <Pressable
-              onPress={() => router.push("/search")}
-              style={styles.iconButton}
-            >
-              <Ionicons
-                name="search-outline"
-                size={18}
-                color={colors.inkStrong}
-              />
-            </Pressable>
-            <Pressable
-              onPress={() => router.push("/settings")}
-              style={styles.iconButton}
-            >
-              <Ionicons
-                name="settings-outline"
-                size={18}
-                color={colors.inkStrong}
-              />
-            </Pressable>
+      <View style={styles.contentRoot}>
+        <View
+          style={[styles.hero, showOnboarding ? styles.dimmedSection : null]}
+        >
+          <View style={styles.heroTopRow}>
+            <Text style={styles.title}>{t("home.title")}</Text>
+            <View style={styles.headerActions}>
+              <Pressable
+                onPress={() => router.push("/search")}
+                style={styles.iconButton}
+              >
+                <Ionicons
+                  name="search-outline"
+                  size={18}
+                  color={colors.inkStrong}
+                />
+              </Pressable>
+              <Pressable
+                onPress={() => router.push("/settings")}
+                style={styles.iconButton}
+              >
+                <Ionicons
+                  name="settings-outline"
+                  size={18}
+                  color={colors.inkStrong}
+                />
+              </Pressable>
+            </View>
           </View>
         </View>
-        <Text style={styles.subtitle}>{t("home.subtitle")}</Text>
-      </View>
 
-      <Pressable
-        onPress={() => router.push("/categories")}
-        style={[styles.primaryCard, styles.shadow]}
-      >
-        <Text style={styles.primaryLabel}>{t("home.start")}</Text>
-        <Text style={styles.primaryBody}>{t("home.startBody")}</Text>
-      </Pressable>
-
-      <View style={styles.row}>
-        <Pressable
-          onPress={() => router.push("/favorites")}
-          style={[styles.actionCard, styles.shadow]}
-        >
-          <View style={styles.actionCardTop}>
-            <Text style={styles.actionTitle}>{t("home.favorites")}</Text>
-            <Text style={styles.actionValue}>
-              {hydrated ? favoriteCount : "-"}
-            </Text>
+        {showOnboarding ? (
+          <View pointerEvents="none" style={styles.onboardingHint}>
+            <View style={styles.onboardingTail} />
+            <View style={styles.onboardingBubble}>
+              <Text style={styles.onboardingHintText}>
+                {t("home.onboardingAction")}
+              </Text>
+            </View>
           </View>
-          <Text style={styles.actionBody}>{t("home.favoritesBody")}</Text>
-        </Pressable>
+        ) : null}
 
         <Pressable
-          onPress={() =>
-            lastCompletedPractice?.characterId
-              ? router.push({
-                  pathname: "/practice/[characterId]",
-                  params: {
-                    characterId: lastCompletedPractice.characterId,
-                    categoryKey: lastCompletedPractice.categoryKey,
-                  },
-                })
-              : router.push("/categories")
-          }
-          style={[styles.actionCard, styles.shadow]}
-        >
-          <View style={styles.actionCardTop}>
-            <Text style={styles.actionTitle}>{t("home.recentPractice")}</Text>
-            <Text style={styles.actionValue}>
-              {lastCharacter?.literal ?? "-"}
-            </Text>
-          </View>
-          <Text style={styles.actionBody}>
-            {lastCharacter
-              ? t("home.recentPracticeBodyReady", {
-                  category: lastCategory?.label ?? t("nav.categories"),
-                })
-              : t("home.recentPracticeBodyEmpty")}
-          </Text>
-        </Pressable>
-      </View>
+          onPress={() => {
+            if (showOnboarding) {
+              dismissHomeOnboarding();
+            }
 
-      <View style={styles.progressSection}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>{t("home.categoryProgress")}</Text>
-          <Pressable onPress={() => router.push("/category-progress")}>
-            <Text style={styles.sectionAction}>{t("home.seeAllCategories")}</Text>
+            router.push("/categories");
+          }}
+          style={[styles.primaryCard, styles.shadow]}
+        >
+          <Text style={styles.primaryLabel}>{t("home.start")}</Text>
+          <Text style={styles.primaryBody}>{t("home.startBody")}</Text>
+        </Pressable>
+
+        <View
+          pointerEvents={showOnboarding ? "none" : "auto"}
+          style={[styles.row, showOnboarding ? styles.dimmedSection : null]}
+        >
+          <Pressable
+            onPress={() => router.push("/favorites")}
+            style={[styles.actionCard, styles.shadow]}
+          >
+            <View style={styles.actionCardTop}>
+              <Text style={styles.actionTitle}>{t("home.favorites")}</Text>
+              <Text style={styles.actionValue}>
+                {hydrated ? favoriteCount : "-"}
+              </Text>
+            </View>
+            <Text style={styles.actionBody}>{t("home.favoritesBody")}</Text>
+          </Pressable>
+
+          <Pressable
+            onPress={() =>
+              lastCompletedPractice?.characterId
+                ? router.push({
+                    pathname: "/practice/[characterId]",
+                    params: {
+                      characterId: lastCompletedPractice.characterId,
+                      categoryKey: lastCompletedPractice.categoryKey,
+                    },
+                  })
+                : router.push("/categories")
+            }
+            style={[styles.actionCard, styles.shadow]}
+          >
+            <View style={styles.actionCardTop}>
+              <Text style={styles.actionTitle}>{t("home.recentPractice")}</Text>
+              <Text style={styles.actionValue}>
+                {lastCharacter?.literal ?? "-"}
+              </Text>
+            </View>
+            <Text style={styles.actionBody}>
+              {lastCharacter
+                ? t("home.recentPracticeBodyReady", {
+                    category: lastCategory?.label ?? t("nav.categories"),
+                  })
+                : t("home.recentPracticeBodyEmpty")}
+            </Text>
           </Pressable>
         </View>
 
-        {isLoadingProgressSection ? (
-          <CategoryProgressSkeleton />
-        ) : featuredProgressCategories.length ? (
-          <View style={styles.progressList}>
-            {featuredProgressCategories.map((category: ReturnType<
-              typeof listActiveCategoryProgress
-            >[number]) => (
-              <Pressable
-                key={category.categoryKey}
-                onPress={() =>
-                  router.push({
-                    pathname: "/list",
-                    params: { categoryKey: category.categoryKey },
-                  })
-                }
-                style={[styles.progressCard, styles.shadow]}
-              >
-                <View style={styles.progressCardTop}>
-                  <Text style={styles.progressCategoryLabel}>{category.label}</Text>
-                  <Text style={styles.progressCount}>
-                    {t("home.progressCount", {
-                      completed: category.completed,
-                      total: category.total,
-                    })}
-                  </Text>
-                </View>
-                <View style={styles.progressBarTrack}>
-                  <View
-                    style={[
-                      styles.progressBarFill,
-                      {
-                        width: `${Math.max(
-                          category.ratio * 100,
-                          category.completed > 0 ? 8 : 0,
-                        )}%`,
-                      },
-                    ]}
-                  />
-                </View>
-                <Text style={styles.progressMeta}>
-                  {t("home.progressPercent", {
-                    percent: Math.round(category.ratio * 100),
-                  })}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        ) : (
-          <View style={[styles.progressEmptyCard, styles.shadow]}>
-            <Text style={styles.progressEmptyTitle}>
-              {t("home.progressEmptyTitle")}
+        <View
+          pointerEvents={showOnboarding ? "none" : "auto"}
+          style={[
+            styles.progressSection,
+            showOnboarding ? styles.dimmedSection : null,
+          ]}
+        >
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>
+              {t("home.categoryProgress")}
             </Text>
-            <Text style={styles.progressEmptyBody}>
-              {t("home.progressEmptyBody")}
-            </Text>
+            <Pressable onPress={() => router.push("/category-progress")}>
+              <Text style={styles.sectionAction}>
+                {t("home.seeAllCategories")}
+              </Text>
+            </Pressable>
           </View>
-        )}
+
+          {isLoadingProgressSection ? (
+            <CategoryProgressSkeleton />
+          ) : featuredProgressCategories.length ? (
+            <View style={styles.progressList}>
+              {featuredProgressCategories.map(
+                (
+                  category: ReturnType<
+                    typeof listActiveCategoryProgress
+                  >[number],
+                ) => (
+                  <Pressable
+                    key={category.categoryKey}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/list",
+                        params: { categoryKey: category.categoryKey },
+                      })
+                    }
+                    style={[styles.progressCard, styles.shadow]}
+                  >
+                    <View style={styles.progressCardTop}>
+                      <Text style={styles.progressCategoryLabel}>
+                        {category.label}
+                      </Text>
+                      <Text style={styles.progressCount}>
+                        {t("home.progressCount", {
+                          completed: category.completed,
+                          total: category.total,
+                        })}
+                      </Text>
+                    </View>
+                    <View style={styles.progressBarTrack}>
+                      <View
+                        style={[
+                          styles.progressBarFill,
+                          {
+                            width: `${Math.max(
+                              category.ratio * 100,
+                              category.completed > 0 ? 8 : 0,
+                            )}%`,
+                          },
+                        ]}
+                      />
+                    </View>
+                    <Text style={styles.progressMeta}>
+                      {t("home.progressPercent", {
+                        percent: Math.round(category.ratio * 100),
+                      })}
+                    </Text>
+                  </Pressable>
+                ),
+              )}
+            </View>
+          ) : (
+            <View style={[styles.progressEmptyCard, styles.shadow]}>
+              <Text style={styles.progressEmptyTitle}>
+                {t("home.progressEmptyTitle")}
+              </Text>
+              <Text style={styles.progressEmptyBody}>
+                {t("home.progressEmptyBody")}
+              </Text>
+            </View>
+          )}
+        </View>
       </View>
     </Screen>
   );
@@ -299,9 +333,15 @@ function CategoryProgressSkeleton() {
 
 function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
   return StyleSheet.create({
+    contentRoot: {
+      position: "relative",
+    },
     hero: {
       marginBottom: spacing[7],
       gap: spacing[2] + 2,
+    },
+    dimmedSection: {
+      opacity: 0.32,
     },
     heroTopRow: {
       flexDirection: "row",
@@ -328,6 +368,33 @@ function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
       ...surfaceStyles.heroDark,
       padding: spacing[7],
       marginBottom: spacing[4],
+    },
+    onboardingHint: {
+      position: "absolute",
+      top: 200,
+      left: 12,
+      zIndex: 20,
+      alignItems: "flex-start",
+    },
+    onboardingBubble: {
+      backgroundColor: colors.accentWarm,
+      borderRadius: 18,
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
+      maxWidth: 196,
+    },
+    onboardingTail: {
+      marginLeft: 28,
+      width: 14,
+      height: 14,
+      backgroundColor: colors.accentWarm,
+      transform: [{ rotate: "45deg" }],
+      marginBottom: -6,
+    },
+    onboardingHintText: {
+      ...textStyles.bodySm,
+      color: colors.inkOnDark,
+      fontWeight: "800",
     },
     primaryLabel: {
       fontSize: 22,

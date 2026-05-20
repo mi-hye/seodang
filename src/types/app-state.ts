@@ -30,6 +30,7 @@ export type PersistedAppState = {
   locale: AppLocale;
   theme: ThemeMode;
   userType: UserType;
+  homeOnboardingDismissed: boolean;
   notifications: NotificationSettings;
   recentCategoryKeys: string[];
   progressByCharacter: Record<string, CharacterProgress>;

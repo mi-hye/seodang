@@ -1,12 +1,19 @@
+import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 const rootDir = process.cwd();
 const envPath = path.join(rootDir, ".env");
-const reviewPath = path.join(
+const defaultInputPath = path.join(
   rootDir,
   "data/generated/kanji-enrichment-review.generated.json"
 );
+const maziiInputPath = path.join(
+  rootDir,
+  "data/generated/mazii-kanji-enrichment.generated.json"
+);
+
+const inputPath = resolveInputPath(process.argv.slice(2));
 
 const env = await loadEnv(envPath);
 const supabaseUrl = env.EXPO_PUBLIC_SUPABASE_URL;
@@ -18,10 +25,8 @@ if (!supabaseUrl || !serviceRoleKey) {
   );
 }
 
-const reviewRows = await readJson(reviewPath);
-const approvedRows = reviewRows.filter(
-  (row) => row.reviewStatus === "approved"
-);
+const reviewRows = await readJson(inputPath);
+const approvedRows = normalizeInputRows(reviewRows);
 
 if (approvedRows.length === 0) {
   console.log("No approved kanji enrichment rows to upload.");
@@ -75,6 +80,8 @@ function mapKanjiEnrichmentRow(row) {
     id: row.id,
     meaning_ko: row.meaningKo ?? null,
     meaning_ja: row.meaningJa ?? null,
+    example_ja: row.exampleJa ?? null,
+    example_ko: row.exampleKo ?? null,
     sort_order: row.sortOrder ?? null,
   };
 }
@@ -93,8 +100,29 @@ function mergeWithExistingRow(row, existingRow) {
     view_box_height: existingRow.view_box_height,
     meaning_ko: row.meaning_ko,
     meaning_ja: row.meaning_ja,
+    example_ja: row.example_ja,
+    example_ko: row.example_ko,
     sort_order: row.sort_order,
   };
+}
+
+function normalizeInputRows(input) {
+  if (Array.isArray(input)) {
+    return input.filter((row) => row.reviewStatus === "approved");
+  }
+
+  if (Array.isArray(input?.results)) {
+    return input.results.map((row) => ({
+      id: row.id,
+      meaningKo: row.meaningKo ?? null,
+      meaningJa: row.meaningJa ?? null,
+      exampleJa: row.exampleJa ?? null,
+      exampleKo: row.exampleKo ?? null,
+      sortOrder: row.sortOrder ?? null,
+    }));
+  }
+
+  return [];
 }
 
 async function fetchExistingCharacterBaseRows() {
@@ -139,6 +167,24 @@ async function readJson(filePath) {
     return JSON.parse(raw);
   } catch (error) {
     throw new Error(`Missing or unreadable review file at ${filePath}`);
+  }
+}
+
+function resolveInputPath(args) {
+  for (let index = 0; index < args.length; index += 1) {
+    if (args[index] === "--input") {
+      return path.resolve(process.cwd(), args[index + 1] ?? defaultInputPath);
+    }
+  }
+
+  return inputExists(maziiInputPath) ? maziiInputPath : defaultInputPath;
+}
+
+function inputExists(filePath) {
+  try {
+    return existsSync(filePath);
+  } catch (error) {
+    return false;
   }
 }
 

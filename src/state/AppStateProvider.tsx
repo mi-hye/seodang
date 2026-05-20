@@ -13,7 +13,6 @@ import {
   AppLocale,
   CharacterProgress,
   LastCompletedPractice,
-  NotificationRepeat,
   NotificationSettings,
   PersistedAppState,
   ThemeMode,
@@ -29,6 +28,7 @@ type AppStateContextValue = {
   locale: AppLocale;
   theme: ThemeMode;
   userType: UserType;
+  homeOnboardingDismissed: boolean;
   notifications: NotificationSettings;
   recentCategoryKeys: string[];
   progressByCharacter: Record<string, CharacterProgress>;
@@ -37,6 +37,7 @@ type AppStateContextValue = {
   setLocale: (locale: AppLocale) => void;
   setTheme: (theme: ThemeMode) => void;
   setUserType: (userType: UserType) => void;
+  dismissHomeOnboarding: () => void;
   updateNotifications: (patch: Partial<NotificationSettings>) => void;
   recordAttempt: (input: {
     attemptId: string;
@@ -60,6 +61,7 @@ const defaultState: PersistedAppState = {
   locale: DEVICE_LOCALE,
   theme: "light",
   userType: "korean_learner",
+  homeOnboardingDismissed: false,
   notifications: {
     enabled: false,
     time: "20:00",
@@ -127,6 +129,10 @@ export function AppStateProvider({ children }: PropsWithChildren) {
 
     const setUserType = (userType: UserType) => {
       setState((current) => ({ ...current, userType }));
+    };
+
+    const dismissHomeOnboarding = () => {
+      setState((current) => ({ ...current, homeOnboardingDismissed: true }));
     };
 
     const updateNotifications = (patch: Partial<NotificationSettings>) => {
@@ -250,6 +256,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       locale: state.locale,
       theme: state.theme,
       userType: state.userType,
+      homeOnboardingDismissed: state.homeOnboardingDismissed,
       notifications: state.notifications,
       recentCategoryKeys: state.recentCategoryKeys,
       progressByCharacter: state.progressByCharacter,
@@ -258,6 +265,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       setLocale,
       setTheme,
       setUserType,
+      dismissHomeOnboarding,
       updateNotifications,
       recordAttempt,
       resetCategoryProgress,
