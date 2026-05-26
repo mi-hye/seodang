@@ -12,6 +12,7 @@ import {
   useKanjiCharacterQuery,
   useKanjiStrokeDataQuery,
 } from "../../src/queries/kanjiQueries";
+import { useAppState } from "../../src/state/AppStateProvider";
 import { CanvasSize, InputStroke } from "../../src/types/practice";
 
 const SCROLL_RESTORE_DELAY_MS = 1200;
@@ -25,6 +26,7 @@ export default function PracticeScreen() {
   const normalizedCategoryKey = Array.isArray(categoryKey) ? categoryKey[0] : categoryKey;
   const { data: character, isLoading: isCharacterLoading } = useKanjiCharacterQuery(characterId);
   const { locale, t } = useI18n();
+  const { onboardingStep, setOnboardingStep } = useAppState();
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height && width >= 700;
   const isCompactLandscape = isLandscape && height < 520;
@@ -52,6 +54,10 @@ export default function PracticeScreen() {
     isLoading: isGuideLoading,
     isError: isGuideLoadError,
   } = useKanjiStrokeDataQuery(character?.literal);
+  const showGuideOnboarding =
+    Boolean(character) && onboardingStep === "practice_guide";
+  const showSubmitOnboarding =
+    Boolean(character) && onboardingStep === "practice_submit";
 
   useEffect(() => {
     return () => {
@@ -140,19 +146,36 @@ export default function PracticeScreen() {
             })}
           </Text>
         </View>
-        <Pressable
-          style={[styles.toolChip, showGuide && styles.toolChipActive]}
-          onPress={() => setShowGuide((current) => !current)}
-        >
-          <Text
-            style={[
-              styles.toolChipText,
-              showGuide && styles.toolChipTextActive,
-            ]}
+        <View style={styles.guideChipWrap}>
+          {showGuideOnboarding ? (
+            <View pointerEvents="none" style={styles.onboardingHint}>
+              <View style={styles.onboardingBubble}>
+                <Text style={styles.onboardingHintText}>
+                  {t("practice.onboardingAction")}
+                </Text>
+              </View>
+              <View style={styles.onboardingTail} />
+            </View>
+          ) : null}
+          <Pressable
+            style={[styles.toolChip, showGuide && styles.toolChipActive]}
+            onPress={() => {
+              if (showGuideOnboarding) {
+                setOnboardingStep("practice_submit");
+              }
+              setShowGuide((current) => !current);
+            }}
           >
-            {showGuide ? t("practice.hideGuide") : t("practice.showGuide")}
-          </Text>
-        </Pressable>
+            <Text
+              style={[
+                styles.toolChipText,
+                showGuide && styles.toolChipTextActive,
+              ]}
+            >
+              {showGuide ? t("practice.hideGuide") : t("practice.showGuide")}
+            </Text>
+          </Pressable>
+        </View>
         <Pressable
           style={[
             styles.toolChip,
@@ -168,45 +191,70 @@ export default function PracticeScreen() {
   );
 
   const canvasPanel = (
-    <View style={styles.canvasCard}>
-      <WritingCanvas
-        fillMode={isLandscape}
-        showGuide={showGuide}
-        guideData={kanjiStrokeData}
-        strokes={strokes}
-        onChange={setStrokes}
-        onCanvasLayout={setCanvasSize}
-        onInteractionStart={handleCanvasInteractionStart}
-        onInteractionEnd={handleCanvasInteractionEnd}
-      />
-      <Text style={styles.canvasHint}>{t("practice.canvasHint")}</Text>
-      {isGuideLoadError ? (
-        <Text style={styles.canvasSubHint}>{t("practice.loadGuideError")}</Text>
-      ) : null}
-      {!isGuideLoading && !isGuideLoadError && !kanjiStrokeData ? (
-        <Text style={styles.canvasSubHint}>{t("practice.missingGuide")}</Text>
-      ) : null}
+    <View style={styles.canvasStack}>
+      <View style={styles.canvasCard}>
+        <WritingCanvas
+          fillMode={isLandscape}
+          showGuide={showGuide}
+          guideData={kanjiStrokeData}
+          strokes={strokes}
+          onChange={setStrokes}
+          onCanvasLayout={setCanvasSize}
+          onInteractionStart={handleCanvasInteractionStart}
+          onInteractionEnd={handleCanvasInteractionEnd}
+        />
+        <Text style={styles.canvasHint}>{t("practice.canvasHint")}</Text>
+        {isGuideLoadError ? (
+          <Text style={styles.canvasSubHint}>{t("practice.loadGuideError")}</Text>
+        ) : null}
+        {!isGuideLoading && !isGuideLoadError && !kanjiStrokeData ? (
+          <Text style={styles.canvasSubHint}>{t("practice.missingGuide")}</Text>
+        ) : null}
+      </View>
     </View>
   );
 
   const actionPanel = (
     <View style={styles.actions}>
       <Pressable
-        style={styles.secondaryButton}
+        style={[
+          styles.secondaryButton,
+          showGuideOnboarding || showSubmitOnboarding
+            ? styles.dimmedSection
+            : null,
+        ]}
         onPress={() => setStrokes([])}
+        disabled={showGuideOnboarding || showSubmitOnboarding}
       >
         <Text style={styles.secondaryLabel}>{t("practice.reset")}</Text>
       </Pressable>
-      <Pressable
-        style={[
-          styles.primaryButton,
-          strokes.length === 0 && styles.primaryButtonDisabled,
-        ]}
-        onPress={handleSubmit}
-        disabled={strokes.length === 0}
-      >
-        <Text style={styles.primaryLabel}>{t("practice.submit")}</Text>
-      </Pressable>
+      <View style={styles.submitWrap}>
+        {showSubmitOnboarding ? (
+          <View pointerEvents="none" style={styles.submitHint}>
+            <View style={styles.submitHintBubble}>
+              <Text style={styles.submitHintText}>
+                {t("practice.submitHint")}
+              </Text>
+            </View>
+            <View style={styles.submitHintTail} />
+          </View>
+        ) : null}
+        <Pressable
+          style={[
+            styles.primaryButton,
+            strokes.length === 0 && styles.primaryButtonDisabled,
+          ]}
+          onPress={() => {
+            if (showSubmitOnboarding) {
+              setOnboardingStep("result");
+            }
+            handleSubmit();
+          }}
+          disabled={strokes.length === 0}
+        >
+          <Text style={styles.primaryLabel}>{t("practice.submit")}</Text>
+        </Pressable>
+      </View>
     </View>
   );
 
@@ -219,11 +267,11 @@ export default function PracticeScreen() {
         <View style={styles.landscapeLayout}>
           <View style={styles.landscapeSide}>
             {headerPanel}
-            {actionPanel}
           </View>
           <View style={styles.landscapeCanvas}>
             {canvasPanel}
           </View>
+          <View>{actionPanel}</View>
         </View>
       ) : (
         <>
@@ -262,6 +310,9 @@ function createStyles({
       flex: 1.2,
       minWidth: 360,
     },
+    dimmedSection: {
+      opacity: 0.32,
+    },
     headerCard: {
       ...surfaceStyles.card,
       borderRadius: 28,
@@ -298,6 +349,9 @@ function createStyles({
       ...chipStyles.active,
       backgroundColor: colors.accentWarm,
     },
+    guideChipWrap: {
+      position: "relative",
+    },
     toolChipText: {
       ...textStyles.meta,
       color: colors.accentWarmMuted,
@@ -316,6 +370,43 @@ function createStyles({
       width: "100%",
       flex: isLandscape ? 1 : undefined,
       maxHeight: isLandscape ? "100%" : undefined,
+    },
+    canvasStack: {
+      position: "relative",
+      width: "100%",
+      flex: isLandscape ? 1 : undefined,
+    },
+    onboardingHint: {
+      position: "absolute",
+      left: -8,
+      bottom: isLandscape ? 44 : 42,
+      alignItems: "flex-start",
+      zIndex: 20,
+    },
+    onboardingBubble: {
+      backgroundColor: colors.accentWarm,
+      borderRadius: 16,
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
+      minWidth: 200,
+      maxWidth: 240,
+    },
+    onboardingTail: {
+      marginLeft: 18,
+      width: 0,
+      height: 0,
+      borderLeftWidth: 8,
+      borderRightWidth: 8,
+      borderTopWidth: 12,
+      borderLeftColor: "transparent",
+      borderRightColor: "transparent",
+      borderTopColor: colors.accentWarm,
+      marginTop: -2,
+    },
+    onboardingHintText: {
+      ...textStyles.meta,
+      color: colors.inkOnDark,
+      fontWeight: "800",
     },
     canvasHint: {
       ...textStyles.bodySm,
@@ -336,6 +427,10 @@ function createStyles({
       marginTop: isLandscape ? "auto" : 0,
       marginBottom: isLandscape ? 0 : 20,
       width: "100%",
+    },
+    submitWrap: {
+      flex: 1,
+      position: "relative",
     },
     secondaryButton: {
       ...buttonStyles.secondary,
@@ -358,6 +453,38 @@ function createStyles({
     primaryLabel: {
       ...textStyles.buttonLabel,
       color: colors.inkOnDark,
+    },
+    submitHint: {
+      position: "absolute",
+      right: 0,
+      bottom: 58,
+      alignItems: "flex-end",
+      zIndex: 20,
+    },
+    submitHintBubble: {
+      backgroundColor: colors.accentWarm,
+      borderRadius: 16,
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
+      minWidth: 200,
+      maxWidth: 240,
+    },
+    submitHintTail: {
+      marginRight: 18,
+      width: 0,
+      height: 0,
+      borderLeftWidth: 8,
+      borderRightWidth: 8,
+      borderTopWidth: 12,
+      borderLeftColor: "transparent",
+      borderRightColor: "transparent",
+      borderTopColor: colors.accentWarm,
+      marginTop: -2,
+    },
+    submitHintText: {
+      ...textStyles.meta,
+      color: colors.inkOnDark,
+      fontWeight: "800",
     },
     errorTitle: textStyles.displaySm,
   });

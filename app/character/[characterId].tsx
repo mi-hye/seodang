@@ -9,6 +9,7 @@ import {
 import { spacing, useTheme } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
 import { useKanjiCharacterQuery } from "../../src/queries/kanjiQueries";
+import { useAppState } from "../../src/state/AppStateProvider";
 
 export default function CharacterDetailScreen() {
   const router = useRouter();
@@ -19,9 +20,11 @@ export default function CharacterDetailScreen() {
   const normalizedCategoryKey = Array.isArray(categoryKey) ? categoryKey[0] : categoryKey;
   const { data: character, isLoading } = useKanjiCharacterQuery(characterId);
   const { locale, t } = useI18n();
+  const { onboardingStep, setOnboardingStep } = useAppState();
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ buttonStyles, colors, surfaceStyles, textStyles });
   const example = character ? getCharacterExample(character, locale) : null;
+  const showOnboarding = Boolean(character) && onboardingStep === "detail";
 
   if (isLoading) {
     return (
@@ -41,63 +44,88 @@ export default function CharacterDetailScreen() {
 
   return (
     <Screen>
-      <View style={styles.heroCard}>
-        <Text style={styles.literal}>{character.literal}</Text>
-        <Text style={styles.meaning}>{getCharacterMeaning(character, locale)}</Text>
-        <Text style={styles.meta}>
-          {character.jlptLevel ? `${t("common.jlpt")} ${character.jlptLevel} · ` : ""}
-          {character.strokeCount != null
-            ? t("common.strokes", { count: character.strokeCount })
-            : "-"}
-        </Text>
-      </View>
+      <View style={styles.screenStack}>
+        <View style={showOnboarding ? styles.dimmedSection : null}>
+          <View style={styles.heroCard}>
+            <Text style={styles.literal}>{character.literal}</Text>
+            <Text style={styles.meaning}>{getCharacterMeaning(character, locale)}</Text>
+            <Text style={styles.meta}>
+              {character.jlptLevel ? `${t("common.jlpt")} ${character.jlptLevel} · ` : ""}
+              {character.strokeCount != null
+                ? t("common.strokes", { count: character.strokeCount })
+                : "-"}
+            </Text>
+          </View>
 
-      <View style={styles.infoCard}>
-        <Text style={styles.sectionTitle}>{t("detail.reading")}</Text>
-        <Text style={styles.infoLine}>
-          {t("detail.onyomi", { value: character.onyomi.join(", ") || "-" })}
-        </Text>
-        <Text style={styles.infoLine}>
-          {t("detail.kunyomi", { value: character.kunyomi.join(", ") || "-" })}
-        </Text>
-      </View>
+          <View style={styles.infoCard}>
+            <Text style={styles.sectionTitle}>{t("detail.reading")}</Text>
+            <Text style={styles.infoLine}>
+              {t("detail.onyomi", { value: character.onyomi.join(", ") || "-" })}
+            </Text>
+            <Text style={styles.infoLine}>
+              {t("detail.kunyomi", { value: character.kunyomi.join(", ") || "-" })}
+            </Text>
+          </View>
 
-      {example ? (
-        <View style={styles.infoCard}>
-          <Text style={styles.sectionTitle}>{t("detail.examples")}</Text>
-          <View style={styles.exampleRow}>
-            <Text style={styles.exampleWord}>{character.exampleJa ?? character.literal}</Text>
-            <Text style={styles.exampleMeta}>{example}</Text>
+          {example ? (
+            <View style={styles.infoCard}>
+              <Text style={styles.sectionTitle}>{t("detail.examples")}</Text>
+              <View style={styles.exampleRow}>
+                <Text style={styles.exampleWord}>{character.exampleJa ?? character.literal}</Text>
+                <Text style={styles.exampleMeta}>{example}</Text>
+              </View>
+            </View>
+          ) : null}
+
+          <View style={styles.infoCard}>
+            <Text style={styles.sectionTitle}>{t("detail.ready")}</Text>
+            <Text style={styles.infoLine}>{t("detail.readyBody1")}</Text>
+            <Text style={styles.infoLine}>{t("detail.readyBody2")}</Text>
           </View>
         </View>
-      ) : null}
 
-      <View style={styles.infoCard}>
-        <Text style={styles.sectionTitle}>{t("detail.ready")}</Text>
-        <Text style={styles.infoLine}>{t("detail.readyBody1")}</Text>
-        <Text style={styles.infoLine}>{t("detail.readyBody2")}</Text>
+        {showOnboarding ? (
+          <View pointerEvents="none" style={styles.onboardingHint}>
+            <View style={styles.onboardingBubble}>
+              <Text style={styles.onboardingHintText}>
+                {t("detail.onboardingAction")}
+              </Text>
+            </View>
+            <View style={styles.onboardingTail} />
+          </View>
+        ) : null}
+
+        <Pressable
+          style={styles.actionButton}
+          onPress={() => {
+            if (showOnboarding) {
+              setOnboardingStep("practice_guide");
+            }
+
+            router.replace({
+              pathname: "/practice/[characterId]",
+              params: {
+                characterId: character.id,
+                categoryKey: normalizedCategoryKey,
+              },
+            });
+          }}
+        >
+          <Text style={styles.actionLabel}>{t("detail.startPractice")}</Text>
+        </Pressable>
       </View>
-
-      <Pressable
-        style={styles.actionButton}
-        onPress={() =>
-          router.replace({
-            pathname: "/practice/[characterId]",
-            params: {
-              characterId: character.id,
-              categoryKey: normalizedCategoryKey,
-            },
-          })
-        }
-      >
-        <Text style={styles.actionLabel}>{t("detail.startPractice")}</Text>
-      </Pressable>
     </Screen>
   );
 }
 
 function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) {
   return StyleSheet.create({
+    screenStack: {
+      position: "relative",
+    },
+    dimmedSection: {
+      opacity: 0.32,
+    },
     heroCard: {
       ...surfaceStyles.heroDark,
       borderRadius: 30,
@@ -138,6 +166,36 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
       ...buttonStyles.secondary,
       marginTop: 8,
       marginBottom: 20,
+    },
+    onboardingHint: {
+      position: "absolute",
+      right: 12,
+      bottom: 84,
+      alignItems: "flex-end",
+    },
+    onboardingBubble: {
+      backgroundColor: colors.accentWarm,
+      borderRadius: 16,
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
+      maxWidth: 188,
+    },
+    onboardingTail: {
+      marginRight: 18,
+      width: 0,
+      height: 0,
+      borderLeftWidth: 8,
+      borderRightWidth: 8,
+      borderTopWidth: 12,
+      borderLeftColor: "transparent",
+      borderRightColor: "transparent",
+      borderTopColor: colors.accentWarm,
+      marginTop: -2,
+    },
+    onboardingHintText: {
+      ...textStyles.meta,
+      color: colors.inkOnDark,
+      fontWeight: "800",
     },
     actionLabel: {
       ...textStyles.buttonLabel,

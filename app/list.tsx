@@ -31,7 +31,8 @@ export default function CharacterListScreen() {
   const { locale, t } = useI18n();
   const { colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ colors, surfaceStyles, textStyles });
-  const { getProgress, progressByCharacter } = useAppState();
+  const { getProgress, progressByCharacter, onboardingStep, setOnboardingStep } =
+    useAppState();
   const [searchText, setSearchText] = useState("");
   const { data: categoryGroups = [] } = useKanjiCategoryGroupsQuery(locale);
   const completedCharacterIds = useMemo(
@@ -100,6 +101,10 @@ export default function CharacterListScreen() {
       }),
     [items, normalizedSearch],
   );
+  const firstCharacterId = filteredItems[0]?.id;
+
+  const showFavoriteOnboarding = onboardingStep === "list_favorite";
+  const showItemOnboarding = onboardingStep === "list_item";
 
   if (isLoading) {
     return <KanjiLoadingScreen />;
@@ -120,69 +125,98 @@ export default function CharacterListScreen() {
 
   return (
     <Screen contentStyle={styles.screenContent} scrollContainer={false}>
-      <FlatList
-        data={filteredItems}
-        keyExtractor={(character) => character.id}
-        onEndReached={() => {
-          if (hasNextPage && !isFetchingNextPage) {
-            void fetchNextPage();
+      <View style={styles.screenStack}>
+        <FlatList
+          data={filteredItems}
+          keyExtractor={(character) => character.id}
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) {
+              void fetchNextPage();
+            }
+          }}
+          onEndReachedThreshold={0.4}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.content}
+          ListHeaderComponent={
+            <View style={styles.header}>
+              <Text style={styles.title}>{headerTitle}</Text>
+              <Text style={styles.subtitle}>{subtitle}</Text>
+            <View
+              pointerEvents={firstCharacterId ? "none" : "auto"}
+              style={styles.searchRowWrap}
+            >
+                <View style={styles.searchRow}>
+                  <TextInput
+                    value={searchText}
+                    onChangeText={setSearchText}
+                    placeholder={t("list.searchPlaceholder")}
+                    placeholderTextColor={colors.inkMuted}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    returnKeyType="search"
+                    style={styles.searchInput}
+                  />
+                  {searchText ? (
+                    <Pressable
+                      style={styles.searchClearButton}
+                      onPress={() => setSearchText("")}
+                      hitSlop={8}
+                    >
+                      <Text style={styles.searchClearText}>×</Text>
+                    </Pressable>
+                  ) : null}
+                </View>
+                {firstCharacterId ? (
+                  <View pointerEvents="none" style={styles.searchOverlay} />
+                ) : null}
+              </View>
+            </View>
           }
-        }}
-        onEndReachedThreshold={0.4}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}
-        ListHeaderComponent={
-          <View style={styles.header}>
-            <Text style={styles.title}>{headerTitle}</Text>
-            <Text style={styles.subtitle}>{subtitle}</Text>
-            <View style={styles.searchRow}>
-              <TextInput
-                value={searchText}
-                onChangeText={setSearchText}
-                placeholder={t("list.searchPlaceholder")}
-                placeholderTextColor={colors.inkMuted}
-                autoCapitalize="none"
-                autoCorrect={false}
-                returnKeyType="search"
-                style={styles.searchInput}
-              />
-              {searchText ? (
-                <Pressable
-                  style={styles.searchClearButton}
-                  onPress={() => setSearchText("")}
-                  hitSlop={8}
-                >
-                  <Text style={styles.searchClearText}>×</Text>
-                </Pressable>
-              ) : null}
+          ListEmptyComponent={
+            <View style={styles.emptyCard}>
+              <Text style={styles.emptyTitle}>{t("list.emptyTitle")}</Text>
+              <Text style={styles.emptyBody}>{t("list.emptyBody")}</Text>
             </View>
-          </View>
-        }
-        ListEmptyComponent={
-          <View style={styles.emptyCard}>
-            <Text style={styles.emptyTitle}>{t("list.emptyTitle")}</Text>
-            <Text style={styles.emptyBody}>{t("list.emptyBody")}</Text>
-          </View>
-        }
-        renderItem={({ item, index }) => (
-          <CharacterCard
-            categoryKey={normalizedCategoryKey}
-            character={item}
-            index={index}
-            getProgress={getProgress}
+          }
+          renderItem={({ item, index }) => (
+            <CharacterCard
+              categoryKey={normalizedCategoryKey}
+              character={item}
+              index={index}
+              getProgress={getProgress}
+              showFavoriteHint={index === 0 && showFavoriteOnboarding}
+              showItemHint={index === 0 && showItemOnboarding}
+              isDimmed={
+                Boolean(firstCharacterId) &&
+                item.id !== firstCharacterId &&
+                (showFavoriteOnboarding || showItemOnboarding)
+              }
+              onAdvanceItemOnboarding={
+                index === 0 && showItemOnboarding
+                  ? () => setOnboardingStep("detail")
+                  : undefined
+              }
+            />
+          )}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          ListFooterComponent={
+            isFetchingNextPage ? (
+              <View style={styles.footer}>
+                <Text style={styles.footerText}>{t("common.loading")}</Text>
+              </View>
+            ) : (
+              <View style={styles.footerSpacer} />
+            )
+          }
+        />
+
+        {firstCharacterId && showFavoriteOnboarding ? (
+          <Pressable
+            style={styles.tapAnywhereOverlay}
+            onPress={() => setOnboardingStep("list_item")}
           />
-        )}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        ListFooterComponent={
-          isFetchingNextPage ? (
-            <View style={styles.footer}>
-              <Text style={styles.footerText}>{t("common.loading")}</Text>
-            </View>
-          ) : (
-            <View style={styles.footerSpacer} />
-          )
-        }
-      />
+        ) : null}
+      </View>
     </Screen>
   );
 }
@@ -192,11 +226,19 @@ function CharacterCard({
   character,
   index,
   getProgress,
+  showFavoriteHint,
+  showItemHint,
+  isDimmed,
+  onAdvanceItemOnboarding,
 }: {
   categoryKey?: string;
   character: KanjiCharacter;
   index: number;
   getProgress: ReturnType<typeof useAppState>["getProgress"];
+  showFavoriteHint?: boolean;
+  showItemHint?: boolean;
+  isDimmed?: boolean;
+  onAdvanceItemOnboarding?: () => void;
 }) {
   const { locale, t } = useI18n();
   const { colors, surfaceStyles, textStyles } = useTheme();
@@ -204,52 +246,80 @@ function CharacterCard({
   const progress = getProgress(character.id);
 
   return (
-    <Link
-      href={{
-        pathname: "/character/[characterId]",
-        params: {
-          characterId: character.id,
-          categoryKey,
-        },
-      }}
-      asChild
-    >
-      <Pressable style={styles.card}>
-        <View style={styles.left}>
-          <Text style={styles.literal}>{character.literal}</Text>
-          <View style={styles.cardContent}>
-            <Text style={styles.meaning}>
-              {getCharacterMeaning(character, locale)}
-            </Text>
-            <Text style={styles.meta}>
-              {t("list.rank", { rank: index + 1 })}
-              {character.jlptLevel
-                ? ` · ${t("common.jlpt")} ${character.jlptLevel}`
-                : ""}
-              {character.strokeCount != null
-                ? ` · ${t("common.strokes", { count: character.strokeCount })}`
-                : ""}
-            </Text>
-            {progress ? (
-              <Text style={styles.meta}>
-                {t("list.recentScore", {
-                  score: progress.lastScore,
-                  attempts: progress.attempts,
-                })}
+    <View style={styles.cardStack}>
+      <Link
+        href={{
+          pathname: "/character/[characterId]",
+          params: {
+            characterId: character.id,
+            categoryKey,
+          },
+        }}
+        asChild
+      >
+        <Pressable
+          disabled={isDimmed}
+          style={styles.card}
+          onPress={onAdvanceItemOnboarding}
+        >
+          <View style={styles.left}>
+            <Text style={styles.literal}>{character.literal}</Text>
+            <View style={styles.cardContent}>
+              <Text style={styles.meaning}>
+                {getCharacterMeaning(character, locale)}
               </Text>
+              <Text style={styles.meta}>
+                {t("list.rank", { rank: index + 1 })}
+                {character.jlptLevel
+                  ? ` · ${t("common.jlpt")} ${character.jlptLevel}`
+                  : ""}
+                {character.strokeCount != null
+                  ? ` · ${t("common.strokes", { count: character.strokeCount })}`
+                  : ""}
+              </Text>
+              {progress ? (
+                <Text style={styles.meta}>
+                  {t("list.recentScore", {
+                    score: progress.lastScore,
+                    attempts: progress.attempts,
+                  })}
+                </Text>
+              ) : null}
+            </View>
+          </View>
+          <View style={styles.actions}>
+            {showFavoriteHint ? (
+              <View pointerEvents="none" style={styles.favoriteHint}>
+                <View style={styles.favoriteHintBubble}>
+                  <Text style={styles.favoriteHintText}>
+                    {t("list.favoriteHint")}
+                  </Text>
+                </View>
+                <View style={styles.favoriteHintTail} />
+              </View>
             ) : null}
+            <FavoriteButton
+              characterId={character.id}
+              iconSize={18}
+              style={styles.favoriteButton}
+              hitSlop={8}
+            />
+          </View>
+          {isDimmed ? (
+            <View pointerEvents="none" style={styles.cardOverlay} />
+          ) : null}
+        </Pressable>
+      </Link>
+
+      {showItemHint ? (
+        <View pointerEvents="none" style={styles.itemHint}>
+          <View style={styles.itemHintTail} />
+          <View style={styles.itemHintBubble}>
+            <Text style={styles.itemHintText}>{t("list.itemHint")}</Text>
           </View>
         </View>
-        <View style={styles.actions}>
-          <FavoriteButton
-            characterId={character.id}
-            iconSize={18}
-            style={styles.favoriteButton}
-            hitSlop={8}
-          />
-        </View>
-      </Pressable>
-    </Link>
+      ) : null}
+    </View>
   );
 }
 
@@ -263,6 +333,10 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       paddingHorizontal: 0,
       paddingTop: 0,
       paddingBottom: 0,
+    },
+    screenStack: {
+      flex: 1,
+      position: "relative",
     },
     content: {
       flexGrow: 1,
@@ -280,12 +354,22 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
     subtitle: textStyles.bodySm,
     searchRow: {
       ...surfaceStyles.card,
-      marginTop: spacing[4],
       paddingHorizontal: spacing[4],
       paddingVertical: spacing[3],
       flexDirection: "row",
       alignItems: "center",
       gap: spacing[2],
+    },
+    searchRowWrap: {
+      position: "relative",
+      marginTop: spacing[4],
+      borderRadius: 20,
+      overflow: "hidden",
+    },
+    searchOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: colors.bgCanvas,
+      opacity: 0.56,
     },
     searchInput: {
       ...textStyles.bodySm,
@@ -322,13 +406,23 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
     separator: {
       height: 12,
     },
+    cardStack: {
+      gap: spacing[2],
+    },
     card: {
       ...surfaceStyles.card,
+      position: "relative",
       padding: 18,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
       gap: 12,
+    },
+    cardOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: colors.bgCanvas,
+      opacity: 0.56,
+      borderRadius: 20,
     },
     left: {
       flexDirection: "row",
@@ -351,6 +445,7 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       marginTop: 3,
     },
     actions: {
+      position: "relative",
       flexDirection: "row",
       alignItems: "center",
       gap: 10,
@@ -360,6 +455,65 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       height: 36,
       borderRadius: 16,
     },
+    favoriteHint: {
+      position: "absolute",
+      right: -4,
+      bottom: 36,
+      alignItems: "flex-end",
+    },
+    favoriteHintBubble: {
+      backgroundColor: colors.accentWarm,
+      borderRadius: 16,
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
+      maxWidth: 168,
+    },
+    favoriteHintTail: {
+      marginRight: 12,
+      width: 0,
+      height: 0,
+      borderLeftWidth: 8,
+      borderRightWidth: 8,
+      borderTopWidth: 12,
+      borderLeftColor: "transparent",
+      borderRightColor: "transparent",
+      borderTopColor: colors.accentWarm,
+      marginTop: -2,
+    },
+    favoriteHintText: {
+      ...textStyles.meta,
+      color: colors.inkOnDark,
+      fontWeight: "800",
+    },
+    itemHint: {
+      alignSelf: "flex-start",
+      marginLeft: 14,
+      alignItems: "flex-start",
+    },
+    itemHintBubble: {
+      backgroundColor: colors.accentWarm,
+      borderRadius: 16,
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
+      maxWidth: 200,
+    },
+    itemHintTail: {
+      width: 0,
+      height: 0,
+      borderLeftWidth: 8,
+      borderRightWidth: 8,
+      borderBottomWidth: 12,
+      borderLeftColor: "transparent",
+      borderRightColor: "transparent",
+      borderBottomColor: colors.accentWarm,
+      marginLeft: 18,
+      marginBottom: -2,
+    },
+    itemHintText: {
+      ...textStyles.meta,
+      color: colors.inkOnDark,
+      fontWeight: "800",
+    },
     footer: {
       paddingVertical: spacing[6],
       alignItems: "center",
@@ -367,6 +521,11 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
     footerText: textStyles.meta,
     footerSpacer: {
       height: spacing[6],
+    },
+    tapAnywhereOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: "transparent",
+      zIndex: 5,
     },
   });
 }

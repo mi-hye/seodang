@@ -24,7 +24,7 @@ export default function HomeScreen() {
   const {
     hydrated,
     favoriteCount,
-    homeOnboardingDismissed,
+    onboardingStep,
     lastCompletedPractice,
     progressByCharacter,
     recentCategoryKeys,
@@ -91,7 +91,7 @@ export default function HomeScreen() {
     isLoadingCategoryGroups ||
     isLoadingCategoryTotals ||
     isLoadingCategoryProgressMappings;
-  const showOnboarding = hydrated;
+  const showOnboarding = hydrated && onboardingStep === "home";
 
   return (
     <Screen edges={["top", "left", "right", "bottom"]}>

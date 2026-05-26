@@ -14,6 +14,7 @@ import {
   CharacterProgress,
   LastCompletedPractice,
   NotificationSettings,
+  OnboardingStep,
   PersistedAppState,
   ThemeMode,
   UserType,
@@ -28,6 +29,7 @@ type AppStateContextValue = {
   locale: AppLocale;
   theme: ThemeMode;
   userType: UserType;
+  onboardingStep: OnboardingStep;
   homeOnboardingDismissed: boolean;
   categoryOnboardingDismissed: boolean;
   notifications: NotificationSettings;
@@ -38,6 +40,7 @@ type AppStateContextValue = {
   setLocale: (locale: AppLocale) => void;
   setTheme: (theme: ThemeMode) => void;
   setUserType: (userType: UserType) => void;
+  setOnboardingStep: (step: OnboardingStep) => void;
   dismissHomeOnboarding: () => void;
   dismissCategoryOnboarding: () => void;
   updateNotifications: (patch: Partial<NotificationSettings>) => void;
@@ -63,6 +66,7 @@ const defaultState: PersistedAppState = {
   locale: DEVICE_LOCALE,
   theme: "light",
   userType: "korean_learner",
+  onboardingStep: "home",
   homeOnboardingDismissed: false,
   categoryOnboardingDismissed: false,
   notifications: {
@@ -134,14 +138,23 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       setState((current) => ({ ...current, userType }));
     };
 
+    const setOnboardingStep = (onboardingStep: OnboardingStep) => {
+      setState((current) => ({ ...current, onboardingStep }));
+    };
+
     const dismissHomeOnboarding = () => {
-      setState((current) => ({ ...current, homeOnboardingDismissed: true }));
+      setState((current) => ({
+        ...current,
+        homeOnboardingDismissed: true,
+        onboardingStep: "categories",
+      }));
     };
 
     const dismissCategoryOnboarding = () => {
       setState((current) => ({
         ...current,
         categoryOnboardingDismissed: true,
+        onboardingStep: "list_favorite",
       }));
     };
 
@@ -266,6 +279,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       locale: state.locale,
       theme: state.theme,
       userType: state.userType,
+      onboardingStep: state.onboardingStep,
       homeOnboardingDismissed: state.homeOnboardingDismissed,
       categoryOnboardingDismissed: state.categoryOnboardingDismissed,
       notifications: state.notifications,
@@ -276,6 +290,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       setLocale,
       setTheme,
       setUserType,
+      setOnboardingStep,
       dismissHomeOnboarding,
       dismissCategoryOnboarding,
       updateNotifications,

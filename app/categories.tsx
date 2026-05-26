@@ -18,7 +18,7 @@ import { useAppState } from "../src/state/AppStateProvider";
 export default function CategoriesScreen() {
   const router = useRouter();
   const { locale, t } = useI18n();
-  const { hydrated, dismissCategoryOnboarding } = useAppState();
+  const { hydrated, onboardingStep, dismissCategoryOnboarding } = useAppState();
   const { data, isLoading, isError } = useKanjiCategoryGroupsQuery(locale);
   const [expandedGroupIds, setExpandedGroupIds] = useState<string[]>([]);
   const { width, height } = useWindowDimensions();
@@ -40,7 +40,8 @@ export default function CategoriesScreen() {
     .filter((group) => group.categories.length > 0);
   const firstCategory = visibleGroups[0]?.categories[0];
   const firstCategoryGroupId = visibleGroups[0]?.id;
-  const showOnboarding = hydrated && Boolean(firstCategory);
+  const showOnboarding =
+    hydrated && onboardingStep === "categories" && Boolean(firstCategory);
 
   const isExpanded = (groupId: string) => expandedGroupIds.includes(groupId);
   const toggleExpanded = (groupId: string) =>
