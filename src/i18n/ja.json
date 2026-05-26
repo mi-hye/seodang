@@ -31,6 +31,7 @@
   "categories.errorBody": "スキーマ適用やシード投入がまだ終わっていない可能性があります。",
   "categories.emptyTitle": "まだカテゴリがありません。",
   "categories.emptyBody": "カテゴリグループと項目データを入れると、ここに表示されます。",
+  "categories.onboardingAction": "カテゴリごとに漢字を確認できます。",
   "categories.showMore": "もっと見る",
   "categories.showLess": "閉じる",
   "categoryProgress.errorTitle": "カテゴリ進捗を読み込めませんでした。",

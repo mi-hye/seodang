@@ -29,6 +29,7 @@ type AppStateContextValue = {
   theme: ThemeMode;
   userType: UserType;
   homeOnboardingDismissed: boolean;
+  categoryOnboardingDismissed: boolean;
   notifications: NotificationSettings;
   recentCategoryKeys: string[];
   progressByCharacter: Record<string, CharacterProgress>;
@@ -38,6 +39,7 @@ type AppStateContextValue = {
   setTheme: (theme: ThemeMode) => void;
   setUserType: (userType: UserType) => void;
   dismissHomeOnboarding: () => void;
+  dismissCategoryOnboarding: () => void;
   updateNotifications: (patch: Partial<NotificationSettings>) => void;
   recordAttempt: (input: {
     attemptId: string;
@@ -62,6 +64,7 @@ const defaultState: PersistedAppState = {
   theme: "light",
   userType: "korean_learner",
   homeOnboardingDismissed: false,
+  categoryOnboardingDismissed: false,
   notifications: {
     enabled: false,
     time: "20:00",
@@ -133,6 +136,13 @@ export function AppStateProvider({ children }: PropsWithChildren) {
 
     const dismissHomeOnboarding = () => {
       setState((current) => ({ ...current, homeOnboardingDismissed: true }));
+    };
+
+    const dismissCategoryOnboarding = () => {
+      setState((current) => ({
+        ...current,
+        categoryOnboardingDismissed: true,
+      }));
     };
 
     const updateNotifications = (patch: Partial<NotificationSettings>) => {
@@ -257,6 +267,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       theme: state.theme,
       userType: state.userType,
       homeOnboardingDismissed: state.homeOnboardingDismissed,
+      categoryOnboardingDismissed: state.categoryOnboardingDismissed,
       notifications: state.notifications,
       recentCategoryKeys: state.recentCategoryKeys,
       progressByCharacter: state.progressByCharacter,
@@ -266,6 +277,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       setTheme,
       setUserType,
       dismissHomeOnboarding,
+      dismissCategoryOnboarding,
       updateNotifications,
       recordAttempt,
       resetCategoryProgress,

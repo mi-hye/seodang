@@ -31,6 +31,7 @@ export type PersistedAppState = {
   theme: ThemeMode;
   userType: UserType;
   homeOnboardingDismissed: boolean;
+  categoryOnboardingDismissed: boolean;
   notifications: NotificationSettings;
   recentCategoryKeys: string[];
   progressByCharacter: Record<string, CharacterProgress>;

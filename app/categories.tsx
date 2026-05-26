@@ -13,10 +13,12 @@ import { Screen } from "../src/components/common/Screen";
 import { radius, spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import { useKanjiCategoryGroupsQuery } from "../src/queries/kanjiQueries";
+import { useAppState } from "../src/state/AppStateProvider";
 
 export default function CategoriesScreen() {
   const router = useRouter();
   const { locale, t } = useI18n();
+  const { hydrated, dismissCategoryOnboarding } = useAppState();
   const { data, isLoading, isError } = useKanjiCategoryGroupsQuery(locale);
   const [expandedGroupIds, setExpandedGroupIds] = useState<string[]>([]);
   const { width, height } = useWindowDimensions();
@@ -36,6 +38,9 @@ export default function CategoriesScreen() {
       ),
     }))
     .filter((group) => group.categories.length > 0);
+  const firstCategory = visibleGroups[0]?.categories[0];
+  const firstCategoryGroupId = visibleGroups[0]?.id;
+  const showOnboarding = hydrated && Boolean(firstCategory);
 
   const isExpanded = (groupId: string) => expandedGroupIds.includes(groupId);
   const toggleExpanded = (groupId: string) =>
@@ -48,6 +53,17 @@ export default function CategoriesScreen() {
   return (
     <Screen contentStyle={styles.screenContent}>
       <View style={styles.content}>
+        {showOnboarding ? (
+          <View pointerEvents="none" style={styles.onboardingHint}>
+            <View style={styles.onboardingTail} />
+            <View style={styles.onboardingBubble}>
+              <Text style={styles.onboardingHintText}>
+                {t("categories.onboardingAction")}
+              </Text>
+            </View>
+          </View>
+        ) : null}
+
         {isLoading ? <CategoriesSkeleton isLandscape={isLandscape} /> : null}
 
         {isError ? (
@@ -74,8 +90,31 @@ export default function CategoriesScreen() {
 
         {!isLoading && !isError
           ? visibleGroups.map((group) => (
-              <View key={group.id} style={styles.groupSection}>
-                <View style={styles.groupHeader}>
+              <View
+                key={group.id}
+                pointerEvents={
+                  showOnboarding &&
+                  !group.categories.some(
+                    (category) => category.id === firstCategory?.id,
+                  )
+                    ? "none"
+                    : "auto"
+                }
+                style={[
+                  styles.groupSection,
+                  showOnboarding && group.id !== firstCategoryGroupId
+                    ? styles.dimmedSection
+                    : null,
+                ]}
+              >
+                <View
+                  style={[
+                    styles.groupHeader,
+                    showOnboarding && group.id !== firstCategoryGroupId
+                      ? styles.dimmedSection
+                      : null,
+                  ]}
+                >
                   <Text style={styles.groupTitle}>{group.label}</Text>
                 </View>
 
@@ -94,13 +133,25 @@ export default function CategoriesScreen() {
                         {categories.map((category) => (
                           <Pressable
                             key={category.id}
-                            style={styles.categoryChip}
-                            onPress={() =>
+                            disabled={
+                              showOnboarding && category.id !== firstCategory?.id
+                            }
+                            style={[
+                              styles.categoryChip,
+                              showOnboarding && category.id !== firstCategory?.id
+                                ? styles.categoryChipDimmed
+                                : null,
+                            ]}
+                            onPress={() => {
+                              if (showOnboarding) {
+                                dismissCategoryOnboarding();
+                              }
+
                               router.push({
                                 pathname: "/list",
                                 params: { categoryKey: category.categoryKey },
-                              })
-                            }
+                              });
+                            }}
                           >
                             <Text style={styles.categoryChipText}>
                               {category.label}
@@ -195,9 +246,44 @@ function createStyles({ colors, isLandscape, surfaceStyles, textStyles }: any) {
       alignSelf: "center",
       width: "100%",
       maxWidth: isLandscape ? 760 : undefined,
+      position: "relative",
     },
     screenContent: {
       paddingTop: 0,
+    },
+    dimmedSection: {
+      opacity: 0.32,
+    },
+    onboardingHint: {
+      position: "absolute",
+      top: 76,
+      left: 20,
+      zIndex: 20,
+      alignItems: "flex-start",
+    },
+    onboardingBubble: {
+      backgroundColor: colors.accentWarm,
+      borderRadius: 18,
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
+      maxWidth: 220,
+    },
+    onboardingTail: {
+      marginLeft: 28,
+      width: 0,
+      height: 0,
+      borderLeftWidth: 10,
+      borderRightWidth: 10,
+      borderBottomWidth: 14,
+      borderLeftColor: "transparent",
+      borderRightColor: "transparent",
+      borderBottomColor: colors.accentWarm,
+      marginBottom: -2,
+    },
+    onboardingHintText: {
+      ...textStyles.bodySm,
+      color: colors.inkOnDark,
+      fontWeight: "800",
     },
     placeholderCard: {
       ...surfaceStyles.card,
@@ -238,6 +324,9 @@ function createStyles({ colors, isLandscape, surfaceStyles, textStyles }: any) {
       paddingHorizontal: 14,
       paddingVertical: 10,
       gap: 2,
+    },
+    categoryChipDimmed: {
+      opacity: 0.32,
     },
     categoryChipText: {
       ...textStyles.meta,
