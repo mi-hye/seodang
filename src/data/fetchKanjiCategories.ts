@@ -18,10 +18,14 @@ export type KanjiCategory = {
   totalCharacters: number;
 };
 
+import { throwIfForcedFetchFailure } from "./debugFetchFailure";
+
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
 export async function fetchKanjiCategoryGroups(locale: "ko" | "ja") {
+  throwIfForcedFetchFailure("fetchKanjiCategoryGroups");
+
   if (!supabaseUrl || !supabaseAnonKey) {
     return [];
   }

@@ -78,9 +78,8 @@ export default function CharacterDetailScreen() {
           ) : null}
 
           <View style={styles.infoCard}>
-            <Text style={styles.sectionTitle}>{t("detail.ready")}</Text>
-            <Text style={styles.infoLine}>{t("detail.readyBody1")}</Text>
-            <Text style={styles.infoLine}>{t("detail.readyBody2")}</Text>
+            <Text style={styles.sectionTitle}>{t("detail.examples")}</Text>
+            <Text style={styles.infoLine}>{t("detail.examplesPending")}</Text>
           </View>
         </View>
 

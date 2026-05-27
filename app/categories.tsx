@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
 import {
   Animated,
   Pressable,
@@ -19,7 +20,7 @@ export default function CategoriesScreen() {
   const router = useRouter();
   const { locale, t } = useI18n();
   const { hydrated, onboardingStep, dismissCategoryOnboarding } = useAppState();
-  const { data, isLoading, isError } = useKanjiCategoryGroupsQuery(locale);
+  const { data, isLoading, isError, refetch } = useKanjiCategoryGroupsQuery(locale);
   const [expandedGroupIds, setExpandedGroupIds] = useState<string[]>([]);
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height && width >= 700;
@@ -68,13 +69,23 @@ export default function CategoriesScreen() {
         {isLoading ? <CategoriesSkeleton isLandscape={isLandscape} /> : null}
 
         {isError ? (
-          <View style={styles.placeholderCard}>
-            <Text style={styles.placeholderTitle}>
+          <View style={styles.errorState}>
+            <Text style={styles.errorStateTitle}>
               {t("categories.errorTitle")}
             </Text>
-            <Text style={styles.placeholderBody}>
-              {t("categories.errorBody")}
-            </Text>
+            <Pressable
+              style={styles.errorRetryButton}
+              onPress={() => {
+                void refetch();
+              }}
+              hitSlop={8}
+            >
+              <MaterialIcons
+                name="refresh"
+                size={22}
+                color={colors.accentWarmMuted}
+              />
+            </Pressable>
           </View>
         ) : null}
 
@@ -294,6 +305,28 @@ function createStyles({ colors, isLandscape, surfaceStyles, textStyles }: any) {
     },
     placeholderTitle: textStyles.titleMd,
     placeholderBody: textStyles.bodySm,
+    errorState: {
+      alignItems: "center",
+      justifyContent: "center",
+      gap: spacing[3],
+      paddingVertical: spacing[8],
+      marginBottom: spacing[6],
+    },
+    errorStateTitle: {
+      ...textStyles.titleMd,
+      textAlign: "center",
+    },
+    errorRetryButton: {
+      width: 44,
+      height: 44,
+      alignSelf: "center",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 999,
+      backgroundColor: colors.bgMuted,
+      borderWidth: 1,
+      borderColor: colors.borderSoft,
+    },
     groupSection: {
       marginBottom: spacing[7],
       gap: spacing[3],

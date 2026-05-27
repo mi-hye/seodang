@@ -1,7 +1,9 @@
+import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 
+import { KanjiLoadingScreen } from "../../src/components/common/KanjiLoadingScreen";
 import { WritingCanvas } from "../../src/components/practice/WritingCanvas";
 import { Screen } from "../../src/components/common/Screen";
 import { getCharacterMeaning } from "../../src/data/characters";
@@ -24,7 +26,12 @@ export default function PracticeScreen() {
     categoryKey?: string;
   }>();
   const normalizedCategoryKey = Array.isArray(categoryKey) ? categoryKey[0] : categoryKey;
-  const { data: character, isLoading: isCharacterLoading } = useKanjiCharacterQuery(characterId);
+  const {
+    data: character,
+    isLoading: isCharacterLoading,
+    isError: isCharacterError,
+    refetch: refetchCharacter,
+  } = useKanjiCharacterQuery(characterId);
   const { locale, t } = useI18n();
   const { onboardingStep, setOnboardingStep } = useAppState();
   const { width, height } = useWindowDimensions();
@@ -88,17 +95,32 @@ export default function PracticeScreen() {
   };
 
   if (isCharacterLoading) {
-    return (
-      <Screen>
-        <Text style={styles.errorTitle}>{t("common.loading")}</Text>
-      </Screen>
-    );
+    return <KanjiLoadingScreen />;
   }
 
   if (!character) {
     return (
       <Screen>
-        <Text style={styles.errorTitle}>{t("practice.missing")}</Text>
+        {isCharacterError ? (
+          <View style={styles.errorState}>
+            <Text style={styles.errorStateTitle}>{t("practice.missing")}</Text>
+            <Pressable
+              style={styles.errorRetryButton}
+              onPress={() => {
+                void refetchCharacter();
+              }}
+              hitSlop={8}
+            >
+              <MaterialIcons
+                name="refresh"
+                size={22}
+                color={colors.accentWarmMuted}
+              />
+            </Pressable>
+          </View>
+        ) : (
+          <Text style={styles.errorTitle}>{t("practice.missing")}</Text>
+        )}
       </Screen>
     );
   }
@@ -333,6 +355,27 @@ function createStyles({
       fontSize: isCompactLandscape ? 14 : 17,
       color: colors.inkBody,
       fontWeight: "700",
+    },
+    errorState: {
+      alignItems: "center",
+      justifyContent: "center",
+      gap: spacing[3],
+      paddingVertical: spacing[8],
+    },
+    errorStateTitle: {
+      ...textStyles.titleMd,
+      textAlign: "center",
+    },
+    errorRetryButton: {
+      width: 44,
+      height: 44,
+      alignSelf: "center",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 999,
+      backgroundColor: colors.bgMuted,
+      borderWidth: 1,
+      borderColor: colors.borderSoft,
     },
     toolbar: {
       flexDirection: "row",

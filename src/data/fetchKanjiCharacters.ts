@@ -1,4 +1,5 @@
 import { KanjiCharacter, KanjiCharacterMetadata } from "./characters";
+import { throwIfForcedFetchFailure } from "./debugFetchFailure";
 import { KanjiCategory } from "./fetchKanjiCategories";
 
 type KanjiCharacterRow = {
@@ -47,6 +48,8 @@ export async function fetchKanjiCategoryCharactersByKey({
   offset = 0,
 }: FetchKanjiCategoryCharactersParams
 ): Promise<KanjiCategoryCharactersPayload | null> {
+  throwIfForcedFetchFailure("fetchKanjiCategoryCharactersByKey");
+
   if (!supabaseUrl || !supabaseAnonKey || !categoryKey) {
     return null;
   }
@@ -99,6 +102,8 @@ export async function fetchKanjiCharactersByIds(characterIds: string[]) {
 }
 
 export async function fetchKanjiCharacterById(characterId?: string) {
+  throwIfForcedFetchFailure("fetchKanjiCharacterById");
+
   if (!supabaseUrl || !supabaseAnonKey || !characterId) {
     return null;
   }
@@ -122,6 +127,8 @@ export async function fetchKanjiCharacterById(characterId?: string) {
 }
 
 export async function fetchAllKanjiCharacters() {
+  throwIfForcedFetchFailure("fetchAllKanjiCharacters");
+
   if (!supabaseUrl || !supabaseAnonKey) {
     return [];
   }

@@ -11,6 +11,7 @@ import {
 
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
 import { KanjiLoadingScreen } from "../src/components/common/KanjiLoadingScreen";
+import { ErrorState } from "../src/components/common/ErrorState";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning, KanjiCharacter } from "../src/data/characters";
 import { layout, spacing, useTheme } from "../src/design/theme";
@@ -54,6 +55,7 @@ export default function CharacterListScreen() {
     data,
     isLoading,
     isError,
+    refetch,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -125,10 +127,13 @@ export default function CharacterListScreen() {
     return (
       <Screen contentStyle={styles.content} scrollContainer={false}>
         <View>
-          <View style={styles.emptyCard}>
-            <Text style={styles.emptyTitle}>{t("list.errorTitle")}</Text>
-            <Text style={styles.emptyBody}>{t("list.errorBody")}</Text>
-          </View>
+          <ErrorState
+            title={t("list.errorTitle")}
+            body={t("list.errorBody")}
+            onRetry={() => {
+              void refetch();
+            }}
+          />
         </View>
       </Screen>
     );
