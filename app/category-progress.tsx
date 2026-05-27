@@ -204,8 +204,12 @@ function SwipeableCategoryProgressCard({
 
   const panResponder = useRef(
     PanResponder.create({
+      onMoveShouldSetPanResponderCapture: (_, gesture) =>
+        Math.abs(gesture.dx) > 10 &&
+        Math.abs(gesture.dx) > Math.abs(gesture.dy) * 1.2,
       onMoveShouldSetPanResponder: (_, gesture) =>
-        Math.abs(gesture.dx) > 12 && Math.abs(gesture.dy) < 10,
+        Math.abs(gesture.dx) > 10 &&
+        Math.abs(gesture.dx) > Math.abs(gesture.dy) * 1.2,
       onPanResponderMove: (_, gesture) => {
         const baseOffset = opened.current ? -actionWidth : 0;
         const next = Math.max(-actionWidth, Math.min(0, baseOffset + gesture.dx));
@@ -220,6 +224,7 @@ function SwipeableCategoryProgressCard({
       onPanResponderTerminate: () => {
         animateTo(opened.current ? -actionWidth : 0);
       },
+      onPanResponderTerminationRequest: () => false,
     }),
   ).current;
 

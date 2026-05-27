@@ -13,7 +13,7 @@ import {
   AppLocale,
   CharacterProgress,
   LastCompletedPractice,
-  NotificationSettings,
+  NotificationReminder,
   OnboardingStep,
   PersistedAppState,
   ThemeMode,
@@ -32,7 +32,7 @@ type AppStateContextValue = {
   onboardingStep: OnboardingStep;
   homeOnboardingDismissed: boolean;
   categoryOnboardingDismissed: boolean;
-  notifications: NotificationSettings;
+  notificationReminders: NotificationReminder[];
   recentCategoryKeys: string[];
   progressByCharacter: Record<string, CharacterProgress>;
   favoriteCount: number;
@@ -43,7 +43,12 @@ type AppStateContextValue = {
   setOnboardingStep: (step: OnboardingStep) => void;
   dismissHomeOnboarding: () => void;
   dismissCategoryOnboarding: () => void;
-  updateNotifications: (patch: Partial<NotificationSettings>) => void;
+  addNotificationReminder: () => void;
+  updateNotificationReminder: (
+    reminderId: string,
+    patch: Partial<NotificationReminder>,
+  ) => void;
+  removeNotificationReminder: (reminderId: string) => void;
   recordAttempt: (input: {
     attemptId: string;
     characterId: string;
@@ -69,12 +74,7 @@ const defaultState: PersistedAppState = {
   onboardingStep: "home",
   homeOnboardingDismissed: false,
   categoryOnboardingDismissed: false,
-  notifications: {
-    enabled: false,
-    time: "20:00",
-    repeat: "daily",
-    message: "오늘도 한 글자 써볼까요?",
-  },
+  notificationReminders: [],
   recentCategoryKeys: [],
   progressByCharacter: {},
   recordedAttemptIds: [],
@@ -96,10 +96,37 @@ export function AppStateProvider({ children }: PropsWithChildren) {
         const raw = await AsyncStorage.getItem(STORAGE_KEY);
         if (!mounted) return;
         if (raw) {
-          const parsed = JSON.parse(raw) as PersistedAppState;
+          const parsed = JSON.parse(raw) as PersistedAppState & {
+            notifications?: {
+              title?: string;
+              enabled: boolean;
+              time: string;
+              repeat: NotificationReminder["repeat"];
+              message: string;
+            };
+          };
+          const nextLocale = parsed.locale ?? defaultState.locale;
           setState({
             ...defaultState,
             ...parsed,
+            notificationReminders:
+              (parsed.notificationReminders?.map((reminder, index) => ({
+                ...reminder,
+                title:
+                  reminder.title?.trim() ||
+                  getDefaultReminderTitle(index + 1, nextLocale),
+              })) ??
+              (parsed.notifications
+                ? [
+                    {
+                      id: "reminder-default",
+                      title:
+                        parsed.notifications.title?.trim() ||
+                        getDefaultReminderTitle(1, nextLocale),
+                      ...parsed.notifications,
+                    },
+                  ]
+                : defaultState.notificationReminders)),
           });
         }
       } catch {
@@ -158,13 +185,37 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       }));
     };
 
-    const updateNotifications = (patch: Partial<NotificationSettings>) => {
+    const addNotificationReminder = () => {
       setState((current) => ({
         ...current,
-        notifications: {
-          ...current.notifications,
-          ...patch,
-        },
+        notificationReminders: [
+          ...current.notificationReminders,
+          createNotificationReminder(
+            current.notificationReminders.length + 1,
+            current.locale,
+          ),
+        ],
+      }));
+    };
+
+    const updateNotificationReminder = (
+      reminderId: string,
+      patch: Partial<NotificationReminder>,
+    ) => {
+      setState((current) => ({
+        ...current,
+        notificationReminders: current.notificationReminders.map((reminder) =>
+          reminder.id === reminderId ? { ...reminder, ...patch } : reminder,
+        ),
+      }));
+    };
+
+    const removeNotificationReminder = (reminderId: string) => {
+      setState((current) => ({
+        ...current,
+        notificationReminders: current.notificationReminders.filter(
+          (reminder) => reminder.id !== reminderId,
+        ),
       }));
     };
 
@@ -282,7 +333,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       onboardingStep: state.onboardingStep,
       homeOnboardingDismissed: state.homeOnboardingDismissed,
       categoryOnboardingDismissed: state.categoryOnboardingDismissed,
-      notifications: state.notifications,
+      notificationReminders: state.notificationReminders,
       recentCategoryKeys: state.recentCategoryKeys,
       progressByCharacter: state.progressByCharacter,
       favoriteCount,
@@ -293,7 +344,9 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       setOnboardingStep,
       dismissHomeOnboarding,
       dismissCategoryOnboarding,
-      updateNotifications,
+      addNotificationReminder,
+      updateNotificationReminder,
+      removeNotificationReminder,
       recordAttempt,
       resetCategoryProgress,
       getProgress,
@@ -304,6 +357,24 @@ export function AppStateProvider({ children }: PropsWithChildren) {
   }, [hydrated, state]);
 
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
+}
+
+function createNotificationReminder(
+  index: number,
+  locale: AppLocale,
+): NotificationReminder {
+  return {
+    id: `reminder-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    title: getDefaultReminderTitle(index, locale),
+    enabled: true,
+    time: "20:00",
+    repeat: "daily",
+    message: "오늘도 한 글자 써볼까요?",
+  };
+}
+
+function getDefaultReminderTitle(index: number, locale: AppLocale) {
+  return locale === "ja" ? `通知 ${index}` : `알람 ${index}`;
 }
 
 export function useAppState() {

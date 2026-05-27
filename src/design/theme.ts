@@ -68,7 +68,7 @@ const lightColors: ThemeColors = {
   borderStrong: "#173221",
   borderSoft: "#ddcfbc",
   success: "#1d3b2a",
-  danger: "#8f3f2c",
+  danger: "#c4473a",
   shadow: "#5f4b32",
 };
 
@@ -89,7 +89,7 @@ const darkColors: ThemeColors = {
   borderStrong: "#d3b48f",
   borderSoft: "#314037",
   success: "#2f694d",
-  danger: "#a45a48",
+  danger: "#d96b61",
   shadow: "#000000",
 };
 

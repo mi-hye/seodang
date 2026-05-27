@@ -2,6 +2,15 @@ export type UserType = "korean_learner" | "japanese_student";
 export type AppLocale = "ko" | "ja";
 export type ThemeMode = "light" | "dark";
 export type NotificationRepeat = "daily" | "weekdays" | "weekends";
+export type NotificationReminder = {
+  id: string;
+  title: string;
+  enabled: boolean;
+  time: string;
+  repeat: NotificationRepeat;
+  message: string;
+};
+
 export type OnboardingStep =
   | "home"
   | "categories"
@@ -12,13 +21,6 @@ export type OnboardingStep =
   | "practice_submit"
   | "result"
   | "done";
-
-export type NotificationSettings = {
-  enabled: boolean;
-  time: string;
-  repeat: NotificationRepeat;
-  message: string;
-};
 
 export type CharacterProgress = {
   characterId: string;
@@ -43,7 +45,7 @@ export type PersistedAppState = {
   homeOnboardingDismissed: boolean;
   categoryOnboardingDismissed: boolean;
   onboardingStep: OnboardingStep;
-  notifications: NotificationSettings;
+  notificationReminders: NotificationReminder[];
   recentCategoryKeys: string[];
   progressByCharacter: Record<string, CharacterProgress>;
   recordedAttemptIds: string[];

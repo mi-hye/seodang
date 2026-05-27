@@ -100,6 +100,10 @@ function RootNavigator() {
           options={{ title: t("nav.settings") }}
         />
         <Stack.Screen
+          name="settings-notifications"
+          options={{ title: t("nav.settingsNotifications") }}
+        />
+        <Stack.Screen
           name="categories"
           options={{ title: t("nav.categories") }}
         />
