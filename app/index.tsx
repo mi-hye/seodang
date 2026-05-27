@@ -28,6 +28,7 @@ export default function HomeScreen() {
     lastCompletedPractice,
     progressByCharacter,
     recentCategoryKeys,
+    resetProgressByCategoryKey,
     dismissHomeOnboarding,
   } = useAppState();
   const { locale, t } = useI18n();
@@ -65,8 +66,14 @@ export default function HomeScreen() {
         categoryGroups,
         categoryProgressMappings,
         buildCategoryTotalsMap(categoryTotalMappings),
+        resetProgressByCategoryKey,
       ),
-    [categoryGroups, categoryProgressMappings, categoryTotalMappings],
+    [
+      categoryGroups,
+      categoryProgressMappings,
+      categoryTotalMappings,
+      resetProgressByCategoryKey,
+    ],
   );
   const featuredProgressCategories = useMemo(() => {
     const activeProgress = listActiveCategoryProgress(
@@ -76,17 +83,28 @@ export default function HomeScreen() {
     const byCategoryKey = new Map(
       activeProgress.map((category) => [category.categoryKey, category]),
     );
-
-    return recentCategoryKeys
+    const prioritized = recentCategoryKeys
       .map((categoryKey: string) => byCategoryKey.get(categoryKey))
       .filter(
         (
           category,
         ): category is ReturnType<typeof listActiveCategoryProgress>[number] =>
           Boolean(category),
-      )
-      .slice(0, 2);
-  }, [categoryGroups, categoryProgressMap, recentCategoryKeys]);
+      );
+    const remaining = activeProgress.filter(
+      (category) =>
+        !prioritized.some(
+          (prioritizedCategory) =>
+            prioritizedCategory.categoryKey === category.categoryKey,
+        ),
+    );
+
+    return [...prioritized, ...remaining].slice(0, 2);
+  }, [
+    categoryGroups,
+    categoryProgressMap,
+    recentCategoryKeys,
+  ]);
   const isLoadingProgressSection =
     isLoadingCategoryGroups ||
     isLoadingCategoryTotals ||

@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useMemo, useRef } from "react";
 import { useRouter } from "expo-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import {
   Animated,
   PanResponder,
@@ -29,8 +29,11 @@ import { useAppState } from "../src/state/AppStateProvider";
 export default function CategoryProgressScreen() {
   const router = useRouter();
   const { locale, t } = useI18n();
-  const { progressByCharacter, resetCategoryProgress } = useAppState();
-  const queryClient = useQueryClient();
+  const {
+    progressByCharacter,
+    resetProgressByCategoryKey,
+    resetCategoryProgress,
+  } = useAppState();
   const { data: categoryGroups = [], isLoading, isError } =
     useKanjiCategoryGroupsQuery(locale);
   const completedCharacterIds = useMemo(
@@ -53,8 +56,14 @@ export default function CategoryProgressScreen() {
         categoryGroups,
         categoryProgressMappings,
         buildCategoryTotalsMap(categoryTotalMappings),
+        resetProgressByCategoryKey,
       ),
-    [categoryGroups, categoryProgressMappings, categoryTotalMappings],
+    [
+      categoryGroups,
+      categoryProgressMappings,
+      categoryTotalMappings,
+      resetProgressByCategoryKey,
+    ],
   );
   const activeCategories = useMemo(
     () => listActiveCategoryProgress(categoryGroups, categoryProgressMap),
@@ -75,47 +84,11 @@ export default function CategoryProgressScreen() {
     mutationFn: async (input: { categoryKey: string; characterIds: string[] }) =>
       input,
     onMutate: async ({ categoryKey, characterIds }) => {
-      await queryClient.cancelQueries({
-        queryKey: ["kanji-category-progress-mappings"],
-      });
-
-      const previousIds = completedCharacterIds;
-      const previousQueryKey = [
-        "kanji-category-progress-mappings",
-        ...previousIds,
-      ] as const;
-      const previousMappings =
-        queryClient.getQueryData<typeof categoryProgressMappings>(
-          previousQueryKey,
-        ) ?? [];
-      const resetIds = new Set(characterIds);
-      const nextIds = previousIds.filter((id) => !resetIds.has(id));
-      const nextQueryKey = [
-        "kanji-category-progress-mappings",
-        ...nextIds,
-      ] as const;
-      const nextMappings = previousMappings.filter(
-        (mapping) => !resetIds.has(mapping.character_id),
-      );
-
-      queryClient.setQueryData(nextQueryKey, nextMappings);
       resetCategoryProgress({ categoryKey, characterIds });
-
-      return { previousMappings, previousQueryKey };
+      return {};
     },
-    onError: (_error, _input, context) => {
-      if (context?.previousMappings) {
-        queryClient.setQueryData(
-          context.previousQueryKey,
-          context.previousMappings,
-        );
-      }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["kanji-category-progress-mappings"],
-      });
-    },
+    onError: () => {},
+    onSettled: () => {},
   });
 
   return (

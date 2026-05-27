@@ -47,6 +47,7 @@ export type PersistedAppState = {
   onboardingStep: OnboardingStep;
   notificationReminders: NotificationReminder[];
   recentCategoryKeys: string[];
+  resetProgressByCategoryKey: Record<string, string[]>;
   progressByCharacter: Record<string, CharacterProgress>;
   recordedAttemptIds: string[];
   favoriteCharacterIds: Record<string, true>;

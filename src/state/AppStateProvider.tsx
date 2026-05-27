@@ -34,6 +34,7 @@ type AppStateContextValue = {
   categoryOnboardingDismissed: boolean;
   notificationReminders: NotificationReminder[];
   recentCategoryKeys: string[];
+  resetProgressByCategoryKey: Record<string, string[]>;
   progressByCharacter: Record<string, CharacterProgress>;
   favoriteCount: number;
   lastCompletedPractice?: LastCompletedPractice;
@@ -76,6 +77,7 @@ const defaultState: PersistedAppState = {
   categoryOnboardingDismissed: false,
   notificationReminders: [],
   recentCategoryKeys: [],
+  resetProgressByCategoryKey: {},
   progressByCharacter: {},
   recordedAttemptIds: [],
   favoriteCharacterIds: {},
@@ -254,6 +256,13 @@ export function AppStateProvider({ children }: PropsWithChildren) {
             ...current.progressByCharacter,
             [characterId]: nextProgress,
           },
+          resetProgressByCategoryKey: categoryKey
+            ? removeCharacterFromResetCategory(
+                current.resetProgressByCategoryKey,
+                categoryKey,
+                characterId,
+              )
+            : current.resetProgressByCategoryKey,
           recentCategoryKeys: categoryKey
             ? [
                 categoryKey,
@@ -278,15 +287,12 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       characterIds,
     }) => {
       setState((current) => {
-        const nextProgressByCharacter = { ...current.progressByCharacter };
-
-        for (const characterId of characterIds) {
-          delete nextProgressByCharacter[characterId];
-        }
-
         return {
           ...current,
-          progressByCharacter: nextProgressByCharacter,
+          resetProgressByCategoryKey: {
+            ...current.resetProgressByCategoryKey,
+            [categoryKey]: [...new Set(characterIds)],
+          },
           recentCategoryKeys: current.recentCategoryKeys.filter(
             (key) => key !== categoryKey,
           ),
@@ -335,6 +341,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       categoryOnboardingDismissed: state.categoryOnboardingDismissed,
       notificationReminders: state.notificationReminders,
       recentCategoryKeys: state.recentCategoryKeys,
+      resetProgressByCategoryKey: state.resetProgressByCategoryKey,
       progressByCharacter: state.progressByCharacter,
       favoriteCount,
       lastCompletedPractice: state.lastCompletedPractice,
@@ -375,6 +382,32 @@ function createNotificationReminder(
 
 function getDefaultReminderTitle(index: number, locale: AppLocale) {
   return locale === "ja" ? `通知 ${index}` : `알람 ${index}`;
+}
+
+function removeCharacterFromResetCategory(
+  resetProgressByCategoryKey: Record<string, string[]>,
+  categoryKey: string,
+  characterId: string,
+) {
+  const current = resetProgressByCategoryKey[categoryKey];
+  if (!current?.length) {
+    return resetProgressByCategoryKey;
+  }
+
+  const next = current.filter((id) => id !== characterId);
+  if (next.length === current.length) {
+    return resetProgressByCategoryKey;
+  }
+
+  if (next.length === 0) {
+    const { [categoryKey]: _removed, ...rest } = resetProgressByCategoryKey;
+    return rest;
+  }
+
+  return {
+    ...resetProgressByCategoryKey,
+    [categoryKey]: next,
+  };
 }
 
 export function useAppState() {

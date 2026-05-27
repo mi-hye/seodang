@@ -31,8 +31,13 @@ export default function CharacterListScreen() {
   const { locale, t } = useI18n();
   const { colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ colors, surfaceStyles, textStyles });
-  const { getProgress, progressByCharacter, onboardingStep, setOnboardingStep } =
-    useAppState();
+  const {
+    getProgress,
+    progressByCharacter,
+    resetProgressByCategoryKey,
+    onboardingStep,
+    setOnboardingStep,
+  } = useAppState();
   const [searchText, setSearchText] = useState("");
   const { data: categoryGroups = [] } = useKanjiCategoryGroupsQuery(locale);
   const completedCharacterIds = useMemo(
@@ -60,8 +65,14 @@ export default function CharacterListScreen() {
   const items = pages.flatMap((page) => page?.characters ?? []);
   const headerTitle = selectedCategory?.label ?? t("list.title");
   const categoryProgressMap = useMemo(
-    () => buildCategoryProgressMap(categoryGroups, categoryProgressMappings),
-    [categoryGroups, categoryProgressMappings],
+    () =>
+      buildCategoryProgressMap(
+        categoryGroups,
+        categoryProgressMappings,
+        new Map(),
+        resetProgressByCategoryKey,
+      ),
+    [categoryGroups, categoryProgressMappings, resetProgressByCategoryKey],
   );
   const currentCategoryProgress = normalizedCategoryKey
     ? categoryProgressMap.get(normalizedCategoryKey)

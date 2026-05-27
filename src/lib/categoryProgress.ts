@@ -22,6 +22,7 @@ export function buildCategoryProgressMap(
   groups: KanjiCategoryGroup[],
   mappings: CharacterCategoryMapping[],
   totalsByCategoryId: Map<string, number> = new Map(),
+  resetProgressByCategoryKey: Record<string, string[]> = {},
 ) {
   const completedIdsByCategory = new Map<string, Set<string>>();
 
@@ -37,7 +38,13 @@ export function buildCategoryProgressMap(
       .filter((group) => isTrackableProgressGroup(group.groupKey))
       .flatMap((group) => group.categories)
       .map((category) => {
-        const completed = completedIdsByCategory.get(category.id)?.size ?? 0;
+        const resetIds = new Set(
+          resetProgressByCategoryKey[category.categoryKey] ?? [],
+        );
+        const completed =
+          [...(completedIdsByCategory.get(category.id) ?? new Set<string>())].filter(
+            (characterId) => !resetIds.has(characterId),
+          ).length;
         const total =
           totalsByCategoryId.get(category.id) ?? category.totalCharacters ?? 0;
 
