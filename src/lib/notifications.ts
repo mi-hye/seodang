@@ -1,12 +1,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Notifications from "expo-notifications";
+import type * as ExpoNotifications from "expo-notifications";
 import { Platform } from "react-native";
 
-import { NotificationReminder } from "../types/app-state";
+import type { NotificationReminder } from "../types/app-state";
 
 const REMINDER_IDS_KEY = "seodang-practice-reminder-ids-v1";
 const CHANNEL_ID = "practice-reminders";
 let reminderSyncQueue: Promise<void> = Promise.resolve();
+let notificationsModule: Promise<typeof ExpoNotifications | null> | null = null;
+let notificationHandlerConfigured = false;
 
 export type NotificationPermissionState =
   | "unsupported"
@@ -26,16 +28,35 @@ export type ScheduledPracticeReminder = {
   repeats: "daily" | "weekdays" | "weekends" | "weekly" | "unknown";
 };
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
+async function getNotificationsModule() {
+  if (Platform.OS === "web") {
+    return null;
+  }
+
+  notificationsModule ??= import("expo-notifications").catch(() => null);
+  const Notifications = await notificationsModule;
+
+  if (Notifications && !notificationHandlerConfigured) {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowBanner: true,
+        shouldShowList: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+      }),
+    });
+    notificationHandlerConfigured = true;
+  }
+
+  return Notifications;
+}
 
 export async function initializeNotifications() {
+  const Notifications = await getNotificationsModule();
+  if (!Notifications) {
+    return;
+  }
+
   if (Platform.OS === "android") {
     await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
       name: "학습 알림",
@@ -45,7 +66,8 @@ export async function initializeNotifications() {
 }
 
 export async function getNotificationPermissionState(): Promise<NotificationPermissionState> {
-  if (Platform.OS === "web") {
+  const Notifications = await getNotificationsModule();
+  if (!Notifications) {
     return "unsupported";
   }
 
@@ -54,7 +76,8 @@ export async function getNotificationPermissionState(): Promise<NotificationPerm
 }
 
 export async function requestNotificationPermission(): Promise<NotificationPermissionState> {
-  if (Platform.OS === "web") {
+  const Notifications = await getNotificationsModule();
+  if (!Notifications) {
     return "unsupported";
   }
 
@@ -73,19 +96,21 @@ export async function syncPracticeReminders(reminders: NotificationReminder[]) {
 }
 
 export async function disablePracticeReminder() {
-  if (Platform.OS === "web") {
+  const Notifications = await getNotificationsModule();
+  if (!Notifications) {
     return;
   }
 
   reminderSyncQueue = reminderSyncQueue
     .catch(() => {})
-    .then(() => cancelStoredPracticeReminders());
+    .then(() => cancelStoredPracticeReminders(Notifications));
 
   return reminderSyncQueue;
 }
 
 export async function cancelPracticeReminderGroup(ids: string[]) {
-  if (Platform.OS === "web") {
+  const Notifications = await getNotificationsModule();
+  if (!Notifications) {
     return;
   }
 
@@ -110,7 +135,8 @@ export async function cancelPracticeReminderGroup(ids: string[]) {
 export async function getScheduledPracticeReminders(): Promise<
   ScheduledPracticeReminder[]
 > {
-  if (Platform.OS === "web") {
+  const Notifications = await getNotificationsModule();
+  if (!Notifications) {
     return [];
   }
 
@@ -144,7 +170,8 @@ export async function getScheduledPracticeReminders(): Promise<
 }
 
 async function performPracticeReminderSync(reminders: NotificationReminder[]) {
-  if (Platform.OS === "web") {
+  const Notifications = await getNotificationsModule();
+  if (!Notifications) {
     return;
   }
 
@@ -153,7 +180,7 @@ async function performPracticeReminderSync(reminders: NotificationReminder[]) {
     return;
   }
 
-  await cancelStoredPracticeReminders();
+  await cancelStoredPracticeReminders(Notifications);
 
   const enabledReminders = reminders.filter((reminder) => reminder.enabled);
   if (!enabledReminders.length) {
@@ -165,7 +192,7 @@ async function performPracticeReminderSync(reminders: NotificationReminder[]) {
   const nextIds: string[] = [];
 
   for (const reminder of enabledReminders) {
-    const triggers = buildReminderTriggers(reminder);
+    const triggers = buildReminderTriggers(reminder, Notifications);
 
     for (const trigger of triggers) {
       const identifier = await Notifications.scheduleNotificationAsync({
@@ -187,13 +214,13 @@ async function performPracticeReminderSync(reminders: NotificationReminder[]) {
   await AsyncStorage.setItem(REMINDER_IDS_KEY, JSON.stringify(nextIds));
 }
 
-async function cancelStoredPracticeReminders() {
+async function cancelStoredPracticeReminders(
+  Notifications: typeof ExpoNotifications,
+) {
   const storedIds = await AsyncStorage.getItem(REMINDER_IDS_KEY);
   const reminderIds = storedIds ? (JSON.parse(storedIds) as string[]) : [];
   const scheduledNotifications =
-    Platform.OS === "web"
-      ? []
-      : await Notifications.getAllScheduledNotificationsAsync();
+    await Notifications.getAllScheduledNotificationsAsync();
   const practiceReminderIds = scheduledNotifications
     .filter((notification) => notification.content.data?.kind === "practice-reminder")
     .map((notification) => notification.identifier);
@@ -208,7 +235,10 @@ async function cancelStoredPracticeReminders() {
   await AsyncStorage.removeItem(REMINDER_IDS_KEY);
 }
 
-function buildReminderTriggers(reminder: NotificationReminder) {
+function buildReminderTriggers(
+  reminder: NotificationReminder,
+  Notifications: typeof ExpoNotifications,
+) {
   const [hour, minute] = reminder.time
     .split(":")
     .map((value) => Number.parseInt(value, 10));
@@ -219,7 +249,7 @@ function buildReminderTriggers(reminder: NotificationReminder) {
         type: Notifications.SchedulableTriggerInputTypes.DAILY,
         hour,
         minute,
-      } as Notifications.DailyTriggerInput,
+      } as ExpoNotifications.DailyTriggerInput,
     ];
   }
 
@@ -232,7 +262,7 @@ function buildReminderTriggers(reminder: NotificationReminder) {
         weekday,
         hour,
         minute,
-      }) as Notifications.WeeklyTriggerInput,
+      }) as ExpoNotifications.WeeklyTriggerInput,
   );
 }
 
@@ -241,7 +271,9 @@ function parseScheduledPracticeReminder(
   title: string | null,
   body: string | null,
   reminderId: string | null,
-  trigger: Notifications.NotificationTriggerInput | Notifications.NotificationTrigger,
+  trigger:
+    | ExpoNotifications.NotificationTriggerInput
+    | ExpoNotifications.NotificationTrigger,
 ): ScheduledPracticeReminder {
   if (isDailyTrigger(trigger)) {
     return {
@@ -329,24 +361,28 @@ function parseScheduledPracticeReminder(
 }
 
 function isDailyTrigger(
-  trigger: Notifications.NotificationTriggerInput | Notifications.NotificationTrigger,
-): trigger is Notifications.DailyTriggerInput {
+  trigger:
+    | ExpoNotifications.NotificationTriggerInput
+    | ExpoNotifications.NotificationTrigger,
+): trigger is ExpoNotifications.DailyTriggerInput {
   return Boolean(
     trigger &&
       "type" in trigger &&
-      trigger.type === Notifications.SchedulableTriggerInputTypes.DAILY &&
+      trigger.type === "daily" &&
       "hour" in trigger &&
       "minute" in trigger,
   );
 }
 
 function isWeeklyTrigger(
-  trigger: Notifications.NotificationTriggerInput | Notifications.NotificationTrigger,
-): trigger is Notifications.WeeklyTriggerInput {
+  trigger:
+    | ExpoNotifications.NotificationTriggerInput
+    | ExpoNotifications.NotificationTrigger,
+): trigger is ExpoNotifications.WeeklyTriggerInput {
   return Boolean(
     trigger &&
       "type" in trigger &&
-      trigger.type === Notifications.SchedulableTriggerInputTypes.WEEKLY &&
+      trigger.type === "weekly" &&
       "hour" in trigger &&
       "minute" in trigger &&
       "weekday" in trigger,
@@ -354,8 +390,10 @@ function isWeeklyTrigger(
 }
 
 function isCalendarTrigger(
-  trigger: Notifications.NotificationTriggerInput | Notifications.NotificationTrigger,
-): trigger is Notifications.CalendarTriggerInput & {
+  trigger:
+    | ExpoNotifications.NotificationTriggerInput
+    | ExpoNotifications.NotificationTrigger,
+): trigger is ExpoNotifications.CalendarTriggerInput & {
   dateComponents?: {
     hour?: number;
     minute?: number;
@@ -365,7 +403,7 @@ function isCalendarTrigger(
   return Boolean(
     trigger &&
       "type" in trigger &&
-      trigger.type === Notifications.SchedulableTriggerInputTypes.CALENDAR,
+      trigger.type === "calendar",
   );
 }
 
@@ -466,13 +504,13 @@ function resolveReminderRepeat(
 }
 
 function normalizePermissionStatus(
-  status: Notifications.PermissionStatus,
+  status: ExpoNotifications.PermissionStatus,
 ): NotificationPermissionState {
-  if (status === Notifications.PermissionStatus.GRANTED) {
+  if (status === "granted") {
     return "granted";
   }
 
-  if (status === Notifications.PermissionStatus.DENIED) {
+  if (status === "denied") {
     return "denied";
   }
 

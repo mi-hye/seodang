@@ -1,6 +1,14 @@
 import { useRouter } from "expo-router";
-import { useEffect, useMemo, useRef } from "react";
-import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Animated,
+  LayoutChangeEvent,
+  Pressable,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Screen } from "../src/components/common/Screen";
@@ -53,8 +61,22 @@ export default function HomeScreen() {
     data: categoryTotalMappings = [],
     isLoading: isLoadingCategoryTotals,
   } = useKanjiCategoryTotalsQuery();
+  const { width: screenWidth, fontScale } = useWindowDimensions();
+  const textScale = getHomeTextScale(screenWidth, fontScale);
   const { colors, textStyles, surfaceStyles, shadows } = useTheme();
-  const styles = createStyles({ colors, textStyles, surfaceStyles, shadows });
+  const styles = createStyles({
+    colors,
+    textScale,
+    textStyles,
+    surfaceStyles,
+    shadows,
+  });
+  const [startCardLayout, setStartCardLayout] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
   const lastCategory = categoryGroups
     .flatMap((group) => group.categories)
     .find(
@@ -110,15 +132,29 @@ export default function HomeScreen() {
     isLoadingCategoryTotals ||
     isLoadingCategoryProgressMappings;
   const showOnboarding = hydrated && onboardingStep === "home";
+  const onboardingHintStyle = startCardLayout
+    ? {
+        top: startCardLayout.y + 130,
+        left: startCardLayout.x + 12,
+      }
+    : styles.onboardingHint;
+
+  const handleStartCardLayout = (event: LayoutChangeEvent) => {
+    const { x, y, width, height } = event.nativeEvent.layout;
+    setStartCardLayout({ x, y, width, height });
+  };
 
   return (
     <Screen edges={["top", "left", "right", "bottom"]}>
       <View style={styles.contentRoot}>
         <View
-          style={[styles.hero, showOnboarding ? styles.dimmedSection : null]}
+          pointerEvents={showOnboarding ? "none" : "auto"}
+          style={styles.hero}
         >
           <View style={styles.heroTopRow}>
-            <Text style={styles.title}>{t("home.title")}</Text>
+            <Text style={[styles.title, showOnboarding ? styles.dimmedTitle : null]}>
+              {t("home.title")}
+            </Text>
             <View style={styles.headerActions}>
               <Pressable
                 onPress={() => router.push("/search")}
@@ -127,7 +163,7 @@ export default function HomeScreen() {
                 <Ionicons
                   name="search-outline"
                   size={18}
-                  color={colors.inkStrong}
+                  color={showOnboarding ? colors.inkFaint : colors.inkStrong}
                 />
               </Pressable>
               <Pressable
@@ -137,7 +173,7 @@ export default function HomeScreen() {
                 <Ionicons
                   name="settings-outline"
                   size={18}
-                  color={colors.inkStrong}
+                  color={showOnboarding ? colors.inkFaint : colors.inkStrong}
                 />
               </Pressable>
             </View>
@@ -145,7 +181,10 @@ export default function HomeScreen() {
         </View>
 
         {showOnboarding ? (
-          <View pointerEvents="none" style={styles.onboardingHint}>
+          <View
+            pointerEvents="none"
+            style={[styles.onboardingHint, onboardingHintStyle]}
+          >
             <View style={styles.onboardingTail} />
             <View style={styles.onboardingBubble}>
               <Text style={styles.onboardingHintText}>
@@ -163,6 +202,7 @@ export default function HomeScreen() {
 
             router.push("/categories");
           }}
+          onLayout={handleStartCardLayout}
           style={[styles.primaryCard, styles.shadow]}
         >
           <Text style={styles.primaryLabel}>{t("home.start")}</Text>
@@ -171,19 +211,41 @@ export default function HomeScreen() {
 
         <View
           pointerEvents={showOnboarding ? "none" : "auto"}
-          style={[styles.row, showOnboarding ? styles.dimmedSection : null]}
+          style={styles.row}
         >
           <Pressable
             onPress={() => router.push("/favorites")}
-            style={[styles.actionCard, styles.shadow]}
+            style={[
+              styles.actionCard,
+              showOnboarding ? styles.dimmedCard : styles.shadow,
+            ]}
           >
             <View style={styles.actionCardTop}>
-              <Text style={styles.actionTitle}>{t("home.favorites")}</Text>
-              <Text style={styles.actionValue}>
+              <Text
+                style={[
+                  styles.actionTitle,
+                  showOnboarding ? styles.dimmedText : null,
+                ]}
+              >
+                {t("home.favorites")}
+              </Text>
+              <Text
+                style={[
+                  styles.actionValue,
+                  showOnboarding ? styles.dimmedText : null,
+                ]}
+              >
                 {hydrated ? favoriteCount : "-"}
               </Text>
             </View>
-            <Text style={styles.actionBody}>{t("home.favoritesBody")}</Text>
+            <Text
+              style={[
+                styles.actionBody,
+                showOnboarding ? styles.dimmedBodyText : null,
+              ]}
+            >
+              {t("home.favoritesBody")}
+            </Text>
           </Pressable>
 
           <Pressable
@@ -198,15 +260,35 @@ export default function HomeScreen() {
                   })
                 : router.push("/categories")
             }
-            style={[styles.actionCard, styles.shadow]}
+            style={[
+              styles.actionCard,
+              showOnboarding ? styles.dimmedCard : styles.shadow,
+            ]}
           >
             <View style={styles.actionCardTop}>
-              <Text style={styles.actionTitle}>{t("home.recentPractice")}</Text>
-              <Text style={styles.actionValue}>
+              <Text
+                style={[
+                  styles.actionTitle,
+                  showOnboarding ? styles.dimmedText : null,
+                ]}
+              >
+                {t("home.recentPractice")}
+              </Text>
+              <Text
+                style={[
+                  styles.actionValue,
+                  showOnboarding ? styles.dimmedText : null,
+                ]}
+              >
                 {lastCharacter?.literal ?? "-"}
               </Text>
             </View>
-            <Text style={styles.actionBody}>
+            <Text
+              style={[
+                styles.actionBody,
+                showOnboarding ? styles.dimmedBodyText : null,
+              ]}
+            >
               {lastCharacter
                 ? t("home.recentPracticeBodyReady", {
                     category: lastCategory?.label ?? t("nav.categories"),
@@ -218,23 +300,32 @@ export default function HomeScreen() {
 
         <View
           pointerEvents={showOnboarding ? "none" : "auto"}
-          style={[
-            styles.progressSection,
-            showOnboarding ? styles.dimmedSection : null,
-          ]}
+          style={styles.progressSection}
         >
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                showOnboarding ? styles.dimmedText : null,
+              ]}
+            >
               {t("home.categoryProgress")}
             </Text>
             <Pressable onPress={() => router.push("/category-progress")}>
-              <Text style={styles.sectionAction}>
+              <Text
+                style={[
+                  styles.sectionAction,
+                  showOnboarding ? styles.dimmedActionText : null,
+                ]}
+              >
                 {t("home.seeAllCategories")}
               </Text>
             </Pressable>
           </View>
 
-          {isLoadingProgressSection ? (
+          {showOnboarding ? (
+            <ProgressEmptyCard styles={styles} showOnboarding />
+          ) : isLoadingProgressSection ? (
             <CategoryProgressSkeleton />
           ) : featuredProgressCategories.length ? (
             <View style={styles.progressList}>
@@ -252,13 +343,26 @@ export default function HomeScreen() {
                         params: { categoryKey: category.categoryKey },
                       })
                     }
-                    style={[styles.progressCard, styles.shadow]}
+                    style={[
+                      styles.progressCard,
+                      showOnboarding ? styles.dimmedCard : styles.shadow,
+                    ]}
                   >
                     <View style={styles.progressCardTop}>
-                      <Text style={styles.progressCategoryLabel}>
+                      <Text
+                        style={[
+                          styles.progressCategoryLabel,
+                          showOnboarding ? styles.dimmedText : null,
+                        ]}
+                      >
                         {category.label}
                       </Text>
-                      <Text style={styles.progressCount}>
+                      <Text
+                        style={[
+                          styles.progressCount,
+                          showOnboarding ? styles.dimmedBodyText : null,
+                        ]}
+                      >
                         {t("home.progressCount", {
                           completed: category.completed,
                           total: category.total,
@@ -269,6 +373,7 @@ export default function HomeScreen() {
                       <View
                         style={[
                           styles.progressBarFill,
+                          showOnboarding ? styles.dimmedProgressBarFill : null,
                           {
                             width: `${Math.max(
                               category.ratio * 100,
@@ -278,7 +383,12 @@ export default function HomeScreen() {
                         ]}
                       />
                     </View>
-                    <Text style={styles.progressMeta}>
+                    <Text
+                      style={[
+                        styles.progressMeta,
+                        showOnboarding ? styles.dimmedBodyText : null,
+                      ]}
+                    >
                       {t("home.progressPercent", {
                         percent: Math.round(category.ratio * 100),
                       })}
@@ -288,18 +398,47 @@ export default function HomeScreen() {
               )}
             </View>
           ) : (
-            <View style={[styles.progressEmptyCard, styles.shadow]}>
-              <Text style={styles.progressEmptyTitle}>
-                {t("home.progressEmptyTitle")}
-              </Text>
-              <Text style={styles.progressEmptyBody}>
-                {t("home.progressEmptyBody")}
-              </Text>
-            </View>
+            <ProgressEmptyCard styles={styles} />
           )}
         </View>
       </View>
     </Screen>
+  );
+}
+
+function ProgressEmptyCard({
+  showOnboarding = false,
+  styles,
+}: {
+  showOnboarding?: boolean;
+  styles: ReturnType<typeof createStyles>;
+}) {
+  const { t } = useI18n();
+
+  return (
+    <View
+      style={[
+        styles.progressEmptyCard,
+        showOnboarding ? styles.dimmedCard : styles.shadow,
+      ]}
+    >
+      <Text
+        style={[
+          styles.progressEmptyTitle,
+          showOnboarding ? styles.dimmedText : null,
+        ]}
+      >
+        {t("home.progressEmptyTitle")}
+      </Text>
+      <Text
+        style={[
+          styles.progressEmptyBody,
+          showOnboarding ? styles.dimmedBodyText : null,
+        ]}
+      >
+        {t("home.progressEmptyBody")}
+      </Text>
+    </View>
   );
 }
 
@@ -349,17 +488,31 @@ function CategoryProgressSkeleton() {
   );
 }
 
-function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
+function getHomeTextScale(screenWidth: number, fontScale: number) {
+  const widthScale = Math.min(1, Math.max(0.84, screenWidth / 390));
+  const accessibilityScale = fontScale > 1 ? Math.max(0.86, 1 / fontScale) : 1;
+  return widthScale * accessibilityScale;
+}
+
+function scaledFont(size: number, textScale: number) {
+  return Math.round(size * textScale);
+}
+
+function createStyles({
+  colors,
+  textScale,
+  textStyles,
+  surfaceStyles,
+  shadows,
+}: any) {
   return StyleSheet.create({
     contentRoot: {
       position: "relative",
     },
     hero: {
+      position: "relative",
       marginBottom: spacing[7],
       gap: spacing[2] + 2,
-    },
-    dimmedSection: {
-      opacity: 0.32,
     },
     heroTopRow: {
       flexDirection: "row",
@@ -380,8 +533,16 @@ function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
       alignItems: "center",
       justifyContent: "center",
     },
-    title: textStyles.displayLg,
-    subtitle: textStyles.bodyMd,
+    title: {
+      ...textStyles.displayLg,
+      fontSize: scaledFont(34, textScale),
+      lineHeight: scaledFont(40, textScale),
+    },
+    subtitle: {
+      ...textStyles.bodyMd,
+      fontSize: scaledFont(15, textScale),
+      lineHeight: scaledFont(23, textScale),
+    },
     primaryCard: {
       ...surfaceStyles.heroDark,
       padding: spacing[7],
@@ -391,15 +552,19 @@ function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
       position: "absolute",
       top: 200,
       left: 12,
-      zIndex: 20,
+      zIndex: 999,
+      elevation: 999,
       alignItems: "flex-start",
+      maxWidth: "92%",
     },
     onboardingBubble: {
       backgroundColor: colors.accentWarm,
       borderRadius: 18,
-      paddingHorizontal: spacing[3],
+      paddingHorizontal: spacing[4],
       paddingVertical: spacing[2],
-      maxWidth: 196,
+      alignSelf: "flex-start",
+      zIndex: 1000,
+      elevation: 1000,
     },
     onboardingTail: {
       marginLeft: 28,
@@ -412,24 +577,30 @@ function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
       borderRightColor: "transparent",
       borderBottomColor: colors.accentWarm,
       marginBottom: -2,
+      zIndex: 1000,
+      elevation: 1000,
     },
     onboardingHintText: {
       ...textStyles.bodySm,
+      fontSize: scaledFont(14, textScale),
+      lineHeight: scaledFont(21, textScale),
       color: colors.inkOnDark,
       fontWeight: "800",
     },
     primaryLabel: {
-      fontSize: 22,
+      fontSize: scaledFont(22, textScale),
+      lineHeight: scaledFont(30, textScale),
       fontWeight: "800",
       color: colors.inkOnDark,
       marginBottom: spacing[2],
     },
     primaryBody: {
       color: colors.inkOnDarkMuted,
-      fontSize: 15,
-      lineHeight: 22,
+      fontSize: scaledFont(15, textScale),
+      lineHeight: scaledFont(22, textScale),
     },
     row: {
+      position: "relative",
       flexDirection: "row",
       gap: spacing[3],
       marginBottom: spacing[4],
@@ -446,17 +617,24 @@ function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
     },
     actionTitle: {
       ...textStyles.titleSm,
+      fontSize: scaledFont(16, textScale),
+      lineHeight: scaledFont(22, textScale),
       fontWeight: "700",
     },
     actionValue: {
       ...textStyles.glyphMd,
+      fontSize: scaledFont(36, textScale),
+      lineHeight: scaledFont(42, textScale),
       fontWeight: "700",
     },
     actionBody: {
       ...textStyles.bodySm,
+      fontSize: scaledFont(14, textScale),
+      lineHeight: scaledFont(21, textScale),
       color: colors.inkMuted,
     },
     progressSection: {
+      position: "relative",
       gap: spacing[3],
     },
     sectionHeader: {
@@ -465,9 +643,15 @@ function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
       justifyContent: "space-between",
       gap: spacing[3],
     },
-    sectionTitle: textStyles.titleMd,
+    sectionTitle: {
+      ...textStyles.titleMd,
+      fontSize: scaledFont(18, textScale),
+      lineHeight: scaledFont(24, textScale),
+    },
     sectionAction: {
       ...textStyles.meta,
+      fontSize: scaledFont(12, textScale),
+      lineHeight: scaledFont(17, textScale),
       color: colors.accentWarmMuted,
     },
     progressList: {
@@ -484,8 +668,16 @@ function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
       justifyContent: "space-between",
       gap: spacing[3],
     },
-    progressCategoryLabel: textStyles.titleSm,
-    progressCount: textStyles.meta,
+    progressCategoryLabel: {
+      ...textStyles.titleSm,
+      fontSize: scaledFont(16, textScale),
+      lineHeight: scaledFont(22, textScale),
+    },
+    progressCount: {
+      ...textStyles.meta,
+      fontSize: scaledFont(12, textScale),
+      lineHeight: scaledFont(17, textScale),
+    },
     progressBarTrack: {
       height: 10,
       borderRadius: 999,
@@ -499,6 +691,8 @@ function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
     },
     progressMeta: {
       ...textStyles.bodySm,
+      fontSize: scaledFont(14, textScale),
+      lineHeight: scaledFont(21, textScale),
       color: colors.inkMuted,
     },
     progressEmptyCard: {
@@ -506,10 +700,34 @@ function createStyles({ colors, textStyles, surfaceStyles, shadows }: any) {
       padding: spacing[5],
       gap: spacing[2],
     },
-    progressEmptyTitle: textStyles.titleSm,
+    progressEmptyTitle: {
+      ...textStyles.titleSm,
+      fontSize: scaledFont(16, textScale),
+      lineHeight: scaledFont(22, textScale),
+    },
     progressEmptyBody: {
       ...textStyles.bodySm,
+      fontSize: scaledFont(14, textScale),
+      lineHeight: scaledFont(21, textScale),
       color: colors.inkMuted,
+    },
+    dimmedCard: {
+      backgroundColor: colors.bgSurface,
+    },
+    dimmedTitle: {
+      color: colors.inkFaint,
+    },
+    dimmedText: {
+      color: colors.inkFaint,
+    },
+    dimmedBodyText: {
+      color: colors.inkFaint,
+    },
+    dimmedActionText: {
+      color: colors.inkFaint,
+    },
+    dimmedProgressBarFill: {
+      backgroundColor: colors.bgMutedStrong,
     },
     shadow: shadows.card,
   });

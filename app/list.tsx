@@ -2,6 +2,7 @@ import { Link, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import {
   FlatList,
+  LayoutChangeEvent,
   Pressable,
   StyleSheet,
   Text,
@@ -40,6 +41,11 @@ export default function CharacterListScreen() {
     setOnboardingStep,
   } = useAppState();
   const [searchText, setSearchText] = useState("");
+  const [firstCardLayout, setFirstCardLayout] = useState<{
+    x: number;
+    y: number;
+    height: number;
+  } | null>(null);
   const { data: categoryGroups = [] } = useKanjiCategoryGroupsQuery(locale);
   const completedCharacterIds = useMemo(
     () =>
@@ -118,6 +124,12 @@ export default function CharacterListScreen() {
 
   const showFavoriteOnboarding = onboardingStep === "list_favorite";
   const showItemOnboarding = onboardingStep === "list_item";
+  const itemHintStyle = firstCardLayout
+    ? {
+        top: firstCardLayout.y + firstCardLayout.height + 180,
+        left: firstCardLayout.x + 14,
+      }
+    : styles.itemHint;
 
   if (isLoading) {
     return <KanjiLoadingScreen />;
@@ -201,7 +213,11 @@ export default function CharacterListScreen() {
               index={index}
               getProgress={getProgress}
               showFavoriteHint={index === 0 && showFavoriteOnboarding}
-              showItemHint={index === 0 && showItemOnboarding}
+              onFirstCardLayout={
+                index === 0
+                  ? (layout) => setFirstCardLayout(layout)
+                  : undefined
+              }
               isDimmed={
                 Boolean(firstCharacterId) &&
                 item.id !== firstCharacterId &&
@@ -232,6 +248,15 @@ export default function CharacterListScreen() {
             onPress={() => setOnboardingStep("list_item")}
           />
         ) : null}
+
+        {firstCharacterId && showItemOnboarding ? (
+          <View pointerEvents="none" style={[styles.itemHint, itemHintStyle]}>
+            <View style={styles.itemHintTail} />
+            <View style={styles.itemHintBubble}>
+              <Text style={styles.itemHintText}>{t("list.itemHint")}</Text>
+            </View>
+          </View>
+        ) : null}
       </View>
     </Screen>
   );
@@ -243,7 +268,7 @@ function CharacterCard({
   index,
   getProgress,
   showFavoriteHint,
-  showItemHint,
+  onFirstCardLayout,
   isDimmed,
   onAdvanceItemOnboarding,
 }: {
@@ -252,7 +277,11 @@ function CharacterCard({
   index: number;
   getProgress: ReturnType<typeof useAppState>["getProgress"];
   showFavoriteHint?: boolean;
-  showItemHint?: boolean;
+  onFirstCardLayout?: (layout: {
+    x: number;
+    y: number;
+    height: number;
+  }) => void;
   isDimmed?: boolean;
   onAdvanceItemOnboarding?: () => void;
 }) {
@@ -276,6 +305,14 @@ function CharacterCard({
         <Pressable
           disabled={isDimmed}
           style={styles.card}
+          onLayout={
+            onFirstCardLayout
+              ? (event: LayoutChangeEvent) => {
+                  const { x, y, height } = event.nativeEvent.layout;
+                  onFirstCardLayout({ x, y, height });
+                }
+              : undefined
+          }
           onPress={onAdvanceItemOnboarding}
         >
           <View style={styles.left}>
@@ -327,14 +364,6 @@ function CharacterCard({
         </Pressable>
       </Link>
 
-      {showItemHint ? (
-        <View pointerEvents="none" style={styles.itemHint}>
-          <View style={styles.itemHintTail} />
-          <View style={styles.itemHintBubble}>
-            <Text style={styles.itemHintText}>{t("list.itemHint")}</Text>
-          </View>
-        </View>
-      ) : null}
     </View>
   );
 }
@@ -423,7 +452,7 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       height: 12,
     },
     cardStack: {
-      gap: spacing[2],
+      position: "relative",
     },
     card: {
       ...surfaceStyles.card,
@@ -476,13 +505,16 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       right: -4,
       bottom: 36,
       alignItems: "flex-end",
+      zIndex: 20,
+      elevation: 20,
+      maxWidth: 280,
     },
     favoriteHintBubble: {
       backgroundColor: colors.accentWarm,
       borderRadius: 16,
       paddingHorizontal: spacing[3],
-      paddingVertical: spacing[2],
-      maxWidth: 168,
+      paddingVertical: 10,
+      alignSelf: "flex-end",
     },
     favoriteHintTail: {
       marginRight: 12,
@@ -498,20 +530,25 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
     },
     favoriteHintText: {
       ...textStyles.meta,
+      lineHeight: 18,
       color: colors.inkOnDark,
       fontWeight: "800",
     },
     itemHint: {
-      alignSelf: "flex-start",
-      marginLeft: 14,
+      position: "absolute",
+      top: "100%",
+      left: 14,
       alignItems: "flex-start",
+      zIndex: 50,
+      elevation: 50,
+      maxWidth: 280,
     },
     itemHintBubble: {
       backgroundColor: colors.accentWarm,
       borderRadius: 16,
       paddingHorizontal: spacing[3],
       paddingVertical: spacing[2],
-      maxWidth: 200,
+      alignSelf: "flex-start",
     },
     itemHintTail: {
       width: 0,

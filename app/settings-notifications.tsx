@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import type { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -73,8 +74,8 @@ export default function SettingsNotificationsScreen() {
   };
 
   const handleAddReminder = async () => {
-    if (!(await ensurePermissionGranted())) {
-      return;
+    if (permissionState !== "granted") {
+      void ensurePermissionGranted();
     }
 
     addNotificationReminder();
@@ -150,6 +151,7 @@ export default function SettingsNotificationsScreen() {
                 onTimeChange={(time) =>
                   updateNotificationReminder(reminder.id, { time })
                 }
+                onCloseTimePicker={() => setPickerReminderId(null)}
                 onRepeatChange={(repeat) =>
                   updateNotificationReminder(reminder.id, { repeat })
                 }
@@ -175,6 +177,7 @@ function ReminderCard({
   onToggleTimePicker,
   onTitleChange,
   onTimeChange,
+  onCloseTimePicker,
   onRepeatChange,
   onMessageChange,
   onDelete,
@@ -186,6 +189,7 @@ function ReminderCard({
   onToggleTimePicker: () => void;
   onTitleChange: (title: string) => void;
   onTimeChange: (time: string) => void;
+  onCloseTimePicker: () => void;
   onRepeatChange: (repeat: NotificationReminder["repeat"]) => void;
   onMessageChange: (message: string) => void;
   onDelete: () => void;
@@ -224,6 +228,21 @@ function ReminderCard({
     onTitleChange(nextTitle);
     setTitleDraft(nextTitle);
     setIsEditingTitle(false);
+  };
+
+  const handleTimeChange = (
+    event: DateTimePickerEvent,
+    nextDate?: Date,
+  ) => {
+    if (Platform.OS === "android") {
+      onCloseTimePicker();
+    }
+
+    if (event.type === "dismissed" || !nextDate) {
+      return;
+    }
+
+    onTimeChange(formatTimeFromDate(nextDate));
   };
 
   return (
@@ -274,19 +293,23 @@ function ReminderCard({
               />
             </Pressable>
             {showTimePicker ? (
-              <View style={styles.timePickerCard}>
+              Platform.OS === "ios" ? (
+                <View style={styles.timePickerCard}>
+                  <DateTimePicker
+                    mode="time"
+                    value={notificationTimeDate}
+                    display="spinner"
+                    onChange={handleTimeChange}
+                  />
+                </View>
+              ) : (
                 <DateTimePicker
                   mode="time"
                   value={notificationTimeDate}
-                  display={Platform.OS === "ios" ? "spinner" : "default"}
-                  onChange={(_, nextDate) => {
-                    if (!nextDate) {
-                      return;
-                    }
-                    onTimeChange(formatTimeFromDate(nextDate));
-                  }}
+                  display="default"
+                  onChange={handleTimeChange}
                 />
-              </View>
+              )
             ) : null}
           </View>
 

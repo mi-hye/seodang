@@ -231,17 +231,17 @@ function createStyles({
     onboardingHint: {
       position: "absolute",
       right: 0,
-      bottom: 74,
+      bottom: 84,
       alignItems: "flex-end",
       zIndex: 20,
+      maxWidth: 280,
     },
     onboardingBubble: {
       backgroundColor: colors.accentWarm,
       borderRadius: 16,
       paddingHorizontal: spacing[3],
       paddingVertical: spacing[2],
-      minWidth: 220,
-      maxWidth: 260,
+      alignSelf: "flex-end",
     },
     onboardingTail: {
       marginRight: 18,

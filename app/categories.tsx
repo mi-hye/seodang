@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   Animated,
+  LayoutChangeEvent,
   Pressable,
   StyleSheet,
   Text,
@@ -22,6 +23,16 @@ export default function CategoriesScreen() {
   const { hydrated, onboardingStep, dismissCategoryOnboarding } = useAppState();
   const { data, isLoading, isError, refetch } = useKanjiCategoryGroupsQuery(locale);
   const [expandedGroupIds, setExpandedGroupIds] = useState<string[]>([]);
+  const [firstCategoryLayout, setFirstCategoryLayout] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
+  const [firstCategoryRowLayout, setFirstCategoryRowLayout] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height && width >= 700;
   const { colors, surfaceStyles, textStyles } = useTheme();
@@ -43,6 +54,16 @@ export default function CategoriesScreen() {
   const firstCategoryGroupId = visibleGroups[0]?.id;
   const showOnboarding =
     hydrated && onboardingStep === "categories" && Boolean(firstCategory);
+  const onboardingHintStyle = firstCategoryLayout && firstCategoryRowLayout
+    ? {
+        top:
+          firstCategoryRowLayout.y +
+          firstCategoryLayout.y +
+          firstCategoryLayout.height +
+          0,
+        left: firstCategoryRowLayout.x + firstCategoryLayout.x,
+      }
+    : styles.onboardingHint;
 
   const isExpanded = (groupId: string) => expandedGroupIds.includes(groupId);
   const toggleExpanded = (groupId: string) =>
@@ -56,10 +77,13 @@ export default function CategoriesScreen() {
     <Screen contentStyle={styles.screenContent}>
       <View style={styles.content}>
         {showOnboarding ? (
-          <View pointerEvents="none" style={styles.onboardingHint}>
+          <View
+            pointerEvents="none"
+            style={[styles.onboardingHint, onboardingHintStyle]}
+          >
             <View style={styles.onboardingTail} />
             <View style={styles.onboardingBubble}>
-              <Text style={styles.onboardingHintText}>
+              <Text numberOfLines={1} style={styles.onboardingHintText}>
                 {t("categories.onboardingAction")}
               </Text>
             </View>
@@ -141,10 +165,34 @@ export default function CategoriesScreen() {
 
                   return (
                     <>
-                      <View style={styles.chipRow}>
+                      <View
+                        onLayout={
+                          group.id === firstCategoryGroupId
+                            ? (event: LayoutChangeEvent) => {
+                                const { x, y } = event.nativeEvent.layout;
+                                setFirstCategoryRowLayout({ x, y });
+                              }
+                            : undefined
+                        }
+                        style={styles.chipRow}
+                      >
                         {categories.map((category) => (
                           <Pressable
                             key={category.id}
+                            onLayout={
+                              category.id === firstCategory?.id
+                                ? (event: LayoutChangeEvent) => {
+                                    const { x, y, width, height } =
+                                      event.nativeEvent.layout;
+                                    setFirstCategoryLayout({
+                                      x,
+                                      y,
+                                      width,
+                                      height,
+                                    });
+                                  }
+                                : undefined
+                            }
                             disabled={
                               showOnboarding && category.id !== firstCategory?.id
                             }
@@ -278,7 +326,7 @@ function createStyles({ colors, isLandscape, surfaceStyles, textStyles }: any) {
       borderRadius: 18,
       paddingHorizontal: spacing[3],
       paddingVertical: spacing[2],
-      maxWidth: 220,
+      minWidth: 236,
     },
     onboardingTail: {
       marginLeft: 28,

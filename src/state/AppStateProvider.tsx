@@ -19,6 +19,7 @@ import {
   ThemeMode,
   UserType,
 } from "../types/app-state";
+import { FORCE_ONBOARDING_FLOW } from "./debugOnboarding";
 
 const STORAGE_KEY = "seodang-app-state-v1";
 const MAX_RECORDED_ATTEMPTS = 50;
@@ -32,6 +33,7 @@ type AppStateContextValue = {
   onboardingStep: OnboardingStep;
   homeOnboardingDismissed: boolean;
   categoryOnboardingDismissed: boolean;
+  onboardingCompleted: boolean;
   notificationReminders: NotificationReminder[];
   recentCategoryKeys: string[];
   resetProgressByCategoryKey: Record<string, string[]>;
@@ -75,6 +77,7 @@ const defaultState: PersistedAppState = {
   onboardingStep: "home",
   homeOnboardingDismissed: false,
   categoryOnboardingDismissed: false,
+  onboardingCompleted: false,
   notificationReminders: [],
   recentCategoryKeys: [],
   resetProgressByCategoryKey: {},
@@ -108,9 +111,25 @@ export function AppStateProvider({ children }: PropsWithChildren) {
             };
           };
           const nextLocale = parsed.locale ?? defaultState.locale;
+          const onboardingCompleted =
+            !FORCE_ONBOARDING_FLOW &&
+            (parsed.onboardingCompleted ?? parsed.onboardingStep === "done");
           setState({
             ...defaultState,
             ...parsed,
+            homeOnboardingDismissed: FORCE_ONBOARDING_FLOW
+              ? false
+              : (parsed.homeOnboardingDismissed ?? defaultState.homeOnboardingDismissed),
+            categoryOnboardingDismissed: FORCE_ONBOARDING_FLOW
+              ? false
+              : (parsed.categoryOnboardingDismissed ??
+                defaultState.categoryOnboardingDismissed),
+            onboardingCompleted,
+            onboardingStep: FORCE_ONBOARDING_FLOW
+              ? "home"
+              : onboardingCompleted
+                ? "done"
+                : (parsed.onboardingStep ?? defaultState.onboardingStep),
             notificationReminders:
               (parsed.notificationReminders?.map((reminder, index) => ({
                 ...reminder,
@@ -130,6 +149,8 @@ export function AppStateProvider({ children }: PropsWithChildren) {
                   ]
                 : defaultState.notificationReminders)),
           });
+        } else if (FORCE_ONBOARDING_FLOW) {
+          setState(defaultState);
         }
       } catch {
         if (mounted) {
@@ -168,7 +189,12 @@ export function AppStateProvider({ children }: PropsWithChildren) {
     };
 
     const setOnboardingStep = (onboardingStep: OnboardingStep) => {
-      setState((current) => ({ ...current, onboardingStep }));
+      setState((current) => ({
+        ...current,
+        onboardingStep,
+        onboardingCompleted:
+          onboardingStep === "done" ? true : current.onboardingCompleted,
+      }));
     };
 
     const dismissHomeOnboarding = () => {
@@ -176,6 +202,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
         ...current,
         homeOnboardingDismissed: true,
         onboardingStep: "categories",
+        onboardingCompleted: false,
       }));
     };
 
@@ -184,6 +211,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
         ...current,
         categoryOnboardingDismissed: true,
         onboardingStep: "list_favorite",
+        onboardingCompleted: false,
       }));
     };
 
@@ -339,6 +367,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       onboardingStep: state.onboardingStep,
       homeOnboardingDismissed: state.homeOnboardingDismissed,
       categoryOnboardingDismissed: state.categoryOnboardingDismissed,
+      onboardingCompleted: state.onboardingCompleted,
       notificationReminders: state.notificationReminders,
       recentCategoryKeys: state.recentCategoryKeys,
       resetProgressByCategoryKey: state.resetProgressByCategoryKey,

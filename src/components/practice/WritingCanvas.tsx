@@ -10,6 +10,9 @@ import Svg, { Line, Path } from "react-native-svg";
 
 import { CanvasPoint, InputStroke, KanjiVgCharacter } from "../../types/practice";
 
+const MIN_POINT_DISTANCE = 3;
+const MAX_POINT_JUMP_DISTANCE = 96;
+
 type WritingCanvasProps = {
   fillMode?: boolean;
   showGuide: boolean;
@@ -35,7 +38,6 @@ export const WritingCanvas = memo(function WritingCanvas({
   const [animatedStrokeIndex, setAnimatedStrokeIndex] = useState(0);
   const [animatedProgress, setAnimatedProgress] = useState(0);
   const currentStrokeIdRef = useRef<string | null>(null);
-  const canvasOriginRef = useRef<CanvasPoint | null>(null);
 
   useEffect(() => {
     if (!showGuide || !guideData?.strokes.length) {
@@ -74,8 +76,7 @@ export const WritingCanvas = memo(function WritingCanvas({
 
   const startStroke = (event: GestureResponderEvent) => {
     onInteractionStart?.();
-    canvasOriginRef.current = getCanvasOrigin(event);
-    const point = getRelativePoint(event, size.width, size.height, canvasOriginRef.current);
+    const point = getRelativePoint(event, size.width, size.height);
     const strokeId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     currentStrokeIdRef.current = strokeId;
     onChange((currentStrokes) => [
@@ -88,7 +89,7 @@ export const WritingCanvas = memo(function WritingCanvas({
     if (!currentStrokeIdRef.current) return;
 
     onInteractionStart?.();
-    const point = getRelativePoint(event, size.width, size.height, canvasOriginRef.current);
+    const point = getRelativePoint(event, size.width, size.height);
 
     onChange((currentStrokes) =>
       currentStrokes.map((stroke) => {
@@ -97,7 +98,12 @@ export const WritingCanvas = memo(function WritingCanvas({
         }
 
         const lastPoint = stroke.points[stroke.points.length - 1];
-        if (lastPoint && getDistance(lastPoint, point) < 3) {
+        if (!lastPoint) {
+          return stroke;
+        }
+
+        const distance = getDistance(lastPoint, point);
+        if (distance < MIN_POINT_DISTANCE || distance > MAX_POINT_JUMP_DISTANCE) {
           return stroke;
         }
 
@@ -111,7 +117,6 @@ export const WritingCanvas = memo(function WritingCanvas({
 
   const endStroke = () => {
     currentStrokeIdRef.current = null;
-    canvasOriginRef.current = null;
     onInteractionEnd?.();
   };
 
@@ -149,8 +154,6 @@ export const WritingCanvas = memo(function WritingCanvas({
       collapsable={false}
       style={[styles.canvas, fillMode && styles.fillCanvas]}
       onLayout={handleLayout}
-      onPointerDownCapture={onInteractionStart}
-      onPointerMoveCapture={onInteractionStart}
       {...panResponder.panHandlers}
     >
       <Grid />
@@ -256,24 +259,12 @@ function getRelativePoint(
   event: GestureResponderEvent,
   width: number,
   height: number,
-  origin?: CanvasPoint | null
 ): CanvasPoint {
-  const { locationX, locationY, pageX, pageY } = event.nativeEvent;
-  const x = origin ? pageX - origin.x : locationX;
-  const y = origin ? pageY - origin.y : locationY;
+  const { locationX, locationY } = event.nativeEvent;
 
   return {
-    x: clamp(x, 8, Math.max(width - 8, 8)),
-    y: clamp(y, 8, Math.max(height - 8, 8)),
-  };
-}
-
-function getCanvasOrigin(event: GestureResponderEvent): CanvasPoint {
-  const { locationX, locationY, pageX, pageY } = event.nativeEvent;
-
-  return {
-    x: pageX - locationX,
-    y: pageY - locationY,
+    x: clamp(locationX, 8, Math.max(width - 8, 8)),
+    y: clamp(locationY, 8, Math.max(height - 8, 8)),
   };
 }
 

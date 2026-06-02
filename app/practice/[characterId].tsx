@@ -394,6 +394,7 @@ function createStyles({
     },
     guideChipWrap: {
       position: "relative",
+      alignSelf: "flex-start",
     },
     toolChipText: {
       ...textStyles.meta,
@@ -421,21 +422,22 @@ function createStyles({
     },
     onboardingHint: {
       position: "absolute",
-      left: -8,
+      left: -78,
+      right: -78,
       bottom: isLandscape ? 44 : 42,
-      alignItems: "flex-start",
+      alignItems: "center",
       zIndex: 20,
+      maxWidth: isLandscape ? 320 : 260,
     },
     onboardingBubble: {
       backgroundColor: colors.accentWarm,
       borderRadius: 16,
       paddingHorizontal: spacing[3],
       paddingVertical: spacing[2],
-      minWidth: 200,
-      maxWidth: 240,
+      alignSelf: "center",
     },
     onboardingTail: {
-      marginLeft: 18,
+      marginLeft: 0,
       width: 0,
       height: 0,
       borderLeftWidth: 8,
@@ -503,14 +505,14 @@ function createStyles({
       bottom: 58,
       alignItems: "flex-end",
       zIndex: 20,
+      maxWidth: isLandscape ? 340 : 300,
     },
     submitHintBubble: {
       backgroundColor: colors.accentWarm,
       borderRadius: 16,
       paddingHorizontal: spacing[3],
       paddingVertical: spacing[2],
-      minWidth: 200,
-      maxWidth: 240,
+      alignSelf: "flex-end",
     },
     submitHintTail: {
       marginRight: 18,

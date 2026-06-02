@@ -44,6 +44,7 @@ export type PersistedAppState = {
   userType: UserType;
   homeOnboardingDismissed: boolean;
   categoryOnboardingDismissed: boolean;
+  onboardingCompleted: boolean;
   onboardingStep: OnboardingStep;
   notificationReminders: NotificationReminder[];
   recentCategoryKeys: string[];

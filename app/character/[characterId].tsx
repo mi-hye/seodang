@@ -171,13 +171,14 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
       right: 12,
       bottom: 84,
       alignItems: "flex-end",
+      maxWidth: 260,
     },
     onboardingBubble: {
       backgroundColor: colors.accentWarm,
       borderRadius: 16,
       paddingHorizontal: spacing[3],
       paddingVertical: spacing[2],
-      maxWidth: 188,
+      alignSelf: "flex-end",
     },
     onboardingTail: {
       marginRight: 18,

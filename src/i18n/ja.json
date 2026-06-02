@@ -28,7 +28,7 @@
   "home.progressCount": "%{completed} / %{total}",
   "home.progressPercent": "%{percent}%",
   "home.progressEmptyTitle": "まだ進行中のカテゴリがありません。",
-  "home.progressEmptyBody": "漢字を一度でも合格すると、ここでカテゴリ進捗を見られます。",
+  "home.progressEmptyBody": "合格すると進捗が表示されます。",
   "categories.errorTitle": "カテゴリを読み込めませんでした。",
   "categories.errorBody": "スキーマ適用やシード投入がまだ終わっていない可能性があります。",
   "categories.emptyTitle": "まだカテゴリがありません。",
