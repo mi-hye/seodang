@@ -118,11 +118,17 @@ export function evaluatePractice({
     passed,
     drawnStrokes,
     expectedStrokes,
-    summary: passed
-      ? t("practice.eval.passSummary")
-      : t("practice.eval.failSummary"),
+    summary: t(getScoreSummaryKey(score)),
     feedback: feedback.slice(0, 4),
   };
+}
+
+function getScoreSummaryKey(score: number) {
+  if (score >= 90) return "practice.eval.summary.excellent";
+  if (score >= 78) return "practice.eval.summary.great";
+  if (score >= 65) return "practice.eval.summary.good";
+  if (score >= 50) return "practice.eval.summary.close";
+  return "practice.eval.summary.tryAgain";
 }
 
 function normalizeStroke(stroke: InputStroke, canvasSize: CanvasSize) {

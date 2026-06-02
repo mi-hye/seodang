@@ -185,10 +185,11 @@ class CdpClient {
   }
 }
 
-function buildExtractionExpression(literal) {
+function buildExtractionExpression(literal, { includeStrokes = true } = {}) {
   return `
     (async () => {
       const targetLiteral = ${JSON.stringify(literal)};
+      const includeStrokes = ${JSON.stringify(includeStrokes)};
 
       const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -243,10 +244,14 @@ function buildExtractionExpression(literal) {
         return null;
       };
 
-      const drawButton = await waitFor(findDetailDrawButton);
-      if (!drawButton) {
-        throw new Error("Mazii detail draw button not found");
-      }
+      await waitFor(
+        () =>
+          findDetailDrawButton() ||
+          document.querySelector('.title-detail-kanji span') ||
+          document.querySelector('a[href*="/search/kanji/"]'),
+        10000
+      );
+      await sleep(500);
 
       const pageText = document.body.innerText || "";
       const splitValues = (text) =>
@@ -274,67 +279,78 @@ function buildExtractionExpression(literal) {
         .map((element) => (element.textContent || '').trim())
         .find((value) => /^Strokes\\s*\\d+$/i.test(value.replace(/\\s+/g, ' '))) ?? null;
 
-      drawButton.click();
+      let svg = null;
+      let bounds = null;
+      let strokes = [];
 
-      const readyPath = await waitFor(() => document.querySelector('#search-kanji-draw svg g path[clip-path]'));
-      const svg = readyPath?.closest('svg') ?? document.querySelector('#search-kanji-draw svg');
-      if (!svg || !readyPath) {
-        throw new Error("Mazii practice SVG did not finish rendering");
-      }
-
-      const maskPathById = Object.fromEntries(
-        [...svg.querySelectorAll('clipPath[id]')].map((clipPath) => [
-          clipPath.id,
-          clipPath.querySelector('path')?.getAttribute('d') ?? null,
-        ])
-      );
-
-      const rawGuidePaths = [...svg.querySelectorAll('g path[clip-path]')].map((pathElement) => ({
-        guidePath: pathElement.getAttribute('d'),
-        clipPath: pathElement.getAttribute('clip-path'),
-        stroke: pathElement.getAttribute('stroke'),
-      }));
-
-      const uniqueGuidePaths = [...new Map(
-        rawGuidePaths
-          .filter((item) => item.guidePath)
-          .map((item) => [item.guidePath, item])
-      ).values()];
-
-      const allPoints = uniqueGuidePaths.flatMap((item) => toPairs(parseNumbers(item.guidePath)));
-      const bounds = allPoints.reduce(
-        (accumulator, point) => ({
-          minX: Math.min(accumulator.minX, point.x),
-          minY: Math.min(accumulator.minY, point.y),
-          maxX: Math.max(accumulator.maxX, point.x),
-          maxY: Math.max(accumulator.maxY, point.y),
-        }),
-        {
-          minX: Number.POSITIVE_INFINITY,
-          minY: Number.POSITIVE_INFINITY,
-          maxX: Number.NEGATIVE_INFINITY,
-          maxY: Number.NEGATIVE_INFINITY,
+      if (includeStrokes) {
+        const drawButton = await waitFor(findDetailDrawButton);
+        if (!drawButton) {
+          throw new Error("Mazii detail draw button not found");
         }
-      );
 
-      const strokes = uniqueGuidePaths.map((item, index) => {
-        const maskId = item.clipPath?.match(/#([^")]+)/)?.[1] ?? null;
-        const points = toPairs(parseNumbers(item.guidePath));
-        const start = points[0];
-        const end = points[points.length - 1];
-        const normalizedStart = normalizePoint(start, bounds);
-        const normalizedEnd = normalizePoint(end, bounds);
+        drawButton.click();
 
-        return {
-          order: index + 1,
-          guidePath: item.guidePath,
-          maskId,
-          maskPath: maskId ? maskPathById[maskId] ?? null : null,
-          start: normalizedStart,
-          end: normalizedEnd,
-          direction: classifyDirection(normalizedStart, normalizedEnd),
-        };
-      });
+        const readyPath = await waitFor(() => document.querySelector('#search-kanji-draw svg g path[clip-path]'));
+        svg = readyPath?.closest('svg') ?? document.querySelector('#search-kanji-draw svg');
+        if (!svg || !readyPath) {
+          throw new Error("Mazii practice SVG did not finish rendering");
+        }
+
+        const maskPathById = Object.fromEntries(
+          [...svg.querySelectorAll('clipPath[id]')].map((clipPath) => [
+            clipPath.id,
+            clipPath.querySelector('path')?.getAttribute('d') ?? null,
+          ])
+        );
+
+        const rawGuidePaths = [...svg.querySelectorAll('g path[clip-path]')].map((pathElement) => ({
+          guidePath: pathElement.getAttribute('d'),
+          clipPath: pathElement.getAttribute('clip-path'),
+          stroke: pathElement.getAttribute('stroke'),
+        }));
+
+        const uniqueGuidePaths = [...new Map(
+          rawGuidePaths
+            .filter((item) => item.guidePath)
+            .map((item) => [item.guidePath, item])
+        ).values()];
+
+        const allPoints = uniqueGuidePaths.flatMap((item) => toPairs(parseNumbers(item.guidePath)));
+        bounds = allPoints.reduce(
+          (accumulator, point) => ({
+            minX: Math.min(accumulator.minX, point.x),
+            minY: Math.min(accumulator.minY, point.y),
+            maxX: Math.max(accumulator.maxX, point.x),
+            maxY: Math.max(accumulator.maxY, point.y),
+          }),
+          {
+            minX: Number.POSITIVE_INFINITY,
+            minY: Number.POSITIVE_INFINITY,
+            maxX: Number.NEGATIVE_INFINITY,
+            maxY: Number.NEGATIVE_INFINITY,
+          }
+        );
+
+        strokes = uniqueGuidePaths.map((item, index) => {
+          const maskId = item.clipPath?.match(/#([^")]+)/)?.[1] ?? null;
+          const points = toPairs(parseNumbers(item.guidePath));
+          const start = points[0];
+          const end = points[points.length - 1];
+          const normalizedStart = normalizePoint(start, bounds);
+          const normalizedEnd = normalizePoint(end, bounds);
+
+          return {
+            order: index + 1,
+            guidePath: item.guidePath,
+            maskId,
+            maskPath: maskId ? maskPathById[maskId] ?? null : null,
+            start: normalizedStart,
+            end: normalizedEnd,
+            direction: classifyDirection(normalizedStart, normalizedEnd),
+          };
+        });
+      }
 
       const exampleEntries = [...document.querySelectorAll('a[href*="/search/kanji/"]')]
         .map((anchor) => {
@@ -373,8 +389,8 @@ function buildExtractionExpression(literal) {
         meaningJaSource: null,
         examples: exampleEntries,
         strokeCountLabel: strokeCountText,
-        svgWidth: svg.getAttribute('width'),
-        svgHeight: svg.getAttribute('height'),
+        svgWidth: svg?.getAttribute('width') ?? null,
+        svgHeight: svg?.getAttribute('height') ?? null,
         strokeCount: strokes.length,
         pageTextSample: pageText.slice(0, 500),
         bounds,
@@ -495,7 +511,24 @@ export async function probeMaziiStrokes({
     port,
     locale,
     dictionary,
-    evaluateExpression: buildExtractionExpression(literal),
+    evaluateExpression: buildExtractionExpression(literal, { includeStrokes: true }),
+  });
+}
+
+export async function probeMaziiEntry({
+  literal,
+  host = DEFAULT_HOST,
+  port = DEFAULT_PORT,
+  locale = DEFAULT_LOCALE,
+  dictionary = DEFAULT_DICTIONARY,
+} = {}) {
+  return withMaziiPage({
+    literal,
+    host,
+    port,
+    locale,
+    dictionary,
+    evaluateExpression: buildExtractionExpression(literal, { includeStrokes: false }),
   });
 }
 

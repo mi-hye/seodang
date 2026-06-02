@@ -1,18 +1,47 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "expo-router";
-import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import {
+  Animated,
+  LayoutChangeEvent,
+  Pressable,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
 import { radius, spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import { useKanjiCategoryGroupsQuery } from "../src/queries/kanjiQueries";
+import { useAppState } from "../src/state/AppStateProvider";
 
 export default function CategoriesScreen() {
   const router = useRouter();
   const { locale, t } = useI18n();
-  const { data, isLoading, isError } = useKanjiCategoryGroupsQuery(locale);
+  const { hydrated, onboardingStep, dismissCategoryOnboarding } = useAppState();
+  const { data, isLoading, isError, refetch } = useKanjiCategoryGroupsQuery(locale);
+  const [expandedGroupIds, setExpandedGroupIds] = useState<string[]>([]);
+  const [firstCategoryLayout, setFirstCategoryLayout] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
+  const [firstCategoryRowLayout, setFirstCategoryRowLayout] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height && width >= 700;
   const { colors, surfaceStyles, textStyles } = useTheme();
-  const styles = createStyles({ colors, surfaceStyles, textStyles });
+  const styles = createStyles({
+    colors,
+    isLandscape,
+    surfaceStyles,
+    textStyles,
+  });
   const visibleGroups = (data ?? [])
     .map((group) => ({
       ...group,
@@ -21,72 +50,206 @@ export default function CategoriesScreen() {
       ),
     }))
     .filter((group) => group.categories.length > 0);
+  const firstCategory = visibleGroups[0]?.categories[0];
+  const firstCategoryGroupId = visibleGroups[0]?.id;
+  const showOnboarding =
+    hydrated && onboardingStep === "categories" && Boolean(firstCategory);
+  const onboardingHintStyle = firstCategoryLayout && firstCategoryRowLayout
+    ? {
+        top:
+          firstCategoryRowLayout.y +
+          firstCategoryLayout.y +
+          firstCategoryLayout.height +
+          0,
+        left: firstCategoryRowLayout.x + firstCategoryLayout.x,
+      }
+    : styles.onboardingHint;
+
+  const isExpanded = (groupId: string) => expandedGroupIds.includes(groupId);
+  const toggleExpanded = (groupId: string) =>
+    setExpandedGroupIds((current) =>
+      current.includes(groupId)
+        ? current.filter((id) => id !== groupId)
+        : [...current, groupId],
+    );
 
   return (
-    <Screen>
-      {isLoading ? <CategoriesSkeleton /> : null}
-
-      {isError ? (
-        <View style={styles.placeholderCard}>
-          <Text style={styles.placeholderTitle}>
-            {t("categories.errorTitle")}
-          </Text>
-          <Text style={styles.placeholderBody}>
-            {t("categories.errorBody")}
-          </Text>
-        </View>
-      ) : null}
-
-      {!isLoading && !isError && !visibleGroups.length ? (
-        <View style={styles.placeholderCard}>
-          <Text style={styles.placeholderTitle}>
-            {t("categories.emptyTitle")}
-          </Text>
-          <Text style={styles.placeholderBody}>
-            {t("categories.emptyBody")}
-          </Text>
-        </View>
-      ) : null}
-
-      {!isLoading && !isError
-        ? visibleGroups.map((group) => (
-            <View key={group.id} style={styles.groupSection}>
-              <View style={styles.groupHeader}>
-                <Text style={styles.groupTitle}>{group.label}</Text>
-                {group.description ? (
-                  <Text style={styles.groupBody}>{group.description}</Text>
-                ) : null}
-              </View>
-
-              <View style={styles.chipRow}>
-                {group.categories.map((category) => (
-                  <Pressable
-                    key={category.id}
-                    style={styles.categoryChip}
-                    onPress={() =>
-                      router.push({
-                        pathname: "/list",
-                        params: { categoryKey: category.categoryKey },
-                      })
-                    }
-                  >
-                    <Text style={styles.categoryChipText}>
-                      {category.label}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
+    <Screen contentStyle={styles.screenContent}>
+      <View style={styles.content}>
+        {showOnboarding ? (
+          <View
+            pointerEvents="none"
+            style={[styles.onboardingHint, onboardingHintStyle]}
+          >
+            <View style={styles.onboardingTail} />
+            <View style={styles.onboardingBubble}>
+              <Text numberOfLines={1} style={styles.onboardingHintText}>
+                {t("categories.onboardingAction")}
+              </Text>
             </View>
-          ))
-        : null}
+          </View>
+        ) : null}
+
+        {isLoading ? <CategoriesSkeleton isLandscape={isLandscape} /> : null}
+
+        {isError ? (
+          <View style={styles.errorState}>
+            <Text style={styles.errorStateTitle}>
+              {t("categories.errorTitle")}
+            </Text>
+            <Pressable
+              style={styles.errorRetryButton}
+              onPress={() => {
+                void refetch();
+              }}
+              hitSlop={8}
+            >
+              <MaterialIcons
+                name="refresh"
+                size={22}
+                color={colors.accentWarmMuted}
+              />
+            </Pressable>
+          </View>
+        ) : null}
+
+        {!isLoading && !isError && !visibleGroups.length ? (
+          <View style={styles.placeholderCard}>
+            <Text style={styles.placeholderTitle}>
+              {t("categories.emptyTitle")}
+            </Text>
+            <Text style={styles.placeholderBody}>
+              {t("categories.emptyBody")}
+            </Text>
+          </View>
+        ) : null}
+
+        {!isLoading && !isError
+          ? visibleGroups.map((group) => (
+              <View
+                key={group.id}
+                pointerEvents={
+                  showOnboarding &&
+                  !group.categories.some(
+                    (category) => category.id === firstCategory?.id,
+                  )
+                    ? "none"
+                    : "auto"
+                }
+                style={[
+                  styles.groupSection,
+                  showOnboarding && group.id !== firstCategoryGroupId
+                    ? styles.dimmedSection
+                    : null,
+                ]}
+              >
+                <View
+                  style={[
+                    styles.groupHeader,
+                    showOnboarding && group.id !== firstCategoryGroupId
+                      ? styles.dimmedSection
+                      : null,
+                  ]}
+                >
+                  <Text style={styles.groupTitle}>{group.label}</Text>
+                </View>
+
+                {(() => {
+                  const isRadicalGroup = group.groupKey === "radical";
+                  const shouldCollapse =
+                    isRadicalGroup && group.categories.length > 9;
+                  const categories =
+                    shouldCollapse && !isExpanded(group.id)
+                      ? group.categories.slice(0, 9)
+                      : group.categories;
+
+                  return (
+                    <>
+                      <View
+                        onLayout={
+                          group.id === firstCategoryGroupId
+                            ? (event: LayoutChangeEvent) => {
+                                const { x, y } = event.nativeEvent.layout;
+                                setFirstCategoryRowLayout({ x, y });
+                              }
+                            : undefined
+                        }
+                        style={styles.chipRow}
+                      >
+                        {categories.map((category) => (
+                          <Pressable
+                            key={category.id}
+                            onLayout={
+                              category.id === firstCategory?.id
+                                ? (event: LayoutChangeEvent) => {
+                                    const { x, y, width, height } =
+                                      event.nativeEvent.layout;
+                                    setFirstCategoryLayout({
+                                      x,
+                                      y,
+                                      width,
+                                      height,
+                                    });
+                                  }
+                                : undefined
+                            }
+                            disabled={
+                              showOnboarding && category.id !== firstCategory?.id
+                            }
+                            style={[
+                              styles.categoryChip,
+                              showOnboarding && category.id !== firstCategory?.id
+                                ? styles.categoryChipDimmed
+                                : null,
+                            ]}
+                            onPress={() => {
+                              if (showOnboarding) {
+                                dismissCategoryOnboarding();
+                              }
+
+                              router.push({
+                                pathname: "/list",
+                                params: { categoryKey: category.categoryKey },
+                              });
+                            }}
+                          >
+                            <Text style={styles.categoryChipText}>
+                              {category.label}
+                            </Text>
+                          </Pressable>
+                        ))}
+
+                        {shouldCollapse ? (
+                          <Pressable
+                            style={styles.moreChip}
+                            onPress={() => toggleExpanded(group.id)}
+                          >
+                            <Text style={styles.moreChipText}>
+                              {isExpanded(group.id)
+                                ? t("categories.showLess")
+                                : t("categories.showMore")}
+                            </Text>
+                          </Pressable>
+                        ) : null}
+                      </View>
+                    </>
+                  );
+                })()}
+              </View>
+            ))
+          : null}
+      </View>
     </Screen>
   );
 }
 
-function CategoriesSkeleton() {
+function CategoriesSkeleton({ isLandscape }: { isLandscape: boolean }) {
   const { colors } = useTheme();
   const opacity = useRef(new Animated.Value(0.55)).current;
-  const styles = useMemo(() => createSkeletonStyles(colors), [colors]);
+  const styles = useMemo(
+    () => createSkeletonStyles(colors, isLandscape),
+    [colors, isLandscape],
+  );
 
   useEffect(() => {
     const loop = Animated.loop(
@@ -137,14 +300,51 @@ function CategoriesSkeleton() {
   );
 }
 
-function createStyles({ colors, surfaceStyles, textStyles }: any) {
+function createStyles({ colors, isLandscape, surfaceStyles, textStyles }: any) {
   return StyleSheet.create({
-    hero: {
-      marginBottom: spacing[7],
-      gap: spacing[2],
+    content: {
+      alignSelf: "center",
+      width: "100%",
+      maxWidth: isLandscape ? 760 : undefined,
+      position: "relative",
     },
-    title: textStyles.displayMd,
-    subtitle: textStyles.bodyMd,
+    screenContent: {
+      paddingTop: 0,
+    },
+    dimmedSection: {
+      opacity: 0.32,
+    },
+    onboardingHint: {
+      position: "absolute",
+      top: 76,
+      left: 20,
+      zIndex: 20,
+      alignItems: "flex-start",
+    },
+    onboardingBubble: {
+      backgroundColor: colors.accentWarm,
+      borderRadius: 18,
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
+      minWidth: 236,
+    },
+    onboardingTail: {
+      marginLeft: 28,
+      width: 0,
+      height: 0,
+      borderLeftWidth: 10,
+      borderRightWidth: 10,
+      borderBottomWidth: 14,
+      borderLeftColor: "transparent",
+      borderRightColor: "transparent",
+      borderBottomColor: colors.accentWarm,
+      marginBottom: -2,
+    },
+    onboardingHintText: {
+      ...textStyles.bodySm,
+      color: colors.inkOnDark,
+      fontWeight: "800",
+    },
     placeholderCard: {
       ...surfaceStyles.card,
       padding: spacing[7],
@@ -153,18 +353,49 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
     },
     placeholderTitle: textStyles.titleMd,
     placeholderBody: textStyles.bodySm,
+    errorState: {
+      alignItems: "center",
+      justifyContent: "center",
+      gap: spacing[3],
+      paddingVertical: spacing[8],
+      marginBottom: spacing[6],
+    },
+    errorStateTitle: {
+      ...textStyles.titleMd,
+      textAlign: "center",
+    },
+    errorRetryButton: {
+      width: 44,
+      height: 44,
+      alignSelf: "center",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 999,
+      backgroundColor: colors.bgMuted,
+      borderWidth: 1,
+      borderColor: colors.borderSoft,
+    },
     groupSection: {
       marginBottom: spacing[7],
       gap: spacing[3],
+      alignItems: isLandscape ? "center" : "stretch",
     },
     groupHeader: {
       gap: spacing[1],
+      alignItems: isLandscape ? "center" : "stretch",
     },
-    groupTitle: textStyles.sectionTitle,
-    groupBody: textStyles.bodySm,
+    groupTitle: {
+      ...textStyles.sectionTitle,
+      textAlign: isLandscape ? "center" : "left",
+    },
+    groupBody: {
+      ...textStyles.bodySm,
+      textAlign: isLandscape ? "center" : "left",
+    },
     chipRow: {
       flexDirection: "row",
       flexWrap: "wrap",
+      justifyContent: isLandscape ? "center" : "flex-start",
       gap: spacing[2],
     },
     categoryChip: {
@@ -174,18 +405,37 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       borderRadius: radius.sm,
       paddingHorizontal: 14,
       paddingVertical: 10,
+      gap: 2,
+    },
+    categoryChipDimmed: {
+      opacity: 0.32,
     },
     categoryChipText: {
+      ...textStyles.meta,
+      color: colors.inkStrong,
+    },
+    moreChip: {
+      backgroundColor: colors.bgCanvas,
+      borderWidth: 1,
+      borderColor: colors.borderStrong,
+      borderRadius: radius.sm,
+      paddingHorizontal: 14,
+      paddingVertical: 10,
+    },
+    moreChipText: {
       ...textStyles.meta,
       color: colors.inkStrong,
     },
   });
 }
 
-function createSkeletonStyles(colors: any) {
+function createSkeletonStyles(colors: any, isLandscape: boolean) {
   return StyleSheet.create({
     wrapper: {
+      alignSelf: "center",
       gap: spacing[7],
+      width: "100%",
+      maxWidth: isLandscape ? 760 : undefined,
     },
     heroLineWide: {
       width: "46%",
@@ -202,6 +452,7 @@ function createSkeletonStyles(colors: any) {
     },
     groupSection: {
       gap: spacing[3],
+      alignItems: isLandscape ? "center" : "stretch",
     },
     groupTitle: {
       width: 112,
@@ -218,6 +469,7 @@ function createSkeletonStyles(colors: any) {
     chipRow: {
       flexDirection: "row",
       flexWrap: "wrap",
+      justifyContent: isLandscape ? "center" : "flex-start",
       gap: spacing[2],
     },
     chip: {

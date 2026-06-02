@@ -347,7 +347,7 @@ function buildMeaningKo(row) {
     return glosses.join(", ");
   }
 
-  return meanings.length > 0 ? "뜻 미상" : null;
+  return null;
 }
 
 function buildMeaningJa(row) {
@@ -362,7 +362,7 @@ function buildMeaningJa(row) {
     return glosses.join("、");
   }
 
-  return meanings.length > 0 ? "意味未詳" : null;
+  return null;
 }
 
 function translateGlosses(meanings, language) {

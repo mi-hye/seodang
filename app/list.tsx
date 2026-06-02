@@ -2,6 +2,7 @@ import { Link, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import {
   FlatList,
+  LayoutChangeEvent,
   Pressable,
   StyleSheet,
   Text,
@@ -11,10 +12,17 @@ import {
 
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
 import { KanjiLoadingScreen } from "../src/components/common/KanjiLoadingScreen";
+import { ErrorState } from "../src/components/common/ErrorState";
+import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning, KanjiCharacter } from "../src/data/characters";
 import { layout, spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
-import { useKanjiCharactersByCategoryQuery } from "../src/queries/kanjiQueries";
+import { buildCategoryProgressMap } from "../src/lib/categoryProgress";
+import {
+  useKanjiCategoryGroupsQuery,
+  useKanjiCategoryProgressMappingsQuery,
+  useKanjiCharactersByCategoryQuery,
+} from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function CharacterListScreen() {
@@ -25,12 +33,35 @@ export default function CharacterListScreen() {
   const { locale, t } = useI18n();
   const { colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ colors, surfaceStyles, textStyles });
-  const { getProgress } = useAppState();
+  const {
+    getProgress,
+    progressByCharacter,
+    resetProgressByCategoryKey,
+    onboardingStep,
+    setOnboardingStep,
+  } = useAppState();
   const [searchText, setSearchText] = useState("");
+  const [firstCardLayout, setFirstCardLayout] = useState<{
+    x: number;
+    y: number;
+    height: number;
+  } | null>(null);
+  const { data: categoryGroups = [] } = useKanjiCategoryGroupsQuery(locale);
+  const completedCharacterIds = useMemo(
+    () =>
+      Object.values(progressByCharacter)
+        .filter((progress) => progress.successes > 0)
+        .map((progress) => progress.characterId)
+        .sort(),
+    [progressByCharacter],
+  );
+  const { data: categoryProgressMappings = [] } =
+    useKanjiCategoryProgressMappingsQuery(completedCharacterIds);
   const {
     data,
     isLoading,
     isError,
+    refetch,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -41,12 +72,27 @@ export default function CharacterListScreen() {
   const selectedCategory = firstPage?.category;
   const items = pages.flatMap((page) => page?.characters ?? []);
   const headerTitle = selectedCategory?.label ?? t("list.title");
+  const categoryProgressMap = useMemo(
+    () =>
+      buildCategoryProgressMap(
+        categoryGroups,
+        categoryProgressMappings,
+        new Map(),
+        resetProgressByCategoryKey,
+      ),
+    [categoryGroups, categoryProgressMappings, resetProgressByCategoryKey],
+  );
+  const currentCategoryProgress = normalizedCategoryKey
+    ? categoryProgressMap.get(normalizedCategoryKey)
+    : undefined;
   const categoryTotal = firstPage?.total ?? null;
+  const completedCount = currentCategoryProgress?.completed ?? 0;
   const subtitle =
     categoryTotal != null
-      ? `${t("list.totalCharacters", { count: categoryTotal })} ${t(
-          "list.subtitle",
-        )}`
+      ? `${t("list.progressSummary", {
+          completed: completedCount,
+          total: categoryTotal,
+        })}`
       : t("list.subtitle");
   const normalizedSearch = searchText.trim().toLowerCase();
   const filteredItems = useMemo(
@@ -74,6 +120,16 @@ export default function CharacterListScreen() {
       }),
     [items, normalizedSearch],
   );
+  const firstCharacterId = filteredItems[0]?.id;
+
+  const showFavoriteOnboarding = onboardingStep === "list_favorite";
+  const showItemOnboarding = onboardingStep === "list_item";
+  const itemHintStyle = firstCardLayout
+    ? {
+        top: firstCardLayout.y + firstCardLayout.height + 180,
+        left: firstCardLayout.x + 14,
+      }
+    : styles.itemHint;
 
   if (isLoading) {
     return <KanjiLoadingScreen />;
@@ -81,81 +137,128 @@ export default function CharacterListScreen() {
 
   if (isError) {
     return (
-      <View style={[styles.screen, styles.content]}>
-        <View style={styles.emptyCard}>
-          <Text style={styles.emptyTitle}>{t("list.errorTitle")}</Text>
-          <Text style={styles.emptyBody}>{t("list.errorBody")}</Text>
+      <Screen contentStyle={styles.content} scrollContainer={false}>
+        <View>
+          <ErrorState
+            title={t("list.errorTitle")}
+            body={t("list.errorBody")}
+            onRetry={() => {
+              void refetch();
+            }}
+          />
         </View>
-      </View>
+      </Screen>
     );
   }
 
   return (
-    <View style={styles.screen}>
-      <FlatList
-        data={filteredItems}
-        keyExtractor={(character) => character.id}
-        onEndReached={() => {
-          if (hasNextPage && !isFetchingNextPage) {
-            void fetchNextPage();
+    <Screen contentStyle={styles.screenContent} scrollContainer={false}>
+      <View style={styles.screenStack}>
+        <FlatList
+          data={filteredItems}
+          keyExtractor={(character) => character.id}
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) {
+              void fetchNextPage();
+            }
+          }}
+          onEndReachedThreshold={0.4}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.content}
+          ListHeaderComponent={
+            <View style={styles.header}>
+              <Text style={styles.title}>{headerTitle}</Text>
+              <Text style={styles.subtitle}>{subtitle}</Text>
+            <View
+              pointerEvents={firstCharacterId ? "none" : "auto"}
+              style={styles.searchRowWrap}
+            >
+                <View style={styles.searchRow}>
+                  <TextInput
+                    value={searchText}
+                    onChangeText={setSearchText}
+                    placeholder={t("list.searchPlaceholder")}
+                    placeholderTextColor={colors.inkMuted}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    returnKeyType="search"
+                    style={styles.searchInput}
+                  />
+                  {searchText ? (
+                    <Pressable
+                      style={styles.searchClearButton}
+                      onPress={() => setSearchText("")}
+                      hitSlop={8}
+                    >
+                      <Text style={styles.searchClearText}>×</Text>
+                    </Pressable>
+                  ) : null}
+                </View>
+                {firstCharacterId ? (
+                  <View pointerEvents="none" style={styles.searchOverlay} />
+                ) : null}
+              </View>
+            </View>
           }
-        }}
-        onEndReachedThreshold={0.4}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}
-        ListHeaderComponent={
-          <View style={styles.header}>
-            <Text style={styles.title}>{headerTitle}</Text>
-            <Text style={styles.subtitle}>{subtitle}</Text>
-            <View style={styles.searchRow}>
-              <TextInput
-                value={searchText}
-                onChangeText={setSearchText}
-                placeholder={t("list.searchPlaceholder")}
-                placeholderTextColor={colors.inkMuted}
-                autoCapitalize="none"
-                autoCorrect={false}
-                returnKeyType="search"
-                style={styles.searchInput}
-              />
-              {searchText ? (
-                <Pressable
-                  style={styles.searchClearButton}
-                  onPress={() => setSearchText("")}
-                  hitSlop={8}
-                >
-                  <Text style={styles.searchClearText}>×</Text>
-                </Pressable>
-              ) : null}
+          ListEmptyComponent={
+            <View style={styles.emptyCard}>
+              <Text style={styles.emptyTitle}>{t("list.emptyTitle")}</Text>
+              <Text style={styles.emptyBody}>{t("list.emptyBody")}</Text>
             </View>
-          </View>
-        }
-        ListEmptyComponent={
-          <View style={styles.emptyCard}>
-            <Text style={styles.emptyTitle}>{t("list.emptyTitle")}</Text>
-            <Text style={styles.emptyBody}>{t("list.emptyBody")}</Text>
-          </View>
-        }
-        renderItem={({ item, index }) => (
-          <CharacterCard
-            categoryKey={normalizedCategoryKey}
-            character={item}
-            index={index}
-            getProgress={getProgress}
+          }
+          renderItem={({ item, index }) => (
+            <CharacterCard
+              categoryKey={normalizedCategoryKey}
+              character={item}
+              index={index}
+              getProgress={getProgress}
+              showFavoriteHint={index === 0 && showFavoriteOnboarding}
+              onFirstCardLayout={
+                index === 0
+                  ? (layout) => setFirstCardLayout(layout)
+                  : undefined
+              }
+              isDimmed={
+                Boolean(firstCharacterId) &&
+                item.id !== firstCharacterId &&
+                (showFavoriteOnboarding || showItemOnboarding)
+              }
+              onAdvanceItemOnboarding={
+                index === 0 && showItemOnboarding
+                  ? () => setOnboardingStep("detail")
+                  : undefined
+              }
+            />
+          )}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          ListFooterComponent={
+            isFetchingNextPage ? (
+              <View style={styles.footer}>
+                <Text style={styles.footerText}>{t("common.loading")}</Text>
+              </View>
+            ) : (
+              <View style={styles.footerSpacer} />
+            )
+          }
+        />
+
+        {firstCharacterId && showFavoriteOnboarding ? (
+          <Pressable
+            style={styles.tapAnywhereOverlay}
+            onPress={() => setOnboardingStep("list_item")}
           />
-        )}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        ListFooterComponent={
-          isFetchingNextPage ? (
-            <View style={styles.footer}>
-              <Text style={styles.footerText}>{t("common.loading")}</Text>
+        ) : null}
+
+        {firstCharacterId && showItemOnboarding ? (
+          <View pointerEvents="none" style={[styles.itemHint, itemHintStyle]}>
+            <View style={styles.itemHintTail} />
+            <View style={styles.itemHintBubble}>
+              <Text style={styles.itemHintText}>{t("list.itemHint")}</Text>
             </View>
-          ) : (
-            <View style={styles.footerSpacer} />
-          )
-        }
-      />
-    </View>
+          </View>
+        ) : null}
+      </View>
+    </Screen>
   );
 }
 
@@ -164,11 +267,23 @@ function CharacterCard({
   character,
   index,
   getProgress,
+  showFavoriteHint,
+  onFirstCardLayout,
+  isDimmed,
+  onAdvanceItemOnboarding,
 }: {
   categoryKey?: string;
   character: KanjiCharacter;
   index: number;
   getProgress: ReturnType<typeof useAppState>["getProgress"];
+  showFavoriteHint?: boolean;
+  onFirstCardLayout?: (layout: {
+    x: number;
+    y: number;
+    height: number;
+  }) => void;
+  isDimmed?: boolean;
+  onAdvanceItemOnboarding?: () => void;
 }) {
   const { locale, t } = useI18n();
   const { colors, surfaceStyles, textStyles } = useTheme();
@@ -176,52 +291,80 @@ function CharacterCard({
   const progress = getProgress(character.id);
 
   return (
-    <Link
-      href={{
-        pathname: "/character/[characterId]",
-        params: {
-          characterId: character.id,
-          categoryKey,
-        },
-      }}
-      asChild
-    >
-      <Pressable style={styles.card}>
-        <View style={styles.left}>
-          <Text style={styles.literal}>{character.literal}</Text>
-          <View style={styles.cardContent}>
-            <Text style={styles.meaning}>
-              {getCharacterMeaning(character, locale)}
-            </Text>
-            <Text style={styles.meta}>
-              {t("list.rank", { rank: index + 1 })}
-              {character.jlptLevel
-                ? ` · ${t("common.jlpt")} ${character.jlptLevel}`
-                : ""}
-              {character.strokeCount != null
-                ? ` · ${t("common.strokes", { count: character.strokeCount })}`
-                : ""}
-            </Text>
-            {progress ? (
-              <Text style={styles.meta}>
-                {t("list.recentScore", {
-                  score: progress.lastScore,
-                  attempts: progress.attempts,
-                })}
+    <View style={styles.cardStack}>
+      <Link
+        href={{
+          pathname: "/character/[characterId]",
+          params: {
+            characterId: character.id,
+            categoryKey,
+          },
+        }}
+        asChild
+      >
+        <Pressable
+          disabled={isDimmed}
+          style={styles.card}
+          onLayout={
+            onFirstCardLayout
+              ? (event: LayoutChangeEvent) => {
+                  const { x, y, height } = event.nativeEvent.layout;
+                  onFirstCardLayout({ x, y, height });
+                }
+              : undefined
+          }
+          onPress={onAdvanceItemOnboarding}
+        >
+          <View style={styles.left}>
+            <Text style={styles.literal}>{character.literal}</Text>
+            <View style={styles.cardContent}>
+              <Text style={styles.meaning}>
+                {getCharacterMeaning(character, locale)}
               </Text>
-            ) : null}
+              <Text style={styles.meta}>
+                {t("list.rank", { rank: index + 1 })}
+                {character.jlptLevel
+                  ? ` · ${t("common.jlpt")} ${character.jlptLevel}`
+                  : ""}
+                {character.strokeCount != null
+                  ? ` · ${t("common.strokes", { count: character.strokeCount })}`
+                  : ""}
+              </Text>
+              {progress ? (
+                <Text style={styles.meta}>
+                  {t("list.recentScore", {
+                    score: progress.lastScore,
+                    attempts: progress.attempts,
+                  })}
+                </Text>
+              ) : null}
+            </View>
           </View>
-        </View>
-        <View style={styles.actions}>
-          <FavoriteButton
-            characterId={character.id}
-            iconSize={18}
-            style={styles.favoriteButton}
-            hitSlop={8}
-          />
-        </View>
-      </Pressable>
-    </Link>
+          <View style={styles.actions}>
+            {showFavoriteHint ? (
+              <View pointerEvents="none" style={styles.favoriteHint}>
+                <View style={styles.favoriteHintBubble}>
+                  <Text style={styles.favoriteHintText}>
+                    {t("list.favoriteHint")}
+                  </Text>
+                </View>
+                <View style={styles.favoriteHintTail} />
+              </View>
+            ) : null}
+            <FavoriteButton
+              characterId={character.id}
+              iconSize={18}
+              style={styles.favoriteButton}
+              hitSlop={8}
+            />
+          </View>
+          {isDimmed ? (
+            <View pointerEvents="none" style={styles.cardOverlay} />
+          ) : null}
+        </Pressable>
+      </Link>
+
+    </View>
   );
 }
 
@@ -231,9 +374,19 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       flex: 1,
       backgroundColor: colors.bgCanvas,
     },
+    screenContent: {
+      paddingHorizontal: 0,
+      paddingTop: 0,
+      paddingBottom: 0,
+    },
+    screenStack: {
+      flex: 1,
+      position: "relative",
+    },
     content: {
+      flexGrow: 1,
       paddingHorizontal: layout.screenPaddingX,
-      paddingTop: layout.screenPaddingTop,
+      paddingTop: spacing[2],
       paddingBottom: layout.screenPaddingBottom,
     },
     header: {
@@ -246,12 +399,22 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
     subtitle: textStyles.bodySm,
     searchRow: {
       ...surfaceStyles.card,
-      marginTop: spacing[4],
       paddingHorizontal: spacing[4],
       paddingVertical: spacing[3],
       flexDirection: "row",
       alignItems: "center",
       gap: spacing[2],
+    },
+    searchRowWrap: {
+      position: "relative",
+      marginTop: spacing[4],
+      borderRadius: 20,
+      overflow: "hidden",
+    },
+    searchOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: colors.bgCanvas,
+      opacity: 0.56,
     },
     searchInput: {
       ...textStyles.bodySm,
@@ -288,13 +451,23 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
     separator: {
       height: 12,
     },
+    cardStack: {
+      position: "relative",
+    },
     card: {
       ...surfaceStyles.card,
+      position: "relative",
       padding: 18,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
       gap: 12,
+    },
+    cardOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: colors.bgCanvas,
+      opacity: 0.56,
+      borderRadius: 20,
     },
     left: {
       flexDirection: "row",
@@ -317,6 +490,7 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       marginTop: 3,
     },
     actions: {
+      position: "relative",
       flexDirection: "row",
       alignItems: "center",
       gap: 10,
@@ -326,6 +500,73 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       height: 36,
       borderRadius: 16,
     },
+    favoriteHint: {
+      position: "absolute",
+      right: -4,
+      bottom: 36,
+      alignItems: "flex-end",
+      zIndex: 20,
+      elevation: 20,
+      maxWidth: 280,
+    },
+    favoriteHintBubble: {
+      backgroundColor: colors.accentWarm,
+      borderRadius: 16,
+      paddingHorizontal: spacing[3],
+      paddingVertical: 10,
+      alignSelf: "flex-end",
+    },
+    favoriteHintTail: {
+      marginRight: 12,
+      width: 0,
+      height: 0,
+      borderLeftWidth: 8,
+      borderRightWidth: 8,
+      borderTopWidth: 12,
+      borderLeftColor: "transparent",
+      borderRightColor: "transparent",
+      borderTopColor: colors.accentWarm,
+      marginTop: -2,
+    },
+    favoriteHintText: {
+      ...textStyles.meta,
+      lineHeight: 18,
+      color: colors.inkOnDark,
+      fontWeight: "800",
+    },
+    itemHint: {
+      position: "absolute",
+      top: "100%",
+      left: 14,
+      alignItems: "flex-start",
+      zIndex: 50,
+      elevation: 50,
+      maxWidth: 280,
+    },
+    itemHintBubble: {
+      backgroundColor: colors.accentWarm,
+      borderRadius: 16,
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
+      alignSelf: "flex-start",
+    },
+    itemHintTail: {
+      width: 0,
+      height: 0,
+      borderLeftWidth: 8,
+      borderRightWidth: 8,
+      borderBottomWidth: 12,
+      borderLeftColor: "transparent",
+      borderRightColor: "transparent",
+      borderBottomColor: colors.accentWarm,
+      marginLeft: 18,
+      marginBottom: -2,
+    },
+    itemHintText: {
+      ...textStyles.meta,
+      color: colors.inkOnDark,
+      fontWeight: "800",
+    },
     footer: {
       paddingVertical: spacing[6],
       alignItems: "center",
@@ -333,6 +574,11 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
     footerText: textStyles.meta,
     footerSpacer: {
       height: spacing[6],
+    },
+    tapAnywhereOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: "transparent",
+      zIndex: 5,
     },
   });
 }

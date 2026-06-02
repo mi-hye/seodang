@@ -1,9 +1,11 @@
+import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { useRef, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 
+import { KanjiLoadingScreen } from "../../src/components/common/KanjiLoadingScreen";
 import { WritingCanvas } from "../../src/components/practice/WritingCanvas";
-import { Screen, ScreenHandle } from "../../src/components/common/Screen";
+import { Screen } from "../../src/components/common/Screen";
 import { getCharacterMeaning } from "../../src/data/characters";
 import { spacing, useTheme } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
@@ -12,7 +14,10 @@ import {
   useKanjiCharacterQuery,
   useKanjiStrokeDataQuery,
 } from "../../src/queries/kanjiQueries";
+import { useAppState } from "../../src/state/AppStateProvider";
 import { CanvasSize, InputStroke } from "../../src/types/practice";
+
+const SCROLL_RESTORE_DELAY_MS = 1200;
 
 export default function PracticeScreen() {
   const router = useRouter();
@@ -21,12 +26,31 @@ export default function PracticeScreen() {
     categoryKey?: string;
   }>();
   const normalizedCategoryKey = Array.isArray(categoryKey) ? categoryKey[0] : categoryKey;
-  const { data: character, isLoading: isCharacterLoading } = useKanjiCharacterQuery(characterId);
+  const {
+    data: character,
+    isLoading: isCharacterLoading,
+    isError: isCharacterError,
+    refetch: refetchCharacter,
+  } = useKanjiCharacterQuery(characterId);
   const { locale, t } = useI18n();
+  const { onboardingStep, setOnboardingStep } = useAppState();
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height && width >= 700;
+  const isCompactLandscape = isLandscape && height < 520;
+  const screenScrollEnabled = !isLandscape;
   const { buttonStyles, chipStyles, colors, surfaceStyles, textStyles } = useTheme();
-  const styles = createStyles({ buttonStyles, chipStyles, colors, surfaceStyles, textStyles });
-  const screenRef = useRef<ScreenHandle>(null);
+  const styles = createStyles({
+    buttonStyles,
+    chipStyles,
+    colors,
+    isCompactLandscape,
+    isLandscape,
+    surfaceStyles,
+    textStyles,
+  });
+  const scrollRestoreTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showGuide, setShowGuide] = useState(false);
+  const [isCanvasInteracting, setIsCanvasInteracting] = useState(false);
   const [strokes, setStrokes] = useState<InputStroke[]>([]);
   const [canvasSize, setCanvasSize] = useState<CanvasSize>({
     width: 0,
@@ -37,19 +61,66 @@ export default function PracticeScreen() {
     isLoading: isGuideLoading,
     isError: isGuideLoadError,
   } = useKanjiStrokeDataQuery(character?.literal);
+  const showGuideOnboarding =
+    Boolean(character) && onboardingStep === "practice_guide";
+  const showSubmitOnboarding =
+    Boolean(character) && onboardingStep === "practice_submit";
+
+  useEffect(() => {
+    return () => {
+      if (scrollRestoreTimerRef.current) {
+        clearTimeout(scrollRestoreTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleCanvasInteractionStart = () => {
+    if (scrollRestoreTimerRef.current) {
+      clearTimeout(scrollRestoreTimerRef.current);
+      scrollRestoreTimerRef.current = null;
+    }
+
+    setIsCanvasInteracting(true);
+  };
+
+  const handleCanvasInteractionEnd = () => {
+    if (scrollRestoreTimerRef.current) {
+      clearTimeout(scrollRestoreTimerRef.current);
+    }
+
+    scrollRestoreTimerRef.current = setTimeout(() => {
+      setIsCanvasInteracting(false);
+      scrollRestoreTimerRef.current = null;
+    }, SCROLL_RESTORE_DELAY_MS);
+  };
 
   if (isCharacterLoading) {
-    return (
-      <Screen>
-        <Text style={styles.errorTitle}>{t("common.loading")}</Text>
-      </Screen>
-    );
+    return <KanjiLoadingScreen />;
   }
 
   if (!character) {
     return (
       <Screen>
-        <Text style={styles.errorTitle}>{t("practice.missing")}</Text>
+        {isCharacterError ? (
+          <View style={styles.errorState}>
+            <Text style={styles.errorStateTitle}>{t("practice.missing")}</Text>
+            <Pressable
+              style={styles.errorRetryButton}
+              onPress={() => {
+                void refetchCharacter();
+              }}
+              hitSlop={8}
+            >
+              <MaterialIcons
+                name="refresh"
+                size={22}
+                color={colors.accentWarmMuted}
+              />
+            </Pressable>
+          </View>
+        ) : (
+          <Text style={styles.errorTitle}>{t("practice.missing")}</Text>
+        )}
       </Screen>
     );
   }
@@ -80,8 +151,8 @@ export default function PracticeScreen() {
     });
   };
 
-  return (
-    <Screen ref={screenRef}>
+  const headerPanel = (
+    <>
       <View style={styles.headerCard}>
         <Text style={styles.caption}>{t("practice.target")}</Text>
         <Text style={styles.literal}>{character.literal}</Text>
@@ -97,19 +168,36 @@ export default function PracticeScreen() {
             })}
           </Text>
         </View>
-        <Pressable
-          style={[styles.toolChip, showGuide && styles.toolChipActive]}
-          onPress={() => setShowGuide((current) => !current)}
-        >
-          <Text
-            style={[
-              styles.toolChipText,
-              showGuide && styles.toolChipTextActive,
-            ]}
+        <View style={styles.guideChipWrap}>
+          {showGuideOnboarding ? (
+            <View pointerEvents="none" style={styles.onboardingHint}>
+              <View style={styles.onboardingBubble}>
+                <Text style={styles.onboardingHintText}>
+                  {t("practice.onboardingAction")}
+                </Text>
+              </View>
+              <View style={styles.onboardingTail} />
+            </View>
+          ) : null}
+          <Pressable
+            style={[styles.toolChip, showGuide && styles.toolChipActive]}
+            onPress={() => {
+              if (showGuideOnboarding) {
+                setOnboardingStep("practice_submit");
+              }
+              setShowGuide((current) => !current);
+            }}
           >
-            {showGuide ? t("practice.hideGuide") : t("practice.showGuide")}
-          </Text>
-        </Pressable>
+            <Text
+              style={[
+                styles.toolChipText,
+                showGuide && styles.toolChipTextActive,
+              ]}
+            >
+              {showGuide ? t("practice.hideGuide") : t("practice.showGuide")}
+            </Text>
+          </Pressable>
+        </View>
         <Pressable
           style={[
             styles.toolChip,
@@ -121,16 +209,21 @@ export default function PracticeScreen() {
           <Text style={styles.toolChipText}>{t("practice.undoStroke")}</Text>
         </Pressable>
       </View>
+    </>
+  );
 
+  const canvasPanel = (
+    <View style={styles.canvasStack}>
       <View style={styles.canvasCard}>
         <WritingCanvas
+          fillMode={isLandscape}
           showGuide={showGuide}
           guideData={kanjiStrokeData}
           strokes={strokes}
           onChange={setStrokes}
           onCanvasLayout={setCanvasSize}
-          onInteractionStart={() => screenRef.current?.setScrollEnabled(false)}
-          onInteractionEnd={() => screenRef.current?.setScrollEnabled(true)}
+          onInteractionStart={handleCanvasInteractionStart}
+          onInteractionEnd={handleCanvasInteractionEnd}
         />
         <Text style={styles.canvasHint}>{t("practice.canvasHint")}</Text>
         {isGuideLoadError ? (
@@ -140,25 +233,75 @@ export default function PracticeScreen() {
           <Text style={styles.canvasSubHint}>{t("practice.missingGuide")}</Text>
         ) : null}
       </View>
+    </View>
+  );
 
-      <View style={styles.actions}>
-        <Pressable
-          style={styles.secondaryButton}
-          onPress={() => setStrokes([])}
-        >
-          <Text style={styles.secondaryLabel}>{t("practice.reset")}</Text>
-        </Pressable>
+  const actionPanel = (
+    <View style={styles.actions}>
+      <Pressable
+        style={[
+          styles.secondaryButton,
+          showGuideOnboarding || showSubmitOnboarding
+            ? styles.dimmedSection
+            : null,
+        ]}
+        onPress={() => setStrokes([])}
+        disabled={showGuideOnboarding || showSubmitOnboarding}
+      >
+        <Text style={styles.secondaryLabel}>{t("practice.reset")}</Text>
+      </Pressable>
+      <View style={styles.submitWrap}>
+        {showSubmitOnboarding ? (
+          <View pointerEvents="none" style={styles.submitHint}>
+            <View style={styles.submitHintBubble}>
+              <Text style={styles.submitHintText}>
+                {t("practice.submitHint")}
+              </Text>
+            </View>
+            <View style={styles.submitHintTail} />
+          </View>
+        ) : null}
         <Pressable
           style={[
             styles.primaryButton,
             strokes.length === 0 && styles.primaryButtonDisabled,
           ]}
-          onPress={handleSubmit}
+          onPress={() => {
+            if (showSubmitOnboarding) {
+              setOnboardingStep("result");
+            }
+            handleSubmit();
+          }}
           disabled={strokes.length === 0}
         >
           <Text style={styles.primaryLabel}>{t("practice.submit")}</Text>
         </Pressable>
       </View>
+    </View>
+  );
+
+  return (
+    <Screen
+      scrollContainer={!isLandscape}
+      scrollEnabled={screenScrollEnabled && !isCanvasInteracting}
+    >
+      {isLandscape ? (
+        <View style={styles.landscapeLayout}>
+          <View style={styles.landscapeSide}>
+            {headerPanel}
+          </View>
+          <View style={styles.landscapeCanvas}>
+            {canvasPanel}
+          </View>
+          <View>{actionPanel}</View>
+        </View>
+      ) : (
+        <>
+          {headerPanel}
+          {canvasPanel}
+          {actionPanel}
+        </>
+      )}
     </Screen>
   );
 }
@@ -167,16 +310,37 @@ function createStyles({
   buttonStyles,
   chipStyles,
   colors,
+  isLandscape,
+  isCompactLandscape,
   surfaceStyles,
   textStyles,
 }: any) {
   return StyleSheet.create({
+    landscapeLayout: {
+      flexDirection: "row",
+      alignItems: "stretch",
+      gap: spacing[5],
+      flex: 1,
+      width: "100%",
+    },
+    landscapeSide: {
+      flex: isCompactLandscape ? 0.72 : 0.9,
+      minWidth: isCompactLandscape ? 236 : 280,
+      maxWidth: isCompactLandscape ? 300 : 380,
+    },
+    landscapeCanvas: {
+      flex: 1.2,
+      minWidth: 360,
+    },
+    dimmedSection: {
+      opacity: 0.32,
+    },
     headerCard: {
       ...surfaceStyles.card,
       borderRadius: 28,
-      padding: spacing[7],
+      padding: isCompactLandscape ? spacing[4] : isLandscape ? spacing[5] : spacing[7],
       alignItems: "center",
-      marginBottom: spacing[4],
+      marginBottom: isCompactLandscape ? spacing[3] : spacing[4],
     },
     caption: {
       ...textStyles.eyebrow,
@@ -184,22 +348,53 @@ function createStyles({
     },
     literal: {
       ...textStyles.glyphLg,
+      fontSize: isCompactLandscape ? 42 : isLandscape ? 54 : textStyles.glyphLg.fontSize,
       marginBottom: 6,
     },
     meaning: {
-      fontSize: 17,
+      fontSize: isCompactLandscape ? 14 : 17,
       color: colors.inkBody,
       fontWeight: "700",
     },
+    errorState: {
+      alignItems: "center",
+      justifyContent: "center",
+      gap: spacing[3],
+      paddingVertical: spacing[8],
+    },
+    errorStateTitle: {
+      ...textStyles.titleMd,
+      textAlign: "center",
+    },
+    errorRetryButton: {
+      width: 44,
+      height: 44,
+      alignSelf: "center",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 999,
+      backgroundColor: colors.bgMuted,
+      borderWidth: 1,
+      borderColor: colors.borderSoft,
+    },
     toolbar: {
       flexDirection: "row",
-      gap: spacing[2] + 2,
-      marginBottom: spacing[4],
+      flexWrap: "wrap",
+      gap: isCompactLandscape ? spacing[2] : spacing[2] + 2,
+      marginBottom: isCompactLandscape ? spacing[3] : spacing[4],
     },
-    toolChip: chipStyles.base,
+    toolChip: {
+      ...chipStyles.base,
+      paddingHorizontal: isCompactLandscape ? 10 : chipStyles.base.paddingHorizontal,
+      paddingVertical: isCompactLandscape ? 7 : chipStyles.base.paddingVertical,
+    },
     toolChipActive: {
       ...chipStyles.active,
       backgroundColor: colors.accentWarm,
+    },
+    guideChipWrap: {
+      position: "relative",
+      alignSelf: "flex-start",
     },
     toolChipText: {
       ...textStyles.meta,
@@ -214,14 +409,57 @@ function createStyles({
     canvasCard: {
       ...surfaceStyles.card,
       borderRadius: 28,
-      padding: 18,
-      marginBottom: 16,
+      padding: isLandscape ? 10 : 18,
+      marginBottom: isLandscape ? 0 : 16,
+      width: "100%",
+      flex: isLandscape ? 1 : undefined,
+      maxHeight: isLandscape ? "100%" : undefined,
+    },
+    canvasStack: {
+      position: "relative",
+      width: "100%",
+      flex: isLandscape ? 1 : undefined,
+    },
+    onboardingHint: {
+      position: "absolute",
+      left: -78,
+      right: -78,
+      bottom: isLandscape ? 44 : 42,
+      alignItems: "center",
+      zIndex: 20,
+      maxWidth: isLandscape ? 320 : 260,
+    },
+    onboardingBubble: {
+      backgroundColor: colors.accentWarm,
+      borderRadius: 16,
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
+      alignSelf: "center",
+    },
+    onboardingTail: {
+      marginLeft: 0,
+      width: 0,
+      height: 0,
+      borderLeftWidth: 8,
+      borderRightWidth: 8,
+      borderTopWidth: 12,
+      borderLeftColor: "transparent",
+      borderRightColor: "transparent",
+      borderTopColor: colors.accentWarm,
+      marginTop: -2,
+    },
+    onboardingHintText: {
+      ...textStyles.meta,
+      color: colors.inkOnDark,
+      fontWeight: "800",
     },
     canvasHint: {
       ...textStyles.bodySm,
+      display: isLandscape ? "none" : "flex",
       marginTop: 14,
     },
     canvasSubHint: {
+      display: isLandscape ? "none" : "flex",
       fontSize: 12,
       lineHeight: 18,
       color: colors.accentWarmMuted,
@@ -230,11 +468,18 @@ function createStyles({
     },
     actions: {
       flexDirection: "row",
-      gap: spacing[3],
-      marginBottom: 20,
+      gap: isCompactLandscape ? spacing[2] : spacing[3],
+      marginTop: isLandscape ? "auto" : 0,
+      marginBottom: isLandscape ? 0 : 20,
+      width: "100%",
+    },
+    submitWrap: {
+      flex: 1,
+      position: "relative",
     },
     secondaryButton: {
       ...buttonStyles.secondary,
+      paddingVertical: isCompactLandscape ? 10 : buttonStyles.secondary.paddingVertical,
       flex: 1,
     },
     secondaryLabel: {
@@ -244,6 +489,7 @@ function createStyles({
     primaryButton: {
       ...buttonStyles.primary,
       backgroundColor: colors.accentWarm,
+      paddingVertical: isCompactLandscape ? 10 : buttonStyles.primary.paddingVertical,
       flex: 1,
     },
     primaryButtonDisabled: {
@@ -252,6 +498,38 @@ function createStyles({
     primaryLabel: {
       ...textStyles.buttonLabel,
       color: colors.inkOnDark,
+    },
+    submitHint: {
+      position: "absolute",
+      right: 0,
+      bottom: 58,
+      alignItems: "flex-end",
+      zIndex: 20,
+      maxWidth: isLandscape ? 340 : 300,
+    },
+    submitHintBubble: {
+      backgroundColor: colors.accentWarm,
+      borderRadius: 16,
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
+      alignSelf: "flex-end",
+    },
+    submitHintTail: {
+      marginRight: 18,
+      width: 0,
+      height: 0,
+      borderLeftWidth: 8,
+      borderRightWidth: 8,
+      borderTopWidth: 12,
+      borderLeftColor: "transparent",
+      borderRightColor: "transparent",
+      borderTopColor: colors.accentWarm,
+      marginTop: -2,
+    },
+    submitHintText: {
+      ...textStyles.meta,
+      color: colors.inkOnDark,
+      fontWeight: "800",
     },
     errorTitle: textStyles.displaySm,
   });

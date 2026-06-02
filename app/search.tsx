@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
+import { ErrorState } from "../src/components/common/ErrorState";
 import { getCharacterMeaning } from "../src/data/characters";
 import { KanjiCharacter } from "../src/data/characters";
 import { layout, spacing, useTheme } from "../src/design/theme";
@@ -25,7 +26,7 @@ export default function SearchScreen() {
   const { getProgress } = useAppState();
   const [searchText, setSearchText] = useState("");
   const deferredSearch = useDeferredValue(searchText.trim().toLowerCase());
-  const { data: allCharacters = [], isLoading, isError } =
+  const { data: allCharacters = [], isLoading, isError, refetch } =
     useAllKanjiCharactersQuery();
 
   const filteredItems = useMemo(() => {
@@ -90,21 +91,25 @@ export default function SearchScreen() {
         ListEmptyComponent={
           isLoading && deferredSearch ? (
             <SearchResultsSkeleton />
+          ) : isError ? (
+            <ErrorState
+              title={t("search.errorTitle")}
+              body={t("search.errorBody")}
+              onRetry={() => {
+                void refetch();
+              }}
+            />
           ) : (
             <View style={styles.emptyCard}>
               <Text style={styles.emptyTitle}>
-                {isError
-                  ? t("search.errorTitle")
-                  : deferredSearch
-                    ? t("search.emptyTitle")
-                    : t("search.idleTitle")}
+                {deferredSearch
+                  ? t("search.emptyTitle")
+                  : t("search.idleTitle")}
               </Text>
               <Text style={styles.emptyBody}>
-                {isError
-                  ? t("search.errorBody")
-                  : deferredSearch
-                    ? t("search.emptyBody")
-                    : t("search.idleBody")}
+                {deferredSearch
+                  ? t("search.emptyBody")
+                  : t("search.idleBody")}
               </Text>
             </View>
           )

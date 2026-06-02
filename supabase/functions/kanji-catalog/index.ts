@@ -39,6 +39,10 @@ type CategoryRow = {
   } | null;
 };
 
+type CategoryMappingCountRow = {
+  category_id: string;
+};
+
 type CharacterCategoryRow = {
   character_id: string;
 };
@@ -95,14 +99,16 @@ Deno.serve(async (request) => {
 });
 
 async function fetchCategoryGroups(locale: Locale) {
-  const [groups, categories] = await Promise.all([
+  const [groups, categories, categoryMappings] = await Promise.all([
     fetchRows<CategoryGroupRow>(
       "kanji_category_groups?select=id,group_key,label_ko,label_ja,description_ko,description_ja,sort_order&order=sort_order.asc"
     ),
     fetchRows<CategoryRow>(
       "kanji_categories?select=id,group_id,category_key,label_ko,label_ja,description_ko,description_ja,sort_order,metadata&order=sort_order.asc"
     ),
+    fetchAllCategoryMappings(),
   ]);
+  const totalByCategoryId = countByCategoryId(categoryMappings);
 
   return groups
     .map((group) => ({
@@ -134,9 +140,31 @@ async function fetchCategoryGroups(locale: Locale) {
           ),
           sortOrder: category.sort_order,
           visibleLocales: category.metadata?.visibleLocales ?? ["ko", "ja"],
+          totalCharacters: totalByCategoryId.get(category.id) ?? 0,
         })),
     }))
     .filter((group) => group.categories.length > 0);
+}
+
+async function fetchAllCategoryMappings() {
+  const pageSize = 1000;
+  let offset = 0;
+  const rows: CategoryMappingCountRow[] = [];
+
+  while (true) {
+    const page = await fetchRows<CategoryMappingCountRow>(
+      `kanji_character_categories?select=category_id&offset=${offset}&limit=${pageSize}`
+    );
+    rows.push(...page);
+
+    if (page.length < pageSize) {
+      break;
+    }
+
+    offset += pageSize;
+  }
+
+  return rows;
 }
 
 async function fetchCategoryCharacters(
@@ -176,6 +204,7 @@ async function fetchCategoryCharacters(
       ),
       sortOrder: category.sort_order,
       visibleLocales: category.metadata?.visibleLocales ?? ["ko", "ja"],
+      totalCharacters: total,
     },
     characters,
     total,
@@ -258,6 +287,16 @@ async function fetchExactCount(path: string): Promise<number> {
 
 function selectLocalizedText(locale: Locale, ko: string, ja: string) {
   return locale === "ja" ? ja : ko;
+}
+
+function countByCategoryId(rows: CategoryMappingCountRow[]) {
+  const counts = new Map<string, number>();
+
+  for (const row of rows) {
+    counts.set(row.category_id, (counts.get(row.category_id) ?? 0) + 1);
+  }
+
+  return counts;
 }
 
 function selectLocalizedNullableText(

@@ -26,9 +26,8 @@ export function getCharacterMeaning(
 ) {
   const preferred = locale === "ja" ? character.meaningJa : character.meaningKo;
   const fallback = locale === "ja" ? character.meaningKo : character.meaningJa;
-  const englishFallback = character.metadata?.meaningEn?.[0];
 
-  return preferred ?? fallback ?? englishFallback ?? character.literal;
+  return preferred ?? fallback ?? "-";
 }
 
 export function getCharacterExample(

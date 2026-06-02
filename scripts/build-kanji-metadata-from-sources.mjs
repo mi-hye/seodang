@@ -46,6 +46,9 @@ function parseCharacterBlock(block) {
     extractFirst(block, /<stroke_count>(\d+)<\/stroke_count>/)
   );
   const oldJlptLevel = toNumber(extractFirst(block, /<jlpt>(\d+)<\/jlpt>/));
+  const radicalNumber = toNumber(
+    extractFirst(block, /<rad_value rad_type="classical">(\d+)<\/rad_value>/)
+  );
 
   const onyomi = extractAll(block, /<reading r_type="ja_on">([\s\S]*?)<\/reading>/g).map(
     decodeXml
@@ -59,6 +62,7 @@ function parseCharacterBlock(block) {
     id: toUnicodeId(literal),
     literal,
     grade,
+    radicalNumber,
     strokeCount,
     oldJlptLevel,
     onyomi,
@@ -94,6 +98,8 @@ function buildMetadataRows(characters, jlptMap) {
           meaningEn: character.meaningsEn,
           kanjidicGrade: character.grade,
           kanjidicJlptOld: character.oldJlptLevel,
+          radicalNumber: character.radicalNumber,
+          radicalSymbol: toKangxiRadicalSymbol(character.radicalNumber),
         },
       };
     })
@@ -103,6 +109,7 @@ function buildMetadataRows(characters, jlptMap) {
 function buildCategoryMappings(characters, jlptMap) {
   const rows = [
     ...buildSchoolCategoryMappings(characters),
+    ...buildRadicalCategoryMappings(characters),
     ...buildStrokeCountCategoryMappings(characters),
     ...buildJlptCategoryMappings(characters, jlptMap),
   ];
@@ -110,6 +117,24 @@ function buildCategoryMappings(characters, jlptMap) {
   return uniqueRows(rows, (row) => `${row.characterId}:${row.categoryId}`).sort((left, right) =>
     left.characterId.localeCompare(right.characterId, "en")
   );
+}
+
+function buildRadicalCategoryMappings(characters) {
+  const rows = [];
+
+  for (const character of characters) {
+    const categoryId = toRadicalCategoryId(character.radicalNumber);
+    if (!categoryId) {
+      continue;
+    }
+
+    rows.push({
+      characterId: character.id,
+      categoryId,
+    });
+  }
+
+  return rows;
 }
 
 function buildStrokeCountCategoryMappings(characters) {
@@ -307,6 +332,22 @@ function toStrokeCountCategoryId(strokeCount) {
   }
 
   return "cat_stroke_16_plus";
+}
+
+function toRadicalCategoryId(radicalNumber) {
+  if (!Number.isInteger(radicalNumber) || radicalNumber < 1 || radicalNumber > 214) {
+    return null;
+  }
+
+  return `cat_radical_${String(radicalNumber).padStart(3, "0")}`;
+}
+
+function toKangxiRadicalSymbol(radicalNumber) {
+  if (!Number.isInteger(radicalNumber) || radicalNumber < 1 || radicalNumber > 214) {
+    return null;
+  }
+
+  return String.fromCodePoint(0x2f00 + radicalNumber - 1);
 }
 
 function extractMeaningEn(block) {
