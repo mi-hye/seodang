@@ -1,4 +1,5 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../../src/components/common/Screen";
@@ -18,7 +19,12 @@ export default function CharacterDetailScreen() {
     categoryKey?: string;
   }>();
   const normalizedCategoryKey = Array.isArray(categoryKey) ? categoryKey[0] : categoryKey;
-  const { data: character, isLoading } = useKanjiCharacterQuery(characterId);
+  const {
+    data: character,
+    isLoading,
+    isError,
+    refetch,
+  } = useKanjiCharacterQuery(characterId, "detail");
   const { locale, t } = useI18n();
   const { onboardingStep, setOnboardingStep } = useAppState();
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
@@ -29,7 +35,9 @@ export default function CharacterDetailScreen() {
   if (isLoading) {
     return (
       <Screen>
-        <Text style={styles.infoLine}>{t("common.loading")}</Text>
+        <View style={styles.loadingState}>
+          <Text style={styles.loadingStateTitle}>{t("common.loading")}</Text>
+        </View>
       </Screen>
     );
   }
@@ -37,7 +45,26 @@ export default function CharacterDetailScreen() {
   if (!character) {
     return (
       <Screen>
-        <Text style={styles.errorTitle}>{t("detail.missing")}</Text>
+        {isError ? (
+          <View style={styles.errorState}>
+            <Text style={styles.errorStateTitle}>{t("detail.errorTitle")}</Text>
+            <Pressable
+              style={styles.errorRetryButton}
+              onPress={() => {
+                void refetch();
+              }}
+              hitSlop={8}
+            >
+              <MaterialIcons
+                name="refresh"
+                size={22}
+                color={colors.accentWarmMuted}
+              />
+            </Pressable>
+          </View>
+        ) : (
+          <Text style={styles.errorTitle}>{t("detail.missing")}</Text>
+        )}
       </Screen>
     );
   }
@@ -201,6 +228,36 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
       ...textStyles.buttonLabel,
       color: colors.accentWarmMuted,
       fontSize: 16,
+    },
+    errorState: {
+      alignItems: "center",
+      justifyContent: "center",
+      gap: spacing[3],
+      paddingVertical: spacing[8],
+    },
+    loadingState: {
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: spacing[8],
+    },
+    loadingStateTitle: {
+      ...textStyles.titleMd,
+      textAlign: "center",
+    },
+    errorStateTitle: {
+      ...textStyles.titleMd,
+      textAlign: "center",
+    },
+    errorRetryButton: {
+      width: 44,
+      height: 44,
+      alignSelf: "center",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 999,
+      backgroundColor: colors.bgMuted,
+      borderWidth: 1,
+      borderColor: colors.borderSoft,
     },
     errorTitle: textStyles.displaySm,
   });

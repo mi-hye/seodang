@@ -31,7 +31,7 @@ export default function PracticeScreen() {
     isLoading: isCharacterLoading,
     isError: isCharacterError,
     refetch: refetchCharacter,
-  } = useKanjiCharacterQuery(characterId);
+  } = useKanjiCharacterQuery(characterId, "practice");
   const { locale, t } = useI18n();
   const { onboardingStep, setOnboardingStep } = useAppState();
   const { width, height } = useWindowDimensions();
@@ -60,7 +60,7 @@ export default function PracticeScreen() {
     data: kanjiStrokeData,
     isLoading: isGuideLoading,
     isError: isGuideLoadError,
-  } = useKanjiStrokeDataQuery(character?.literal);
+  } = useKanjiStrokeDataQuery(character?.literal, "practice");
   const showGuideOnboarding =
     Boolean(character) && onboardingStep === "practice_guide";
   const showSubmitOnboarding =

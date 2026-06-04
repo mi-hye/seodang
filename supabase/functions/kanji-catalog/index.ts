@@ -130,7 +130,8 @@ async function fetchCategoryGroups(locale: Locale) {
         .filter(
           (category) =>
             category.group_id === group.id &&
-            (category.metadata?.visibleLocales ?? ["ko", "ja"]).includes(locale)
+            (category.metadata?.visibleLocales ?? ["ko", "ja"]).includes(locale) &&
+            (totalByCategoryId.get(category.id) ?? 0) > 0
         )
         .sort((left, right) => left.sort_order - right.sort_order)
         .map((category) => ({

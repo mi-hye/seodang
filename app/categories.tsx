@@ -45,8 +45,10 @@ export default function CategoriesScreen() {
   const visibleGroups = (data ?? [])
     .map((group) => ({
       ...group,
-      categories: group.categories.filter((category) =>
-        category.visibleLocales.includes(locale),
+      categories: group.categories.filter(
+        (category) =>
+          category.visibleLocales.includes(locale) &&
+          category.totalCharacters > 0,
       ),
     }))
     .filter((group) => group.categories.length > 0);
