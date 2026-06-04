@@ -34,21 +34,25 @@ export type FetchKanjiCategoryCharactersParams = {
   locale: "ko" | "ja";
   limit?: number;
   offset?: number;
+  debugScope?: string;
 };
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 const characterSelect =
   "id,literal,stroke_count,meaning_ko,meaning_ja,onyomi,kunyomi,jlpt_level,japanese_school_level,japanese_grade,example_ja,example_ko,sort_order,is_joyo,metadata";
+const practicalCharacterFilter =
+  "or=(is_joyo.eq.true,jlpt_level.not.is.null,japanese_grade.not.is.null,japanese_school_level.not.is.null)";
 
 export async function fetchKanjiCategoryCharactersByKey({
   categoryKey,
   locale,
   limit = 20,
   offset = 0,
+  debugScope = "list",
 }: FetchKanjiCategoryCharactersParams
 ): Promise<KanjiCategoryCharactersPayload | null> {
-  throwIfForcedFetchFailure("fetchKanjiCategoryCharactersByKey");
+  throwIfForcedFetchFailure(debugScope);
 
   if (!supabaseUrl || !supabaseAnonKey || !categoryKey) {
     return null;
@@ -101,8 +105,11 @@ export async function fetchKanjiCharactersByIds(characterIds: string[]) {
     .filter((character): character is KanjiCharacter => Boolean(character));
 }
 
-export async function fetchKanjiCharacterById(characterId?: string) {
-  throwIfForcedFetchFailure("fetchKanjiCharacterById");
+export async function fetchKanjiCharacterById(
+  characterId?: string,
+  debugScope = "detail",
+) {
+  throwIfForcedFetchFailure(debugScope);
 
   if (!supabaseUrl || !supabaseAnonKey || !characterId) {
     return null;
@@ -126,8 +133,8 @@ export async function fetchKanjiCharacterById(characterId?: string) {
   return rows[0] ? mapKanjiCharacter(rows[0]) : null;
 }
 
-export async function fetchAllKanjiCharacters() {
-  throwIfForcedFetchFailure("fetchAllKanjiCharacters");
+export async function fetchAllKanjiCharacters(debugScope = "search") {
+  throwIfForcedFetchFailure(debugScope);
 
   if (!supabaseUrl || !supabaseAnonKey) {
     return [];
@@ -143,7 +150,7 @@ export async function fetchAllKanjiCharacters() {
       order: "literal.asc",
     });
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/kanji_characters?${params.toString()}`,
+      `${supabaseUrl}/rest/v1/kanji_characters?${params.toString()}&${practicalCharacterFilter}`,
       {
         headers: {
           ...buildHeaders(),

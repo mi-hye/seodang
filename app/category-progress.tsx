@@ -16,13 +16,11 @@ import { spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import {
   buildCategoryProgressMap,
-  buildCategoryTotalsMap,
   listActiveCategoryProgress,
 } from "../src/lib/categoryProgress";
 import {
   useKanjiCategoryGroupsQuery,
   useKanjiCategoryProgressMappingsQuery,
-  useKanjiCategoryTotalsQuery,
 } from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
 
@@ -46,7 +44,6 @@ export default function CategoryProgressScreen() {
   );
   const { data: categoryProgressMappings = [] } =
     useKanjiCategoryProgressMappingsQuery(completedCharacterIds);
-  const { data: categoryTotalMappings = [] } = useKanjiCategoryTotalsQuery();
   const { colors, surfaceStyles, textStyles, shadows } = useTheme();
   const styles = createStyles({ colors, surfaceStyles, textStyles, shadows });
 
@@ -55,13 +52,12 @@ export default function CategoryProgressScreen() {
       buildCategoryProgressMap(
         categoryGroups,
         categoryProgressMappings,
-        buildCategoryTotalsMap(categoryTotalMappings),
+        undefined,
         resetProgressByCategoryKey,
       ),
     [
       categoryGroups,
       categoryProgressMappings,
-      categoryTotalMappings,
       resetProgressByCategoryKey,
     ],
   );

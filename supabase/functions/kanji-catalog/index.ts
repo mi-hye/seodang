@@ -41,6 +41,7 @@ type CategoryRow = {
 
 type CategoryMappingCountRow = {
   category_id: string;
+  character_id: string;
 };
 
 type CharacterCategoryRow = {
@@ -99,7 +100,7 @@ Deno.serve(async (request) => {
 });
 
 async function fetchCategoryGroups(locale: Locale) {
-  const [groups, categories, categoryMappings] = await Promise.all([
+  const [groups, categories, categoryMappings, practicalCharacterIds] = await Promise.all([
     fetchRows<CategoryGroupRow>(
       "kanji_category_groups?select=id,group_key,label_ko,label_ja,description_ko,description_ja,sort_order&order=sort_order.asc"
     ),
@@ -107,8 +108,12 @@ async function fetchCategoryGroups(locale: Locale) {
       "kanji_categories?select=id,group_id,category_key,label_ko,label_ja,description_ko,description_ja,sort_order,metadata&order=sort_order.asc"
     ),
     fetchAllCategoryMappings(),
+    fetchAllPracticalCharacterIds(),
   ]);
-  const totalByCategoryId = countByCategoryId(categoryMappings);
+  const practicalIdSet = new Set(practicalCharacterIds);
+  const totalByCategoryId = countByCategoryId(
+    categoryMappings.filter((row) => practicalIdSet.has(row.character_id))
+  );
 
   return groups
     .map((group) => ({
@@ -153,7 +158,7 @@ async function fetchAllCategoryMappings() {
 
   while (true) {
     const page = await fetchRows<CategoryMappingCountRow>(
-      `kanji_character_categories?select=category_id&offset=${offset}&limit=${pageSize}`
+      `kanji_character_categories?select=category_id,character_id&offset=${offset}&limit=${pageSize}`
     );
     rows.push(...page);
 
@@ -182,13 +187,16 @@ async function fetchCategoryCharacters(
     return null;
   }
 
-  const total = await fetchExactCount(
-    `kanji_character_categories?select=character_id&category_id=eq.${encodeURIComponent(category.id)}`
-  );
-  const mappings = await fetchRows<CharacterCategoryRow>(
-    `kanji_character_categories?select=character_id&category_id=eq.${encodeURIComponent(category.id)}&order=character_id.asc&offset=${offset}&limit=${limit}`
-  );
-  const characterIds = mappings.map((row) => row.character_id);
+  const [practicalCharacterIds, mappings] = await Promise.all([
+    fetchAllPracticalCharacterIds(),
+    fetchAllCategoryCharacterMappings(category.id),
+  ]);
+  const practicalIdSet = new Set(practicalCharacterIds);
+  const filteredMappings = mappings.filter((row) => practicalIdSet.has(row.character_id));
+  const total = filteredMappings.length;
+  const characterIds = filteredMappings
+    .slice(offset, offset + limit)
+    .map((row) => row.character_id);
   const characters = await fetchCharactersByIds(characterIds);
 
   return {
@@ -212,6 +220,48 @@ async function fetchCategoryCharacters(
     offset,
     hasMore: offset + characters.length < total,
   };
+}
+
+async function fetchAllCategoryCharacterMappings(categoryId: string) {
+  const pageSize = 1000;
+  let offset = 0;
+  const rows: CharacterCategoryRow[] = [];
+
+  while (true) {
+    const page = await fetchRows<CharacterCategoryRow>(
+      `kanji_character_categories?select=character_id&category_id=eq.${encodeURIComponent(categoryId)}&order=character_id.asc&offset=${offset}&limit=${pageSize}`
+    );
+    rows.push(...page);
+
+    if (page.length < pageSize) {
+      break;
+    }
+
+    offset += pageSize;
+  }
+
+  return rows;
+}
+
+async function fetchAllPracticalCharacterIds() {
+  const pageSize = 1000;
+  let offset = 0;
+  const rows: { id: string }[] = [];
+
+  while (true) {
+    const page = await fetchRows<{ id: string }>(
+      `kanji_characters?select=id&or=(is_joyo.eq.true,jlpt_level.not.is.null,japanese_grade.not.is.null,japanese_school_level.not.is.null)&order=id.asc&offset=${offset}&limit=${pageSize}`
+    );
+    rows.push(...page);
+
+    if (page.length < pageSize) {
+      break;
+    }
+
+    offset += pageSize;
+  }
+
+  return rows.map((row) => row.id);
 }
 
 async function fetchCharactersByIds(characterIds: string[]) {
@@ -289,7 +339,7 @@ function selectLocalizedText(locale: Locale, ko: string, ja: string) {
   return locale === "ja" ? ja : ko;
 }
 
-function countByCategoryId(rows: CategoryMappingCountRow[]) {
+function countByCategoryId(rows: Array<{ category_id: string }>) {
   const counts = new Map<string, number>();
 
   for (const row of rows) {
