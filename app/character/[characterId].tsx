@@ -3,10 +3,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../../src/components/common/Screen";
-import {
-  getCharacterExample,
-  getCharacterMeaning,
-} from "../../src/data/characters";
+import { getCharacterMeaning } from "../../src/data/characters";
 import { spacing, useTheme } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
 import { useKanjiCharacterQuery } from "../../src/queries/kanjiQueries";
@@ -29,7 +26,10 @@ export default function CharacterDetailScreen() {
   const { onboardingStep, setOnboardingStep } = useAppState();
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ buttonStyles, colors, surfaceStyles, textStyles });
-  const example = character ? getCharacterExample(character, locale) : null;
+  const exampleJa = character?.exampleJa;
+  const exampleKo = character?.exampleKo;
+  const hasExample =
+    locale === "ja" ? Boolean(exampleJa) : Boolean(exampleJa || exampleKo);
   const showOnboarding = Boolean(character) && onboardingStep === "detail";
 
   if (isLoading) {
@@ -94,20 +94,24 @@ export default function CharacterDetailScreen() {
             </Text>
           </View>
 
-          {example ? (
+          {hasExample ? (
             <View style={styles.infoCard}>
               <Text style={styles.sectionTitle}>{t("detail.examples")}</Text>
               <View style={styles.exampleRow}>
-                <Text style={styles.exampleWord}>{character.exampleJa ?? character.literal}</Text>
-                <Text style={styles.exampleMeta}>{example}</Text>
+                {exampleJa ? (
+                  <Text style={styles.exampleWord}>{exampleJa}</Text>
+                ) : null}
+                {locale === "ko" && exampleKo ? (
+                  <Text style={styles.exampleMeta}>{exampleKo}</Text>
+                ) : null}
               </View>
             </View>
-          ) : null}
-
-          <View style={styles.infoCard}>
-            <Text style={styles.sectionTitle}>{t("detail.examples")}</Text>
-            <Text style={styles.infoLine}>{t("detail.examplesPending")}</Text>
-          </View>
+          ) : (
+            <View style={styles.infoCard}>
+              <Text style={styles.sectionTitle}>{t("detail.examples")}</Text>
+              <Text style={styles.infoLine}>{t("detail.examplesPending")}</Text>
+            </View>
+          )}
         </View>
 
         {showOnboarding ? (
