@@ -60,6 +60,7 @@ export default function PracticeScreen() {
     data: kanjiStrokeData,
     isLoading: isGuideLoading,
     isError: isGuideLoadError,
+    refetch: refetchGuide,
   } = useKanjiStrokeDataQuery(character?.literal, "practice");
   const showGuideOnboarding =
     Boolean(character) && onboardingStep === "practice_guide";
@@ -227,7 +228,22 @@ export default function PracticeScreen() {
         />
         <Text style={styles.canvasHint}>{t("practice.canvasHint")}</Text>
         {isGuideLoadError ? (
-          <Text style={styles.canvasSubHint}>{t("practice.loadGuideError")}</Text>
+          <View style={styles.canvasErrorState}>
+            <Text style={styles.canvasErrorTitle}>{t("practice.loadGuideError")}</Text>
+            <Pressable
+              style={styles.errorRetryButton}
+              onPress={() => {
+                void refetchGuide();
+              }}
+              hitSlop={8}
+            >
+              <MaterialIcons
+                name="refresh"
+                size={22}
+                color={colors.accentWarmMuted}
+              />
+            </Pressable>
+          </View>
         ) : null}
         {!isGuideLoading && !isGuideLoadError && !kanjiStrokeData ? (
           <Text style={styles.canvasSubHint}>{t("practice.missingGuide")}</Text>
@@ -465,6 +481,17 @@ function createStyles({
       color: colors.accentWarmMuted,
       marginTop: 6,
       fontWeight: "700",
+    },
+    canvasErrorState: {
+      display: isLandscape ? "none" : "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: spacing[3],
+      marginTop: spacing[3],
+    },
+    canvasErrorTitle: {
+      ...textStyles.titleSm,
+      textAlign: "center",
     },
     actions: {
       flexDirection: "row",
