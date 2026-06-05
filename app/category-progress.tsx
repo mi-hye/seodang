@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useMemo, useRef } from "react";
 import { useRouter } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
@@ -12,6 +12,7 @@ import {
 } from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
+import { isForcedEmptyState } from "../src/data/debugFetchFailure";
 import { spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import {
@@ -32,7 +33,7 @@ export default function CategoryProgressScreen() {
     resetProgressByCategoryKey,
     resetCategoryProgress,
   } = useAppState();
-  const { data: categoryGroups = [], isLoading, isError } =
+  const { data: categoryGroups = [], isLoading, isError, refetch } =
     useKanjiCategoryGroupsQuery(locale);
   const completedCharacterIds = useMemo(
     () =>
@@ -62,7 +63,10 @@ export default function CategoryProgressScreen() {
     ],
   );
   const activeCategories = useMemo(
-    () => listActiveCategoryProgress(categoryGroups, categoryProgressMap),
+    () =>
+      isForcedEmptyState("category-progress")
+        ? []
+        : listActiveCategoryProgress(categoryGroups, categoryProgressMap),
     [categoryGroups, categoryProgressMap],
   );
   const characterIdsByCategoryId = useMemo(() => {
@@ -97,13 +101,23 @@ export default function CategoryProgressScreen() {
         ) : null}
 
         {isError ? (
-          <View style={[styles.emptyCard, styles.shadow]}>
-            <Text style={styles.emptyTitle}>
+          <View style={styles.errorState}>
+            <Text style={styles.errorStateTitle}>
               {t("categoryProgress.errorTitle")}
             </Text>
-            <Text style={styles.emptyBody}>
-              {t("categoryProgress.errorBody")}
-            </Text>
+            <Pressable
+              style={styles.errorRetryButton}
+              onPress={() => {
+                void refetch();
+              }}
+              hitSlop={8}
+            >
+              <MaterialIcons
+                name="refresh"
+                size={22}
+                color={colors.accentWarmMuted}
+              />
+            </Pressable>
           </View>
         ) : null}
 
@@ -333,6 +347,27 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
     emptyBody: {
       ...textStyles.bodySm,
       color: colors.inkMuted,
+    },
+    errorState: {
+      alignItems: "center",
+      justifyContent: "center",
+      gap: spacing[3],
+      paddingVertical: spacing[8],
+    },
+    errorStateTitle: {
+      ...textStyles.titleMd,
+      textAlign: "center",
+    },
+    errorRetryButton: {
+      width: 44,
+      height: 44,
+      alignSelf: "center",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 999,
+      backgroundColor: colors.bgMuted,
+      borderWidth: 1,
+      borderColor: colors.borderSoft,
     },
     shadow: shadows.card,
   });

@@ -15,6 +15,7 @@ import { KanjiLoadingScreen } from "../src/components/common/KanjiLoadingScreen"
 import { ErrorState } from "../src/components/common/ErrorState";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning, KanjiCharacter } from "../src/data/characters";
+import { isForcedEmptyState } from "../src/data/debugFetchFailure";
 import { layout, spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import { buildCategoryProgressMap } from "../src/lib/categoryProgress";
@@ -70,7 +71,9 @@ export default function CharacterListScreen() {
   const pages = data?.pages ?? [];
   const firstPage = pages[0] ?? null;
   const selectedCategory = firstPage?.category;
-  const items = pages.flatMap((page) => page?.characters ?? []);
+  const items = isForcedEmptyState("list")
+    ? []
+    : pages.flatMap((page) => page?.characters ?? []);
   const headerTitle = selectedCategory?.label ?? t("list.title");
   const categoryProgressMap = useMemo(
     () =>
@@ -202,8 +205,16 @@ export default function CharacterListScreen() {
           }
           ListEmptyComponent={
             <View style={styles.emptyCard}>
-              <Text style={styles.emptyTitle}>{t("list.emptyTitle")}</Text>
-              <Text style={styles.emptyBody}>{t("list.emptyBody")}</Text>
+              <Text style={styles.emptyTitle}>
+                {normalizedSearch
+                  ? t("list.searchEmptyTitle")
+                  : t("list.emptyTitle")}
+              </Text>
+              <Text style={styles.emptyBody}>
+                {normalizedSearch
+                  ? t("list.searchEmptyBody")
+                  : t("list.emptyBody")}
+              </Text>
             </View>
           }
           renderItem={({ item, index }) => (
