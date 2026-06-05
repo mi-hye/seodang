@@ -67,7 +67,7 @@
   "detail.reading": "読み",
   "detail.onyomi": "音読み: %{value}",
   "detail.kunyomi": "訓読み: %{value}",
-  "detail.examples": "例文",
+  "detail.examples": "例文 / 参考",
   "detail.examplesPending": "準備中です。",
   "detail.onboardingAction": "書き取り練習を始めてみましょうか。",
   "detail.startPractice": "書き取り練習を始める",
