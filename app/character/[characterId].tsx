@@ -1,11 +1,9 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../../src/components/common/Screen";
-import {
-  getCharacterExample,
-  getCharacterMeaning,
-} from "../../src/data/characters";
+import { getCharacterMeaning } from "../../src/data/characters";
 import { spacing, useTheme } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
 import { useKanjiCharacterQuery } from "../../src/queries/kanjiQueries";
@@ -18,18 +16,28 @@ export default function CharacterDetailScreen() {
     categoryKey?: string;
   }>();
   const normalizedCategoryKey = Array.isArray(categoryKey) ? categoryKey[0] : categoryKey;
-  const { data: character, isLoading } = useKanjiCharacterQuery(characterId);
+  const {
+    data: character,
+    isLoading,
+    isError,
+    refetch,
+  } = useKanjiCharacterQuery(characterId, "detail");
   const { locale, t } = useI18n();
   const { onboardingStep, setOnboardingStep } = useAppState();
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ buttonStyles, colors, surfaceStyles, textStyles });
-  const example = character ? getCharacterExample(character, locale) : null;
+  const exampleJa = character?.exampleJa;
+  const exampleKo = character?.exampleKo;
+  const hasExample =
+    locale === "ja" ? Boolean(exampleJa) : Boolean(exampleJa || exampleKo);
   const showOnboarding = Boolean(character) && onboardingStep === "detail";
 
   if (isLoading) {
     return (
       <Screen>
-        <Text style={styles.infoLine}>{t("common.loading")}</Text>
+        <View style={styles.loadingState}>
+          <Text style={styles.loadingStateTitle}>{t("common.loading")}</Text>
+        </View>
       </Screen>
     );
   }
@@ -37,7 +45,26 @@ export default function CharacterDetailScreen() {
   if (!character) {
     return (
       <Screen>
-        <Text style={styles.errorTitle}>{t("detail.missing")}</Text>
+        {isError ? (
+          <View style={styles.errorState}>
+            <Text style={styles.errorStateTitle}>{t("detail.errorTitle")}</Text>
+            <Pressable
+              style={styles.errorRetryButton}
+              onPress={() => {
+                void refetch();
+              }}
+              hitSlop={8}
+            >
+              <MaterialIcons
+                name="refresh"
+                size={22}
+                color={colors.accentWarmMuted}
+              />
+            </Pressable>
+          </View>
+        ) : (
+          <Text style={styles.errorTitle}>{t("detail.missing")}</Text>
+        )}
       </Screen>
     );
   }
@@ -67,20 +94,24 @@ export default function CharacterDetailScreen() {
             </Text>
           </View>
 
-          {example ? (
+          {hasExample ? (
             <View style={styles.infoCard}>
               <Text style={styles.sectionTitle}>{t("detail.examples")}</Text>
               <View style={styles.exampleRow}>
-                <Text style={styles.exampleWord}>{character.exampleJa ?? character.literal}</Text>
-                <Text style={styles.exampleMeta}>{example}</Text>
+                {exampleJa ? (
+                  <Text style={styles.exampleWord}>{exampleJa}</Text>
+                ) : null}
+                {locale === "ko" && exampleKo ? (
+                  <Text style={styles.exampleMeta}>{exampleKo}</Text>
+                ) : null}
               </View>
             </View>
-          ) : null}
-
-          <View style={styles.infoCard}>
-            <Text style={styles.sectionTitle}>{t("detail.examples")}</Text>
-            <Text style={styles.infoLine}>{t("detail.examplesPending")}</Text>
-          </View>
+          ) : (
+            <View style={styles.infoCard}>
+              <Text style={styles.sectionTitle}>{t("detail.examples")}</Text>
+              <Text style={styles.infoLine}>{t("detail.examplesPending")}</Text>
+            </View>
+          )}
         </View>
 
         {showOnboarding ? (
@@ -201,6 +232,36 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
       ...textStyles.buttonLabel,
       color: colors.accentWarmMuted,
       fontSize: 16,
+    },
+    errorState: {
+      alignItems: "center",
+      justifyContent: "center",
+      gap: spacing[3],
+      paddingVertical: spacing[8],
+    },
+    loadingState: {
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: spacing[8],
+    },
+    loadingStateTitle: {
+      ...textStyles.titleMd,
+      textAlign: "center",
+    },
+    errorStateTitle: {
+      ...textStyles.titleMd,
+      textAlign: "center",
+    },
+    errorRetryButton: {
+      width: 44,
+      height: 44,
+      alignSelf: "center",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 999,
+      backgroundColor: colors.bgMuted,
+      borderWidth: 1,
+      borderColor: colors.borderSoft,
     },
     errorTitle: textStyles.displaySm,
   });

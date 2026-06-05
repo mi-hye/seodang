@@ -1,4 +1,5 @@
 import { KanjiVgCharacter, KanjiVgStroke } from "../types/practice";
+import { throwIfForcedFetchFailure } from "./debugFetchFailure";
 
 type KanjiCharacterRow = {
   id: string;
@@ -26,7 +27,12 @@ type KanjiStrokeRow = {
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
-export async function fetchKanjiStrokeDataByLiteral(literal: string) {
+export async function fetchKanjiStrokeDataByLiteral(
+  literal: string,
+  debugScope = "practice",
+) {
+  throwIfForcedFetchFailure(debugScope);
+
   if (!supabaseUrl || !supabaseAnonKey || !literal) {
     return undefined;
   }

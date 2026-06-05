@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { FavoriteButton } from "../../src/components/common/FavoriteButton";
@@ -45,7 +46,11 @@ export default function PracticeResultScreen() {
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ buttonStyles, colors, surfaceStyles, textStyles });
   const feedbackLines = feedback ? feedback.split("\n").filter(Boolean) : [];
-  const { data } = useKanjiCharactersByCategoryQuery(normalizedCategoryKey, locale);
+  const {
+    data,
+    isError: isCategoryLoadError,
+    refetch: refetchCategoryCharacters,
+  } = useKanjiCharactersByCategoryQuery(normalizedCategoryKey, locale, "result");
   const characters = data?.pages.flatMap((page) => page?.characters ?? []) ?? [];
   const currentIndex = characters.findIndex((item) => item.id === characterId);
   const nextCharacter = currentIndex >= 0 ? characters[currentIndex + 1] : undefined;
@@ -116,7 +121,7 @@ export default function PracticeResultScreen() {
         </View>
 
         <View style={styles.nextActionWrap}>
-          {showOnboarding ? (
+          {showOnboarding && !isCategoryLoadError ? (
             <View pointerEvents="none" style={styles.onboardingHint}>
               <View style={styles.onboardingBubble}>
                 <Text style={styles.onboardingHintText}>
@@ -127,33 +132,52 @@ export default function PracticeResultScreen() {
             </View>
           ) : null}
 
-          <Pressable
-            style={styles.primaryButton}
-            onPress={() => {
-              if (showOnboarding) {
-                setOnboardingStep("done");
-              }
-              if (nextCharacter) {
-                router.replace({
-                  pathname: "/character/[characterId]",
+          {isCategoryLoadError ? (
+            <View style={styles.errorState}>
+              <Text style={styles.errorStateTitle}>{t("result.errorTitle")}</Text>
+              <Pressable
+                style={styles.errorRetryButton}
+                onPress={() => {
+                  void refetchCategoryCharacters();
+                }}
+                hitSlop={8}
+              >
+                <MaterialIcons
+                  name="refresh"
+                  size={22}
+                  color={colors.accentWarmMuted}
+                />
+              </Pressable>
+            </View>
+          ) : (
+            <Pressable
+              style={styles.primaryButton}
+              onPress={() => {
+                if (showOnboarding) {
+                  setOnboardingStep("done");
+                }
+                if (nextCharacter) {
+                  router.replace({
+                    pathname: "/character/[characterId]",
+                    params: {
+                      characterId: nextCharacter.id,
+                      categoryKey: normalizedCategoryKey,
+                    },
+                  });
+                  return;
+                }
+
+                router.dismissTo({
+                  pathname: "/list",
                   params: {
-                    characterId: nextCharacter.id,
                     categoryKey: normalizedCategoryKey,
                   },
                 });
-                return;
-              }
-
-              router.dismissTo({
-                pathname: "/list",
-                params: {
-                  categoryKey: normalizedCategoryKey,
-                },
-              });
-            }}
-          >
-            <Text style={styles.primaryLabel}>{t("result.nextCharacter")}</Text>
-          </Pressable>
+              }}
+            >
+              <Text style={styles.primaryLabel}>{t("result.nextCharacter")}</Text>
+            </Pressable>
+          )}
         </View>
       </View>
     </Screen>
@@ -227,6 +251,28 @@ function createStyles({
     },
     nextActionWrap: {
       position: "relative",
+    },
+    errorState: {
+      alignItems: "center",
+      justifyContent: "center",
+      gap: spacing[3],
+      paddingVertical: spacing[4],
+      marginBottom: 20,
+    },
+    errorStateTitle: {
+      ...textStyles.titleMd,
+      textAlign: "center",
+    },
+    errorRetryButton: {
+      width: 44,
+      height: 44,
+      alignSelf: "center",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 999,
+      backgroundColor: colors.bgMuted,
+      borderWidth: 1,
+      borderColor: colors.borderSoft,
     },
     onboardingHint: {
       position: "absolute",

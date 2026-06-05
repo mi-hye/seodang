@@ -1,10 +1,7 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 import { fetchKanjiCategoryGroups } from "../data/fetchKanjiCategories";
-import {
-  fetchAllCategoryIdsForCounts,
-  fetchCategoryMappingsByCharacterIds,
-} from "../data/fetchKanjiCategoryProgress";
+import { fetchCategoryMappingsByCharacterIds } from "../data/fetchKanjiCategoryProgress";
 import {
   fetchAllKanjiCharacters,
   fetchKanjiCategoryCharactersByKey,
@@ -13,18 +10,19 @@ import {
 } from "../data/fetchKanjiCharacters";
 import { fetchKanjiStrokeDataByLiteral } from "../data/fetchKanjiStrokeData";
 
-const CATALOG_QUERY_VERSION = "2026-05-18-progress-v2";
+const CATALOG_QUERY_VERSION = "2026-06-04-practical-v1";
 
 export function useKanjiCategoryGroupsQuery(locale: "ko" | "ja") {
   return useQuery({
     queryKey: ["kanji-category-groups", CATALOG_QUERY_VERSION, locale],
-    queryFn: () => fetchKanjiCategoryGroups(locale),
+    queryFn: () => fetchKanjiCategoryGroups(locale, "categories"),
   });
 }
 
 export function useKanjiCharactersByCategoryQuery(
   categoryKey: string | undefined,
-  locale: "ko" | "ja"
+  locale: "ko" | "ja",
+  debugScope = "list",
 ) {
   return useInfiniteQuery({
     queryKey: [
@@ -39,6 +37,7 @@ export function useKanjiCharactersByCategoryQuery(
         locale,
         limit: 20,
         offset: pageParam,
+        debugScope,
       }),
     getNextPageParam: (lastPage) => {
       if (!lastPage?.hasMore) {
@@ -69,10 +68,13 @@ export function useFavoriteKanjiCharactersQuery(characterIds: string[]) {
   });
 }
 
-export function useKanjiCharacterQuery(characterId?: string) {
+export function useKanjiCharacterQuery(
+  characterId?: string,
+  debugScope = "detail",
+) {
   return useQuery({
-    queryKey: ["kanji-character", characterId],
-    queryFn: () => fetchKanjiCharacterById(characterId),
+    queryKey: ["kanji-character", characterId, debugScope],
+    queryFn: () => fetchKanjiCharacterById(characterId, debugScope),
     enabled: Boolean(characterId),
   });
 }
@@ -86,26 +88,21 @@ export function useKanjiCategoryProgressMappingsQuery(characterIds: string[]) {
   });
 }
 
-export function useKanjiCategoryTotalsQuery() {
-  return useQuery({
-    queryKey: ["kanji-category-total-mappings", CATALOG_QUERY_VERSION],
-    queryFn: fetchAllCategoryIdsForCounts,
-    staleTime: 1000 * 60 * 10,
-  });
-}
-
 export function useAllKanjiCharactersQuery() {
   return useQuery({
     queryKey: ["kanji-characters", "all"],
-    queryFn: fetchAllKanjiCharacters,
+    queryFn: () => fetchAllKanjiCharacters("search"),
     staleTime: 1000 * 60 * 10,
   });
 }
 
-export function useKanjiStrokeDataQuery(literal?: string) {
+export function useKanjiStrokeDataQuery(
+  literal?: string,
+  debugScope = "practice",
+) {
   return useQuery({
-    queryKey: ["kanji-stroke-data", literal],
-    queryFn: () => fetchKanjiStrokeDataByLiteral(literal ?? ""),
+    queryKey: ["kanji-stroke-data", literal, debugScope],
+    queryFn: () => fetchKanjiStrokeDataByLiteral(literal ?? "", debugScope),
     enabled: Boolean(literal),
   });
 }
