@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Seodang Privacy Policy</title>
+    <style>
+      :root {
+        color: #173221;
+        background: #f7f1e8;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+          "Noto Sans KR", "Hiragino Sans", sans-serif;
+      }
+
+      body {
+        margin: 0;
+        padding: 40px 20px;
+      }
+
+      main {
+        max-width: 760px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 34px;
+        line-height: 1.2;
+      }
+
+      h2 {
+        margin: 32px 0 10px;
+        font-size: 20px;
+      }
+
+      p,
+      li {
+        color: #536055;
+        font-size: 16px;
+        line-height: 1.7;
+      }
+
+      ul {
+        padding-left: 22px;
+      }
+
+      .updated {
+        margin: 0 0 32px;
+        color: #7a847c;
+        font-size: 14px;
+      }
+
+      .note {
+        margin-top: 40px;
+        padding: 16px;
+        border-radius: 12px;
+        background: rgba(23, 50, 33, 0.08);
+      }
+
+      a {
+        color: #1f5f43;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Seodang Privacy Policy</h1>
+      <p class="updated">Last updated: June 8, 2026</p>
+
+      <h2>Service</h2>
+      <p>
+        Seodang is a kanji learning app. The app lets users browse kanji
+        categories, view kanji details, practice writing, save favorites, track
+        recent practice, and configure study reminders.
+      </p>
+
+      <h2>Data Stored On Your Device</h2>
+      <p>Seodang stores the following data locally on the user's device:</p>
+      <ul>
+        <li>App language and theme settings</li>
+        <li>First-run onboarding progress</li>
+        <li>Favorite kanji</li>
+        <li>Practice progress, scores, attempts, and recent practice history</li>
+        <li>Category progress reset state</li>
+        <li>Study reminder settings</li>
+      </ul>
+      <p>
+        This local data is stored with AsyncStorage and is used only to provide
+        app features. It is not sold.
+      </p>
+
+      <h2>Data Fetched From Supabase</h2>
+      <p>
+        Seodang fetches public kanji learning data from Supabase, including
+        kanji metadata, categories, stroke order data, and example sentences
+        when available. Seodang does not currently require user login and does
+        not upload individual user practice history to Supabase.
+      </p>
+
+      <h2>Notifications</h2>
+      <p>
+        If the user enables study reminders, Seodang asks for notification
+        permission and schedules local notifications on the device.
+        Notification settings are stored locally. The app does not send reminder
+        messages to a remote server.
+      </p>
+
+      <h2>Data Sharing</h2>
+      <p>
+        Seodang does not sell user data. The app uses Supabase as a backend
+        content provider. Network requests to Supabase may include standard
+        technical information processed by Supabase as part of providing the
+        service.
+      </p>
+
+      <h2>Third-Party Services</h2>
+      <ul>
+        <li>Supabase, for public kanji data and Edge Functions</li>
+        <li>Expo / React Native, for app runtime, builds, and notifications</li>
+      </ul>
+
+      <h2>User Choices</h2>
+      <p>Users can change app settings, remove favorites, reset category progress,
+        edit or delete study reminders, disable notifications in device
+        settings, or delete local app data by uninstalling the app.</p>
+
+      <h2>Contact</h2>
+      <p>
+        For privacy questions or support requests, contact
+        <a href="mailto:satge13@gmail.com">satge13@gmail.com</a>.
+      </p>
+
+      <div class="note">
+        <p>
+          This page is prepared for store submission and should be hosted at a
+          public URL before release.
+        </p>
+      </div>
+    </main>
+  </body>
+</html>

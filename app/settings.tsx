@@ -100,6 +100,38 @@ export default function SettingsScreen() {
           </Text>
         </Pressable>
       </View>
+
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>{t("settings.legal")}</Text>
+        </View>
+
+        <Pressable
+          style={[styles.infoCard, styles.shadow]}
+          onPress={() => router.push("/privacy-policy")}
+        >
+          <View style={styles.infoCardHeader}>
+            <View style={styles.infoCardTitleRow}>
+              <Ionicons
+                name="document-text-outline"
+                size={18}
+                color={colors.accentWarmMuted}
+              />
+              <Text style={styles.infoCardTitle}>
+                {t("settings.privacyPolicyTitle")}
+              </Text>
+            </View>
+            <Ionicons
+              name="chevron-forward"
+              size={18}
+              color={colors.inkMuted}
+            />
+          </View>
+          <Text style={styles.infoCardBody}>
+            {t("settings.privacyPolicyBody")}
+          </Text>
+        </Pressable>
+      </View>
     </Screen>
   );
 }
