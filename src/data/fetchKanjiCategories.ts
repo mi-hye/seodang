@@ -19,25 +19,20 @@ export type KanjiCategory = {
 };
 
 import { throwIfForcedFetchFailure } from "./debugFetchFailure";
-
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+import { requireSupabaseConfig } from "./supabaseEnv";
 
 export async function fetchKanjiCategoryGroups(
   locale: "ko" | "ja",
   debugScope = "categories",
 ) {
   throwIfForcedFetchFailure(debugScope);
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return [];
-  }
+  const { supabaseUrl, supabaseAnonKey } = requireSupabaseConfig();
 
   const params = new URLSearchParams({ locale });
   const response = await fetch(
     `${supabaseUrl}/functions/v1/kanji-catalog?${params.toString()}`,
     {
-      headers: buildHeaders(),
+      headers: buildHeaders(supabaseAnonKey),
     }
   );
 
@@ -48,9 +43,9 @@ export async function fetchKanjiCategoryGroups(
   return (await response.json()) as KanjiCategoryGroup[];
 }
 
-function buildHeaders() {
+function buildHeaders(supabaseAnonKey: string) {
   return {
-    apikey: supabaseAnonKey ?? "",
-    Authorization: `Bearer ${supabaseAnonKey ?? ""}`,
+    apikey: supabaseAnonKey,
+    Authorization: `Bearer ${supabaseAnonKey}`,
   };
 }

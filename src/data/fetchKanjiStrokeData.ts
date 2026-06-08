@@ -1,5 +1,6 @@
 import { KanjiVgCharacter, KanjiVgStroke } from "../types/practice";
 import { throwIfForcedFetchFailure } from "./debugFetchFailure";
+import { requireSupabaseConfig } from "./supabaseEnv";
 
 type KanjiCharacterRow = {
   id: string;
@@ -24,34 +25,44 @@ type KanjiStrokeRow = {
   note: string | null;
 };
 
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
-
 export async function fetchKanjiStrokeDataByLiteral(
   literal: string,
   debugScope = "practice",
 ) {
   throwIfForcedFetchFailure(debugScope);
 
-  if (!supabaseUrl || !supabaseAnonKey || !literal) {
+  if (!literal) {
     return undefined;
   }
+  const { supabaseUrl, supabaseAnonKey } = requireSupabaseConfig();
 
-  const character = await fetchCharacterByLiteral(literal);
+  const character = await fetchCharacterByLiteral(
+    literal,
+    supabaseUrl,
+    supabaseAnonKey,
+  );
   if (!character) {
     return undefined;
   }
 
-  const strokes = await fetchStrokesByCharacterId(character.id);
+  const strokes = await fetchStrokesByCharacterId(
+    character.id,
+    supabaseUrl,
+    supabaseAnonKey,
+  );
 
   return mapKanjiVgCharacter(character, strokes);
 }
 
-async function fetchCharacterByLiteral(literal: string) {
+async function fetchCharacterByLiteral(
+  literal: string,
+  supabaseUrl: string,
+  supabaseAnonKey: string,
+) {
   const response = await fetch(
     `${supabaseUrl}/rest/v1/kanji_characters?literal=eq.${encodeURIComponent(literal)}&select=id,literal,source,license,view_box_width,view_box_height&limit=1`,
     {
-      headers: buildHeaders(),
+      headers: buildHeaders(supabaseAnonKey),
     }
   );
 
@@ -63,11 +74,15 @@ async function fetchCharacterByLiteral(literal: string) {
   return rows[0];
 }
 
-async function fetchStrokesByCharacterId(characterId: string) {
+async function fetchStrokesByCharacterId(
+  characterId: string,
+  supabaseUrl: string,
+  supabaseAnonKey: string,
+) {
   const response = await fetch(
     `${supabaseUrl}/rest/v1/kanji_strokes?character_id=eq.${encodeURIComponent(characterId)}&select=id,stroke_order,stroke_type,raw_type,direction,path,start_x,start_y,end_x,end_y,note&order=stroke_order.asc`,
     {
-      headers: buildHeaders(),
+      headers: buildHeaders(supabaseAnonKey),
     }
   );
 
@@ -78,10 +93,10 @@ async function fetchStrokesByCharacterId(characterId: string) {
   return (await response.json()) as KanjiStrokeRow[];
 }
 
-function buildHeaders() {
+function buildHeaders(supabaseAnonKey: string) {
   return {
-    apikey: supabaseAnonKey ?? "",
-    Authorization: `Bearer ${supabaseAnonKey ?? ""}`,
+    apikey: supabaseAnonKey,
+    Authorization: `Bearer ${supabaseAnonKey}`,
   };
 }
 

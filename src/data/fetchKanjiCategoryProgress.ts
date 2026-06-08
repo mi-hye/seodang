@@ -1,21 +1,26 @@
+import { requireSupabaseConfig } from "./supabaseEnv";
+
 type CharacterCategoryMappingRow = {
   character_id: string;
   category_id: string;
 };
 
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 const characterIdsChunkSize = 200;
 const practicalCharacterFilter =
   "or=(is_joyo.eq.true,jlpt_level.not.is.null,japanese_grade.not.is.null,japanese_school_level.not.is.null)";
 
 export async function fetchCategoryMappingsByCharacterIds(characterIds: string[]) {
-  if (!supabaseUrl || !supabaseAnonKey || characterIds.length === 0) {
+  if (characterIds.length === 0) {
     return [];
   }
+  const { supabaseUrl, supabaseAnonKey } = requireSupabaseConfig();
 
   const practicalCharacterIds = new Set(
-    await fetchPracticalCharacterIdsByIds(characterIds),
+    await fetchPracticalCharacterIdsByIds(
+      characterIds,
+      supabaseUrl,
+      supabaseAnonKey,
+    ),
   );
   if (!practicalCharacterIds.size) {
     return [];
@@ -37,7 +42,7 @@ export async function fetchCategoryMappingsByCharacterIds(characterIds: string[]
       const response = await fetch(
         `${supabaseUrl}/rest/v1/kanji_character_categories?${params.toString()}`,
         {
-          headers: buildHeaders(),
+          headers: buildHeaders(supabaseAnonKey),
         },
       );
 
@@ -54,7 +59,11 @@ export async function fetchCategoryMappingsByCharacterIds(characterIds: string[]
   return pages.flat();
 }
 
-async function fetchPracticalCharacterIdsByIds(characterIds: string[]) {
+async function fetchPracticalCharacterIdsByIds(
+  characterIds: string[],
+  supabaseUrl: string,
+  supabaseAnonKey: string,
+) {
   const chunks = chunk(characterIds, characterIdsChunkSize);
   const pages = await Promise.all(
     chunks.map(async (ids) => {
@@ -65,7 +74,7 @@ async function fetchPracticalCharacterIdsByIds(characterIds: string[]) {
       const response = await fetch(
         `${supabaseUrl}/rest/v1/kanji_characters?${params.toString()}&${practicalCharacterFilter}`,
         {
-          headers: buildHeaders(),
+          headers: buildHeaders(supabaseAnonKey),
         },
       );
 
@@ -92,10 +101,10 @@ function chunk<T>(items: T[], size: number) {
   return chunks;
 }
 
-function buildHeaders() {
+function buildHeaders(supabaseAnonKey: string) {
   return {
-    apikey: supabaseAnonKey ?? "",
-    Authorization: `Bearer ${supabaseAnonKey ?? ""}`,
+    apikey: supabaseAnonKey,
+    Authorization: `Bearer ${supabaseAnonKey}`,
   };
 }
 
