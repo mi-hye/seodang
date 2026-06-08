@@ -25,6 +25,8 @@ Use this checklist before creating the first App Store production submission.
 - Support email: `satge13@gmail.com`
 - Description, subtitle, keywords, and screenshot captions:
   `docs/store-listing-draft.md`
+- Screenshot capture plan:
+  `docs/app-store-screenshot-plan.md`
 - App privacy answers:
   `docs/store-privacy-answers.md`
 - Configure App Store Connect localizations:
@@ -100,6 +102,7 @@ Use this checklist before creating the first App Store production submission.
 
 - Light theme and dark theme are both checked.
 - App icon, adaptive icon, favicon, and notification icon are correct.
+- Store screenshots are captured using `docs/app-store-screenshot-plan.md`.
 - Header background does not flicker in dark theme.
 - Settings cards have consistent sizing.
 - Privacy policy screen is reachable from Settings.

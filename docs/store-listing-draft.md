@@ -108,6 +108,10 @@ Keywords:
 
 ## Screenshot Plan
 
+Detailed capture guide:
+
+- `docs/app-store-screenshot-plan.md`
+
 Recommended first set:
 
 - Home with onboarding hidden
