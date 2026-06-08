@@ -25,6 +25,8 @@ Use this checklist before creating the first App Store production submission.
 - Support email: `satge13@gmail.com`
 - Description, subtitle, keywords, and screenshot captions:
   `docs/store-listing-draft.md`
+- Copy-ready App Store Connect inputs:
+  `docs/app-store-connect-inputs.md`
 - Screenshot capture plan:
   `docs/app-store-screenshot-plan.md`
 - App privacy answers:

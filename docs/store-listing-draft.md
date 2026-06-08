@@ -28,6 +28,10 @@ consistent with the actual release build before submission.
 
 ## App Store Metadata Draft
 
+Copy-ready App Store Connect values:
+
+- `docs/app-store-connect-inputs.md`
+
 ### Korean
 
 App name:
