@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - docs/privacy-policy.html
+      - docs/**
       - .github/workflows/pages.yml
   workflow_dispatch:
 

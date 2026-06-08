@@ -15,6 +15,7 @@
   "nav.favorites": "お気に入り",
   "nav.search": "漢字検索",
   "nav.privacyPolicy": "プライバシーポリシー",
+  "nav.thirdPartyNotices": "データ出典",
   "home.title": "書堂",
   "home.onboardingAction": "今日の学習を始めてみましょうか。",
   "home.start": "今日の学習を始める",
@@ -142,6 +143,8 @@
   "settings.legal": "ポリシー",
   "settings.privacyPolicyTitle": "プライバシーポリシー",
   "settings.privacyPolicyBody": "アプリで保存、利用するデータを確認します。",
+  "settings.thirdPartyNoticesTitle": "データ出典",
+  "settings.thirdPartyNoticesBody": "漢字データと筆順データの出典を確認します。",
   "settings.repeat.daily": "毎日",
   "settings.repeat.weekdays": "平日",
   "settings.repeat.weekends": "週末",
@@ -159,5 +162,9 @@
   "privacy.notificationsTitle": "学習通知",
   "privacy.notificationsBody": "学習通知をオンにすると、端末の通知権限を求め、ローカル通知を予約します。通知設定とメッセージは端末に保存されます。",
   "privacy.contactTitle": "お問い合わせ",
-  "privacy.contactBody": "お問い合わせは satge13@gmail.com までご連絡ください。"
+  "privacy.contactBody": "お問い合わせは satge13@gmail.com までご連絡ください。",
+  "notices.title": "データ出典",
+  "notices.body": "書堂はオープンソースおよび公開されている漢字学習データを使用しています。以下で出典とライセンス情報を確認できます。",
+  "notices.source": "出典",
+  "notices.license": "ライセンス"
 }

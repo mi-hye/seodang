@@ -22,6 +22,8 @@ Use this checklist before creating the first App Store production submission.
 - Secondary category candidate: `Reference`
 - Privacy Policy URL:
   `https://mi-hye.github.io/seodang/privacy-policy.html`
+- Third-party notices URL:
+  `https://mi-hye.github.io/seodang/third-party-notices.html`
 - Support email: `satge13@gmail.com`
 - Description, subtitle, keywords, and screenshot captions:
   `docs/store-listing-draft.md`
@@ -110,6 +112,7 @@ Use this checklist before creating the first App Store production submission.
 - Header background does not flicker in dark theme.
 - Settings cards have consistent sizing.
 - Privacy policy screen is reachable from Settings.
+- Third-party data source and license notices are reachable from Settings.
 - Privacy policy web page opens at the public URL.
 
 ## Store Review Notes

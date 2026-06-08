@@ -34,9 +34,9 @@ Reference
 Content rights:
 
 ```text
-The app does not contain, show, or access third-party content that requires
-additional rights beyond the open-source/public learning data already reviewed
-for the project.
+The app uses open-source/public kanji learning data, including KANJIDIC2,
+KanjiVG, AnimCJK, and open-source JLPT category data. Attribution and license
+notices are provided in the app's Settings screen.
 ```
 
 ## Korean Localization
@@ -104,6 +104,12 @@ Privacy Policy URL:
 
 ```text
 https://mi-hye.github.io/seodang/privacy-policy.html
+```
+
+Third-party notices URL:
+
+```text
+https://mi-hye.github.io/seodang/third-party-notices.html
 ```
 
 ## Japanese Localization
@@ -187,7 +193,8 @@ Review notes:
 No login is required. No paid content or ads are included. The app uses local
 notifications only for study reminders. User practice history, favorites,
 settings, and reminders are stored locally on the device. Public kanji learning
-content is fetched from Supabase.
+content is fetched from Supabase. Open-source data source and license notices
+are available from the app Settings screen.
 ```
 
 Contact email:
