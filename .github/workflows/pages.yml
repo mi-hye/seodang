@@ -3,7 +3,7 @@ name: Deploy static docs
 on:
   push:
     branches:
-      - dev
+      - main
     paths:
       - docs/privacy-policy.html
       - .github/workflows/pages.yml
