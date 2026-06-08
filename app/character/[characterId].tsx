@@ -28,6 +28,7 @@ export default function CharacterDetailScreen() {
   const styles = createStyles({ buttonStyles, colors, surfaceStyles, textStyles });
   const exampleJa = character?.exampleJa;
   const exampleKo = character?.exampleKo;
+  const isReference = isReferenceExample(exampleJa);
   const hasExample =
     locale === "ja" ? Boolean(exampleJa) : Boolean(exampleJa || exampleKo);
   const showOnboarding = Boolean(character) && onboardingStep === "detail";
@@ -96,7 +97,9 @@ export default function CharacterDetailScreen() {
 
           {hasExample ? (
             <View style={styles.infoCard}>
-              <Text style={styles.sectionTitle}>{t("detail.examples")}</Text>
+              <Text style={styles.sectionTitle}>
+                {t(isReference ? "detail.reference" : "detail.examples")}
+              </Text>
               <View style={styles.exampleRow}>
                 {exampleJa ? (
                   <Text style={styles.exampleWord}>{exampleJa}</Text>
@@ -146,6 +149,10 @@ export default function CharacterDetailScreen() {
       </View>
     </Screen>
   );
+}
+
+function isReferenceExample(exampleJa?: string | null) {
+  return Boolean(exampleJa?.includes("日常ではあまり使われず"));
 }
 
 function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) {
