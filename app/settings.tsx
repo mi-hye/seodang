@@ -131,6 +131,32 @@ export default function SettingsScreen() {
             {t("settings.privacyPolicyBody")}
           </Text>
         </Pressable>
+
+        <Pressable
+          style={[styles.infoCard, styles.shadow]}
+          onPress={() => router.push("/third-party-notices")}
+        >
+          <View style={styles.infoCardHeader}>
+            <View style={styles.infoCardTitleRow}>
+              <Ionicons
+                name="library-outline"
+                size={18}
+                color={colors.accentWarmMuted}
+              />
+              <Text style={styles.infoCardTitle}>
+                {t("settings.thirdPartyNoticesTitle")}
+              </Text>
+            </View>
+            <Ionicons
+              name="chevron-forward"
+              size={18}
+              color={colors.inkMuted}
+            />
+          </View>
+          <Text style={styles.infoCardBody}>
+            {t("settings.thirdPartyNoticesBody")}
+          </Text>
+        </Pressable>
       </View>
     </Screen>
   );

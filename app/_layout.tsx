@@ -123,6 +123,10 @@ function RootNavigator() {
           name="privacy-policy"
           options={{ title: t("nav.privacyPolicy") }}
         />
+        <Stack.Screen
+          name="third-party-notices"
+          options={{ title: t("nav.thirdPartyNotices") }}
+        />
       </Stack>
     </ThemeProvider>
   );

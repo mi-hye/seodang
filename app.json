@@ -4,6 +4,10 @@
     "slug": "seodang",
     "scheme": "seodang",
     "version": "1.0.0",
+    "locales": {
+      "ko": "./locales/ko.json",
+      "ja": "./locales/ja.json"
+    },
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",

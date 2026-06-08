@@ -63,6 +63,9 @@ Seodang uses the following third-party services and libraries:
 - Supabase, for public kanji data and Edge Functions
 - Expo / React Native, for app runtime, builds, and notifications
 
+Open-source data source and license notices are available in the app Settings
+screen and in `docs/third-party-notices.md`.
+
 Before release, confirm whether any additional analytics, crash reporting, ads,
 or authentication SDKs have been added. If so, update this policy and the store
 privacy forms.
