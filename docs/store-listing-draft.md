@@ -7,12 +7,24 @@ consistent with the actual release build before submission.
 
 ## App Identity
 
-- App name: Seodang
-- Korean display name: 서당
-- Japanese display name: 書堂
+- Default app name: Seodang
+- Korean App Store name: 서당
+- Japanese App Store name: 書堂
 - Bundle/package: `com.mihye.seodang`
 - Primary category: Education
 - Secondary category candidate: Reference
+
+## Storefront Localization Strategy
+
+- Korea storefront / Korean metadata: use `서당`.
+- Japan storefront / Japanese metadata: use `書堂`.
+- Default or English fallback metadata: use `Seodang`.
+- The in-app UI already localizes the app name through i18n:
+  Korean `서당`, Japanese `書堂`.
+- The installed app display name is also localized through Expo `locales`:
+  Korean `서당`, Japanese `書堂`.
+- App Store listing names still need to be configured separately in App Store
+  Connect localization settings.
 
 ## App Store Metadata Draft
 
@@ -132,14 +144,14 @@ Japanese caption ideas:
 
 ## Before Submission
 
-- Confirm the hosted privacy policy URL after publishing
-  `docs/privacy-policy.html`.
-- Host privacy policy at a public URL.
+- Privacy policy URL:
+  `https://mi-hye.github.io/seodang/privacy-policy.html`
 - Add the privacy policy link in App Store Connect.
-- Add an in-app link to the hosted privacy policy URL when ready.
+- Confirm the in-app privacy policy screen is reachable from Settings.
 - Verify screenshots match the submitted build.
 - Confirm App Store privacy labels and Google Play Data safety answers match
   actual app behavior.
+- Run the full iOS checklist in `docs/ios-release-checklist.md`.
 
 References:
 
