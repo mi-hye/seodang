@@ -127,6 +127,7 @@ export default function CharacterListScreen() {
 
   const showFavoriteOnboarding = onboardingStep === "list_favorite";
   const showItemOnboarding = onboardingStep === "list_item";
+  const showListOnboarding = showFavoriteOnboarding || showItemOnboarding;
   const itemHintStyle = firstCardLayout
     ? {
         top: firstCardLayout.y + firstCardLayout.height + 180,
@@ -173,7 +174,9 @@ export default function CharacterListScreen() {
               <Text style={styles.title}>{headerTitle}</Text>
               <Text style={styles.subtitle}>{subtitle}</Text>
             <View
-              pointerEvents={firstCharacterId ? "none" : "auto"}
+              pointerEvents={
+                firstCharacterId && showListOnboarding ? "none" : "auto"
+              }
               style={styles.searchRowWrap}
             >
                 <View style={styles.searchRow}>
@@ -197,7 +200,7 @@ export default function CharacterListScreen() {
                     </Pressable>
                   ) : null}
                 </View>
-                {firstCharacterId ? (
+                {firstCharacterId && showListOnboarding ? (
                   <View pointerEvents="none" style={styles.searchOverlay} />
                 ) : null}
               </View>
@@ -232,7 +235,7 @@ export default function CharacterListScreen() {
               isDimmed={
                 Boolean(firstCharacterId) &&
                 item.id !== firstCharacterId &&
-                (showFavoriteOnboarding || showItemOnboarding)
+                showListOnboarding
               }
               onAdvanceItemOnboarding={
                 index === 0 && showItemOnboarding
