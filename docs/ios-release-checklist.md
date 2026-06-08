@@ -42,6 +42,8 @@ Use this checklist before creating the first App Store production submission.
 - Run the app on iOS simulator.
 - Verify the production EAS profile uses the expected Expo config.
 - Verify Supabase URL and anon key exist in the EAS production environment.
+  Current production env keys are configured:
+  `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`.
 - Verify the app starts without Metro after installing the built `.ipa` or
   TestFlight build.
 
