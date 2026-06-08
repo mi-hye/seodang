@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef } from "react";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning } from "../src/data/characters";
+import { isForcedEmptyState } from "../src/data/debugFetchFailure";
 import { spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import { useFavoriteKanjiCharactersQuery } from "../src/queries/kanjiQueries";
@@ -13,12 +14,14 @@ import { useAppState } from "../src/state/AppStateProvider";
 import { KanjiCharacter } from "../src/data/characters";
 
 export default function FavoritesScreen() {
+  const router = useRouter();
   const { getFavoriteCharacterIds, hydrated, isFavorite, toggleFavorite } =
     useAppState();
   const characterIds = getFavoriteCharacterIds();
   const queryClient = useQueryClient();
-  const { data: items = [], isLoading } =
+  const { data: fetchedItems = [], isLoading } =
     useFavoriteKanjiCharactersQuery(characterIds);
+  const items = isForcedEmptyState("favorites") ? [] : fetchedItems;
   const { locale, t } = useI18n();
   const { colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({
@@ -86,6 +89,14 @@ export default function FavoritesScreen() {
       {hydrated && !isLoading && items.length === 0 ? (
         <View style={styles.emptyCard}>
           <Text style={styles.emptyTitle}>{t("favorites.emptyTitle")}</Text>
+          <Pressable
+            style={styles.emptyAction}
+            onPress={() => router.push("/categories")}
+          >
+            <Text style={styles.emptyActionText}>
+              {t("favorites.emptyAction")}
+            </Text>
+          </Pressable>
         </View>
       ) : null}
 
@@ -187,10 +198,18 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       ...surfaceStyles.card,
       padding: spacing[6],
       marginBottom: 12,
-      gap: 6,
+      gap: spacing[3],
     },
     emptyTitle: textStyles.titleSm,
     emptyBody: textStyles.bodySm,
+    emptyAction: {
+      alignSelf: "flex-start",
+      paddingVertical: spacing[1],
+    },
+    emptyActionText: {
+      ...textStyles.meta,
+      color: colors.accentWarmMuted,
+    },
     card: {
       ...surfaceStyles.card,
       padding: 18,

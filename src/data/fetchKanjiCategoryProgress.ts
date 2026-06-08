@@ -1,34 +1,48 @@
+import { requireSupabaseConfig } from "./supabaseEnv";
+
 type CharacterCategoryMappingRow = {
   character_id: string;
   category_id: string;
 };
 
-type CategoryIdRow = {
-  category_id: string;
-};
-
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 const characterIdsChunkSize = 200;
-const pageSize = 1000;
+const practicalCharacterFilter =
+  "or=(is_joyo.eq.true,jlpt_level.not.is.null,japanese_grade.not.is.null,japanese_school_level.not.is.null)";
 
 export async function fetchCategoryMappingsByCharacterIds(characterIds: string[]) {
-  if (!supabaseUrl || !supabaseAnonKey || characterIds.length === 0) {
+  if (characterIds.length === 0) {
+    return [];
+  }
+  const { supabaseUrl, supabaseAnonKey } = requireSupabaseConfig();
+
+  const practicalCharacterIds = new Set(
+    await fetchPracticalCharacterIdsByIds(
+      characterIds,
+      supabaseUrl,
+      supabaseAnonKey,
+    ),
+  );
+  if (!practicalCharacterIds.size) {
     return [];
   }
 
   const chunks = chunk(characterIds, characterIdsChunkSize);
   const pages = await Promise.all(
     chunks.map(async (ids) => {
+      const practicalIds = ids.filter((id) => practicalCharacterIds.has(id));
+      if (!practicalIds.length) {
+        return [];
+      }
+
       const params = new URLSearchParams({
         select: "character_id,category_id",
-        character_id: `in.(${ids.map(encodeSupabaseValue).join(",")})`,
+        character_id: `in.(${practicalIds.map(encodeSupabaseValue).join(",")})`,
       });
 
       const response = await fetch(
         `${supabaseUrl}/rest/v1/kanji_character_categories?${params.toString()}`,
         {
-          headers: buildHeaders(),
+          headers: buildHeaders(supabaseAnonKey),
         },
       );
 
@@ -45,44 +59,36 @@ export async function fetchCategoryMappingsByCharacterIds(characterIds: string[]
   return pages.flat();
 }
 
-export async function fetchAllCategoryIdsForCounts() {
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return [];
-  }
-
-  let offset = 0;
-  const rows: CategoryIdRow[] = [];
-
-  while (true) {
-    const params = new URLSearchParams({
-      select: "category_id",
-      offset: String(offset),
-      limit: String(pageSize),
-    });
-    const response = await fetch(
-      `${supabaseUrl}/rest/v1/kanji_character_categories?${params.toString()}`,
-      {
-        headers: buildHeaders(),
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch category totals: ${response.status}`,
+async function fetchPracticalCharacterIdsByIds(
+  characterIds: string[],
+  supabaseUrl: string,
+  supabaseAnonKey: string,
+) {
+  const chunks = chunk(characterIds, characterIdsChunkSize);
+  const pages = await Promise.all(
+    chunks.map(async (ids) => {
+      const params = new URLSearchParams({
+        select: "id",
+        id: `in.(${ids.map(encodeSupabaseValue).join(",")})`,
+      });
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/kanji_characters?${params.toString()}&${practicalCharacterFilter}`,
+        {
+          headers: buildHeaders(supabaseAnonKey),
+        },
       );
-    }
 
-    const pageRows = (await response.json()) as CategoryIdRow[];
-    rows.push(...pageRows);
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch practical characters: ${response.status}`,
+        );
+      }
 
-    if (pageRows.length < pageSize) {
-      break;
-    }
+      return (await response.json()) as Array<{ id: string }>;
+    }),
+  );
 
-    offset += pageSize;
-  }
-
-  return rows;
+  return pages.flat().map((row) => row.id);
 }
 
 function chunk<T>(items: T[], size: number) {
@@ -95,10 +101,10 @@ function chunk<T>(items: T[], size: number) {
   return chunks;
 }
 
-function buildHeaders() {
+function buildHeaders(supabaseAnonKey: string) {
   return {
-    apikey: supabaseAnonKey ?? "",
-    Authorization: `Bearer ${supabaseAnonKey ?? ""}`,
+    apikey: supabaseAnonKey,
+    Authorization: `Bearer ${supabaseAnonKey}`,
   };
 }
 

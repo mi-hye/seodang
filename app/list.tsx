@@ -15,6 +15,7 @@ import { KanjiLoadingScreen } from "../src/components/common/KanjiLoadingScreen"
 import { ErrorState } from "../src/components/common/ErrorState";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning, KanjiCharacter } from "../src/data/characters";
+import { isForcedEmptyState } from "../src/data/debugFetchFailure";
 import { layout, spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import { buildCategoryProgressMap } from "../src/lib/categoryProgress";
@@ -70,7 +71,9 @@ export default function CharacterListScreen() {
   const pages = data?.pages ?? [];
   const firstPage = pages[0] ?? null;
   const selectedCategory = firstPage?.category;
-  const items = pages.flatMap((page) => page?.characters ?? []);
+  const items = isForcedEmptyState("list")
+    ? []
+    : pages.flatMap((page) => page?.characters ?? []);
   const headerTitle = selectedCategory?.label ?? t("list.title");
   const categoryProgressMap = useMemo(
     () =>
@@ -124,6 +127,7 @@ export default function CharacterListScreen() {
 
   const showFavoriteOnboarding = onboardingStep === "list_favorite";
   const showItemOnboarding = onboardingStep === "list_item";
+  const showListOnboarding = showFavoriteOnboarding || showItemOnboarding;
   const itemHintStyle = firstCardLayout
     ? {
         top: firstCardLayout.y + firstCardLayout.height + 180,
@@ -170,7 +174,9 @@ export default function CharacterListScreen() {
               <Text style={styles.title}>{headerTitle}</Text>
               <Text style={styles.subtitle}>{subtitle}</Text>
             <View
-              pointerEvents={firstCharacterId ? "none" : "auto"}
+              pointerEvents={
+                firstCharacterId && showListOnboarding ? "none" : "auto"
+              }
               style={styles.searchRowWrap}
             >
                 <View style={styles.searchRow}>
@@ -194,7 +200,7 @@ export default function CharacterListScreen() {
                     </Pressable>
                   ) : null}
                 </View>
-                {firstCharacterId ? (
+                {firstCharacterId && showListOnboarding ? (
                   <View pointerEvents="none" style={styles.searchOverlay} />
                 ) : null}
               </View>
@@ -202,8 +208,16 @@ export default function CharacterListScreen() {
           }
           ListEmptyComponent={
             <View style={styles.emptyCard}>
-              <Text style={styles.emptyTitle}>{t("list.emptyTitle")}</Text>
-              <Text style={styles.emptyBody}>{t("list.emptyBody")}</Text>
+              <Text style={styles.emptyTitle}>
+                {normalizedSearch
+                  ? t("list.searchEmptyTitle")
+                  : t("list.emptyTitle")}
+              </Text>
+              <Text style={styles.emptyBody}>
+                {normalizedSearch
+                  ? t("list.searchEmptyBody")
+                  : t("list.emptyBody")}
+              </Text>
             </View>
           }
           renderItem={({ item, index }) => (
@@ -221,7 +235,7 @@ export default function CharacterListScreen() {
               isDimmed={
                 Boolean(firstCharacterId) &&
                 item.id !== firstCharacterId &&
-                (showFavoriteOnboarding || showItemOnboarding)
+                showListOnboarding
               }
               onAdvanceItemOnboarding={
                 index === 0 && showItemOnboarding

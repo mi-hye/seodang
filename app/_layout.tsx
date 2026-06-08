@@ -119,6 +119,10 @@ function RootNavigator() {
           name="search"
           options={{ title: t("nav.search") }}
         />
+        <Stack.Screen
+          name="privacy-policy"
+          options={{ title: t("nav.privacyPolicy") }}
+        />
       </Stack>
     </ThemeProvider>
   );

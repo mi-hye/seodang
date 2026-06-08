@@ -16,14 +16,12 @@ import { spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import {
   buildCategoryProgressMap,
-  buildCategoryTotalsMap,
   listActiveCategoryProgress,
 } from "../src/lib/categoryProgress";
 import {
   useKanjiCategoryGroupsQuery,
   useKanjiCharacterQuery,
   useKanjiCategoryProgressMappingsQuery,
-  useKanjiCategoryTotalsQuery,
 } from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
 
@@ -57,10 +55,6 @@ export default function HomeScreen() {
     data: categoryProgressMappings = [],
     isLoading: isLoadingCategoryProgressMappings,
   } = useKanjiCategoryProgressMappingsQuery(completedCharacterIds);
-  const {
-    data: categoryTotalMappings = [],
-    isLoading: isLoadingCategoryTotals,
-  } = useKanjiCategoryTotalsQuery();
   const { width: screenWidth, fontScale } = useWindowDimensions();
   const textScale = getHomeTextScale(screenWidth, fontScale);
   const { colors, textStyles, surfaceStyles, shadows } = useTheme();
@@ -87,13 +81,12 @@ export default function HomeScreen() {
       buildCategoryProgressMap(
         categoryGroups,
         categoryProgressMappings,
-        buildCategoryTotalsMap(categoryTotalMappings),
+        undefined,
         resetProgressByCategoryKey,
       ),
     [
       categoryGroups,
       categoryProgressMappings,
-      categoryTotalMappings,
       resetProgressByCategoryKey,
     ],
   );
@@ -129,7 +122,6 @@ export default function HomeScreen() {
   ]);
   const isLoadingProgressSection =
     isLoadingCategoryGroups ||
-    isLoadingCategoryTotals ||
     isLoadingCategoryProgressMappings;
   const showOnboarding = hydrated && onboardingStep === "home";
   const onboardingHintStyle = startCardLayout

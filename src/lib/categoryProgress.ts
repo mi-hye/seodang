@@ -5,10 +5,6 @@ type CharacterCategoryMapping = {
   category_id: string;
 };
 
-type CategoryIdRow = {
-  category_id: string;
-};
-
 export type CategoryProgress = {
   categoryId: string;
   categoryKey: string;
@@ -24,6 +20,8 @@ export function buildCategoryProgressMap(
   totalsByCategoryId: Map<string, number> = new Map(),
   resetProgressByCategoryKey: Record<string, string[]> = {},
 ) {
+  const safeTotalsByCategoryId =
+    totalsByCategoryId instanceof Map ? totalsByCategoryId : new Map();
   const completedIdsByCategory = new Map<string, Set<string>>();
 
   for (const mapping of mappings) {
@@ -46,7 +44,9 @@ export function buildCategoryProgressMap(
             (characterId) => !resetIds.has(characterId),
           ).length;
         const total =
-          totalsByCategoryId.get(category.id) ?? category.totalCharacters ?? 0;
+          safeTotalsByCategoryId.get(category.id) ??
+          category.totalCharacters ??
+          0;
 
         return [
           category.categoryKey,
@@ -61,16 +61,6 @@ export function buildCategoryProgressMap(
         ] as const;
       }),
   );
-}
-
-export function buildCategoryTotalsMap(rows: CategoryIdRow[]) {
-  const totals = new Map<string, number>();
-
-  for (const row of rows) {
-    totals.set(row.category_id, (totals.get(row.category_id) ?? 0) + 1);
-  }
-
-  return totals;
 }
 
 export function listActiveCategoryProgress(

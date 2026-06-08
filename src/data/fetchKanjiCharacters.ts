@@ -1,6 +1,7 @@
 import { KanjiCharacter, KanjiCharacterMetadata } from "./characters";
 import { throwIfForcedFetchFailure } from "./debugFetchFailure";
 import { KanjiCategory } from "./fetchKanjiCategories";
+import { requireSupabaseConfig } from "./supabaseEnv";
 
 type KanjiCharacterRow = {
   id: string;
@@ -34,25 +35,28 @@ export type FetchKanjiCategoryCharactersParams = {
   locale: "ko" | "ja";
   limit?: number;
   offset?: number;
+  debugScope?: string;
 };
 
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 const characterSelect =
   "id,literal,stroke_count,meaning_ko,meaning_ja,onyomi,kunyomi,jlpt_level,japanese_school_level,japanese_grade,example_ja,example_ko,sort_order,is_joyo,metadata";
+const practicalCharacterFilter =
+  "or=(is_joyo.eq.true,jlpt_level.not.is.null,japanese_grade.not.is.null,japanese_school_level.not.is.null)";
 
 export async function fetchKanjiCategoryCharactersByKey({
   categoryKey,
   locale,
   limit = 20,
   offset = 0,
+  debugScope = "list",
 }: FetchKanjiCategoryCharactersParams
 ): Promise<KanjiCategoryCharactersPayload | null> {
-  throwIfForcedFetchFailure("fetchKanjiCategoryCharactersByKey");
+  throwIfForcedFetchFailure(debugScope);
 
-  if (!supabaseUrl || !supabaseAnonKey || !categoryKey) {
+  if (!categoryKey) {
     return null;
   }
+  const { supabaseUrl, supabaseAnonKey } = requireSupabaseConfig();
 
   const params = new URLSearchParams({
     locale,
@@ -63,7 +67,7 @@ export async function fetchKanjiCategoryCharactersByKey({
   const response = await fetch(
     `${supabaseUrl}/functions/v1/kanji-catalog?${params.toString()}`,
     {
-      headers: buildHeaders(),
+      headers: buildHeaders(supabaseAnonKey),
     }
   );
 
@@ -75,9 +79,10 @@ export async function fetchKanjiCategoryCharactersByKey({
 }
 
 export async function fetchKanjiCharactersByIds(characterIds: string[]) {
-  if (!supabaseUrl || !supabaseAnonKey || characterIds.length === 0) {
+  if (characterIds.length === 0) {
     return [];
   }
+  const { supabaseUrl, supabaseAnonKey } = requireSupabaseConfig();
 
   const params = new URLSearchParams({
     select: characterSelect,
@@ -86,7 +91,7 @@ export async function fetchKanjiCharactersByIds(characterIds: string[]) {
   });
 
   const response = await fetch(`${supabaseUrl}/rest/v1/kanji_characters?${params.toString()}`, {
-    headers: buildHeaders(),
+    headers: buildHeaders(supabaseAnonKey),
   });
 
   if (!response.ok) {
@@ -101,12 +106,16 @@ export async function fetchKanjiCharactersByIds(characterIds: string[]) {
     .filter((character): character is KanjiCharacter => Boolean(character));
 }
 
-export async function fetchKanjiCharacterById(characterId?: string) {
-  throwIfForcedFetchFailure("fetchKanjiCharacterById");
+export async function fetchKanjiCharacterById(
+  characterId?: string,
+  debugScope = "detail",
+) {
+  throwIfForcedFetchFailure(debugScope);
 
-  if (!supabaseUrl || !supabaseAnonKey || !characterId) {
+  if (!characterId) {
     return null;
   }
+  const { supabaseUrl, supabaseAnonKey } = requireSupabaseConfig();
 
   const params = new URLSearchParams({
     select: characterSelect,
@@ -115,7 +124,7 @@ export async function fetchKanjiCharacterById(characterId?: string) {
   });
 
   const response = await fetch(`${supabaseUrl}/rest/v1/kanji_characters?${params.toString()}`, {
-    headers: buildHeaders(),
+    headers: buildHeaders(supabaseAnonKey),
   });
 
   if (!response.ok) {
@@ -126,12 +135,9 @@ export async function fetchKanjiCharacterById(characterId?: string) {
   return rows[0] ? mapKanjiCharacter(rows[0]) : null;
 }
 
-export async function fetchAllKanjiCharacters() {
-  throwIfForcedFetchFailure("fetchAllKanjiCharacters");
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return [];
-  }
+export async function fetchAllKanjiCharacters(debugScope = "search") {
+  throwIfForcedFetchFailure(debugScope);
+  const { supabaseUrl, supabaseAnonKey } = requireSupabaseConfig();
 
   const pageSize = 1000;
   let offset = 0;
@@ -143,10 +149,10 @@ export async function fetchAllKanjiCharacters() {
       order: "literal.asc",
     });
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/kanji_characters?${params.toString()}`,
+      `${supabaseUrl}/rest/v1/kanji_characters?${params.toString()}&${practicalCharacterFilter}`,
       {
         headers: {
-          ...buildHeaders(),
+          ...buildHeaders(supabaseAnonKey),
           Range: `${offset}-${offset + pageSize - 1}`,
         },
       },
@@ -191,10 +197,10 @@ function mapKanjiCharacter(row: KanjiCharacterRow): KanjiCharacter {
   };
 }
 
-function buildHeaders() {
+function buildHeaders(supabaseAnonKey: string) {
   return {
-    apikey: supabaseAnonKey ?? "",
-    Authorization: `Bearer ${supabaseAnonKey ?? ""}`,
+    apikey: supabaseAnonKey,
+    Authorization: `Bearer ${supabaseAnonKey}`,
   };
 }
 
