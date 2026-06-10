@@ -1,4 +1,4 @@
-export type ProFeature = "review_stats";
+export type ProFeature = "focused_review" | "mistake_note" | "review_stats";
 
 export function canAccessProFeature({
   feature,
@@ -8,6 +8,8 @@ export function canAccessProFeature({
   isPro: boolean;
 }) {
   switch (feature) {
+    case "focused_review":
+    case "mistake_note":
     case "review_stats":
       return isPro;
   }

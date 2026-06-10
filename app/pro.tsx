@@ -40,11 +40,18 @@ export default function ProScreen() {
           body={t("pro.feature.weaknessBody")}
         />
         <ProFeature
-          icon="notifications-outline"
+          icon="trophy-outline"
           colors={colors}
           styles={styles}
-          title={t("pro.feature.notificationsTitle")}
-          body={t("pro.feature.notificationsBody")}
+          title={t("pro.feature.mistakeNoteTitle")}
+          body={t("pro.feature.mistakeNoteBody")}
+        />
+        <ProFeature
+          icon="flash-outline"
+          colors={colors}
+          styles={styles}
+          title={t("pro.feature.focusedReviewTitle")}
+          body={t("pro.feature.focusedReviewBody")}
         />
       </View>
 

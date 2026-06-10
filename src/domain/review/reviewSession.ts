@@ -34,6 +34,17 @@ export function encodeReviewIds(characterIds: string[]) {
   return dedupeIds(characterIds).join(",");
 }
 
+export function buildFocusedReviewStart(characterIds: string[]) {
+  const reviewIds = encodeReviewIds(characterIds);
+  const [firstCharacterId] = parseReviewIds(reviewIds);
+
+  return {
+    canStart: Boolean(firstCharacterId),
+    firstCharacterId,
+    reviewIds,
+  };
+}
+
 function parseReviewIds(encodedReviewIds: string | undefined) {
   if (!encodedReviewIds) {
     return [];

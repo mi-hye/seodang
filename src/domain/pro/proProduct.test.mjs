@@ -13,7 +13,8 @@ test("defines a one-time Pro product for purchase integration", () => {
 test("includes the first Pro benefits", () => {
   assert.deepEqual(PRO_PRODUCT.benefitKeys, [
     "pro.included.stats",
-    "pro.included.future",
+    "pro.included.mistakeNote",
+    "pro.included.focusedReview",
     "pro.included.oneTime",
   ]);
 });

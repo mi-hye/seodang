@@ -136,6 +136,10 @@ function RootNavigator() {
           options={{ title: t("nav.pro") }}
         />
         <Stack.Screen
+          name="mistake-note"
+          options={{ title: t("nav.mistakeNote") }}
+        />
+        <Stack.Screen
           name="favorites"
           options={{ title: t("nav.favorites") }}
         />

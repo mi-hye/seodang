@@ -95,6 +95,27 @@ export default function SettingsScreen() {
           </View>
         </Pressable>
 
+        <Pressable
+          style={[styles.infoCard, styles.shadow]}
+          onPress={() => router.navigate(isPro ? "/mistake-note" : "/pro")}
+        >
+          <View style={styles.infoCardHeader}>
+            <View style={styles.infoCardTitleRow}>
+              <Ionicons
+                name="trophy-outline"
+                size={18}
+                color={colors.accentWarmMuted}
+              />
+              <Text style={styles.infoCardTitle}>
+                {t("settings.mistakeNoteTitle")}
+              </Text>
+            </View>
+            <View style={styles.proChip}>
+              <Text style={styles.proChipText}>{t("settings.proBadge")}</Text>
+            </View>
+          </View>
+        </Pressable>
+
         {__DEV__ ? (
           <Pressable
             style={[styles.infoCard, styles.shadow]}

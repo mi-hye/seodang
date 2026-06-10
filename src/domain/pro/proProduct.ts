@@ -7,7 +7,8 @@ export const PRO_PRODUCT = {
   },
   benefitKeys: [
     "pro.included.stats",
-    "pro.included.future",
+    "pro.included.mistakeNote",
+    "pro.included.focusedReview",
     "pro.included.oneTime",
   ],
 } as const;

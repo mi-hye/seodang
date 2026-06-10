@@ -1,7 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { buildReviewSession } = await import("./reviewSession.ts");
+const { buildFocusedReviewStart, buildReviewSession } = await import(
+  "./reviewSession.ts"
+);
 
 test("builds review session progress and next character", () => {
   const session = buildReviewSession({
@@ -36,4 +38,24 @@ test("returns an inactive session when ids are missing", () => {
   assert.equal(session.isReviewSession, false);
   assert.deepEqual(session.characterIds, []);
   assert.equal(session.nextCharacterId, undefined);
+});
+
+test("builds a focused review start from character ids", () => {
+  const start = buildFocusedReviewStart(["weak-a", "", "weak-b", "weak-a"]);
+
+  assert.deepEqual(start, {
+    canStart: true,
+    firstCharacterId: "weak-a",
+    reviewIds: "weak-a,weak-b",
+  });
+});
+
+test("returns an inactive focused review start when ids are empty", () => {
+  const start = buildFocusedReviewStart(["", " "]);
+
+  assert.deepEqual(start, {
+    canStart: false,
+    firstCharacterId: undefined,
+    reviewIds: "",
+  });
 });
