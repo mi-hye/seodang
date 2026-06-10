@@ -70,7 +70,7 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
       gap: spacing[3],
       marginBottom: spacing[4],
       borderWidth: StyleSheet.hairlineWidth,
-      borderColor: colors.accentWarmMuted,
+      borderColor: colors.borderSoft,
     },
     icon: {
       width: 38,

@@ -308,8 +308,6 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
       padding: spacing[5],
       gap: spacing[4],
       marginBottom: spacing[4],
-      borderWidth: StyleSheet.hairlineWidth,
-      borderColor: colors.accentWarmMuted,
     },
     heroHeader: {
       flexDirection: "row",
@@ -390,8 +388,6 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
     badgeCardAchieved: {
       opacity: 1,
       backgroundColor: colors.bgSurface,
-      borderWidth: StyleSheet.hairlineWidth,
-      borderColor: colors.accentWarmMuted,
     },
     badgeIcon: {
       width: 34,
@@ -453,7 +449,7 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
       backgroundColor: colors.bgSurface,
     },
     tabButtonActive: {
-      borderColor: colors.accentWarmMuted,
+      borderColor: colors.borderSoft,
       backgroundColor: colors.bgMuted,
     },
     tabLabel: {
