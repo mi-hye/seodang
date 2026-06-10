@@ -198,6 +198,17 @@ export default function MistakeNoteScreen() {
         />
       ) : null}
 
+      {hydrated &&
+      !isPreparingList &&
+      note.mistakeCharacterIds.length > visibleMistakeCharacterIds.length ? (
+        <Text style={styles.listCountMeta}>
+          {t("mistakeNote.listCount", {
+            visible: visibleMistakeCharacterIds.length,
+            total: note.mistakeCharacterIds.length,
+          })}
+        </Text>
+      ) : null}
+
       {hydrated && !isPreparingList && mistakeCharacters.length === 0 ? (
         <View style={[styles.emptyCard, styles.shadow]}>
           <Text style={styles.emptyTitle}>{t("mistakeNote.emptyTitle")}</Text>
@@ -445,6 +456,11 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
       height: "100%",
       borderRadius: 999,
       backgroundColor: colors.accentWarmMuted,
+    },
+    listCountMeta: {
+      ...textStyles.meta,
+      marginBottom: spacing[3],
+      textAlign: "right",
     },
     emptyCard: {
       ...surfaceStyles.card,

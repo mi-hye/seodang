@@ -68,6 +68,17 @@ export default function ReviewMasteredScreen() {
         />
       ) : null}
 
+      {hydrated &&
+      !isPreparingList &&
+      stats.masteredCharacterIds.length > visibleMasteredCharacterIds.length ? (
+        <Text style={styles.listCountMeta}>
+          {t("reviewStats.listCount", {
+            visible: visibleMasteredCharacterIds.length,
+            total: stats.masteredCharacterIds.length,
+          })}
+        </Text>
+      ) : null}
+
       {hydrated && !isPreparingList && masteredCharacters.length === 0 ? (
         <View style={[styles.emptyCard, styles.shadow]}>
           <Text style={styles.emptyTitle}>
@@ -118,6 +129,11 @@ function createStyles({ surfaceStyles, textStyles, shadows }: any) {
     emptyCard: {
       ...surfaceStyles.card,
       padding: spacing[6],
+    },
+    listCountMeta: {
+      ...textStyles.meta,
+      marginBottom: spacing[3],
+      textAlign: "right",
     },
     emptyTitle: textStyles.titleSm,
     characterCard: {

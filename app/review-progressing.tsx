@@ -68,6 +68,18 @@ export default function ReviewProgressingScreen() {
         />
       ) : null}
 
+      {hydrated &&
+      !isPreparingList &&
+      stats.inProgressCharacterIds.length >
+        visibleProgressingCharacterIds.length ? (
+        <Text style={styles.listCountMeta}>
+          {t("reviewStats.listCount", {
+            visible: visibleProgressingCharacterIds.length,
+            total: stats.inProgressCharacterIds.length,
+          })}
+        </Text>
+      ) : null}
+
       {hydrated && !isPreparingList && progressingCharacters.length === 0 ? (
         <View style={[styles.emptyCard, styles.shadow]}>
           <Text style={styles.emptyTitle}>
@@ -118,6 +130,11 @@ function createStyles({ surfaceStyles, textStyles, shadows }: any) {
     emptyCard: {
       ...surfaceStyles.card,
       padding: spacing[6],
+    },
+    listCountMeta: {
+      ...textStyles.meta,
+      marginBottom: spacing[3],
+      textAlign: "right",
     },
     emptyTitle: textStyles.titleSm,
     characterCard: {

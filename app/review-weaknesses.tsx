@@ -68,6 +68,17 @@ export default function ReviewWeaknessesScreen() {
         />
       ) : null}
 
+      {hydrated &&
+      !isPreparingList &&
+      stats.weakCharacterIds.length > visibleWeakCharacterIds.length ? (
+        <Text style={styles.listCountMeta}>
+          {t("reviewStats.listCount", {
+            visible: visibleWeakCharacterIds.length,
+            total: stats.weakCharacterIds.length,
+          })}
+        </Text>
+      ) : null}
+
       {hydrated && !isPreparingList && weakCharacters.length === 0 ? (
         <View style={[styles.emptyCard, styles.shadow]}>
           <Text style={styles.emptyTitle}>
@@ -118,6 +129,11 @@ function createStyles({ surfaceStyles, textStyles, shadows }: any) {
     emptyCard: {
       ...surfaceStyles.card,
       padding: spacing[6],
+    },
+    listCountMeta: {
+      ...textStyles.meta,
+      marginBottom: spacing[3],
+      textAlign: "right",
     },
     emptyTitle: textStyles.titleSm,
     weakCard: {
