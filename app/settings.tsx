@@ -95,9 +95,6 @@ export default function SettingsScreen() {
               color={colors.inkMuted}
             />
           </View>
-          <Text style={styles.infoCardBody}>
-            {t("settings.notificationsRouteBody")}
-          </Text>
         </Pressable>
       </View>
 
@@ -127,9 +124,6 @@ export default function SettingsScreen() {
               color={colors.inkMuted}
             />
           </View>
-          <Text style={styles.infoCardBody}>
-            {t("settings.privacyPolicyBody")}
-          </Text>
         </Pressable>
 
         <Pressable
@@ -153,9 +147,6 @@ export default function SettingsScreen() {
               color={colors.inkMuted}
             />
           </View>
-          <Text style={styles.infoCardBody}>
-            {t("settings.thirdPartyNoticesBody")}
-          </Text>
         </Pressable>
       </View>
     </Screen>
@@ -269,7 +260,6 @@ function createStyles({
       padding: spacing[6],
       borderWidth: 1,
       borderColor: colors.borderSoft,
-      gap: spacing[2],
     },
     infoCardHeader: {
       flexDirection: "row",
@@ -283,7 +273,6 @@ function createStyles({
       gap: spacing[2],
     },
     infoCardTitle: textStyles.titleMd,
-    infoCardBody: textStyles.bodySm,
     shadow: shadows.card,
   });
 }
