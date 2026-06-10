@@ -61,11 +61,8 @@ export default function ReviewScreen() {
   );
   const completedToday = hasAnyProgress && hasDismissedToday && items.length === 0;
   const nextScheduledReviewAt = useMemo(
-    () =>
-      findNextScheduledReviewAt(progressByCharacter, {
-        dismissedCharacterIds: dismissedReviewCharacterIds,
-      }),
-    [dismissedReviewCharacterIds, progressByCharacter],
+    () => findNextScheduledReviewAt(progressByCharacter),
+    [progressByCharacter],
   );
   const { locale, t } = useI18n();
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
@@ -158,14 +155,7 @@ export default function ReviewScreen() {
                       {getCharacterMeaning(character, locale)}
                     </Text>
                     <Text style={styles.meta}>
-                      {progress?.nextReviewAt
-                        ? t("review.nextReviewAt", {
-                            date: formatReviewDateLabel({
-                              locale,
-                              reviewAt: progress.nextReviewAt,
-                            }),
-                          })
-                        : t(`review.reason.${reviewItem?.reason ?? "due_again"}`)}
+                      {t(`review.reason.${reviewItem?.reason ?? "due_again"}`)}
                     </Text>
                     <Text style={styles.score}>
                       {t("review.scoreSummary", {

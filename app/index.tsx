@@ -20,8 +20,11 @@ import {
 } from "../src/lib/categoryProgress";
 import {
   buildReviewQueue,
+  findNextScheduledReviewAt,
   isDismissedForDate,
 } from "../src/domain/review/buildReviewQueue";
+import { getReviewCardValue } from "../src/domain/review/reviewCardValue";
+import { formatReviewDateLabel } from "../src/domain/review/reviewDateLabel";
 import {
   useKanjiCategoryGroupsQuery,
   useKanjiCharacterQuery,
@@ -65,11 +68,29 @@ export default function HomeScreen() {
     [dismissedReviewCharacterIds, progressByCharacter],
   );
   const reviewCount = reviewQueue.length;
+  const hasAnyProgress = Object.keys(progressByCharacter).length > 0;
+  const nextScheduledReviewAt = useMemo(
+    () => findNextScheduledReviewAt(progressByCharacter),
+    [progressByCharacter],
+  );
+  const nextScheduledReviewLabel = nextScheduledReviewAt
+    ? formatReviewDateLabel({
+        locale,
+        reviewAt: nextScheduledReviewAt,
+      })
+    : undefined;
   const hasReviewCompletedToday =
     reviewCount === 0 &&
     Object.values(dismissedReviewCharacterIds).some((dismissedReviewCharacter) =>
       isDismissedForDate(dismissedReviewCharacter, new Date()),
     );
+  const reviewCardValue = getReviewCardValue({
+    hasAnyProgress,
+    hasReviewCompletedToday,
+    nextScheduledReviewLabel,
+    reviewCount,
+    t,
+  });
   const {
     data: categoryProgressMappings = [],
     isLoading: isLoadingCategoryProgressMappings,
@@ -242,11 +263,7 @@ export default function HomeScreen() {
                 showOnboarding ? styles.dimmedText : null,
               ]}
             >
-              {hydrated
-                ? hasReviewCompletedToday
-                  ? t("home.reviewCompleted")
-                  : t("home.reviewCount", { count: reviewCount })
-                : "-"}
+              {hydrated ? reviewCardValue : "-"}
             </Text>
           </View>
         </Pressable>
@@ -662,8 +679,8 @@ function createStyles({
     },
     reviewCount: {
       ...textStyles.titleSm,
-      fontSize: scaledFont(16, textScale),
-      lineHeight: scaledFont(22, textScale),
+      fontSize: scaledFont(13, textScale),
+      lineHeight: scaledFont(19, textScale),
       fontWeight: "800",
       color: colors.accentWarmMuted,
     },

@@ -61,17 +61,11 @@ export function findNextScheduledReviewAt(
   progressByCharacter: Record<string, CharacterProgress>,
   options: {
     now?: Date;
-    dismissedCharacterIds?: Record<string, DismissedReviewCharacter>;
   } = {},
 ) {
   const now = options.now ?? new Date();
-  const dismissedCharacterIds = options.dismissedCharacterIds ?? {};
 
   return Object.values(progressByCharacter)
-    .filter(
-      (progress) =>
-        !isDismissedForDate(dismissedCharacterIds[progress.characterId], now),
-    )
     .map((progress) => progress.nextReviewAt)
     .filter((nextReviewAt): nextReviewAt is string =>
       isFutureReviewAt(nextReviewAt, now),

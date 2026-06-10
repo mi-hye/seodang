@@ -178,7 +178,7 @@ test("includes dismissed characters again on the next day", () => {
   assert.deepEqual(queue.map((item) => item.characterId), ["failed"]);
 });
 
-test("finds the next scheduled review after dismissed and due filters", () => {
+test("finds the next scheduled review including items completed today", () => {
   const nextReviewAt = findNextScheduledReviewAt(
     {
       soon: {
