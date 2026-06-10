@@ -1,4 +1,7 @@
-import type { CharacterProgress } from "../../types/app-state";
+import type {
+  CharacterProgress,
+  DismissedReviewCharacter,
+} from "../../types/app-state";
 
 export type ReviewReason = "failed_recently" | "low_score" | "due_again";
 
@@ -14,7 +17,7 @@ type BuildReviewQueueOptions = {
   limit?: number;
   lowScoreThreshold?: number;
   dueAfterDays?: number;
-  dismissedCharacterIds?: Record<string, true>;
+  dismissedCharacterIds?: Record<string, DismissedReviewCharacter>;
 };
 
 const DEFAULT_LIMIT = 20;
@@ -34,7 +37,10 @@ export function buildReviewQueue(
   const dismissedCharacterIds = options.dismissedCharacterIds ?? {};
 
   return Object.values(progressByCharacter)
-    .filter((progress) => !dismissedCharacterIds[progress.characterId])
+    .filter(
+      (progress) =>
+        !isDismissedForDate(dismissedCharacterIds[progress.characterId], now),
+    )
     .map((progress) =>
       toReviewQueueItem(progress, {
         now,
@@ -48,6 +54,26 @@ export function buildReviewQueue(
         b.priority - a.priority || a.characterId.localeCompare(b.characterId),
     )
     .slice(0, limit);
+}
+
+export function isDismissedForDate(
+  dismissedReviewCharacter: DismissedReviewCharacter | undefined,
+  now: Date,
+) {
+  if (!dismissedReviewCharacter) {
+    return false;
+  }
+
+  const dismissedAt = new Date(dismissedReviewCharacter.dismissedAt);
+  if (Number.isNaN(dismissedAt.getTime())) {
+    return false;
+  }
+
+  return toDateKey(dismissedAt) === toDateKey(now);
+}
+
+function toDateKey(date: Date) {
+  return date.toISOString().slice(0, 10);
 }
 
 function toReviewQueueItem(

@@ -18,7 +18,10 @@ import {
   buildCategoryProgressMap,
   listActiveCategoryProgress,
 } from "../src/lib/categoryProgress";
-import { buildReviewQueue } from "../src/domain/review/buildReviewQueue";
+import {
+  buildReviewQueue,
+  isDismissedForDate,
+} from "../src/domain/review/buildReviewQueue";
 import {
   useKanjiCategoryGroupsQuery,
   useKanjiCharacterQuery,
@@ -62,6 +65,11 @@ export default function HomeScreen() {
     [dismissedReviewCharacterIds, progressByCharacter],
   );
   const reviewCount = reviewQueue.length;
+  const hasReviewCompletedToday =
+    reviewCount === 0 &&
+    Object.values(dismissedReviewCharacterIds).some((dismissedReviewCharacter) =>
+      isDismissedForDate(dismissedReviewCharacter, new Date()),
+    );
   const {
     data: categoryProgressMappings = [],
     isLoading: isLoadingCategoryProgressMappings,
@@ -234,7 +242,11 @@ export default function HomeScreen() {
                 showOnboarding ? styles.dimmedText : null,
               ]}
             >
-              {hydrated ? t("home.reviewCount", { count: reviewCount }) : "-"}
+              {hydrated
+                ? hasReviewCompletedToday
+                  ? t("home.reviewCompleted")
+                  : t("home.reviewCount", { count: reviewCount })
+                : "-"}
             </Text>
           </View>
         </Pressable>

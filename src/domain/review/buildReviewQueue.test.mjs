@@ -71,7 +71,7 @@ test("includes older passed characters after the review interval", () => {
   assert.equal(queue[0].reason, "due_again");
 });
 
-test("excludes characters dismissed from the current review cycle", () => {
+test("excludes characters dismissed today", () => {
   const queue = buildReviewQueue(
     {
       failed: {
@@ -95,9 +95,39 @@ test("excludes characters dismissed from the current review cycle", () => {
     },
     {
       now: new Date("2026-06-10T12:00:00.000Z"),
-      dismissedCharacterIds: { failed: true },
+      dismissedCharacterIds: {
+        failed: {
+          dismissedAt: "2026-06-10T09:00:00.000Z",
+        },
+      },
     },
   );
 
   assert.deepEqual(queue.map((item) => item.characterId), ["weak"]);
+});
+
+test("includes dismissed characters again on the next day", () => {
+  const queue = buildReviewQueue(
+    {
+      failed: {
+        characterId: "failed",
+        attempts: 2,
+        successes: 1,
+        failures: 1,
+        averageScore: 74,
+        lastScore: 58,
+        lastPracticedAt: "2026-06-10T00:00:00.000Z",
+      },
+    },
+    {
+      now: new Date("2026-06-11T01:00:00.000Z"),
+      dismissedCharacterIds: {
+        failed: {
+          dismissedAt: "2026-06-10T23:00:00.000Z",
+        },
+      },
+    },
+  );
+
+  assert.deepEqual(queue.map((item) => item.characterId), ["failed"]);
 });

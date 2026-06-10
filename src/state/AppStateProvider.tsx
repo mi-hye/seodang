@@ -12,6 +12,7 @@ import {
 import {
   AppLocale,
   CharacterProgress,
+  DismissedReviewCharacter,
   LastCompletedPractice,
   NotificationReminder,
   OnboardingStep,
@@ -38,7 +39,7 @@ type AppStateContextValue = {
   recentCategoryKeys: string[];
   resetProgressByCategoryKey: Record<string, string[]>;
   progressByCharacter: Record<string, CharacterProgress>;
-  dismissedReviewCharacterIds: Record<string, true>;
+  dismissedReviewCharacterIds: Record<string, DismissedReviewCharacter>;
   favoriteCount: number;
   lastCompletedPractice?: LastCompletedPractice;
   setLocale: (locale: AppLocale) => void;
@@ -325,7 +326,13 @@ export function AppStateProvider({ children }: PropsWithChildren) {
         dismissedReviewCharacterIds: {
           ...current.dismissedReviewCharacterIds,
           ...Object.fromEntries(
-            characterIds.map((characterId) => [characterId, true] as const),
+            characterIds.map(
+              (characterId) =>
+                [
+                  characterId,
+                  { dismissedAt: new Date().toISOString() },
+                ] as const,
+            ),
           ),
         },
       }));
@@ -419,7 +426,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
 }
 
 function removeDismissedReviewCharacter(
-  dismissedReviewCharacterIds: Record<string, true>,
+  dismissedReviewCharacterIds: Record<string, DismissedReviewCharacter>,
   characterId: string,
 ) {
   if (!dismissedReviewCharacterIds[characterId]) {

@@ -7,7 +7,10 @@ import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning, KanjiCharacter } from "../src/data/characters";
 import { isForcedEmptyState } from "../src/data/debugFetchFailure";
 import { spacing, useTheme } from "../src/design/theme";
-import { buildReviewQueue } from "../src/domain/review/buildReviewQueue";
+import {
+  buildReviewQueue,
+  isDismissedForDate,
+} from "../src/domain/review/buildReviewQueue";
 import { encodeReviewIds } from "../src/domain/review/reviewSession";
 import { useI18n } from "../src/i18n/useI18n";
 import { useKanjiCharactersByIdsQuery } from "../src/queries/kanjiQueries";
@@ -49,6 +52,12 @@ export default function ReviewScreen() {
   const reviewSessionIds = encodeReviewIds(
     items.map((character) => character.id),
   );
+  const hasAnyProgress = Object.keys(progressByCharacter).length > 0;
+  const hasDismissedToday = Object.values(dismissedReviewCharacterIds).some(
+    (dismissedReviewCharacter) =>
+      isDismissedForDate(dismissedReviewCharacter, new Date()),
+  );
+  const completedToday = hasAnyProgress && hasDismissedToday && items.length === 0;
   const { locale, t } = useI18n();
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({
@@ -84,8 +93,16 @@ export default function ReviewScreen() {
 
       {hydrated && !isLoading && items.length === 0 ? (
         <View style={styles.emptyCard}>
-          <Text style={styles.emptyTitle}>{t("review.emptyTitle")}</Text>
-          <Text style={styles.emptyBody}>{t("review.emptyBody")}</Text>
+          <Text style={styles.emptyTitle}>
+            {completedToday
+              ? t("review.completedTitle")
+              : t("review.emptyTitle")}
+          </Text>
+          <Text style={styles.emptyBody}>
+            {completedToday
+              ? t("review.completedBody")
+              : t("review.emptyBody")}
+          </Text>
           <Pressable
             style={styles.emptyAction}
             onPress={() => router.push("/categories")}
