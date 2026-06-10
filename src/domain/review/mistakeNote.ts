@@ -20,7 +20,11 @@ export type MistakeNoteBadge = {
   achieved: boolean;
   bodyKey: string;
   current: number;
-  id: "conquest_master" | "first_conquest" | "mistake_hunter";
+  id:
+    | "conquest_master"
+    | "first_conquest"
+    | "flawless_conqueror"
+    | "mistake_hunter";
   progressPercent: number;
   remaining: number;
   threshold: number;
@@ -66,6 +70,12 @@ const MISTAKE_NOTE_BADGES: MistakeNoteBadgeDefinition[] = [
     threshold: 100,
     titleKey: "mistakeNote.badge.conquestMaster.title",
     bodyKey: "mistakeNote.badge.conquestMaster.body",
+  },
+  {
+    id: "flawless_conqueror",
+    threshold: 200,
+    titleKey: "mistakeNote.badge.flawlessConqueror.title",
+    bodyKey: "mistakeNote.badge.flawlessConqueror.body",
   },
 ];
 

@@ -26,7 +26,13 @@ import { useKanjiCharactersByIdsQuery } from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function MistakeNoteScreen() {
-  const { hydrated, isPro, progressByCharacter } = useAppState();
+  const {
+    hydrated,
+    isPro,
+    mistakeNoteBadgesExpanded,
+    progressByCharacter,
+    setMistakeNoteBadgesExpanded,
+  } = useAppState();
   const [activeTab, setActiveTab] = useState<MistakeNoteTab>("all");
   const { locale, t } = useI18n();
   const { colors, surfaceStyles, textStyles, shadows } = useTheme();
@@ -83,6 +89,7 @@ export default function MistakeNoteScreen() {
       ? Math.round((note.conqueredMistakeCharacters / note.mistakeCharacters) * 100)
       : 0;
   const badges = buildMistakeNoteBadges(note.conqueredMistakeCharacters);
+  const achievedBadges = badges.filter((badge) => badge.achieved).length;
   const rank = buildMistakeNoteRank(note.conqueredMistakeCharacters);
 
   if (!canViewMistakeNote) {
@@ -143,64 +150,95 @@ export default function MistakeNoteScreen() {
       </View>
 
       <View style={[styles.badgeSection, styles.shadow]}>
-        <Text style={styles.sectionTitle}>{t("mistakeNote.badgesTitle")}</Text>
-        <View style={styles.badgeList}>
-          {badges.map((badge) => (
-            <View
-              key={badge.id}
-              style={[
-                styles.badgeCard,
-                badge.achieved ? styles.badgeCardAchieved : null,
-              ]}
-            >
+        <View style={styles.sectionHeader}>
+          <View style={styles.sectionCopy}>
+            <Text style={styles.sectionTitle}>{t("mistakeNote.badgesTitle")}</Text>
+            <Text style={styles.sectionMeta}>
+              {t("mistakeNote.badgeSummary", {
+                achieved: achievedBadges,
+                total: badges.length,
+              })}
+            </Text>
+          </View>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() =>
+              setMistakeNoteBadgesExpanded(!mistakeNoteBadgesExpanded)
+            }
+            style={styles.sectionToggle}
+          >
+            <Ionicons
+              name={
+                mistakeNoteBadgesExpanded ? "chevron-up" : "chevron-down"
+              }
+              size={18}
+              color={colors.accentWarmMuted}
+            />
+          </Pressable>
+        </View>
+        {mistakeNoteBadgesExpanded ? (
+          <View style={styles.badgeList}>
+            {badges.map((badge) => (
               <View
+                key={badge.id}
                 style={[
-                  styles.badgeIcon,
-                  badge.achieved ? styles.badgeIconAchieved : null,
+                  styles.badgeCard,
+                  badge.achieved ? styles.badgeCardAchieved : null,
                 ]}
               >
-                <Ionicons
-                  name={badge.achieved ? "medal-outline" : "lock-closed-outline"}
-                  size={18}
-                  color={
-                    badge.achieved ? colors.inkOnDark : colors.accentWarmMuted
-                  }
-                />
-              </View>
-              <View style={styles.badgeCopy}>
-                <Text
-                  style={[
-                    styles.badgeTitle,
-                    badge.achieved ? styles.badgeTitleAchieved : null,
-                  ]}
-                >
-                  {t(badge.titleKey)}
-                </Text>
-                <Text style={styles.badgeBody}>{t(badge.bodyKey)}</Text>
-                <View style={styles.badgeProgressHeader}>
-                  <Text style={styles.badgeProgressText}>
-                    {badge.current} / {badge.threshold}
-                  </Text>
-                  <Text style={styles.badgeProgressText}>
-                    {badge.achieved
-                      ? `${badge.progressPercent}%`
-                      : t("mistakeNote.badgeRemaining", {
-                          count: badge.remaining,
-                        })}
-                  </Text>
-                </View>
-                <View style={styles.badgeProgressTrack}>
+                <View style={styles.badgeHeader}>
                   <View
                     style={[
-                      styles.badgeProgressFill,
-                      { width: `${badge.progressPercent}%` },
+                      styles.badgeIcon,
+                      badge.achieved ? styles.badgeIconAchieved : null,
                     ]}
-                  />
+                  >
+                    <Ionicons
+                      name={
+                        badge.achieved ? "medal-outline" : "lock-closed-outline"
+                      }
+                      size={18}
+                      color={
+                        badge.achieved ? colors.inkOnDark : colors.accentWarmMuted
+                      }
+                    />
+                  </View>
+                  <Text
+                    style={[
+                      styles.badgeTitle,
+                      badge.achieved ? styles.badgeTitleAchieved : null,
+                    ]}
+                  >
+                    {t(badge.titleKey)}
+                  </Text>
+                </View>
+                <View style={styles.badgeCopy}>
+                  <Text style={styles.badgeBody}>{t(badge.bodyKey)}</Text>
+                  <View style={styles.badgeProgressHeader}>
+                    <Text style={styles.badgeProgressText}>
+                      {badge.current} / {badge.threshold}
+                    </Text>
+                    <Text style={styles.badgeProgressText}>
+                      {badge.achieved
+                        ? `${badge.progressPercent}%`
+                        : t("mistakeNote.badgeRemaining", {
+                            count: badge.remaining,
+                          })}
+                    </Text>
+                  </View>
+                  <View style={styles.badgeProgressTrack}>
+                    <View
+                      style={[
+                        styles.badgeProgressFill,
+                        { width: `${badge.progressPercent}%` },
+                      ]}
+                    />
+                  </View>
                 </View>
               </View>
-            </View>
-          ))}
-        </View>
+            ))}
+          </View>
+        ) : null}
       </View>
 
       <View style={styles.tabList}>
@@ -368,18 +406,42 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
     },
     badgeSection: {
       ...surfaceStyles.card,
-      padding: spacing[5],
+      padding: spacing[4],
       gap: spacing[3],
       marginBottom: spacing[4],
     },
+    sectionHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: spacing[3],
+    },
+    sectionCopy: {
+      flex: 1,
+      gap: spacing[1],
+    },
     sectionTitle: textStyles.titleMd,
+    sectionMeta: textStyles.meta,
+    sectionToggle: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: colors.bgMuted,
+    },
     badgeList: {
+      flexDirection: "row",
+      flexWrap: "wrap",
       gap: spacing[2],
     },
     badgeCard: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: spacing[3],
+      flexBasis: "48%",
+      flexGrow: 1,
+      minWidth: 0,
+      minHeight: 156,
+      justifyContent: "space-between",
+      gap: spacing[2],
       borderRadius: 8,
       padding: spacing[3],
       backgroundColor: colors.bgMuted,
@@ -400,25 +462,42 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
     badgeIconAchieved: {
       backgroundColor: colors.inkStrongAlt,
     },
-    badgeCopy: {
-      flex: 1,
-      gap: spacing[1],
+    badgeHeader: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: spacing[2],
+      minWidth: 0,
     },
-    badgeTitle: textStyles.titleSm,
+    badgeCopy: {
+      gap: spacing[1],
+      minWidth: 0,
+    },
+    badgeTitle: {
+      ...textStyles.titleSm,
+      flex: 1,
+      flexShrink: 1,
+      lineHeight: 20,
+      minWidth: 0,
+    },
     badgeTitleAchieved: {
       color: colors.accentWarmMuted,
     },
-    badgeBody: textStyles.meta,
+    badgeBody: {
+      ...textStyles.meta,
+      flexShrink: 1,
+      lineHeight: 17,
+    },
     badgeProgressHeader: {
       flexDirection: "row",
       justifyContent: "space-between",
-      alignItems: "center",
+      alignItems: "flex-start",
       gap: spacing[2],
       marginTop: spacing[1],
     },
     badgeProgressText: {
       ...textStyles.meta,
       color: colors.inkMuted,
+      flexShrink: 1,
     },
     badgeProgressTrack: {
       height: 8,

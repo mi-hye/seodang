@@ -60,4 +60,5 @@ export type PersistedAppState = {
   favoriteCharacterIds: Record<string, true>;
   isPro: boolean;
   lastCompletedPractice?: LastCompletedPractice;
+  mistakeNoteBadgesExpanded: boolean;
 };

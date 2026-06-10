@@ -185,6 +185,16 @@ test("builds mistake note badges from conquered count", () => {
       titleKey: "mistakeNote.badge.conquestMaster.title",
       bodyKey: "mistakeNote.badge.conquestMaster.body",
     },
+    {
+      id: "flawless_conqueror",
+      achieved: false,
+      current: 50,
+      progressPercent: 25,
+      remaining: 150,
+      threshold: 200,
+      titleKey: "mistakeNote.badge.flawlessConqueror.title",
+      bodyKey: "mistakeNote.badge.flawlessConqueror.body",
+    },
   ]);
 });
 

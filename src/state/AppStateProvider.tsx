@@ -44,8 +44,10 @@ type AppStateContextValue = {
   favoriteCount: number;
   isPro: boolean;
   lastCompletedPractice?: LastCompletedPractice;
+  mistakeNoteBadgesExpanded: boolean;
   setLocale: (locale: AppLocale) => void;
   setProForDevelopment: (isPro: boolean) => void;
+  setMistakeNoteBadgesExpanded: (expanded: boolean) => void;
   setTheme: (theme: ThemeMode) => void;
   setUserType: (userType: UserType) => void;
   setOnboardingStep: (step: OnboardingStep) => void;
@@ -93,6 +95,7 @@ const defaultState: PersistedAppState = {
   favoriteCharacterIds: {},
   isPro: false,
   lastCompletedPractice: undefined,
+  mistakeNoteBadgesExpanded: true,
 };
 
 const AppStateContext = createContext<AppStateContextValue | null>(null);
@@ -194,6 +197,10 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       }
 
       setState((current) => ({ ...current, isPro }));
+    };
+
+    const setMistakeNoteBadgesExpanded = (mistakeNoteBadgesExpanded: boolean) => {
+      setState((current) => ({ ...current, mistakeNoteBadgesExpanded }));
     };
 
     const setTheme = (theme: ThemeMode) => {
@@ -421,8 +428,10 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       favoriteCount,
       isPro: state.isPro,
       lastCompletedPractice: state.lastCompletedPractice,
+      mistakeNoteBadgesExpanded: state.mistakeNoteBadgesExpanded,
       setLocale,
       setProForDevelopment,
+      setMistakeNoteBadgesExpanded,
       setTheme,
       setUserType,
       setOnboardingStep,
