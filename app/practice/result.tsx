@@ -6,6 +6,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { FavoriteButton } from "../../src/components/common/FavoriteButton";
 import { Screen } from "../../src/components/common/Screen";
 import { spacing, useTheme } from "../../src/design/theme";
+import { buildReviewSession } from "../../src/domain/review/reviewSession";
 import { useI18n } from "../../src/i18n/useI18n";
 import { useKanjiCharactersByCategoryQuery } from "../../src/queries/kanjiQueries";
 import { useAppState } from "../../src/state/AppStateProvider";
@@ -15,6 +16,7 @@ export default function PracticeResultScreen() {
   const {
     characterId,
     categoryKey,
+    reviewIds,
     literal,
     score,
     passed,
@@ -27,6 +29,7 @@ export default function PracticeResultScreen() {
   } = useLocalSearchParams<{
     characterId: string;
     categoryKey?: string;
+    reviewIds?: string;
     literal?: string;
     score: string;
     passed: string;
@@ -38,10 +41,20 @@ export default function PracticeResultScreen() {
     feedback: string;
   }>();
   const normalizedCategoryKey = Array.isArray(categoryKey) ? categoryKey[0] : categoryKey;
+  const normalizedReviewIds = Array.isArray(reviewIds) ? reviewIds[0] : reviewIds;
+  const reviewSession = buildReviewSession({
+    currentCharacterId: characterId,
+    encodedReviewIds: normalizedReviewIds,
+  });
   const normalizedLiteral = Array.isArray(literal) ? literal[0] : literal;
   const didPass = passed === "true";
   const numericScore = Number(score ?? 0);
-  const { recordAttempt, onboardingStep, setOnboardingStep } = useAppState();
+  const {
+    dismissReviewCharacters,
+    recordAttempt,
+    onboardingStep,
+    setOnboardingStep,
+  } = useAppState();
   const { locale, t } = useI18n();
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ buttonStyles, colors, surfaceStyles, textStyles });
@@ -78,6 +91,14 @@ export default function PracticeResultScreen() {
           <View style={[styles.heroCard, didPass ? styles.passCard : styles.failCard]}>
             <Text style={styles.status}>{didPass ? t("result.success") : t("result.retry")}</Text>
             <Text style={styles.score}>{t("result.score", { score })}</Text>
+            {reviewSession.isReviewSession && reviewSession.position > 0 ? (
+              <Text style={styles.reviewProgress}>
+                {t("result.reviewProgress", {
+                  current: reviewSession.position,
+                  total: reviewSession.total,
+                })}
+              </Text>
+            ) : null}
             <Text style={styles.summary}>
               {summary || t("result.fallbackSummary", { literal: normalizedLiteral ?? "-" })}
             </Text>
@@ -111,6 +132,7 @@ export default function PracticeResultScreen() {
                     params: {
                       characterId,
                       categoryKey: normalizedCategoryKey,
+                      reviewIds: normalizedReviewIds,
                     },
                   })
                 : router.replace("/list")
@@ -156,6 +178,22 @@ export default function PracticeResultScreen() {
                 if (showOnboarding) {
                   setOnboardingStep("done");
                 }
+                if (reviewSession.isReviewSession) {
+                  if (reviewSession.nextCharacterId) {
+                    router.replace({
+                      pathname: "/practice/[characterId]",
+                      params: {
+                        characterId: reviewSession.nextCharacterId,
+                        reviewIds: normalizedReviewIds,
+                      },
+                    });
+                    return;
+                  }
+
+                  dismissReviewCharacters(reviewSession.characterIds);
+                  router.dismissTo("/review");
+                  return;
+                }
                 if (nextCharacter) {
                   router.replace({
                     pathname: "/character/[characterId]",
@@ -175,7 +213,13 @@ export default function PracticeResultScreen() {
                 });
               }}
             >
-              <Text style={styles.primaryLabel}>{t("result.nextCharacter")}</Text>
+              <Text style={styles.primaryLabel}>
+                {reviewSession.isReviewSession
+                  ? reviewSession.nextCharacterId
+                    ? t("result.nextReview")
+                    : t("result.finishReview")
+                  : t("result.nextCharacter")}
+              </Text>
             </Pressable>
           )}
         </View>
@@ -224,6 +268,12 @@ function createStyles({
       color: colors.inkOnDarkMuted,
       fontSize: 14,
       lineHeight: 21,
+    },
+    reviewProgress: {
+      color: colors.inkOnDarkMuted,
+      fontSize: 13,
+      fontWeight: "700",
+      marginBottom: 8,
     },
     feedbackCard: {
       ...surfaceStyles.card,

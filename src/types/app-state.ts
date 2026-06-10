@@ -30,12 +30,17 @@ export type CharacterProgress = {
   averageScore: number;
   lastScore: number;
   lastPracticedAt?: string;
+  nextReviewAt?: string;
 };
 
 export type LastCompletedPractice = {
   characterId: string;
   categoryKey?: string;
   practicedAt: string;
+};
+
+export type DismissedReviewCharacter = {
+  dismissedAt: string;
 };
 
 export type PersistedAppState = {
@@ -50,6 +55,7 @@ export type PersistedAppState = {
   recentCategoryKeys: string[];
   resetProgressByCategoryKey: Record<string, string[]>;
   progressByCharacter: Record<string, CharacterProgress>;
+  dismissedReviewCharacterIds: Record<string, DismissedReviewCharacter>;
   recordedAttemptIds: string[];
   favoriteCharacterIds: Record<string, true>;
   lastCompletedPractice?: LastCompletedPractice;
