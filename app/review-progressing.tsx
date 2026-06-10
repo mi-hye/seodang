@@ -88,15 +88,22 @@ export default function ReviewProgressingScreen() {
       ) : null}
 
       {!isPreparingList
-        ? progressingCharacters.map((character) => (
-            <FocusedCharacterCard
-              characterId={character.id}
-              key={character.id}
-              literal={character.literal}
-              meaning={getCharacterMeaning(character, locale)}
-              meta={character.jlptLevel ? `JLPT ${character.jlptLevel}` : "-"}
-            />
-          ))
+        ? progressingCharacters.map((character) => {
+            const progress = progressByCharacter[character.id];
+
+            return (
+              <FocusedCharacterCard
+                characterId={character.id}
+                key={character.id}
+                literal={character.literal}
+                meaning={getCharacterMeaning(character, locale)}
+                meta={t("review.scoreSummary", {
+                  attempts: progress?.attempts ?? 0,
+                  score: progress?.lastScore ?? 0,
+                })}
+              />
+            );
+          })
         : null}
     </Screen>
   );

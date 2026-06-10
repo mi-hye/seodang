@@ -87,15 +87,22 @@ export default function ReviewWeaknessesScreen() {
       ) : null}
 
       {!isPreparingList
-        ? weakCharacters.map((character) => (
-            <FocusedCharacterCard
-              characterId={character.id}
-              key={character.id}
-              literal={character.literal}
-              meaning={getCharacterMeaning(character, locale)}
-              meta={character.jlptLevel ? `JLPT ${character.jlptLevel}` : "-"}
-            />
-          ))
+        ? weakCharacters.map((character) => {
+            const progress = progressByCharacter[character.id];
+
+            return (
+              <FocusedCharacterCard
+                characterId={character.id}
+                key={character.id}
+                literal={character.literal}
+                meaning={getCharacterMeaning(character, locale)}
+                meta={t("review.scoreSummary", {
+                  attempts: progress?.attempts ?? 0,
+                  score: progress?.lastScore ?? 0,
+                })}
+              />
+            );
+          })
         : null}
     </Screen>
   );
