@@ -8,9 +8,9 @@ import { ProLockedCard } from "../src/components/common/ProLockedCard";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning } from "../src/data/characters";
 import { spacing, useTheme } from "../src/design/theme";
-import { getDefaultCharacterListWindow } from "../src/domain/characters/listWindow";
 import { canAccessProFeature } from "../src/domain/pro/proAccess";
 import { buildReviewStats } from "../src/domain/review/reviewStats";
+import { useCharacterListWindow } from "../src/hooks/useCharacterListWindow";
 import { useI18n } from "../src/i18n/useI18n";
 import { useKanjiCharactersByIdsQuery } from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
@@ -21,9 +21,10 @@ export default function ReviewProgressingScreen() {
   const { colors, surfaceStyles, textStyles, shadows } = useTheme();
   const styles = createStyles({ colors, surfaceStyles, textStyles, shadows });
   const stats = buildReviewStats(progressByCharacter);
-  const visibleProgressingCharacterIds = getDefaultCharacterListWindow(
-    stats.inProgressCharacterIds,
-  );
+  const {
+    handleListScroll,
+    visibleCharacterIds: visibleProgressingCharacterIds,
+  } = useCharacterListWindow(stats.inProgressCharacterIds);
   const { data: progressingCharacters = [], isFetching, isLoading } =
     useKanjiCharactersByIdsQuery(visibleProgressingCharacterIds);
   const isPreparingList =
@@ -50,7 +51,7 @@ export default function ReviewProgressingScreen() {
   }
 
   return (
-    <Screen>
+    <Screen onScroll={handleListScroll} scrollEventThrottle={16}>
       <Text style={styles.title}>{t("reviewStats.progressingListTitle")}</Text>
 
       {isPreparingList ? <CharacterCardSkeleton /> : null}

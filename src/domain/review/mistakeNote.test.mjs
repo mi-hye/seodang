@@ -97,10 +97,10 @@ test("builds mistake note badges from conquered count", () => {
     {
       id: "first_conquest",
       achieved: true,
-      current: 1,
+      current: 10,
       progressPercent: 100,
       remaining: 0,
-      threshold: 1,
+      threshold: 10,
       titleKey: "mistakeNote.badge.firstConquest.title",
       bodyKey: "mistakeNote.badge.firstConquest.body",
     },

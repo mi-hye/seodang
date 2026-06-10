@@ -8,7 +8,6 @@ import { ProLockedCard } from "../src/components/common/ProLockedCard";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning } from "../src/data/characters";
 import { spacing, useTheme } from "../src/design/theme";
-import { getDefaultCharacterListWindow } from "../src/domain/characters/listWindow";
 import { canAccessProFeature } from "../src/domain/pro/proAccess";
 import {
   buildMistakeNote,
@@ -16,6 +15,7 @@ import {
   buildMistakeNoteRank,
   MISTAKE_CONQUERED_SCORE_THRESHOLD,
 } from "../src/domain/review/mistakeNote";
+import { useCharacterListWindow } from "../src/hooks/useCharacterListWindow";
 import { useI18n } from "../src/i18n/useI18n";
 import { useKanjiCharactersByIdsQuery } from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
@@ -26,9 +26,10 @@ export default function MistakeNoteScreen() {
   const { colors, surfaceStyles, textStyles, shadows } = useTheme();
   const styles = createStyles({ colors, surfaceStyles, textStyles, shadows });
   const note = buildMistakeNote(progressByCharacter);
-  const visibleMistakeCharacterIds = getDefaultCharacterListWindow(
-    note.mistakeCharacterIds,
-  );
+  const {
+    handleListScroll,
+    visibleCharacterIds: visibleMistakeCharacterIds,
+  } = useCharacterListWindow(note.mistakeCharacterIds);
   const { data: mistakeCharacters = [], isFetching, isLoading } =
     useKanjiCharactersByIdsQuery(visibleMistakeCharacterIds);
   const canViewMistakeNote = canAccessProFeature({
@@ -61,7 +62,7 @@ export default function MistakeNoteScreen() {
   }
 
   return (
-    <Screen>
+    <Screen onScroll={handleListScroll} scrollEventThrottle={16}>
       <Text style={styles.title}>{t("mistakeNote.title")}</Text>
 
       <View style={[styles.heroCard, styles.shadow]}>

@@ -223,7 +223,7 @@
   "mistakeNote.rankMax": "최고 등급 달성",
   "mistakeNote.badgesTitle": "정복 배지",
   "mistakeNote.badge.firstConquest.title": "첫 정복",
-  "mistakeNote.badge.firstConquest.body": "오답 1개를 다시 맞히면 획득",
+  "mistakeNote.badge.firstConquest.body": "오답 10개를 정복하면 획득",
   "mistakeNote.badge.mistakeHunter.title": "오답 사냥꾼",
   "mistakeNote.badge.mistakeHunter.body": "오답 50개를 정복하면 획득",
   "mistakeNote.badge.conquestMaster.title": "정복 마스터",

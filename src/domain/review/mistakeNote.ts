@@ -49,7 +49,7 @@ type MistakeNoteRankDefinition = Pick<
 const MISTAKE_NOTE_BADGES: MistakeNoteBadgeDefinition[] = [
   {
     id: "first_conquest",
-    threshold: 1,
+    threshold: 10,
     titleKey: "mistakeNote.badge.firstConquest.title",
     bodyKey: "mistakeNote.badge.firstConquest.body",
   },

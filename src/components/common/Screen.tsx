@@ -3,6 +3,7 @@ import {
 } from "react";
 import {
   ScrollView,
+  ScrollViewProps,
   StyleProp,
   StyleSheet,
   View,
@@ -15,16 +16,20 @@ import { layout, useTheme } from "../../design/theme";
 type ScreenProps = PropsWithChildren<{
   contentStyle?: StyleProp<ViewStyle>;
   edges?: Edge[];
+  onScroll?: ScrollViewProps["onScroll"];
   scrollContainer?: boolean;
   scrollEnabled?: boolean;
+  scrollEventThrottle?: number;
 }>;
 
 export function Screen({
   children,
   contentStyle,
   edges = ["left", "right", "bottom"],
+  onScroll,
   scrollContainer = true,
   scrollEnabled = true,
+  scrollEventThrottle,
 }: ScreenProps) {
   const { colors } = useTheme();
 
@@ -40,8 +45,10 @@ export function Screen({
       ) : (
         <ScrollView
           contentContainerStyle={[styles.content, contentStyle]}
+          onScroll={onScroll}
           showsVerticalScrollIndicator={false}
           scrollEnabled={scrollEnabled}
+          scrollEventThrottle={scrollEventThrottle}
         >
           {children}
         </ScrollView>
