@@ -257,6 +257,7 @@ export default function ReviewStatsScreen() {
               : undefined
           }
           label={t("reviewStats.inProgressCharacters")}
+          description={t("reviewStats.inProgressCardDescription")}
           styles={styles}
           value={stats.inProgressCharacters}
         />
@@ -267,6 +268,7 @@ export default function ReviewStatsScreen() {
               : undefined
           }
           label={t("reviewStats.weakCharacters")}
+          description={t("reviewStats.weakCardDescription")}
           styles={styles}
           value={stats.weakCharacters}
         />
@@ -277,6 +279,7 @@ export default function ReviewStatsScreen() {
               : undefined
           }
           label={t("reviewStats.masteredCharacters")}
+          description={t("reviewStats.masteredCardDescription")}
           styles={styles}
           value={stats.masteredCharacters}
         />
@@ -353,11 +356,13 @@ function LegendItem({
 }
 
 function StatCard({
+  description,
   label,
   onPress,
   styles,
   value,
 }: {
+  description?: string;
   label: string;
   onPress?: () => void;
   styles: ReturnType<typeof createStyles>;
@@ -366,7 +371,12 @@ function StatCard({
   const content = (
     <>
       <Text style={styles.statValue}>{value}</Text>
-      <Text style={styles.statLabel}>{label}</Text>
+      <View style={styles.statCopy}>
+        <Text style={styles.statLabel}>{label}</Text>
+        {description ? (
+          <Text style={styles.statDescription}>{description}</Text>
+        ) : null}
+      </View>
     </>
   );
 
@@ -593,7 +603,7 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
     statCard: {
       ...surfaceStyles.card,
       width: "47%",
-      minHeight: 110,
+      minHeight: 118,
       padding: spacing[5],
       justifyContent: "space-between",
     },
@@ -601,7 +611,11 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
       ...textStyles.displaySm,
       color: colors.accentWarmMuted,
     },
+    statCopy: {
+      gap: spacing[1],
+    },
     statLabel: textStyles.bodySm,
+    statDescription: textStyles.meta,
     shadow: shadows.card,
   });
 }
