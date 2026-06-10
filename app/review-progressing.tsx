@@ -101,6 +101,9 @@ export default function ReviewProgressingScreen() {
                   attempts: progress?.attempts ?? 0,
                   score: progress?.lastScore ?? 0,
                 })}
+                subMeta={t("reviewStats.progressingReason", {
+                  average: progress?.averageScore ?? 0,
+                })}
               />
             );
           })

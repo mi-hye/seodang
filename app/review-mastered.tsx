@@ -100,6 +100,10 @@ export default function ReviewMasteredScreen() {
                   attempts: progress?.attempts ?? 0,
                   score: progress?.lastScore ?? 0,
                 })}
+                subMeta={t("reviewStats.masteredReason", {
+                  average: progress?.averageScore ?? 0,
+                  successes: progress?.successes ?? 0,
+                })}
               />
             );
           })
