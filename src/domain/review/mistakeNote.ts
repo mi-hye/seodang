@@ -14,6 +14,8 @@ export type MistakeNote = {
   repeatedMistakeCharacters: number;
 };
 
+export type MistakeNoteTab = "all" | "conquered" | "repeated";
+
 export type MistakeNoteBadge = {
   achieved: boolean;
   bodyKey: string;
@@ -124,6 +126,20 @@ export function buildMistakeNote(
     ),
     repeatedMistakeCharacters: repeatedMistakeItems.length,
   };
+}
+
+export function getMistakeNoteTabCharacterIds(
+  note: MistakeNote,
+  tab: MistakeNoteTab,
+) {
+  switch (tab) {
+    case "conquered":
+      return note.conqueredMistakeCharacterIds;
+    case "repeated":
+      return note.repeatedMistakeCharacterIds;
+    case "all":
+      return note.mistakeCharacterIds;
+  }
 }
 
 export function buildMistakeNoteBadges(

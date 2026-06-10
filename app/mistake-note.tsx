@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, Text, View } from "react-native";
+import { useMemo, useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { CharacterCardSkeleton } from "../src/components/common/CharacterCardSkeleton";
 import { FocusedCharacterCard } from "../src/components/common/FocusedCharacterCard";
@@ -13,7 +14,9 @@ import {
   buildMistakeNote,
   buildMistakeNoteBadges,
   buildMistakeNoteRank,
+  getMistakeNoteTabCharacterIds,
   MISTAKE_CONQUERED_SCORE_THRESHOLD,
+  type MistakeNoteTab,
 } from "../src/domain/review/mistakeNote";
 import { useCharacterListWindow } from "../src/hooks/useCharacterListWindow";
 import { useI18n } from "../src/i18n/useI18n";
@@ -22,14 +25,44 @@ import { useAppState } from "../src/state/AppStateProvider";
 
 export default function MistakeNoteScreen() {
   const { hydrated, isPro, progressByCharacter } = useAppState();
+  const [activeTab, setActiveTab] = useState<MistakeNoteTab>("all");
   const { locale, t } = useI18n();
   const { colors, surfaceStyles, textStyles, shadows } = useTheme();
   const styles = createStyles({ colors, surfaceStyles, textStyles, shadows });
   const note = buildMistakeNote(progressByCharacter);
+  const tabItems = useMemo(
+    () => [
+      {
+        count: note.mistakeCharacters,
+        label: t("mistakeNote.tab.all"),
+        value: "all" as const,
+      },
+      {
+        count: note.repeatedMistakeCharacters,
+        label: t("mistakeNote.tab.repeated"),
+        value: "repeated" as const,
+      },
+      {
+        count: note.conqueredMistakeCharacters,
+        label: t("mistakeNote.tab.conquered"),
+        value: "conquered" as const,
+      },
+    ],
+    [
+      note.conqueredMistakeCharacters,
+      note.mistakeCharacters,
+      note.repeatedMistakeCharacters,
+      t,
+    ],
+  );
+  const selectedMistakeCharacterIds = getMistakeNoteTabCharacterIds(
+    note,
+    activeTab,
+  );
   const {
     handleListScroll,
     visibleCharacterIds: visibleMistakeCharacterIds,
-  } = useCharacterListWindow(note.mistakeCharacterIds);
+  } = useCharacterListWindow(selectedMistakeCharacterIds);
   const { data: mistakeCharacters = [], isFetching, isLoading } =
     useKanjiCharactersByIdsQuery(visibleMistakeCharacterIds);
   const canViewMistakeNote = canAccessProFeature({
@@ -105,24 +138,6 @@ export default function MistakeNoteScreen() {
         </View>
       </View>
 
-      <View style={styles.summaryGrid}>
-        <SummaryCard
-          label={t("mistakeNote.totalMistakes")}
-          styles={styles}
-          value={note.mistakeCharacters}
-        />
-        <SummaryCard
-          label={t("mistakeNote.repeatedMistakes")}
-          styles={styles}
-          value={note.repeatedMistakeCharacters}
-        />
-        <SummaryCard
-          label={t("mistakeNote.conqueredMistakes")}
-          styles={styles}
-          value={note.conqueredMistakeCharacters}
-        />
-      </View>
-
       <View style={[styles.badgeSection, styles.shadow]}>
         <Text style={styles.sectionTitle}>{t("mistakeNote.badgesTitle")}</Text>
         <View style={styles.badgeList}>
@@ -184,14 +199,40 @@ export default function MistakeNoteScreen() {
         </View>
       </View>
 
+      <View style={styles.tabList}>
+        {tabItems.map((tab) => {
+          const selected = activeTab === tab.value;
+
+          return (
+            <Pressable
+              accessibilityRole="button"
+              key={tab.value}
+              onPress={() => setActiveTab(tab.value)}
+              style={[styles.tabButton, selected ? styles.tabButtonActive : null]}
+            >
+              <Text
+                style={[styles.tabLabel, selected ? styles.tabLabelActive : null]}
+              >
+                {tab.label}
+              </Text>
+              <Text
+                style={[styles.tabCount, selected ? styles.tabCountActive : null]}
+              >
+                {tab.count}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
+
       {isPreparingList ? <CharacterCardSkeleton /> : null}
 
       {hydrated && !isPreparingList ? (
         <FocusedReviewActionCard
           body={t("mistakeNote.practiceBody", {
-            count: note.practiceCharacterIds.length,
+            count: selectedMistakeCharacterIds.length,
           })}
-          characterIds={note.practiceCharacterIds}
+          characterIds={selectedMistakeCharacterIds}
           icon="trophy-outline"
           isPro={isPro}
           title={t("mistakeNote.practiceTitle")}
@@ -200,11 +241,11 @@ export default function MistakeNoteScreen() {
 
       {hydrated &&
       !isPreparingList &&
-      note.mistakeCharacterIds.length > visibleMistakeCharacterIds.length ? (
+      selectedMistakeCharacterIds.length > visibleMistakeCharacterIds.length ? (
         <Text style={styles.listCountMeta}>
           {t("mistakeNote.listCount", {
             visible: visibleMistakeCharacterIds.length,
-            total: note.mistakeCharacterIds.length,
+            total: selectedMistakeCharacterIds.length,
           })}
         </Text>
       ) : null}
@@ -249,23 +290,6 @@ export default function MistakeNoteScreen() {
           })
         : null}
     </Screen>
-  );
-}
-
-function SummaryCard({
-  label,
-  styles,
-  value,
-}: {
-  label: string;
-  styles: ReturnType<typeof createStyles>;
-  value: number;
-}) {
-  return (
-    <View style={[styles.summaryCard, styles.shadow]}>
-      <Text style={styles.summaryValue}>{value}</Text>
-      <Text style={styles.summaryLabel}>{label}</Text>
-    </View>
   );
 }
 
@@ -340,23 +364,6 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
       flexShrink: 1,
       textAlign: "right",
     },
-    summaryGrid: {
-      flexDirection: "row",
-      gap: spacing[2],
-      marginBottom: spacing[4],
-    },
-    summaryCard: {
-      ...surfaceStyles.card,
-      flex: 1,
-      minHeight: 100,
-      padding: spacing[4],
-      justifyContent: "space-between",
-    },
-    summaryValue: {
-      ...textStyles.displaySm,
-      color: colors.accentWarmMuted,
-    },
-    summaryLabel: textStyles.meta,
     badgeSection: {
       ...surfaceStyles.card,
       padding: spacing[5],
@@ -423,6 +430,41 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
       height: "100%",
       borderRadius: 999,
       backgroundColor: colors.accentWarmMuted,
+    },
+    tabList: {
+      flexDirection: "row",
+      gap: spacing[2],
+      marginBottom: spacing[3],
+    },
+    tabButton: {
+      flex: 1,
+      minHeight: 54,
+      borderRadius: 8,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: colors.borderSoft,
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
+      justifyContent: "center",
+      gap: spacing[1],
+      backgroundColor: colors.bgSurface,
+    },
+    tabButtonActive: {
+      borderColor: colors.accentWarmMuted,
+      backgroundColor: colors.bgMuted,
+    },
+    tabLabel: {
+      ...textStyles.meta,
+      color: colors.inkMuted,
+    },
+    tabLabelActive: {
+      color: colors.inkStrong,
+    },
+    tabCount: {
+      ...textStyles.titleSm,
+      color: colors.inkStrong,
+    },
+    tabCountActive: {
+      color: colors.accentWarmMuted,
     },
     listCountMeta: {
       ...textStyles.meta,

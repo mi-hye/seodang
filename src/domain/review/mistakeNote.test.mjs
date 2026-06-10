@@ -1,8 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { buildMistakeNote, buildMistakeNoteBadges, buildMistakeNoteRank } =
-  await import("./mistakeNote.ts");
+const {
+  buildMistakeNote,
+  buildMistakeNoteBadges,
+  buildMistakeNoteRank,
+  getMistakeNoteTabCharacterIds,
+} = await import("./mistakeNote.ts");
 
 test("summarizes mistaken, repeated, and conquered characters", () => {
   const note = buildMistakeNote({
@@ -77,6 +81,31 @@ test("uses conquered mistakes for practice when every mistake was recently passe
 
   assert.deepEqual(note.activeMistakeCharacterIds, []);
   assert.deepEqual(note.practiceCharacterIds, ["conquered"]);
+});
+
+test("selects mistake note character ids for each tab", () => {
+  const note = {
+    activeMistakeCharacterIds: ["active", "repeated"],
+    conqueredMistakeCharacterIds: ["conquered"],
+    conqueredMistakeCharacters: 1,
+    mistakeCharacterIds: ["active", "repeated", "conquered"],
+    mistakeCharacters: 3,
+    practiceCharacterIds: ["active", "repeated"],
+    repeatedMistakeCharacterIds: ["repeated"],
+    repeatedMistakeCharacters: 1,
+  };
+
+  assert.deepEqual(getMistakeNoteTabCharacterIds(note, "all"), [
+    "active",
+    "repeated",
+    "conquered",
+  ]);
+  assert.deepEqual(getMistakeNoteTabCharacterIds(note, "repeated"), [
+    "repeated",
+  ]);
+  assert.deepEqual(getMistakeNoteTabCharacterIds(note, "conquered"), [
+    "conquered",
+  ]);
 });
 
 test("returns an empty mistake note when there are no failures", () => {
