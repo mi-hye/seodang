@@ -69,6 +69,7 @@ export default function MistakeNoteScreen() {
     note,
     activeTab,
   );
+  const hasSelectedMistakes = selectedMistakeCharacterIds.length > 0;
   const emptyStateKeys = getMistakeNoteEmptyStateKeys(activeTab);
   const practiceActionKeys = getMistakeNotePracticeActionKeys(activeTab);
   const sortHintKey = getMistakeNoteSortHintKey(activeTab);
@@ -269,7 +270,9 @@ export default function MistakeNoteScreen() {
           );
         })}
       </View>
-      <Text style={styles.sortHint}>{t(sortHintKey)}</Text>
+      {hasSelectedMistakes ? (
+        <Text style={styles.sortHint}>{t(sortHintKey)}</Text>
+      ) : null}
 
       {isPreparingList ? <CharacterCardSkeleton /> : null}
 
