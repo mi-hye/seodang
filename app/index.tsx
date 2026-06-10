@@ -18,6 +18,7 @@ import {
   buildCategoryProgressMap,
   listActiveCategoryProgress,
 } from "../src/lib/categoryProgress";
+import { buildReviewQueue } from "../src/domain/review/buildReviewQueue";
 import {
   useKanjiCategoryGroupsQuery,
   useKanjiCharacterQuery,
@@ -51,6 +52,11 @@ export default function HomeScreen() {
         .sort(),
     [progressByCharacter],
   );
+  const reviewQueue = useMemo(
+    () => buildReviewQueue(progressByCharacter, { limit: 20 }),
+    [progressByCharacter],
+  );
+  const reviewCount = reviewQueue.length;
   const {
     data: categoryProgressMappings = [],
     isLoading: isLoadingCategoryProgressMappings,
@@ -199,6 +205,33 @@ export default function HomeScreen() {
         >
           <Text style={styles.primaryLabel}>{t("home.start")}</Text>
           <Text style={styles.primaryBody}>{t("home.startBody")}</Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => router.push("/review")}
+          style={[
+            styles.reviewCard,
+            showOnboarding ? styles.dimmedCard : styles.shadow,
+          ]}
+        >
+          <View style={styles.reviewCardTop}>
+            <Text
+              style={[
+                styles.reviewTitle,
+                showOnboarding ? styles.dimmedText : null,
+              ]}
+            >
+              {t("home.review")}
+            </Text>
+            <Text
+              style={[
+                styles.reviewCount,
+                showOnboarding ? styles.dimmedText : null,
+              ]}
+            >
+              {hydrated ? t("home.reviewCount", { count: reviewCount }) : "-"}
+            </Text>
+          </View>
         </Pressable>
 
         <View
@@ -590,6 +623,32 @@ function createStyles({
       color: colors.inkOnDarkMuted,
       fontSize: scaledFont(15, textScale),
       lineHeight: scaledFont(22, textScale),
+    },
+    reviewCard: {
+      ...surfaceStyles.card,
+      padding: spacing[5],
+      marginBottom: spacing[4],
+      gap: spacing[3],
+    },
+    reviewCardTop: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      gap: spacing[3],
+    },
+    reviewTitle: {
+      ...textStyles.titleSm,
+      fontSize: scaledFont(16, textScale),
+      lineHeight: scaledFont(22, textScale),
+      fontWeight: "800",
+      flex: 1,
+    },
+    reviewCount: {
+      ...textStyles.titleSm,
+      fontSize: scaledFont(16, textScale),
+      lineHeight: scaledFont(22, textScale),
+      fontWeight: "800",
+      color: colors.accentWarmMuted,
     },
     row: {
       position: "relative",
