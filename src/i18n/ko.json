@@ -132,6 +132,7 @@
   "review.reason.failed_recently": "최근 오답",
   "review.reason.low_score": "낮은 점수",
   "review.reason.due_again": "다시 볼 시점",
+  "review.nextReviewAt": "복습 예정 %{date}",
   "review.scoreSummary": "최근 %{score}점 · 시도 %{attempts}회",
   "favorites.title": "즐겨찾기",
   "favorites.emptyTitle": "목록이 비어있어요.",

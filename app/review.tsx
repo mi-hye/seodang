@@ -137,7 +137,11 @@ export default function ReviewScreen() {
                       {getCharacterMeaning(character, locale)}
                     </Text>
                     <Text style={styles.meta}>
-                      {t(`review.reason.${reviewItem?.reason ?? "due_again"}`)}
+                      {progress?.nextReviewAt
+                        ? t("review.nextReviewAt", {
+                            date: formatReviewDate(progress.nextReviewAt),
+                          })
+                        : t(`review.reason.${reviewItem?.reason ?? "due_again"}`)}
                     </Text>
                     <Text style={styles.score}>
                       {t("review.scoreSummary", {
@@ -159,6 +163,15 @@ export default function ReviewScreen() {
         })}
     </Screen>
   );
+}
+
+function formatReviewDate(nextReviewAt: string) {
+  const date = new Date(nextReviewAt);
+  if (Number.isNaN(date.getTime())) {
+    return "-";
+  }
+
+  return date.toISOString().slice(0, 10);
 }
 
 function ReviewSkeleton() {
