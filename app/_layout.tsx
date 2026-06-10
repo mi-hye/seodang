@@ -116,6 +116,26 @@ function RootNavigator() {
           options={{ title: t("nav.review") }}
         />
         <Stack.Screen
+          name="review-stats"
+          options={{ title: t("nav.reviewStats") }}
+        />
+        <Stack.Screen
+          name="review-weaknesses"
+          options={{ title: t("nav.reviewWeaknesses") }}
+        />
+        <Stack.Screen
+          name="review-mastered"
+          options={{ title: t("nav.reviewMastered") }}
+        />
+        <Stack.Screen
+          name="review-progressing"
+          options={{ title: t("nav.reviewProgressing") }}
+        />
+        <Stack.Screen
+          name="pro"
+          options={{ title: t("nav.pro") }}
+        />
+        <Stack.Screen
           name="favorites"
           options={{ title: t("nav.favorites") }}
         />

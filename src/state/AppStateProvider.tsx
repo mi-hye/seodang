@@ -42,8 +42,10 @@ type AppStateContextValue = {
   progressByCharacter: Record<string, CharacterProgress>;
   dismissedReviewCharacterIds: Record<string, DismissedReviewCharacter>;
   favoriteCount: number;
+  isPro: boolean;
   lastCompletedPractice?: LastCompletedPractice;
   setLocale: (locale: AppLocale) => void;
+  setProForDevelopment: (isPro: boolean) => void;
   setTheme: (theme: ThemeMode) => void;
   setUserType: (userType: UserType) => void;
   setOnboardingStep: (step: OnboardingStep) => void;
@@ -89,6 +91,7 @@ const defaultState: PersistedAppState = {
   dismissedReviewCharacterIds: {},
   recordedAttemptIds: [],
   favoriteCharacterIds: {},
+  isPro: false,
   lastCompletedPractice: undefined,
 };
 
@@ -183,6 +186,14 @@ export function AppStateProvider({ children }: PropsWithChildren) {
   const value = useMemo<AppStateContextValue>(() => {
     const setLocale = (locale: AppLocale) => {
       setState((current) => ({ ...current, locale }));
+    };
+
+    const setProForDevelopment = (isPro: boolean) => {
+      if (!__DEV__) {
+        return;
+      }
+
+      setState((current) => ({ ...current, isPro }));
     };
 
     const setTheme = (theme: ThemeMode) => {
@@ -408,8 +419,10 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       progressByCharacter: state.progressByCharacter,
       dismissedReviewCharacterIds: state.dismissedReviewCharacterIds,
       favoriteCount,
+      isPro: state.isPro,
       lastCompletedPractice: state.lastCompletedPractice,
       setLocale,
+      setProForDevelopment,
       setTheme,
       setUserType,
       setOnboardingStep,
