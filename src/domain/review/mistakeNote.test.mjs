@@ -5,6 +5,8 @@ const {
   buildMistakeNote,
   buildMistakeNoteBadges,
   buildMistakeNoteRank,
+  getMistakeNoteEmptyStateKeys,
+  getMistakeNotePracticeActionKeys,
   getMistakeNoteTabCharacterIds,
 } = await import("./mistakeNote.ts");
 
@@ -106,6 +108,36 @@ test("selects mistake note character ids for each tab", () => {
   assert.deepEqual(getMistakeNoteTabCharacterIds(note, "conquered"), [
     "conquered",
   ]);
+});
+
+test("selects mistake note empty state keys for each tab", () => {
+  assert.deepEqual(getMistakeNoteEmptyStateKeys("all"), {
+    bodyKey: "mistakeNote.emptyBody",
+    titleKey: "mistakeNote.emptyTitle",
+  });
+  assert.deepEqual(getMistakeNoteEmptyStateKeys("repeated"), {
+    bodyKey: "mistakeNote.emptyRepeatedBody",
+    titleKey: "mistakeNote.emptyRepeatedTitle",
+  });
+  assert.deepEqual(getMistakeNoteEmptyStateKeys("conquered"), {
+    bodyKey: "mistakeNote.emptyConqueredBody",
+    titleKey: "mistakeNote.emptyConqueredTitle",
+  });
+});
+
+test("selects mistake note practice action keys for each tab", () => {
+  assert.deepEqual(getMistakeNotePracticeActionKeys("all"), {
+    bodyKey: "mistakeNote.practiceBody",
+    titleKey: "mistakeNote.practiceTitle",
+  });
+  assert.deepEqual(getMistakeNotePracticeActionKeys("repeated"), {
+    bodyKey: "mistakeNote.practiceRepeatedBody",
+    titleKey: "mistakeNote.practiceRepeatedTitle",
+  });
+  assert.deepEqual(getMistakeNotePracticeActionKeys("conquered"), {
+    bodyKey: "mistakeNote.practiceConqueredBody",
+    titleKey: "mistakeNote.practiceConqueredTitle",
+  });
 });
 
 test("returns an empty mistake note when there are no failures", () => {

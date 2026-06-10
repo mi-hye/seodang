@@ -14,6 +14,8 @@ import {
   buildMistakeNote,
   buildMistakeNoteBadges,
   buildMistakeNoteRank,
+  getMistakeNoteEmptyStateKeys,
+  getMistakeNotePracticeActionKeys,
   getMistakeNoteTabCharacterIds,
   MISTAKE_CONQUERED_SCORE_THRESHOLD,
   type MistakeNoteTab,
@@ -59,6 +61,8 @@ export default function MistakeNoteScreen() {
     note,
     activeTab,
   );
+  const emptyStateKeys = getMistakeNoteEmptyStateKeys(activeTab);
+  const practiceActionKeys = getMistakeNotePracticeActionKeys(activeTab);
   const {
     handleListScroll,
     visibleCharacterIds: visibleMistakeCharacterIds,
@@ -229,13 +233,13 @@ export default function MistakeNoteScreen() {
 
       {hydrated && !isPreparingList ? (
         <FocusedReviewActionCard
-          body={t("mistakeNote.practiceBody", {
+          body={t(practiceActionKeys.bodyKey, {
             count: selectedMistakeCharacterIds.length,
           })}
           characterIds={selectedMistakeCharacterIds}
           icon="trophy-outline"
           isPro={isPro}
-          title={t("mistakeNote.practiceTitle")}
+          title={t(practiceActionKeys.titleKey)}
         />
       ) : null}
 
@@ -252,8 +256,8 @@ export default function MistakeNoteScreen() {
 
       {hydrated && !isPreparingList && mistakeCharacters.length === 0 ? (
         <View style={[styles.emptyCard, styles.shadow]}>
-          <Text style={styles.emptyTitle}>{t("mistakeNote.emptyTitle")}</Text>
-          <Text style={styles.emptyBody}>{t("mistakeNote.emptyBody")}</Text>
+          <Text style={styles.emptyTitle}>{t(emptyStateKeys.titleKey)}</Text>
+          <Text style={styles.emptyBody}>{t(emptyStateKeys.bodyKey)}</Text>
         </View>
       ) : null}
 

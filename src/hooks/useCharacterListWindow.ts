@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type {
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -13,9 +13,13 @@ import {
 const SCROLL_LOAD_MORE_THRESHOLD = 180;
 
 export function useCharacterListWindow(characterIds: string[]) {
+  const characterIdsKey = useMemo(() => characterIds.join("\u0000"), [characterIds]);
   const [visibleLimit, setVisibleLimit] = useState(
     DEFAULT_CHARACTER_LIST_LIMIT,
   );
+  useEffect(() => {
+    setVisibleLimit(DEFAULT_CHARACTER_LIST_LIMIT);
+  }, [characterIdsKey]);
   const visibleCharacterIds = useMemo(
     () => getDefaultCharacterListWindow(characterIds, visibleLimit),
     [characterIds, visibleLimit],

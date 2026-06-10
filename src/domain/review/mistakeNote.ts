@@ -142,6 +142,46 @@ export function getMistakeNoteTabCharacterIds(
   }
 }
 
+export function getMistakeNoteEmptyStateKeys(tab: MistakeNoteTab) {
+  switch (tab) {
+    case "conquered":
+      return {
+        bodyKey: "mistakeNote.emptyConqueredBody",
+        titleKey: "mistakeNote.emptyConqueredTitle",
+      };
+    case "repeated":
+      return {
+        bodyKey: "mistakeNote.emptyRepeatedBody",
+        titleKey: "mistakeNote.emptyRepeatedTitle",
+      };
+    case "all":
+      return {
+        bodyKey: "mistakeNote.emptyBody",
+        titleKey: "mistakeNote.emptyTitle",
+      };
+  }
+}
+
+export function getMistakeNotePracticeActionKeys(tab: MistakeNoteTab) {
+  switch (tab) {
+    case "conquered":
+      return {
+        bodyKey: "mistakeNote.practiceConqueredBody",
+        titleKey: "mistakeNote.practiceConqueredTitle",
+      };
+    case "repeated":
+      return {
+        bodyKey: "mistakeNote.practiceRepeatedBody",
+        titleKey: "mistakeNote.practiceRepeatedTitle",
+      };
+    case "all":
+      return {
+        bodyKey: "mistakeNote.practiceBody",
+        titleKey: "mistakeNote.practiceTitle",
+      };
+  }
+}
+
 export function buildMistakeNoteBadges(
   conqueredMistakeCharacters: number,
 ): MistakeNoteBadge[] {
