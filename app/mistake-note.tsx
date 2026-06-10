@@ -14,8 +14,10 @@ import {
   buildMistakeNote,
   buildMistakeNoteBadges,
   buildMistakeNoteRank,
+  getMistakeNoteCardCopyKeys,
   getMistakeNoteEmptyStateKeys,
   getMistakeNotePracticeActionKeys,
+  getMistakeNoteSortHintKey,
   getMistakeNoteTabCharacterIds,
   MISTAKE_CONQUERED_SCORE_THRESHOLD,
   type MistakeNoteTab,
@@ -69,6 +71,7 @@ export default function MistakeNoteScreen() {
   );
   const emptyStateKeys = getMistakeNoteEmptyStateKeys(activeTab);
   const practiceActionKeys = getMistakeNotePracticeActionKeys(activeTab);
+  const sortHintKey = getMistakeNoteSortHintKey(activeTab);
   const {
     handleListScroll,
     visibleCharacterIds: visibleMistakeCharacterIds,
@@ -266,6 +269,7 @@ export default function MistakeNoteScreen() {
           );
         })}
       </View>
+      <Text style={styles.sortHint}>{t(sortHintKey)}</Text>
 
       {isPreparingList ? <CharacterCardSkeleton /> : null}
 
@@ -305,6 +309,10 @@ export default function MistakeNoteScreen() {
             const conquered =
               (progress?.failures ?? 0) > 0 &&
               progress.lastScore >= MISTAKE_CONQUERED_SCORE_THRESHOLD;
+            const cardCopyKeys = getMistakeNoteCardCopyKeys(
+              activeTab,
+              conquered,
+            );
 
             return (
               <FocusedCharacterCard
@@ -312,7 +320,7 @@ export default function MistakeNoteScreen() {
                 key={character.id}
                 literal={character.literal}
                 meaning={getCharacterMeaning(character, locale)}
-                meta={t("mistakeNote.cardMeta", {
+                meta={t(cardCopyKeys.metaKey, {
                   failures: progress?.failures ?? 0,
                   score: progress?.lastScore ?? 0,
                 })}
@@ -322,11 +330,7 @@ export default function MistakeNoteScreen() {
                     : t("mistakeNote.statusActive")
                 }
                 statusTone={conquered ? "conquered" : "active"}
-                subMeta={t(
-                  conquered
-                    ? "mistakeNote.cardConqueredHint"
-                    : "mistakeNote.cardActiveHint",
-                )}
+                subMeta={t(cardCopyKeys.subMetaKey)}
               />
             );
           })
@@ -544,6 +548,10 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
     },
     tabCountActive: {
       color: colors.accentWarmMuted,
+    },
+    sortHint: {
+      ...textStyles.meta,
+      marginBottom: spacing[3],
     },
     listCountMeta: {
       ...textStyles.meta,

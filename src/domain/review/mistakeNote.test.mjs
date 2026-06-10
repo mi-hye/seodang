@@ -5,8 +5,10 @@ const {
   buildMistakeNote,
   buildMistakeNoteBadges,
   buildMistakeNoteRank,
+  getMistakeNoteCardCopyKeys,
   getMistakeNoteEmptyStateKeys,
   getMistakeNotePracticeActionKeys,
+  getMistakeNoteSortHintKey,
   getMistakeNoteTabCharacterIds,
 } = await import("./mistakeNote.ts");
 
@@ -53,19 +55,19 @@ test("summarizes mistaken, repeated, and conquered characters", () => {
   assert.equal(note.repeatedMistakeCharacters, 1);
   assert.equal(note.conqueredMistakeCharacters, 1);
   assert.deepEqual(note.mistakeCharacterIds, [
-    "activeMistake",
     "repeatedMistake",
+    "activeMistake",
     "conqueredMistake",
   ]);
   assert.deepEqual(note.activeMistakeCharacterIds, [
-    "activeMistake",
     "repeatedMistake",
+    "activeMistake",
   ]);
   assert.deepEqual(note.repeatedMistakeCharacterIds, ["repeatedMistake"]);
   assert.deepEqual(note.conqueredMistakeCharacterIds, ["conqueredMistake"]);
   assert.deepEqual(note.practiceCharacterIds, [
-    "activeMistake",
     "repeatedMistake",
+    "activeMistake",
   ]);
 });
 
@@ -83,6 +85,62 @@ test("uses conquered mistakes for practice when every mistake was recently passe
 
   assert.deepEqual(note.activeMistakeCharacterIds, []);
   assert.deepEqual(note.practiceCharacterIds, ["conquered"]);
+});
+
+test("sorts mistake note lists by review priority", () => {
+  const note = buildMistakeNote({
+    conqueredOlder: {
+      characterId: "conqueredOlder",
+      attempts: 2,
+      successes: 1,
+      failures: 1,
+      averageScore: 72,
+      lastScore: 82,
+      lastPracticedAt: "2026-06-08T00:00:00.000Z",
+    },
+    activeLowerScore: {
+      characterId: "activeLowerScore",
+      attempts: 2,
+      successes: 0,
+      failures: 2,
+      averageScore: 38,
+      lastScore: 35,
+      lastPracticedAt: "2026-06-09T00:00:00.000Z",
+    },
+    activeMoreFailures: {
+      characterId: "activeMoreFailures",
+      attempts: 5,
+      successes: 1,
+      failures: 4,
+      averageScore: 48,
+      lastScore: 48,
+      lastPracticedAt: "2026-06-07T00:00:00.000Z",
+    },
+    conqueredRecent: {
+      characterId: "conqueredRecent",
+      attempts: 3,
+      successes: 2,
+      failures: 1,
+      averageScore: 80,
+      lastScore: 90,
+      lastPracticedAt: "2026-06-10T00:00:00.000Z",
+    },
+  });
+
+  assert.deepEqual(note.mistakeCharacterIds, [
+    "activeMoreFailures",
+    "activeLowerScore",
+    "conqueredRecent",
+    "conqueredOlder",
+  ]);
+  assert.deepEqual(note.repeatedMistakeCharacterIds, [
+    "activeMoreFailures",
+    "activeLowerScore",
+  ]);
+  assert.deepEqual(note.conqueredMistakeCharacterIds, [
+    "conqueredRecent",
+    "conqueredOlder",
+  ]);
 });
 
 test("selects mistake note character ids for each tab", () => {
@@ -137,6 +195,37 @@ test("selects mistake note practice action keys for each tab", () => {
   assert.deepEqual(getMistakeNotePracticeActionKeys("conquered"), {
     bodyKey: "mistakeNote.practiceConqueredBody",
     titleKey: "mistakeNote.practiceConqueredTitle",
+  });
+});
+
+test("selects mistake note sort hint key for each tab", () => {
+  assert.equal(getMistakeNoteSortHintKey("all"), "mistakeNote.sortHint.all");
+  assert.equal(
+    getMistakeNoteSortHintKey("repeated"),
+    "mistakeNote.sortHint.repeated",
+  );
+  assert.equal(
+    getMistakeNoteSortHintKey("conquered"),
+    "mistakeNote.sortHint.conquered",
+  );
+});
+
+test("selects mistake note card copy keys by tab and status", () => {
+  assert.deepEqual(getMistakeNoteCardCopyKeys("all", false), {
+    metaKey: "mistakeNote.cardMeta",
+    subMetaKey: "mistakeNote.cardActiveHint",
+  });
+  assert.deepEqual(getMistakeNoteCardCopyKeys("all", true), {
+    metaKey: "mistakeNote.cardConqueredMeta",
+    subMetaKey: "mistakeNote.cardConqueredHint",
+  });
+  assert.deepEqual(getMistakeNoteCardCopyKeys("repeated", false), {
+    metaKey: "mistakeNote.cardRepeatedMeta",
+    subMetaKey: "mistakeNote.cardRepeatedHint",
+  });
+  assert.deepEqual(getMistakeNoteCardCopyKeys("conquered", true), {
+    metaKey: "mistakeNote.cardConqueredMeta",
+    subMetaKey: "mistakeNote.cardConqueredListHint",
   });
 });
 
