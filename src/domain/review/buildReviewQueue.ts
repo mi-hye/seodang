@@ -41,6 +41,7 @@ export function buildReviewQueue(
       (progress) =>
         !isDismissedForDate(dismissedCharacterIds[progress.characterId], now),
     )
+    .filter((progress) => isReviewDue(progress.nextReviewAt, now))
     .map((progress) =>
       toReviewQueueItem(progress, {
         now,
@@ -54,6 +55,19 @@ export function buildReviewQueue(
         b.priority - a.priority || a.characterId.localeCompare(b.characterId),
     )
     .slice(0, limit);
+}
+
+function isReviewDue(nextReviewAt: string | undefined, now: Date) {
+  if (!nextReviewAt) {
+    return true;
+  }
+
+  const nextReviewTime = new Date(nextReviewAt).getTime();
+  if (Number.isNaN(nextReviewTime)) {
+    return true;
+  }
+
+  return nextReviewTime <= now.getTime();
 }
 
 export function isDismissedForDate(

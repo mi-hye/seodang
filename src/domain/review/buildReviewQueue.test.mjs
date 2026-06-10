@@ -71,6 +71,50 @@ test("includes older passed characters after the review interval", () => {
   assert.equal(queue[0].reason, "due_again");
 });
 
+test("excludes characters before their next review time", () => {
+  const queue = buildReviewQueue(
+    {
+      later: {
+        characterId: "later",
+        attempts: 2,
+        successes: 1,
+        failures: 1,
+        averageScore: 70,
+        lastScore: 58,
+        lastPracticedAt: "2026-06-10T00:00:00.000Z",
+        nextReviewAt: "2026-06-11T12:00:00.000Z",
+      },
+    },
+    {
+      now: new Date("2026-06-11T09:00:00.000Z"),
+    },
+  );
+
+  assert.deepEqual(queue.map((item) => item.characterId), []);
+});
+
+test("includes characters once their next review time arrives", () => {
+  const queue = buildReviewQueue(
+    {
+      due: {
+        characterId: "due",
+        attempts: 2,
+        successes: 1,
+        failures: 1,
+        averageScore: 70,
+        lastScore: 58,
+        lastPracticedAt: "2026-06-10T00:00:00.000Z",
+        nextReviewAt: "2026-06-11T12:00:00.000Z",
+      },
+    },
+    {
+      now: new Date("2026-06-11T12:00:00.000Z"),
+    },
+  );
+
+  assert.deepEqual(queue.map((item) => item.characterId), ["due"]);
+});
+
 test("excludes characters dismissed today", () => {
   const queue = buildReviewQueue(
     {

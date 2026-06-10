@@ -98,11 +98,9 @@ export default function ReviewScreen() {
               ? t("review.completedTitle")
               : t("review.emptyTitle")}
           </Text>
-          <Text style={styles.emptyBody}>
-            {completedToday
-              ? t("review.completedBody")
-              : t("review.emptyBody")}
-          </Text>
+          {!completedToday ? (
+            <Text style={styles.emptyBody}>{t("review.emptyBody")}</Text>
+          ) : null}
           <Pressable
             style={styles.emptyAction}
             onPress={() => router.push("/categories")}

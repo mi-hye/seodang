@@ -20,6 +20,7 @@ import {
   ThemeMode,
   UserType,
 } from "../types/app-state";
+import { calculateNextReviewAt } from "../domain/review/reviewSchedule";
 import { FORCE_ONBOARDING_FLOW } from "./debugOnboarding";
 
 const STORAGE_KEY = "seodang-app-state-v1";
@@ -280,6 +281,11 @@ export function AppStateProvider({ children }: PropsWithChildren) {
           averageScore: Math.round(totalScore / attempts),
           lastScore: score,
           lastPracticedAt: practicedAt,
+          nextReviewAt: calculateNextReviewAt({
+            passed,
+            practicedAt,
+            score,
+          }),
         };
 
         return {

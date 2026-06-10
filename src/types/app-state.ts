@@ -30,6 +30,7 @@ export type CharacterProgress = {
   averageScore: number;
   lastScore: number;
   lastPracticedAt?: string;
+  nextReviewAt?: string;
 };
 
 export type LastCompletedPractice = {
