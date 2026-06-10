@@ -8,6 +8,7 @@ import { ProLockedCard } from "../src/components/common/ProLockedCard";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning } from "../src/data/characters";
 import { spacing, useTheme } from "../src/design/theme";
+import { getDefaultCharacterListWindow } from "../src/domain/characters/listWindow";
 import { canAccessProFeature } from "../src/domain/pro/proAccess";
 import { buildReviewStats } from "../src/domain/review/reviewStats";
 import { useI18n } from "../src/i18n/useI18n";
@@ -20,11 +21,14 @@ export default function ReviewWeaknessesScreen() {
   const { colors, surfaceStyles, textStyles, shadows } = useTheme();
   const styles = createStyles({ colors, surfaceStyles, textStyles, shadows });
   const stats = buildReviewStats(progressByCharacter);
+  const visibleWeakCharacterIds = getDefaultCharacterListWindow(
+    stats.weakCharacterIds,
+  );
   const { data: weakCharacters = [], isFetching, isLoading } =
-    useKanjiCharactersByIdsQuery(stats.weakCharacterIds);
+    useKanjiCharactersByIdsQuery(visibleWeakCharacterIds);
   const isPreparingList =
     !hydrated ||
-    (stats.weakCharacterIds.length > 0 &&
+    (visibleWeakCharacterIds.length > 0 &&
       weakCharacters.length === 0 &&
       (isLoading || isFetching));
   const canViewFocusedReview = canAccessProFeature({

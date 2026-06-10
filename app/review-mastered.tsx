@@ -8,6 +8,7 @@ import { ProLockedCard } from "../src/components/common/ProLockedCard";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning } from "../src/data/characters";
 import { spacing, useTheme } from "../src/design/theme";
+import { getDefaultCharacterListWindow } from "../src/domain/characters/listWindow";
 import { canAccessProFeature } from "../src/domain/pro/proAccess";
 import { buildReviewStats } from "../src/domain/review/reviewStats";
 import { useI18n } from "../src/i18n/useI18n";
@@ -20,11 +21,14 @@ export default function ReviewMasteredScreen() {
   const { colors, surfaceStyles, textStyles, shadows } = useTheme();
   const styles = createStyles({ colors, surfaceStyles, textStyles, shadows });
   const stats = buildReviewStats(progressByCharacter);
+  const visibleMasteredCharacterIds = getDefaultCharacterListWindow(
+    stats.masteredCharacterIds,
+  );
   const { data: masteredCharacters = [], isFetching, isLoading } =
-    useKanjiCharactersByIdsQuery(stats.masteredCharacterIds);
+    useKanjiCharactersByIdsQuery(visibleMasteredCharacterIds);
   const isPreparingList =
     !hydrated ||
-    (stats.masteredCharacterIds.length > 0 &&
+    (visibleMasteredCharacterIds.length > 0 &&
       masteredCharacters.length === 0 &&
       (isLoading || isFetching));
   const canViewFocusedReview = canAccessProFeature({

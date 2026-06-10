@@ -1,7 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { buildMistakeNote } = await import("./mistakeNote.ts");
+const { buildMistakeNote, buildMistakeNoteBadges, buildMistakeNoteRank } =
+  await import("./mistakeNote.ts");
 
 test("summarizes mistaken, repeated, and conquered characters", () => {
   const note = buildMistakeNote({
@@ -88,5 +89,78 @@ test("returns an empty mistake note when there are no failures", () => {
     practiceCharacterIds: [],
     repeatedMistakeCharacterIds: [],
     repeatedMistakeCharacters: 0,
+  });
+});
+
+test("builds mistake note badges from conquered count", () => {
+  assert.deepEqual(buildMistakeNoteBadges(50), [
+    {
+      id: "first_conquest",
+      achieved: true,
+      current: 1,
+      progressPercent: 100,
+      remaining: 0,
+      threshold: 1,
+      titleKey: "mistakeNote.badge.firstConquest.title",
+      bodyKey: "mistakeNote.badge.firstConquest.body",
+    },
+    {
+      id: "mistake_hunter",
+      achieved: true,
+      current: 50,
+      progressPercent: 100,
+      remaining: 0,
+      threshold: 50,
+      titleKey: "mistakeNote.badge.mistakeHunter.title",
+      bodyKey: "mistakeNote.badge.mistakeHunter.body",
+    },
+    {
+      id: "conquest_master",
+      achieved: false,
+      current: 50,
+      progressPercent: 50,
+      remaining: 50,
+      threshold: 100,
+      titleKey: "mistakeNote.badge.conquestMaster.title",
+      bodyKey: "mistakeNote.badge.conquestMaster.body",
+    },
+  ]);
+});
+
+test("builds mistake note rank from conquered count", () => {
+  assert.deepEqual(buildMistakeNoteRank(0), {
+    id: "beginner",
+    titleKey: "mistakeNote.rank.beginner",
+    current: 0,
+    nextTitleKey: "mistakeNote.rank.practitioner",
+    nextThreshold: 1,
+    remainingToNext: 1,
+  });
+
+  assert.deepEqual(buildMistakeNoteRank(12), {
+    id: "practitioner",
+    titleKey: "mistakeNote.rank.practitioner",
+    current: 12,
+    nextTitleKey: "mistakeNote.rank.conqueror",
+    nextThreshold: 50,
+    remainingToNext: 38,
+  });
+
+  assert.deepEqual(buildMistakeNoteRank(50), {
+    id: "conqueror",
+    titleKey: "mistakeNote.rank.conqueror",
+    current: 50,
+    nextTitleKey: "mistakeNote.rank.master",
+    nextThreshold: 100,
+    remainingToNext: 50,
+  });
+
+  assert.deepEqual(buildMistakeNoteRank(100), {
+    id: "master",
+    titleKey: "mistakeNote.rank.master",
+    current: 100,
+    nextTitleKey: undefined,
+    nextThreshold: undefined,
+    remainingToNext: 0,
   });
 });

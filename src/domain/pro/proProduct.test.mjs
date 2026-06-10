@@ -14,6 +14,7 @@ test("includes the first Pro benefits", () => {
   assert.deepEqual(PRO_PRODUCT.benefitKeys, [
     "pro.included.stats",
     "pro.included.mistakeNote",
+    "pro.included.mistakeRanks",
     "pro.included.focusedReview",
     "pro.included.oneTime",
   ]);

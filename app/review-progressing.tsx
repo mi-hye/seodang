@@ -8,6 +8,7 @@ import { ProLockedCard } from "../src/components/common/ProLockedCard";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning } from "../src/data/characters";
 import { spacing, useTheme } from "../src/design/theme";
+import { getDefaultCharacterListWindow } from "../src/domain/characters/listWindow";
 import { canAccessProFeature } from "../src/domain/pro/proAccess";
 import { buildReviewStats } from "../src/domain/review/reviewStats";
 import { useI18n } from "../src/i18n/useI18n";
@@ -20,11 +21,14 @@ export default function ReviewProgressingScreen() {
   const { colors, surfaceStyles, textStyles, shadows } = useTheme();
   const styles = createStyles({ colors, surfaceStyles, textStyles, shadows });
   const stats = buildReviewStats(progressByCharacter);
+  const visibleProgressingCharacterIds = getDefaultCharacterListWindow(
+    stats.inProgressCharacterIds,
+  );
   const { data: progressingCharacters = [], isFetching, isLoading } =
-    useKanjiCharactersByIdsQuery(stats.inProgressCharacterIds);
+    useKanjiCharactersByIdsQuery(visibleProgressingCharacterIds);
   const isPreparingList =
     !hydrated ||
-    (stats.inProgressCharacterIds.length > 0 &&
+    (visibleProgressingCharacterIds.length > 0 &&
       progressingCharacters.length === 0 &&
       (isLoading || isFetching));
   const canViewFocusedReview = canAccessProFeature({

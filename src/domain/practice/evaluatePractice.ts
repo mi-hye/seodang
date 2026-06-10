@@ -1,4 +1,4 @@
-import {
+import type {
   CanvasPoint,
   CanvasSize,
   Direction,
@@ -6,6 +6,8 @@ import {
   KanjiVgStroke,
   PracticeEvaluation,
 } from "../../types/practice";
+
+export const PRACTICE_PASS_SCORE_THRESHOLD = 70;
 
 type EvaluatePracticeInput = {
   strokes: InputStroke[];
@@ -107,7 +109,7 @@ export function evaluatePractice({
     countGap <= 2 &&
     directionMatches >= Math.ceil(expectedStrokes * 0.4) &&
     positionMatches >= Math.ceil(expectedStrokes * 0.25) &&
-    score >= 60;
+    score >= PRACTICE_PASS_SCORE_THRESHOLD;
 
   if (feedback.length === 0) {
     feedback.push(t("practice.eval.goodMatch"));
