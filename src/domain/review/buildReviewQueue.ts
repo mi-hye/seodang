@@ -14,6 +14,7 @@ type BuildReviewQueueOptions = {
   limit?: number;
   lowScoreThreshold?: number;
   dueAfterDays?: number;
+  dismissedCharacterIds?: Record<string, true>;
 };
 
 const DEFAULT_LIMIT = 20;
@@ -30,8 +31,10 @@ export function buildReviewQueue(
   const lowScoreThreshold =
     options.lowScoreThreshold ?? DEFAULT_LOW_SCORE_THRESHOLD;
   const dueAfterDays = options.dueAfterDays ?? DEFAULT_DUE_AFTER_DAYS;
+  const dismissedCharacterIds = options.dismissedCharacterIds ?? {};
 
   return Object.values(progressByCharacter)
+    .filter((progress) => !dismissedCharacterIds[progress.characterId])
     .map((progress) =>
       toReviewQueueItem(progress, {
         now,

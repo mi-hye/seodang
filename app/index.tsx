@@ -34,6 +34,7 @@ export default function HomeScreen() {
     onboardingStep,
     lastCompletedPractice,
     progressByCharacter,
+    dismissedReviewCharacterIds,
     recentCategoryKeys,
     resetProgressByCategoryKey,
     dismissHomeOnboarding,
@@ -53,8 +54,12 @@ export default function HomeScreen() {
     [progressByCharacter],
   );
   const reviewQueue = useMemo(
-    () => buildReviewQueue(progressByCharacter, { limit: 20 }),
-    [progressByCharacter],
+    () =>
+      buildReviewQueue(progressByCharacter, {
+        limit: 20,
+        dismissedCharacterIds: dismissedReviewCharacterIds,
+      }),
+    [dismissedReviewCharacterIds, progressByCharacter],
   );
   const reviewCount = reviewQueue.length;
   const {
@@ -208,7 +213,7 @@ export default function HomeScreen() {
         </Pressable>
 
         <Pressable
-          onPress={() => router.push("/review")}
+          onPress={() => router.navigate("/review")}
           style={[
             styles.reviewCard,
             showOnboarding ? styles.dimmedCard : styles.shadow,

@@ -11,11 +11,13 @@ import { useAppState } from "../../src/state/AppStateProvider";
 
 export default function CharacterDetailScreen() {
   const router = useRouter();
-  const { characterId, categoryKey } = useLocalSearchParams<{
+  const { characterId, categoryKey, reviewIds } = useLocalSearchParams<{
     characterId: string;
     categoryKey?: string;
+    reviewIds?: string;
   }>();
   const normalizedCategoryKey = Array.isArray(categoryKey) ? categoryKey[0] : categoryKey;
+  const normalizedReviewIds = Array.isArray(reviewIds) ? reviewIds[0] : reviewIds;
   const {
     data: character,
     isLoading,
@@ -140,6 +142,7 @@ export default function CharacterDetailScreen() {
               params: {
                 characterId: character.id,
                 categoryKey: normalizedCategoryKey,
+                reviewIds: normalizedReviewIds,
               },
             });
           }}

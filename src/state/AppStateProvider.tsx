@@ -38,6 +38,7 @@ type AppStateContextValue = {
   recentCategoryKeys: string[];
   resetProgressByCategoryKey: Record<string, string[]>;
   progressByCharacter: Record<string, CharacterProgress>;
+  dismissedReviewCharacterIds: Record<string, true>;
   favoriteCount: number;
   lastCompletedPractice?: LastCompletedPractice;
   setLocale: (locale: AppLocale) => void;
@@ -64,6 +65,7 @@ type AppStateContextValue = {
     categoryKey: string;
     characterIds: string[];
   }) => void;
+  dismissReviewCharacters: (characterIds: string[]) => void;
   getProgress: (characterId: string) => CharacterProgress | undefined;
   getFavoriteCharacterIds: () => string[];
   isFavorite: (characterId: string) => boolean;
@@ -82,6 +84,7 @@ const defaultState: PersistedAppState = {
   recentCategoryKeys: [],
   resetProgressByCategoryKey: {},
   progressByCharacter: {},
+  dismissedReviewCharacterIds: {},
   recordedAttemptIds: [],
   favoriteCharacterIds: {},
   lastCompletedPractice: undefined,
@@ -280,6 +283,10 @@ export function AppStateProvider({ children }: PropsWithChildren) {
 
         return {
           ...current,
+          dismissedReviewCharacterIds: removeDismissedReviewCharacter(
+            current.dismissedReviewCharacterIds,
+            characterId,
+          ),
           progressByCharacter: {
             ...current.progressByCharacter,
             [characterId]: nextProgress,
@@ -308,6 +315,20 @@ export function AppStateProvider({ children }: PropsWithChildren) {
           ),
         };
       });
+    };
+
+    const dismissReviewCharacters: AppStateContextValue["dismissReviewCharacters"] = (
+      characterIds,
+    ) => {
+      setState((current) => ({
+        ...current,
+        dismissedReviewCharacterIds: {
+          ...current.dismissedReviewCharacterIds,
+          ...Object.fromEntries(
+            characterIds.map((characterId) => [characterId, true] as const),
+          ),
+        },
+      }));
     };
 
     const resetCategoryProgress: AppStateContextValue["resetCategoryProgress"] = ({
@@ -372,6 +393,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       recentCategoryKeys: state.recentCategoryKeys,
       resetProgressByCategoryKey: state.resetProgressByCategoryKey,
       progressByCharacter: state.progressByCharacter,
+      dismissedReviewCharacterIds: state.dismissedReviewCharacterIds,
       favoriteCount,
       lastCompletedPractice: state.lastCompletedPractice,
       setLocale,
@@ -385,6 +407,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       removeNotificationReminder,
       recordAttempt,
       resetCategoryProgress,
+      dismissReviewCharacters,
       getProgress,
       getFavoriteCharacterIds,
       isFavorite,
@@ -393,6 +416,18 @@ export function AppStateProvider({ children }: PropsWithChildren) {
   }, [hydrated, state]);
 
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
+}
+
+function removeDismissedReviewCharacter(
+  dismissedReviewCharacterIds: Record<string, true>,
+  characterId: string,
+) {
+  if (!dismissedReviewCharacterIds[characterId]) {
+    return dismissedReviewCharacterIds;
+  }
+
+  const { [characterId]: _removed, ...rest } = dismissedReviewCharacterIds;
+  return rest;
 }
 
 function createNotificationReminder(

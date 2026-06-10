@@ -8,16 +8,25 @@ import { getCharacterMeaning, KanjiCharacter } from "../src/data/characters";
 import { isForcedEmptyState } from "../src/data/debugFetchFailure";
 import { spacing, useTheme } from "../src/design/theme";
 import { buildReviewQueue } from "../src/domain/review/buildReviewQueue";
+import { encodeReviewIds } from "../src/domain/review/reviewSession";
 import { useI18n } from "../src/i18n/useI18n";
 import { useKanjiCharactersByIdsQuery } from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
 
 export default function ReviewScreen() {
   const router = useRouter();
-  const { hydrated, isFavorite, progressByCharacter } = useAppState();
+  const {
+    dismissedReviewCharacterIds,
+    hydrated,
+    isFavorite,
+    progressByCharacter,
+  } = useAppState();
   const reviewQueue = useMemo(
-    () => buildReviewQueue(progressByCharacter),
-    [progressByCharacter],
+    () =>
+      buildReviewQueue(progressByCharacter, {
+        dismissedCharacterIds: dismissedReviewCharacterIds,
+      }),
+    [dismissedReviewCharacterIds, progressByCharacter],
   );
   const characterIds = reviewQueue.map((item) => item.characterId);
   const reviewByCharacterId = useMemo(
@@ -37,6 +46,9 @@ export default function ReviewScreen() {
   );
   const items = isForcedEmptyState("review") ? [] : orderedItems;
   const firstReviewCharacterId = items[0]?.id;
+  const reviewSessionIds = encodeReviewIds(
+    items.map((character) => character.id),
+  );
   const { locale, t } = useI18n();
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({
@@ -61,6 +73,7 @@ export default function ReviewScreen() {
               pathname: "/practice/[characterId]",
               params: {
                 characterId: firstReviewCharacterId,
+                reviewIds: reviewSessionIds,
               },
             })
           }
@@ -96,6 +109,7 @@ export default function ReviewScreen() {
                 pathname: "/character/[characterId]",
                 params: {
                   characterId: character.id,
+                  reviewIds: reviewSessionIds,
                 },
               }}
               asChild
