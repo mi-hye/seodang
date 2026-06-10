@@ -55,55 +55,6 @@ export default function ProScreen() {
         />
       </View>
 
-      <View style={[styles.mistakePreviewCard, styles.shadow]}>
-        <View style={styles.previewHeader}>
-          <View style={styles.previewIcon}>
-            <Ionicons
-              name="trophy-outline"
-              size={18}
-              color={colors.inkOnDark}
-            />
-          </View>
-          <View style={styles.previewCopy}>
-            <Text style={styles.previewTitle}>
-              {t("pro.preview.mistakeTitle")}
-            </Text>
-            <Text style={styles.previewBody}>
-              {t("pro.preview.mistakeBody")}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.previewTabs}>
-          <View style={[styles.previewTab, styles.previewTabActive]}>
-            <Text style={styles.previewTabActiveText}>
-              {t("pro.preview.tabRepeated")}
-            </Text>
-          </View>
-          <View style={styles.previewTab}>
-            <Text style={styles.previewTabText}>
-              {t("pro.preview.tabConquered")}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.previewRows}>
-          <PreviewMetric
-            label={t("pro.preview.priority")}
-            styles={styles}
-            value="4"
-          />
-          <PreviewMetric
-            label={t("pro.preview.badges")}
-            styles={styles}
-            value="1/4"
-          />
-          <PreviewMetric
-            label={t("pro.preview.rank")}
-            styles={styles}
-            value={t("mistakeNote.rank.practitioner")}
-          />
-        </View>
-      </View>
-
       <View style={[styles.priceCard, styles.shadow]}>
         <Text style={styles.priceLabel}>{t("pro.priceLabel")}</Text>
         <Text style={styles.price}>{PRO_PRODUCT.price[locale]}</Text>
@@ -167,23 +118,6 @@ function ProFeature({
         <Text style={styles.featureTitle}>{title}</Text>
         <Text style={styles.featureBody}>{body}</Text>
       </View>
-    </View>
-  );
-}
-
-function PreviewMetric({
-  label,
-  styles,
-  value,
-}: {
-  label: string;
-  styles: ReturnType<typeof createStyles>;
-  value: string;
-}) {
-  return (
-    <View style={styles.previewMetric}>
-      <Text style={styles.previewMetricValue}>{value}</Text>
-      <Text style={styles.previewMetricLabel}>{label}</Text>
     </View>
   );
 }
@@ -255,80 +189,6 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
     },
     featureTitle: textStyles.titleSm,
     featureBody: textStyles.bodySm,
-    mistakePreviewCard: {
-      ...surfaceStyles.card,
-      padding: spacing[5],
-      gap: spacing[3],
-      marginBottom: spacing[5],
-    },
-    previewHeader: {
-      flexDirection: "row",
-      alignItems: "flex-start",
-      gap: spacing[3],
-    },
-    previewIcon: {
-      width: 36,
-      height: 36,
-      borderRadius: 18,
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: colors.inkStrongAlt,
-    },
-    previewCopy: {
-      flex: 1,
-      gap: spacing[1],
-      minWidth: 0,
-    },
-    previewTitle: textStyles.titleSm,
-    previewBody: textStyles.bodySm,
-    previewTabs: {
-      flexDirection: "row",
-      gap: spacing[2],
-    },
-    previewTab: {
-      flex: 1,
-      borderRadius: 8,
-      paddingVertical: spacing[2],
-      alignItems: "center",
-      backgroundColor: colors.bgMuted,
-    },
-    previewTabActive: {
-      backgroundColor: colors.inkStrongAlt,
-    },
-    previewTabText: {
-      ...textStyles.meta,
-      color: colors.inkMuted,
-    },
-    previewTabActiveText: {
-      ...textStyles.meta,
-      color: colors.inkOnDark,
-    },
-    previewRows: {
-      flexDirection: "row",
-      flexWrap: "wrap",
-      gap: spacing[2],
-    },
-    previewMetric: {
-      flexBasis: "48%",
-      flexGrow: 1,
-      minWidth: 0,
-      minHeight: 66,
-      borderRadius: 8,
-      padding: spacing[3],
-      justifyContent: "space-between",
-      backgroundColor: colors.bgMuted,
-    },
-    previewMetricValue: {
-      ...textStyles.titleSm,
-      color: colors.accentWarmMuted,
-      flexShrink: 1,
-      lineHeight: 20,
-    },
-    previewMetricLabel: {
-      ...textStyles.meta,
-      flexShrink: 1,
-      lineHeight: 17,
-    },
     priceCard: {
       ...surfaceStyles.card,
       padding: spacing[6],
