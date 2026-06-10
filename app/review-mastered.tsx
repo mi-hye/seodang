@@ -1,9 +1,8 @@
-import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import { CharacterCardSkeleton } from "../src/components/common/CharacterCardSkeleton";
 import { FocusedReviewActionCard } from "../src/components/common/FocusedReviewActionCard";
+import { FocusedCharacterCard } from "../src/components/common/FocusedCharacterCard";
 import { ProLockedCard } from "../src/components/common/ProLockedCard";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning } from "../src/data/characters";
@@ -89,31 +88,13 @@ export default function ReviewMasteredScreen() {
 
       {!isPreparingList
         ? masteredCharacters.map((character) => (
-            <Pressable
+            <FocusedCharacterCard
+              characterId={character.id}
               key={character.id}
-              style={[styles.characterCard, styles.shadow]}
-              onPress={() =>
-                router.push({
-                  pathname: "/character/[characterId]",
-                  params: { characterId: character.id },
-                })
-              }
-            >
-              <Text style={styles.literal}>{character.literal}</Text>
-              <View style={styles.content}>
-                <Text style={styles.meaning}>
-                  {getCharacterMeaning(character, locale)}
-                </Text>
-                <Text style={styles.meta}>
-                  {character.jlptLevel ? `JLPT ${character.jlptLevel}` : "-"}
-                </Text>
-              </View>
-              <Ionicons
-                name="chevron-forward"
-                size={18}
-                color={colors.accentWarmMuted}
-              />
-            </Pressable>
+              literal={character.literal}
+              meaning={getCharacterMeaning(character, locale)}
+              meta={character.jlptLevel ? `JLPT ${character.jlptLevel}` : "-"}
+            />
           ))
         : null}
     </Screen>
@@ -136,25 +117,6 @@ function createStyles({ surfaceStyles, textStyles, shadows }: any) {
       textAlign: "right",
     },
     emptyTitle: textStyles.titleSm,
-    characterCard: {
-      ...surfaceStyles.card,
-      padding: spacing[5],
-      flexDirection: "row",
-      alignItems: "center",
-      gap: spacing[3],
-      marginBottom: spacing[3],
-    },
-    literal: {
-      ...textStyles.glyphSm,
-      width: 40,
-      textAlign: "center",
-    },
-    content: {
-      flex: 1,
-      gap: spacing[1],
-    },
-    meaning: textStyles.titleSm,
-    meta: textStyles.meta,
     shadow: shadows.card,
   });
 }

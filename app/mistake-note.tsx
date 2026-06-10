@@ -1,8 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import { CharacterCardSkeleton } from "../src/components/common/CharacterCardSkeleton";
+import { FocusedCharacterCard } from "../src/components/common/FocusedCharacterCard";
 import { FocusedReviewActionCard } from "../src/components/common/FocusedReviewActionCard";
 import { ProLockedCard } from "../src/components/common/ProLockedCard";
 import { Screen } from "../src/components/common/Screen";
@@ -224,60 +224,27 @@ export default function MistakeNoteScreen() {
               progress.lastScore >= MISTAKE_CONQUERED_SCORE_THRESHOLD;
 
             return (
-              <Pressable
+              <FocusedCharacterCard
+                characterId={character.id}
                 key={character.id}
-                style={[styles.characterCard, styles.shadow]}
-                onPress={() =>
-                  router.push({
-                    pathname: "/character/[characterId]",
-                    params: { characterId: character.id },
-                  })
+                literal={character.literal}
+                meaning={getCharacterMeaning(character, locale)}
+                meta={t("mistakeNote.cardMeta", {
+                  failures: progress?.failures ?? 0,
+                  score: progress?.lastScore ?? 0,
+                })}
+                statusLabel={
+                  conquered
+                    ? t("mistakeNote.statusConquered")
+                    : t("mistakeNote.statusActive")
                 }
-              >
-                <Text style={styles.literal}>{character.literal}</Text>
-                <View style={styles.content}>
-                  <View style={styles.cardTitleRow}>
-                    <Text style={styles.meaning}>
-                      {getCharacterMeaning(character, locale)}
-                    </Text>
-                    <View
-                      style={[
-                        styles.statusChip,
-                        conquered ? styles.conqueredChip : styles.activeChip,
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.statusChipText,
-                          conquered ? styles.conqueredChipText : null,
-                        ]}
-                      >
-                        {conquered
-                          ? t("mistakeNote.statusConquered")
-                          : t("mistakeNote.statusActive")}
-                      </Text>
-                    </View>
-                  </View>
-                  <Text style={styles.meta}>
-                    {t("mistakeNote.cardMeta", {
-                      failures: progress?.failures ?? 0,
-                      score: progress?.lastScore ?? 0,
-                    })}
-                  </Text>
-                  <Text style={styles.subMeta}>
-                    {t(
-                      conquered
-                        ? "mistakeNote.cardConqueredHint"
-                        : "mistakeNote.cardActiveHint",
-                    )}
-                  </Text>
-                </View>
-                <Ionicons
-                  name="chevron-forward"
-                  size={18}
-                  color={colors.accentWarmMuted}
-                />
-              </Pressable>
+                statusTone={conquered ? "conquered" : "active"}
+                subMeta={t(
+                  conquered
+                    ? "mistakeNote.cardConqueredHint"
+                    : "mistakeNote.cardActiveHint",
+                )}
+              />
             );
           })
         : null}
@@ -469,56 +436,6 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
     },
     emptyTitle: textStyles.titleSm,
     emptyBody: textStyles.bodySm,
-    characterCard: {
-      ...surfaceStyles.card,
-      padding: spacing[5],
-      flexDirection: "row",
-      alignItems: "center",
-      gap: spacing[3],
-      marginBottom: spacing[3],
-    },
-    literal: {
-      ...textStyles.glyphSm,
-      width: 40,
-      textAlign: "center",
-    },
-    content: {
-      flex: 1,
-      gap: spacing[1],
-    },
-    cardTitleRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: spacing[2],
-    },
-    meaning: {
-      ...textStyles.titleSm,
-      flex: 1,
-    },
-    meta: textStyles.meta,
-    subMeta: {
-      ...textStyles.caption,
-      color: colors.inkMuted,
-    },
-    statusChip: {
-      borderRadius: 999,
-      paddingHorizontal: spacing[2],
-      paddingVertical: spacing[1],
-      backgroundColor: colors.bgMuted,
-    },
-    activeChip: {
-      backgroundColor: colors.bgMuted,
-    },
-    conqueredChip: {
-      backgroundColor: colors.inkStrongAlt,
-    },
-    statusChipText: {
-      ...textStyles.meta,
-      color: colors.accentWarmMuted,
-    },
-    conqueredChipText: {
-      color: colors.inkOnDark,
-    },
     shadow: shadows.card,
   });
 }

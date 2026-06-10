@@ -1,9 +1,8 @@
-import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import { CharacterCardSkeleton } from "../src/components/common/CharacterCardSkeleton";
 import { FocusedReviewActionCard } from "../src/components/common/FocusedReviewActionCard";
+import { FocusedCharacterCard } from "../src/components/common/FocusedCharacterCard";
 import { ProLockedCard } from "../src/components/common/ProLockedCard";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning } from "../src/data/characters";
@@ -89,31 +88,13 @@ export default function ReviewWeaknessesScreen() {
 
       {!isPreparingList
         ? weakCharacters.map((character) => (
-            <Pressable
+            <FocusedCharacterCard
+              characterId={character.id}
               key={character.id}
-              style={[styles.weakCard, styles.shadow]}
-              onPress={() =>
-                router.push({
-                  pathname: "/character/[characterId]",
-                  params: { characterId: character.id },
-                })
-              }
-            >
-              <Text style={styles.weakLiteral}>{character.literal}</Text>
-              <View style={styles.weakContent}>
-                <Text style={styles.weakMeaning}>
-                  {getCharacterMeaning(character, locale)}
-                </Text>
-                <Text style={styles.weakMeta}>
-                  {character.jlptLevel ? `JLPT ${character.jlptLevel}` : "-"}
-                </Text>
-              </View>
-              <Ionicons
-                name="chevron-forward"
-                size={18}
-                color={colors.accentWarmMuted}
-              />
-            </Pressable>
+              literal={character.literal}
+              meaning={getCharacterMeaning(character, locale)}
+              meta={character.jlptLevel ? `JLPT ${character.jlptLevel}` : "-"}
+            />
           ))
         : null}
     </Screen>
@@ -136,25 +117,6 @@ function createStyles({ surfaceStyles, textStyles, shadows }: any) {
       textAlign: "right",
     },
     emptyTitle: textStyles.titleSm,
-    weakCard: {
-      ...surfaceStyles.card,
-      padding: spacing[5],
-      flexDirection: "row",
-      alignItems: "center",
-      gap: spacing[3],
-      marginBottom: spacing[3],
-    },
-    weakLiteral: {
-      ...textStyles.glyphSm,
-      width: 40,
-      textAlign: "center",
-    },
-    weakContent: {
-      flex: 1,
-      gap: spacing[1],
-    },
-    weakMeaning: textStyles.titleSm,
-    weakMeta: textStyles.meta,
     shadow: shadows.card,
   });
 }
