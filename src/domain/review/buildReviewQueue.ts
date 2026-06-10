@@ -57,6 +57,28 @@ export function buildReviewQueue(
     .slice(0, limit);
 }
 
+export function findNextScheduledReviewAt(
+  progressByCharacter: Record<string, CharacterProgress>,
+  options: {
+    now?: Date;
+    dismissedCharacterIds?: Record<string, DismissedReviewCharacter>;
+  } = {},
+) {
+  const now = options.now ?? new Date();
+  const dismissedCharacterIds = options.dismissedCharacterIds ?? {};
+
+  return Object.values(progressByCharacter)
+    .filter(
+      (progress) =>
+        !isDismissedForDate(dismissedCharacterIds[progress.characterId], now),
+    )
+    .map((progress) => progress.nextReviewAt)
+    .filter((nextReviewAt): nextReviewAt is string =>
+      isFutureReviewAt(nextReviewAt, now),
+    )
+    .sort()[0];
+}
+
 function isReviewDue(nextReviewAt: string | undefined, now: Date) {
   if (!nextReviewAt) {
     return true;
@@ -68,6 +90,19 @@ function isReviewDue(nextReviewAt: string | undefined, now: Date) {
   }
 
   return nextReviewTime <= now.getTime();
+}
+
+function isFutureReviewAt(nextReviewAt: string | undefined, now: Date) {
+  if (!nextReviewAt) {
+    return false;
+  }
+
+  const nextReviewTime = new Date(nextReviewAt).getTime();
+  if (Number.isNaN(nextReviewTime)) {
+    return false;
+  }
+
+  return nextReviewTime > now.getTime();
 }
 
 export function isDismissedForDate(

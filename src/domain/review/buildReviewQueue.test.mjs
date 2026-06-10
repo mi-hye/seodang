@@ -1,7 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { buildReviewQueue } = await import("./buildReviewQueue.ts");
+const { buildReviewQueue, findNextScheduledReviewAt } = await import(
+  "./buildReviewQueue.ts"
+);
 
 test("prioritizes failed and low-scoring characters for review", () => {
   const queue = buildReviewQueue(
@@ -174,4 +176,36 @@ test("includes dismissed characters again on the next day", () => {
   );
 
   assert.deepEqual(queue.map((item) => item.characterId), ["failed"]);
+});
+
+test("finds the next scheduled review after dismissed and due filters", () => {
+  const nextReviewAt = findNextScheduledReviewAt(
+    {
+      soon: {
+        characterId: "soon",
+        attempts: 1,
+        successes: 1,
+        failures: 0,
+        averageScore: 88,
+        lastScore: 88,
+        lastPracticedAt: "2026-06-10T00:00:00.000Z",
+        nextReviewAt: "2026-06-12T00:00:00.000Z",
+      },
+      later: {
+        characterId: "later",
+        attempts: 1,
+        successes: 1,
+        failures: 0,
+        averageScore: 94,
+        lastScore: 94,
+        lastPracticedAt: "2026-06-10T00:00:00.000Z",
+        nextReviewAt: "2026-06-17T00:00:00.000Z",
+      },
+    },
+    {
+      now: new Date("2026-06-11T00:00:00.000Z"),
+    },
+  );
+
+  assert.equal(nextReviewAt, "2026-06-12T00:00:00.000Z");
 });

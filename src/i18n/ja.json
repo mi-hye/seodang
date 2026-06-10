@@ -133,6 +133,7 @@
   "review.reason.low_score": "低いスコア",
   "review.reason.due_again": "見直し時期",
   "review.nextReviewAt": "復習予定 %{date}",
+  "review.nextScheduled": "次の復習予定 %{date}",
   "review.scoreSummary": "直近 %{score}点 ・ %{attempts}回挑戦",
   "favorites.title": "お気に入り",
   "favorites.emptyTitle": "一覧が空です。",

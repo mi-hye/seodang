@@ -9,8 +9,10 @@ import { isForcedEmptyState } from "../src/data/debugFetchFailure";
 import { spacing, useTheme } from "../src/design/theme";
 import {
   buildReviewQueue,
+  findNextScheduledReviewAt,
   isDismissedForDate,
 } from "../src/domain/review/buildReviewQueue";
+import { formatReviewDateLabel } from "../src/domain/review/reviewDateLabel";
 import { encodeReviewIds } from "../src/domain/review/reviewSession";
 import { useI18n } from "../src/i18n/useI18n";
 import { useKanjiCharactersByIdsQuery } from "../src/queries/kanjiQueries";
@@ -58,6 +60,13 @@ export default function ReviewScreen() {
       isDismissedForDate(dismissedReviewCharacter, new Date()),
   );
   const completedToday = hasAnyProgress && hasDismissedToday && items.length === 0;
+  const nextScheduledReviewAt = useMemo(
+    () =>
+      findNextScheduledReviewAt(progressByCharacter, {
+        dismissedCharacterIds: dismissedReviewCharacterIds,
+      }),
+    [dismissedReviewCharacterIds, progressByCharacter],
+  );
   const { locale, t } = useI18n();
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({
@@ -101,14 +110,26 @@ export default function ReviewScreen() {
           {!completedToday ? (
             <Text style={styles.emptyBody}>{t("review.emptyBody")}</Text>
           ) : null}
-          <Pressable
-            style={styles.emptyAction}
-            onPress={() => router.push("/categories")}
-          >
-            <Text style={styles.emptyActionText}>
-              {t("review.emptyAction")}
+          {nextScheduledReviewAt ? (
+            <Text style={styles.emptyBody}>
+              {t("review.nextScheduled", {
+                date: formatReviewDateLabel({
+                  locale,
+                  reviewAt: nextScheduledReviewAt,
+                }),
+              })}
             </Text>
-          </Pressable>
+          ) : null}
+          {!completedToday ? (
+            <Pressable
+              style={styles.emptyAction}
+              onPress={() => router.push("/categories")}
+            >
+              <Text style={styles.emptyActionText}>
+                {t("review.emptyAction")}
+              </Text>
+            </Pressable>
+          ) : null}
         </View>
       ) : null}
 
@@ -139,7 +160,10 @@ export default function ReviewScreen() {
                     <Text style={styles.meta}>
                       {progress?.nextReviewAt
                         ? t("review.nextReviewAt", {
-                            date: formatReviewDate(progress.nextReviewAt),
+                            date: formatReviewDateLabel({
+                              locale,
+                              reviewAt: progress.nextReviewAt,
+                            }),
                           })
                         : t(`review.reason.${reviewItem?.reason ?? "due_again"}`)}
                     </Text>
@@ -163,15 +187,6 @@ export default function ReviewScreen() {
         })}
     </Screen>
   );
-}
-
-function formatReviewDate(nextReviewAt: string) {
-  const date = new Date(nextReviewAt);
-  if (Number.isNaN(date.getTime())) {
-    return "-";
-  }
-
-  return date.toISOString().slice(0, 10);
 }
 
 function ReviewSkeleton() {
