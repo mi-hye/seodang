@@ -144,10 +144,11 @@ export function evaluatePractice({
     directionMatches >= Math.ceil(expectedStrokes * 0.4) &&
     positionMatches >= Math.ceil(expectedStrokes * 0.25) &&
     shapeMatches >= requiredShapeMatches;
-  const score = structurallyPassed
+  const passed =
+    structurallyPassed && rawScore >= PRACTICE_PASS_SCORE_THRESHOLD;
+  const score = passed
     ? rawScore
     : Math.min(STRUCTURAL_FAILURE_SCORE_CAP, rawScore);
-  const passed = structurallyPassed && score >= PRACTICE_PASS_SCORE_THRESHOLD;
 
   if (feedback.length === 0) {
     feedback.push(t("practice.eval.goodMatch"));
