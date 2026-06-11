@@ -31,6 +31,7 @@ export default function ProScreen() {
           styles={styles}
           title={t("pro.feature.statsTitle")}
           body={t("pro.feature.statsBody")}
+          onPress={() => router.push("/review-stats")}
         />
         <ProFeature
           icon="analytics-outline"
@@ -38,6 +39,7 @@ export default function ProScreen() {
           styles={styles}
           title={t("pro.feature.weaknessTitle")}
           body={t("pro.feature.weaknessBody")}
+          onPress={() => router.push("/review-weaknesses")}
         />
         <ProFeature
           icon="trophy-outline"
@@ -45,6 +47,7 @@ export default function ProScreen() {
           styles={styles}
           title={t("pro.feature.mistakeNoteTitle")}
           body={t("pro.feature.mistakeNoteBody")}
+          onPress={() => router.push("/mistake-note")}
         />
         <ProFeature
           icon="flash-outline"
@@ -52,6 +55,7 @@ export default function ProScreen() {
           styles={styles}
           title={t("pro.feature.focusedReviewTitle")}
           body={t("pro.feature.focusedReviewBody")}
+          onPress={() => router.push("/review-stats")}
         />
       </View>
 
@@ -100,17 +104,27 @@ function ProFeature({
   body,
   colors,
   icon,
+  onPress,
   styles,
   title,
 }: {
   body: string;
   colors: ReturnType<typeof useTheme>["colors"];
   icon: keyof typeof Ionicons.glyphMap;
+  onPress: () => void;
   styles: ReturnType<typeof createStyles>;
   title: string;
 }) {
   return (
-    <View style={[styles.featureCard, styles.shadow]}>
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.featureCard,
+        styles.shadow,
+        pressed ? styles.featureCardPressed : null,
+      ]}
+    >
       <View style={styles.featureIcon}>
         <Ionicons name={icon} size={20} color={colors.accentWarmMuted} />
       </View>
@@ -118,7 +132,12 @@ function ProFeature({
         <Text style={styles.featureTitle}>{title}</Text>
         <Text style={styles.featureBody}>{body}</Text>
       </View>
-    </View>
+      <Ionicons
+        name="chevron-forward"
+        size={18}
+        color={colors.inkFaint}
+      />
+    </Pressable>
   );
 }
 
@@ -173,7 +192,10 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
       padding: spacing[5],
       flexDirection: "row",
       gap: spacing[3],
-      alignItems: "flex-start",
+      alignItems: "center",
+    },
+    featureCardPressed: {
+      opacity: 0.72,
     },
     featureIcon: {
       width: 36,
