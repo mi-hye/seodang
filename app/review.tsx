@@ -144,23 +144,25 @@ export default function ReviewScreen() {
                 <View style={styles.left}>
                   <Text style={styles.literal}>{character.literal}</Text>
                   <View style={styles.content}>
-                    <Text style={styles.meaning}>
-                      {getCharacterMeaning(character, locale)}
-                    </Text>
-                    <View
-                      style={[
-                        styles.reasonBadge,
-                        getReasonBadgeStyle(styles, reason),
-                      ]}
-                    >
-                      <Text
+                    <View style={styles.titleRow}>
+                      <Text style={styles.meaning} numberOfLines={1}>
+                        {getCharacterMeaning(character, locale)}
+                      </Text>
+                      <View
                         style={[
-                          styles.reasonBadgeText,
-                          getReasonBadgeTextStyle(styles, reason),
+                          styles.reasonBadge,
+                          getReasonBadgeStyle(styles, reason),
                         ]}
                       >
-                        {t(`review.reason.${reason}`)}
-                      </Text>
+                        <Text
+                          style={[
+                            styles.reasonBadgeText,
+                            getReasonBadgeTextStyle(styles, reason),
+                          ]}
+                        >
+                          {t(`review.reason.${reason}`)}
+                        </Text>
+                      </View>
                     </View>
                     <Text style={styles.score}>
                       {t("review.scoreSummary", {
@@ -297,10 +299,17 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
       width: 42,
       textAlign: "center",
     },
-    meaning: textStyles.titleSm,
+    titleRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing[2],
+    },
+    meaning: {
+      ...textStyles.titleSm,
+      flexShrink: 1,
+    },
     reasonBadge: {
-      alignSelf: "flex-start",
-      marginTop: 5,
+      flexShrink: 0,
       borderRadius: 999,
       paddingHorizontal: spacing[2],
       paddingVertical: 3,
