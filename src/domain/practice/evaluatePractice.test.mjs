@@ -4,10 +4,11 @@ import assert from "node:assert/strict";
 const { evaluatePractice } = await import("./evaluatePractice.ts");
 
 const t = (key) => key;
+const canvasSize = { width: 100, height: 100 };
 
 test("passes accurate practice at the higher score threshold", () => {
   const result = evaluatePractice({
-    canvasSize: { width: 100, height: 100 },
+    canvasSize,
     strokes: [
       { points: [{ x: 10, y: 10 }, { x: 50, y: 10 }] },
       { points: [{ x: 10, y: 30 }, { x: 50, y: 30 }] },
@@ -34,7 +35,7 @@ test("passes accurate practice at the higher score threshold", () => {
 
 test("fails practice below 70 even when minimum stroke checks pass", () => {
   const result = evaluatePractice({
-    canvasSize: { width: 100, height: 100 },
+    canvasSize,
     strokes: [
       { points: [{ x: 10, y: 10 }, { x: 50, y: 10 }] },
       { points: [{ x: 10, y: 25 }, { x: 50, y: 25 }] },
@@ -78,7 +79,7 @@ test("fails practice below 70 even when minimum stroke checks pass", () => {
 
 test("penalizes strokes that curve far away from the expected path", () => {
   const result = evaluatePractice({
-    canvasSize: { width: 100, height: 100 },
+    canvasSize,
     strokes: [
       {
         points: [
@@ -106,7 +107,7 @@ test("penalizes strokes that curve far away from the expected path", () => {
 
 test("reports very short strokes before direction or position feedback", () => {
   const result = evaluatePractice({
-    canvasSize: { width: 100, height: 100 },
+    canvasSize,
     strokes: [
       {
         points: [
@@ -131,7 +132,7 @@ test("reports very short strokes before direction or position feedback", () => {
 
 test("does not apply straight-line shape penalties to curved reference strokes", () => {
   const result = evaluatePractice({
-    canvasSize: { width: 100, height: 100 },
+    canvasSize,
     strokes: [
       {
         points: [
@@ -159,7 +160,7 @@ test("does not apply straight-line shape penalties to curved reference strokes",
 
 test("penalizes curved drawings for diagonal sweep strokes", () => {
   const result = evaluatePractice({
-    canvasSize: { width: 100, height: 100 },
+    canvasSize,
     strokes: [
       {
         points: [
@@ -187,7 +188,7 @@ test("penalizes curved drawings for diagonal sweep strokes", () => {
 
 test("accepts intentionally short dot strokes", () => {
   const result = evaluatePractice({
-    canvasSize: { width: 100, height: 100 },
+    canvasSize,
     strokes: [
       {
         points: [
@@ -214,7 +215,7 @@ test("accepts intentionally short dot strokes", () => {
 
 test("rejects extra strokes for simple one-stroke templates", () => {
   const result = evaluatePractice({
-    canvasSize: { width: 100, height: 100 },
+    canvasSize,
     strokes: [
       { points: [{ x: 10, y: 10 }, { x: 80, y: 10 }] },
       { points: [{ x: 10, y: 30 }, { x: 80, y: 30 }] },
@@ -239,7 +240,7 @@ test("rejects extra strokes for simple one-stroke templates", () => {
 test("does not show good-match feedback for failed practice results", () => {
   const failedResults = [
     evaluatePractice({
-      canvasSize: { width: 100, height: 100 },
+      canvasSize,
       strokes: [{ points: [{ x: 10, y: 10 }, { x: 13, y: 10 }] }],
       template: [
         {
@@ -251,7 +252,7 @@ test("does not show good-match feedback for failed practice results", () => {
       t,
     }),
     evaluatePractice({
-      canvasSize: { width: 100, height: 100 },
+      canvasSize,
       strokes: [
         {
           points: [
