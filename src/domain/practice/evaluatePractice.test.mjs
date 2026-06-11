@@ -101,3 +101,28 @@ test("penalizes strokes that curve far away from the expected path", () => {
   assert.ok(result.score < 90);
   assert.ok(result.feedback.includes("practice.eval.shapeMismatch"));
 });
+
+test("reports very short strokes before direction or position feedback", () => {
+  const result = evaluatePractice({
+    canvasSize: { width: 100, height: 100 },
+    strokes: [
+      {
+        points: [
+          { x: 10, y: 10 },
+          { x: 13, y: 10 },
+        ],
+      },
+    ],
+    template: [
+      {
+        direction: "left_to_right",
+        start: { x: 10, y: 10 },
+        end: { x: 80, y: 10 },
+      },
+    ],
+    t,
+  });
+
+  assert.equal(result.passed, false);
+  assert.equal(result.feedback[0], "practice.eval.strokeTooShort");
+});

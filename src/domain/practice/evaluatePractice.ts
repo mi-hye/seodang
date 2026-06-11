@@ -58,6 +58,13 @@ export function evaluatePractice({
       continue;
     }
 
+    if (isStrokeTooShort(normalized.points, reference)) {
+      feedback.push(
+        t("practice.eval.strokeTooShort", { index: index + 1 })
+      );
+      continue;
+    }
+
     const direction = classifyDirection(normalized.start, normalized.end);
     const directionPassed = direction === reference.direction;
     const startDistance = distance(normalized.start, reference.start);
@@ -210,6 +217,27 @@ function getMaxDistanceFromReferenceLine(
       distanceFromLineSegment(point, reference.start, reference.end),
     ),
   );
+}
+
+function isStrokeTooShort(points: CanvasPoint[], reference: KanjiVgStroke) {
+  const drawnLength = getPathLength(points);
+  const referenceLength = distance(reference.start, reference.end);
+
+  if (referenceLength <= 0) {
+    return drawnLength <= 4;
+  }
+
+  return drawnLength < Math.max(8, referenceLength * 0.22);
+}
+
+function getPathLength(points: CanvasPoint[]) {
+  let length = 0;
+
+  for (let index = 1; index < points.length; index += 1) {
+    length += distance(points[index - 1], points[index]);
+  }
+
+  return length;
 }
 
 function distanceFromLineSegment(
