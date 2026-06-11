@@ -9,7 +9,7 @@ export function ErrorState({
   onRetry,
 }: {
   title: string;
-  body: string;
+  body?: string;
   onRetry: () => void;
 }) {
   const { t } = useI18n();
@@ -19,7 +19,7 @@ export function ErrorState({
   return (
     <View style={styles.card}>
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.body}>{body}</Text>
+      {body ? <Text style={styles.body}>{body}</Text> : null}
       <Pressable style={styles.button} onPress={onRetry}>
         <Text style={styles.buttonLabel}>{t("common.retry")}</Text>
       </Pressable>

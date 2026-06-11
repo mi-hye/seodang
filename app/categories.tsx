@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "expo-router";
-import { MaterialIcons } from "@expo/vector-icons";
 import {
   Animated,
   LayoutChangeEvent,
@@ -11,6 +10,7 @@ import {
   View,
 } from "react-native";
 
+import { ErrorState } from "../src/components/common/ErrorState";
 import { Screen } from "../src/components/common/Screen";
 import { radius, spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
@@ -95,23 +95,14 @@ export default function CategoriesScreen() {
         {isLoading ? <CategoriesSkeleton isLandscape={isLandscape} /> : null}
 
         {isError ? (
-          <View style={styles.errorState}>
-            <Text style={styles.errorStateTitle}>
-              {t("categories.errorTitle")}
-            </Text>
-            <Pressable
-              style={styles.errorRetryButton}
-              onPress={() => {
+          <View style={styles.stateBlock}>
+            <ErrorState
+              title={t("categories.errorTitle")}
+              body={t("categories.errorBody")}
+              onRetry={() => {
                 void refetch();
               }}
-              hitSlop={8}
-            >
-              <MaterialIcons
-                name="refresh"
-                size={22}
-                color={colors.accentWarmMuted}
-              />
-            </Pressable>
+            />
           </View>
         ) : null}
 
@@ -355,27 +346,8 @@ function createStyles({ colors, isLandscape, surfaceStyles, textStyles }: any) {
     },
     placeholderTitle: textStyles.titleMd,
     placeholderBody: textStyles.bodySm,
-    errorState: {
-      alignItems: "center",
-      justifyContent: "center",
-      gap: spacing[3],
-      paddingVertical: spacing[8],
+    stateBlock: {
       marginBottom: spacing[6],
-    },
-    errorStateTitle: {
-      ...textStyles.titleMd,
-      textAlign: "center",
-    },
-    errorRetryButton: {
-      width: 44,
-      height: 44,
-      alignSelf: "center",
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: 999,
-      backgroundColor: colors.bgMuted,
-      borderWidth: 1,
-      borderColor: colors.borderSoft,
     },
     groupSection: {
       marginBottom: spacing[7],
