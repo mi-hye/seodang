@@ -235,3 +235,46 @@ test("rejects extra strokes for simple one-stroke templates", () => {
   assert.ok(result.score < 70);
   assert.equal(result.feedback[0], "practice.eval.tooManyStrokes");
 });
+
+test("does not show good-match feedback for failed practice results", () => {
+  const failedResults = [
+    evaluatePractice({
+      canvasSize: { width: 100, height: 100 },
+      strokes: [{ points: [{ x: 10, y: 10 }, { x: 13, y: 10 }] }],
+      template: [
+        {
+          direction: "left_to_right",
+          start: { x: 10, y: 10 },
+          end: { x: 80, y: 10 },
+        },
+      ],
+      t,
+    }),
+    evaluatePractice({
+      canvasSize: { width: 100, height: 100 },
+      strokes: [
+        {
+          points: [
+            { x: 10, y: 10 },
+            { x: 30, y: 70 },
+            { x: 50, y: 10 },
+          ],
+        },
+      ],
+      template: [
+        {
+          direction: "left_to_right",
+          start: { x: 10, y: 10 },
+          end: { x: 50, y: 10 },
+          type: "horizontal",
+        },
+      ],
+      t,
+    }),
+  ];
+
+  for (const result of failedResults) {
+    assert.equal(result.passed, false);
+    assert.ok(!result.feedback.includes("practice.eval.goodMatch"));
+  }
+});
