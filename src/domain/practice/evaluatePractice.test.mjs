@@ -232,5 +232,6 @@ test("rejects extra strokes for simple one-stroke templates", () => {
   });
 
   assert.equal(result.passed, false);
+  assert.ok(result.score < 70);
   assert.equal(result.feedback[0], "practice.eval.tooManyStrokes");
 });
