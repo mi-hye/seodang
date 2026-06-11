@@ -8,6 +8,7 @@ import type {
 } from "../../types/practice";
 
 export const PRACTICE_PASS_SCORE_THRESHOLD = 70;
+const STRUCTURAL_FAILURE_SCORE_CAP = 64;
 
 type EvaluatePracticeInput = {
   strokes: InputStroke[];
@@ -145,7 +146,7 @@ export function evaluatePractice({
     shapeMatches >= requiredShapeMatches;
   const score = structurallyPassed
     ? rawScore
-    : Math.min(PRACTICE_PASS_SCORE_THRESHOLD - 1, rawScore);
+    : Math.min(STRUCTURAL_FAILURE_SCORE_CAP, rawScore);
   const passed = structurallyPassed && score >= PRACTICE_PASS_SCORE_THRESHOLD;
 
   if (feedback.length === 0) {

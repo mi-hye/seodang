@@ -100,7 +100,7 @@ test("penalizes strokes that curve far away from the expected path", () => {
   });
 
   assert.equal(result.passed, false);
-  assert.ok(result.score < 70);
+  assert.ok(result.score < 65);
   assert.ok(result.feedback.includes("practice.eval.shapeMismatch"));
 });
 
