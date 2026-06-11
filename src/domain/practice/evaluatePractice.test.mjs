@@ -181,7 +181,7 @@ test("penalizes curved drawings for diagonal sweep strokes", () => {
   });
 
   assert.equal(result.passed, false);
-  assert.ok(result.score < 70);
+  assert.ok(result.score < 65);
   assert.ok(result.feedback.includes("practice.eval.shapeMismatch"));
 });
 
@@ -275,6 +275,10 @@ test("does not show good-match feedback for failed practice results", () => {
 
   for (const result of failedResults) {
     assert.equal(result.passed, false);
+    assert.ok(result.score < 65);
+    assert.notEqual(result.summary, "practice.eval.summary.good");
+    assert.notEqual(result.summary, "practice.eval.summary.great");
+    assert.notEqual(result.summary, "practice.eval.summary.excellent");
     assert.ok(!result.feedback.includes("practice.eval.goodMatch"));
   }
 });
