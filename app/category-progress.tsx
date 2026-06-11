@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 
+import { EmptyState } from "../src/components/common/EmptyState";
 import { Screen } from "../src/components/common/Screen";
 import { isForcedEmptyState } from "../src/data/debugFetchFailure";
 import { spacing, useTheme } from "../src/design/theme";
@@ -95,9 +96,7 @@ export default function CategoryProgressScreen() {
     <Screen>
       <View style={styles.wrapper}>
         {isLoading ? (
-          <View style={[styles.emptyCard, styles.shadow]}>
-            <Text style={styles.emptyTitle}>{t("common.loading")}</Text>
-          </View>
+          <EmptyState title={t("common.loading")} />
         ) : null}
 
         {isError ? (
@@ -122,14 +121,10 @@ export default function CategoryProgressScreen() {
         ) : null}
 
         {!isLoading && !isError && !activeCategories.length ? (
-          <View style={[styles.emptyCard, styles.shadow]}>
-            <Text style={styles.emptyTitle}>
-              {t("categoryProgress.emptyTitle")}
-            </Text>
-            <Text style={styles.emptyBody}>
-              {t("categoryProgress.emptyBody")}
-            </Text>
-          </View>
+          <EmptyState
+            title={t("categoryProgress.emptyTitle")}
+            body={t("categoryProgress.emptyBody")}
+          />
         ) : null}
 
         {!isLoading && !isError
@@ -335,16 +330,6 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
       backgroundColor: colors.accentWarm,
     },
     progressMeta: {
-      ...textStyles.bodySm,
-      color: colors.inkMuted,
-    },
-    emptyCard: {
-      ...surfaceStyles.card,
-      padding: spacing[6],
-      gap: spacing[2],
-    },
-    emptyTitle: textStyles.titleSm,
-    emptyBody: {
       ...textStyles.bodySm,
       color: colors.inkMuted,
     },

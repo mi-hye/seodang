@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 
+import { EmptyState } from "../src/components/common/EmptyState";
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
 import { getCharacterMeaning } from "../src/data/characters";
 import { KanjiCharacter } from "../src/data/characters";
@@ -111,18 +112,18 @@ export default function SearchScreen() {
               </Pressable>
             </View>
           ) : (
-            <View style={styles.emptyCard}>
-              <Text style={styles.emptyTitle}>
-                {deferredSearch
+            <EmptyState
+              title={
+                deferredSearch
                   ? t("search.emptyTitle")
-                  : t("search.idleTitle")}
-              </Text>
-              <Text style={styles.emptyBody}>
-                {deferredSearch
+                  : t("search.idleTitle")
+              }
+              body={
+                deferredSearch
                   ? t("search.emptyBody")
-                  : t("search.idleBody")}
-              </Text>
-            </View>
+                  : t("search.idleBody")
+              }
+            />
           )
         }
         renderItem={({ item, index }) => (
@@ -292,13 +293,6 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       fontSize: 18,
       lineHeight: 20,
     },
-    emptyCard: {
-      ...surfaceStyles.card,
-      padding: spacing[6],
-      gap: 6,
-    },
-    emptyTitle: textStyles.titleSm,
-    emptyBody: textStyles.bodySm,
     errorState: {
       alignItems: "center",
       justifyContent: "center",

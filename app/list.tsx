@@ -12,6 +12,7 @@ import {
 
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
 import { KanjiLoadingScreen } from "../src/components/common/KanjiLoadingScreen";
+import { EmptyState } from "../src/components/common/EmptyState";
 import { ErrorState } from "../src/components/common/ErrorState";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning, KanjiCharacter } from "../src/data/characters";
@@ -207,18 +208,18 @@ export default function CharacterListScreen() {
             </View>
           }
           ListEmptyComponent={
-            <View style={styles.emptyCard}>
-              <Text style={styles.emptyTitle}>
-                {normalizedSearch
+            <EmptyState
+              title={
+                normalizedSearch
                   ? t("list.searchEmptyTitle")
-                  : t("list.emptyTitle")}
-              </Text>
-              <Text style={styles.emptyBody}>
-                {normalizedSearch
+                  : t("list.emptyTitle")
+              }
+              body={
+                normalizedSearch
                   ? t("list.searchEmptyBody")
-                  : t("list.emptyBody")}
-              </Text>
-            </View>
+                  : t("list.emptyBody")
+              }
+            />
           }
           renderItem={({ item, index }) => (
             <CharacterCard
@@ -455,13 +456,6 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       fontSize: 18,
       lineHeight: 20,
     },
-    emptyCard: {
-      ...surfaceStyles.card,
-      padding: spacing[6],
-      gap: 6,
-    },
-    emptyTitle: textStyles.titleSm,
-    emptyBody: textStyles.bodySm,
     separator: {
       height: 12,
     },
