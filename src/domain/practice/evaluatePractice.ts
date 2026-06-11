@@ -95,7 +95,7 @@ export function evaluatePractice({
       shapeMatches += 1;
     } else if (shouldCheckShape && feedback.length < 4) {
       feedback.push(
-        t("practice.eval.positionMismatch", { index: index + 1 })
+        t("practice.eval.shapeMismatch", { index: index + 1 })
       );
     }
   }
