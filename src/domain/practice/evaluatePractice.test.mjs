@@ -211,3 +211,26 @@ test("accepts intentionally short dot strokes", () => {
   assert.equal(result.score, 99);
   assert.deepEqual(result.feedback, ["practice.eval.goodMatch"]);
 });
+
+test("rejects extra strokes for simple one-stroke templates", () => {
+  const result = evaluatePractice({
+    canvasSize: { width: 100, height: 100 },
+    strokes: [
+      { points: [{ x: 10, y: 10 }, { x: 80, y: 10 }] },
+      { points: [{ x: 10, y: 30 }, { x: 80, y: 30 }] },
+      { points: [{ x: 10, y: 50 }, { x: 80, y: 50 }] },
+    ],
+    template: [
+      {
+        direction: "left_to_right",
+        start: { x: 10, y: 10 },
+        end: { x: 80, y: 10 },
+        type: "horizontal",
+      },
+    ],
+    t,
+  });
+
+  assert.equal(result.passed, false);
+  assert.equal(result.feedback[0], "practice.eval.tooManyStrokes");
+});

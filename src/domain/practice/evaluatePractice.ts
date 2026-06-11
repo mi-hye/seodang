@@ -137,8 +137,9 @@ export function evaluatePractice({
   );
   const requiredShapeMatches =
     shapeEligibleStrokes === 0 ? 0 : Math.ceil(shapeEligibleStrokes * 0.6);
+  const allowedCountGap = getAllowedCountGap(expectedStrokes);
   const passed =
-    countGap <= 2 &&
+    countGap <= allowedCountGap &&
     directionMatches >= Math.ceil(expectedStrokes * 0.4) &&
     positionMatches >= Math.ceil(expectedStrokes * 0.25) &&
     shapeMatches >= requiredShapeMatches &&
@@ -164,6 +165,12 @@ function getScoreSummaryKey(score: number) {
   if (score >= 65) return "practice.eval.summary.good";
   if (score >= 50) return "practice.eval.summary.close";
   return "practice.eval.summary.tryAgain";
+}
+
+function getAllowedCountGap(expectedStrokes: number) {
+  if (expectedStrokes <= 2) return 0;
+  if (expectedStrokes <= 8) return 1;
+  return 2;
 }
 
 function normalizeStroke(stroke: InputStroke, canvasSize: CanvasSize) {
