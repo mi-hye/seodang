@@ -12,6 +12,7 @@ import {
   findNextScheduledReviewAt,
   isDismissedForDate,
 } from "../src/domain/review/buildReviewQueue";
+import type { ReviewReason } from "../src/domain/review/buildReviewQueue";
 import { formatReviewDateLabel } from "../src/domain/review/reviewDateLabel";
 import { encodeReviewIds } from "../src/domain/review/reviewSession";
 import { useI18n } from "../src/i18n/useI18n";
@@ -134,6 +135,7 @@ export default function ReviewScreen() {
         items.map((character) => {
           const progress = progressByCharacter[character.id];
           const reviewItem = reviewByCharacterId.get(character.id);
+          const reason = reviewItem?.reason ?? "due_again";
 
           return (
             <Link
@@ -154,9 +156,21 @@ export default function ReviewScreen() {
                     <Text style={styles.meaning}>
                       {getCharacterMeaning(character, locale)}
                     </Text>
-                    <Text style={styles.meta}>
-                      {t(`review.reason.${reviewItem?.reason ?? "due_again"}`)}
-                    </Text>
+                    <View
+                      style={[
+                        styles.reasonBadge,
+                        getReasonBadgeStyle(styles, reason),
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.reasonBadgeText,
+                          getReasonBadgeTextStyle(styles, reason),
+                        ]}
+                      >
+                        {t(`review.reason.${reason}`)}
+                      </Text>
+                    </View>
                     <Text style={styles.score}>
                       {t("review.scoreSummary", {
                         score: progress?.lastScore ?? "-",
@@ -223,6 +237,34 @@ function ReviewSkeleton() {
   );
 }
 
+function getReasonBadgeStyle(
+  styles: ReturnType<typeof createStyles>,
+  reason: ReviewReason,
+) {
+  switch (reason) {
+    case "failed_recently":
+      return styles.reasonFailedBadge;
+    case "low_score":
+      return styles.reasonLowScoreBadge;
+    case "due_again":
+      return styles.reasonDueBadge;
+  }
+}
+
+function getReasonBadgeTextStyle(
+  styles: ReturnType<typeof createStyles>,
+  reason: ReviewReason,
+) {
+  switch (reason) {
+    case "failed_recently":
+      return styles.reasonFailedText;
+    case "low_score":
+      return styles.reasonLowScoreText;
+    case "due_again":
+      return styles.reasonDueText;
+  }
+}
+
 function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) {
   return StyleSheet.create({
     title: {
@@ -281,10 +323,41 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
       textAlign: "center",
     },
     meaning: textStyles.titleSm,
-    meta: {
+    reasonBadge: {
+      alignSelf: "flex-start",
+      marginTop: 5,
+      borderRadius: 999,
+      paddingHorizontal: spacing[2],
+      paddingVertical: 3,
+      backgroundColor: colors.bgMuted,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: colors.borderSoft,
+    },
+    reasonBadgeText: {
       ...textStyles.meta,
-      marginTop: 3,
+      fontSize: 11,
+      lineHeight: 14,
+    },
+    reasonFailedBadge: {
+      backgroundColor: colors.danger,
+      borderColor: colors.danger,
+    },
+    reasonFailedText: {
+      color: colors.inkOnDark,
+    },
+    reasonLowScoreBadge: {
+      backgroundColor: colors.bgMutedStrong,
+      borderColor: colors.accentWarmMuted,
+    },
+    reasonLowScoreText: {
       color: colors.accentWarmMuted,
+    },
+    reasonDueBadge: {
+      backgroundColor: colors.bgMuted,
+      borderColor: colors.borderSoft,
+    },
+    reasonDueText: {
+      color: colors.inkFaint,
     },
     score: {
       ...textStyles.meta,

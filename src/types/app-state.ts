@@ -58,5 +58,7 @@ export type PersistedAppState = {
   dismissedReviewCharacterIds: Record<string, DismissedReviewCharacter>;
   recordedAttemptIds: string[];
   favoriteCharacterIds: Record<string, true>;
+  isPro: boolean;
   lastCompletedPractice?: LastCompletedPractice;
+  mistakeNoteBadgesExpanded: boolean;
 };

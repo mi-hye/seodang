@@ -9,7 +9,7 @@ import { useAppState } from "../src/state/AppStateProvider";
 
 export default function SettingsScreen() {
   const { locale, setLocale, t } = useI18n();
-  const { setTheme } = useAppState();
+  const { isPro, setProForDevelopment, setTheme } = useAppState();
   const { themeMode, colors, chipStyles, surfaceStyles, textStyles, shadows } =
     useTheme();
   const styles = createStyles({
@@ -71,6 +71,84 @@ export default function SettingsScreen() {
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>{t("settings.pro")}</Text>
+        </View>
+
+        <Pressable
+          style={[styles.infoCard, styles.shadow]}
+          onPress={() => router.navigate(isPro ? "/review-stats" : "/pro")}
+        >
+          <View style={styles.infoCardHeader}>
+            <View style={styles.infoCardTitleRow}>
+              <Ionicons
+                name="stats-chart-outline"
+                size={18}
+                color={colors.accentWarmMuted}
+              />
+              <Text style={styles.infoCardTitle}>
+                {t("settings.reviewStatsTitle")}
+              </Text>
+            </View>
+            <View style={styles.proChip}>
+              <Text style={styles.proChipText}>{t("settings.proBadge")}</Text>
+            </View>
+          </View>
+        </Pressable>
+
+        <Pressable
+          style={[styles.infoCard, styles.shadow]}
+          onPress={() => router.navigate(isPro ? "/mistake-note" : "/pro")}
+        >
+          <View style={styles.infoCardHeader}>
+            <View style={styles.infoCardTitleRow}>
+              <Ionicons
+                name="trophy-outline"
+                size={18}
+                color={colors.accentWarmMuted}
+              />
+              <Text style={styles.infoCardTitle}>
+                {t("settings.mistakeNoteTitle")}
+              </Text>
+            </View>
+            <View style={styles.proChip}>
+              <Text style={styles.proChipText}>{t("settings.proBadge")}</Text>
+            </View>
+          </View>
+        </Pressable>
+
+        {__DEV__ ? (
+          <Pressable
+            style={[styles.infoCard, styles.shadow]}
+            onPress={() => setProForDevelopment(!isPro)}
+          >
+            <View style={styles.infoCardHeader}>
+              <View style={styles.infoCardTitleRow}>
+                <Ionicons
+                  name="construct-outline"
+                  size={18}
+                  color={colors.accentWarmMuted}
+                />
+                <Text style={styles.infoCardTitle}>
+                  {t("settings.devProMode")}
+                </Text>
+              </View>
+              <View style={[styles.devToggle, isPro ? styles.devToggleOn : null]}>
+                <Text
+                  style={[
+                    styles.devToggleText,
+                    isPro ? styles.devToggleTextOn : null,
+                  ]}
+                >
+                  {isPro ? t("settings.devProOn") : t("settings.devProOff")}
+                </Text>
+              </View>
+            </View>
+          </Pressable>
+        ) : null}
+      </View>
+
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>{t("settings.notifications")}</Text>
         </View>
 
@@ -95,9 +173,6 @@ export default function SettingsScreen() {
               color={colors.inkMuted}
             />
           </View>
-          <Text style={styles.infoCardBody}>
-            {t("settings.notificationsRouteBody")}
-          </Text>
         </Pressable>
       </View>
 
@@ -127,9 +202,6 @@ export default function SettingsScreen() {
               color={colors.inkMuted}
             />
           </View>
-          <Text style={styles.infoCardBody}>
-            {t("settings.privacyPolicyBody")}
-          </Text>
         </Pressable>
 
         <Pressable
@@ -153,9 +225,6 @@ export default function SettingsScreen() {
               color={colors.inkMuted}
             />
           </View>
-          <Text style={styles.infoCardBody}>
-            {t("settings.thirdPartyNoticesBody")}
-          </Text>
         </Pressable>
       </View>
     </Screen>
@@ -264,12 +333,39 @@ function createStyles({
       ...textStyles.meta,
       color: colors.inkOnDark,
     },
+    proChip: {
+      ...chipStyles.base,
+      backgroundColor:
+        themeMode === "dark" ? colors.accentWarm : colors.inkStrongAlt,
+    },
+    proChipText: {
+      ...textStyles.meta,
+      color: colors.inkOnDark,
+    },
+    devToggle: {
+      borderRadius: 999,
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[1],
+      backgroundColor: colors.bgMuted,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: colors.borderSoft,
+    },
+    devToggleOn: {
+      backgroundColor: colors.inkStrongAlt,
+      borderColor: colors.inkStrongAlt,
+    },
+    devToggleText: {
+      ...textStyles.meta,
+      color: colors.inkMuted,
+    },
+    devToggleTextOn: {
+      color: colors.inkOnDark,
+    },
     infoCard: {
       ...surfaceStyles.card,
       padding: spacing[6],
       borderWidth: 1,
       borderColor: colors.borderSoft,
-      gap: spacing[2],
     },
     infoCardHeader: {
       flexDirection: "row",
@@ -283,7 +379,6 @@ function createStyles({
       gap: spacing[2],
     },
     infoCardTitle: textStyles.titleMd,
-    infoCardBody: textStyles.bodySm,
     shadow: shadows.card,
   });
 }
