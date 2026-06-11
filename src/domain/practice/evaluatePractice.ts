@@ -70,7 +70,8 @@ export function evaluatePractice({
     const startDistance = distance(normalized.start, reference.start);
     const endDistance = distance(normalized.end, reference.end);
     const positionPassed = startDistance <= 34 && endDistance <= 36;
-    const shouldCheckShape = directionPassed && positionPassed;
+    const shouldCheckShape =
+      directionPassed && positionPassed && isStraightReferenceStroke(reference);
     const shapePassed =
       shouldCheckShape &&
       getMaxDistanceFromReferenceLine(normalized.points, reference) <= 24;
@@ -134,11 +135,13 @@ export function evaluatePractice({
     18,
     Math.min(99, countScore + directionScore + positionScore - shapePenalty),
   );
+  const requiredShapeMatches =
+    shapeEligibleStrokes === 0 ? 0 : Math.ceil(shapeEligibleStrokes * 0.6);
   const passed =
     countGap <= 2 &&
     directionMatches >= Math.ceil(expectedStrokes * 0.4) &&
     positionMatches >= Math.ceil(expectedStrokes * 0.25) &&
-    shapeMatches >= Math.ceil(expectedStrokes * 0.6) &&
+    shapeMatches >= requiredShapeMatches &&
     score >= PRACTICE_PASS_SCORE_THRESHOLD;
 
   if (feedback.length === 0) {
@@ -228,6 +231,10 @@ function isStrokeTooShort(points: CanvasPoint[], reference: KanjiVgStroke) {
   }
 
   return drawnLength < Math.max(8, referenceLength * 0.22);
+}
+
+function isStraightReferenceStroke(reference: KanjiVgStroke) {
+  return reference.type === "horizontal" || reference.type === "vertical";
 }
 
 function getPathLength(points: CanvasPoint[]) {

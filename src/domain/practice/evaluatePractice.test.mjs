@@ -17,6 +17,7 @@ test("passes accurate practice at the higher score threshold", () => {
         direction: "left_to_right",
         start: { x: 10, y: 10 },
         end: { x: 50, y: 10 },
+        type: "horizontal",
       },
       {
         direction: "left_to_right",
@@ -92,6 +93,7 @@ test("penalizes strokes that curve far away from the expected path", () => {
         direction: "left_to_right",
         start: { x: 10, y: 10 },
         end: { x: 50, y: 10 },
+        type: "horizontal",
       },
     ],
     t,
@@ -125,4 +127,32 @@ test("reports very short strokes before direction or position feedback", () => {
 
   assert.equal(result.passed, false);
   assert.equal(result.feedback[0], "practice.eval.strokeTooShort");
+});
+
+test("does not apply straight-line shape penalties to curved reference strokes", () => {
+  const result = evaluatePractice({
+    canvasSize: { width: 100, height: 100 },
+    strokes: [
+      {
+        points: [
+          { x: 10, y: 10 },
+          { x: 30, y: 70 },
+          { x: 50, y: 10 },
+        ],
+      },
+    ],
+    template: [
+      {
+        direction: "left_to_right",
+        start: { x: 10, y: 10 },
+        end: { x: 50, y: 10 },
+        type: "curve",
+      },
+    ],
+    t,
+  });
+
+  assert.equal(result.passed, true);
+  assert.equal(result.score, 99);
+  assert.deepEqual(result.feedback, ["practice.eval.goodMatch"]);
 });
