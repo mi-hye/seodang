@@ -6,9 +6,14 @@ const { evaluatePractice } = await import("./evaluatePractice.ts");
 const t = (key) => key;
 const canvasSize = { width: 100, height: 100 };
 
+const evaluate = (input) => evaluatePractice({
+  canvasSize,
+  t,
+  ...input,
+});
+
 test("passes accurate practice at the higher score threshold", () => {
-  const result = evaluatePractice({
-    canvasSize,
+  const result = evaluate({
     strokes: [
       { points: [{ x: 10, y: 10 }, { x: 50, y: 10 }] },
       { points: [{ x: 10, y: 30 }, { x: 50, y: 30 }] },
@@ -26,7 +31,6 @@ test("passes accurate practice at the higher score threshold", () => {
         end: { x: 50, y: 30 },
       },
     ],
-    t,
   });
 
   assert.equal(result.score, 99);
@@ -34,8 +38,7 @@ test("passes accurate practice at the higher score threshold", () => {
 });
 
 test("fails practice below 70 even when minimum stroke checks pass", () => {
-  const result = evaluatePractice({
-    canvasSize,
+  const result = evaluate({
     strokes: [
       { points: [{ x: 10, y: 10 }, { x: 50, y: 10 }] },
       { points: [{ x: 10, y: 25 }, { x: 50, y: 25 }] },
@@ -70,7 +73,6 @@ test("fails practice below 70 even when minimum stroke checks pass", () => {
         end: { x: 50, y: 70 },
       },
     ],
-    t,
   });
 
   assert.ok(result.score < 65);
@@ -78,8 +80,7 @@ test("fails practice below 70 even when minimum stroke checks pass", () => {
 });
 
 test("penalizes strokes that curve far away from the expected path", () => {
-  const result = evaluatePractice({
-    canvasSize,
+  const result = evaluate({
     strokes: [
       {
         points: [
@@ -97,7 +98,6 @@ test("penalizes strokes that curve far away from the expected path", () => {
         type: "horizontal",
       },
     ],
-    t,
   });
 
   assert.equal(result.passed, false);
@@ -106,8 +106,7 @@ test("penalizes strokes that curve far away from the expected path", () => {
 });
 
 test("reports very short strokes before direction or position feedback", () => {
-  const result = evaluatePractice({
-    canvasSize,
+  const result = evaluate({
     strokes: [
       {
         points: [
@@ -123,7 +122,6 @@ test("reports very short strokes before direction or position feedback", () => {
         end: { x: 80, y: 10 },
       },
     ],
-    t,
   });
 
   assert.equal(result.passed, false);
@@ -131,8 +129,7 @@ test("reports very short strokes before direction or position feedback", () => {
 });
 
 test("does not apply straight-line shape penalties to curved reference strokes", () => {
-  const result = evaluatePractice({
-    canvasSize,
+  const result = evaluate({
     strokes: [
       {
         points: [
@@ -150,7 +147,6 @@ test("does not apply straight-line shape penalties to curved reference strokes",
         type: "curve",
       },
     ],
-    t,
   });
 
   assert.equal(result.passed, true);
@@ -159,8 +155,7 @@ test("does not apply straight-line shape penalties to curved reference strokes",
 });
 
 test("penalizes curved drawings for diagonal sweep strokes", () => {
-  const result = evaluatePractice({
-    canvasSize,
+  const result = evaluate({
     strokes: [
       {
         points: [
@@ -178,7 +173,6 @@ test("penalizes curved drawings for diagonal sweep strokes", () => {
         type: "sweep_left",
       },
     ],
-    t,
   });
 
   assert.equal(result.passed, false);
@@ -187,8 +181,7 @@ test("penalizes curved drawings for diagonal sweep strokes", () => {
 });
 
 test("accepts intentionally short dot strokes", () => {
-  const result = evaluatePractice({
-    canvasSize,
+  const result = evaluate({
     strokes: [
       {
         points: [
@@ -205,7 +198,6 @@ test("accepts intentionally short dot strokes", () => {
         type: "dot",
       },
     ],
-    t,
   });
 
   assert.equal(result.passed, true);
@@ -214,8 +206,7 @@ test("accepts intentionally short dot strokes", () => {
 });
 
 test("rejects extra strokes for simple one-stroke templates", () => {
-  const result = evaluatePractice({
-    canvasSize,
+  const result = evaluate({
     strokes: [
       { points: [{ x: 10, y: 10 }, { x: 80, y: 10 }] },
       { points: [{ x: 10, y: 30 }, { x: 80, y: 30 }] },
@@ -229,7 +220,6 @@ test("rejects extra strokes for simple one-stroke templates", () => {
         type: "horizontal",
       },
     ],
-    t,
   });
 
   assert.equal(result.passed, false);
@@ -239,8 +229,7 @@ test("rejects extra strokes for simple one-stroke templates", () => {
 
 test("does not show good-match feedback for failed practice results", () => {
   const failedResults = [
-    evaluatePractice({
-      canvasSize,
+    evaluate({
       strokes: [{ points: [{ x: 10, y: 10 }, { x: 13, y: 10 }] }],
       template: [
         {
@@ -249,10 +238,8 @@ test("does not show good-match feedback for failed practice results", () => {
           end: { x: 80, y: 10 },
         },
       ],
-      t,
     }),
-    evaluatePractice({
-      canvasSize,
+    evaluate({
       strokes: [
         {
           points: [
@@ -270,7 +257,6 @@ test("does not show good-match feedback for failed practice results", () => {
           type: "horizontal",
         },
       ],
-      t,
     }),
   ];
 
