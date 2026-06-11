@@ -136,18 +136,17 @@ export function evaluatePractice({
     18,
     Math.min(99, countScore + directionScore + positionScore - shapePenalty),
   );
-  const score =
-    countGap > allowedCountGap
-      ? Math.min(PRACTICE_PASS_SCORE_THRESHOLD - 1, rawScore)
-      : rawScore;
   const requiredShapeMatches =
     shapeEligibleStrokes === 0 ? 0 : Math.ceil(shapeEligibleStrokes * 0.6);
-  const passed =
+  const structurallyPassed =
     countGap <= allowedCountGap &&
     directionMatches >= Math.ceil(expectedStrokes * 0.4) &&
     positionMatches >= Math.ceil(expectedStrokes * 0.25) &&
-    shapeMatches >= requiredShapeMatches &&
-    score >= PRACTICE_PASS_SCORE_THRESHOLD;
+    shapeMatches >= requiredShapeMatches;
+  const score = structurallyPassed
+    ? rawScore
+    : Math.min(PRACTICE_PASS_SCORE_THRESHOLD - 1, rawScore);
+  const passed = structurallyPassed && score >= PRACTICE_PASS_SCORE_THRESHOLD;
 
   if (feedback.length === 0) {
     feedback.push(t("practice.eval.goodMatch"));
