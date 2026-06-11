@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { Link, useRouter } from "expo-router";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 
+import { EmptyState } from "../src/components/common/EmptyState";
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning, KanjiCharacter } from "../src/data/characters";
@@ -66,6 +67,16 @@ export default function ReviewScreen() {
     [progressByCharacter],
   );
   const { locale, t } = useI18n();
+  const reviewEmptyBody = nextScheduledReviewAt
+    ? t("review.nextScheduled", {
+        date: formatReviewDateLabel({
+          locale,
+          reviewAt: nextScheduledReviewAt,
+        }),
+      })
+    : completedToday
+      ? undefined
+      : t("review.emptyBody");
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({
     buttonStyles,
@@ -99,36 +110,16 @@ export default function ReviewScreen() {
       ) : null}
 
       {hydrated && !isLoading && items.length === 0 ? (
-        <View style={styles.emptyCard}>
-          <Text style={styles.emptyTitle}>
-            {completedToday
-              ? t("review.completedTitle")
-              : t("review.emptyTitle")}
-          </Text>
-          {!completedToday ? (
-            <Text style={styles.emptyBody}>{t("review.emptyBody")}</Text>
-          ) : null}
-          {nextScheduledReviewAt ? (
-            <Text style={styles.emptyBody}>
-              {t("review.nextScheduled", {
-                date: formatReviewDateLabel({
-                  locale,
-                  reviewAt: nextScheduledReviewAt,
-                }),
-              })}
-            </Text>
-          ) : null}
-          {!completedToday ? (
-            <Pressable
-              style={styles.emptyAction}
-              onPress={() => router.push("/categories")}
-            >
-              <Text style={styles.emptyActionText}>
-                {t("review.emptyAction")}
-              </Text>
-            </Pressable>
-          ) : null}
-        </View>
+        <EmptyState
+          title={
+            completedToday ? t("review.completedTitle") : t("review.emptyTitle")
+          }
+          body={reviewEmptyBody}
+          actionLabel={!completedToday ? t("review.emptyAction") : undefined}
+          onActionPress={
+            !completedToday ? () => router.push("/categories") : undefined
+          }
+        />
       ) : null}
 
       {!isLoading &&
@@ -153,23 +144,25 @@ export default function ReviewScreen() {
                 <View style={styles.left}>
                   <Text style={styles.literal}>{character.literal}</Text>
                   <View style={styles.content}>
-                    <Text style={styles.meaning}>
-                      {getCharacterMeaning(character, locale)}
-                    </Text>
-                    <View
-                      style={[
-                        styles.reasonBadge,
-                        getReasonBadgeStyle(styles, reason),
-                      ]}
-                    >
-                      <Text
+                    <View style={styles.titleRow}>
+                      <Text style={styles.meaning} numberOfLines={1}>
+                        {getCharacterMeaning(character, locale)}
+                      </Text>
+                      <View
                         style={[
-                          styles.reasonBadgeText,
-                          getReasonBadgeTextStyle(styles, reason),
+                          styles.reasonBadge,
+                          getReasonBadgeStyle(styles, reason),
                         ]}
                       >
-                        {t(`review.reason.${reason}`)}
-                      </Text>
+                        <Text
+                          style={[
+                            styles.reasonBadgeText,
+                            getReasonBadgeTextStyle(styles, reason),
+                          ]}
+                        >
+                          {t(`review.reason.${reason}`)}
+                        </Text>
+                      </View>
                     </View>
                     <Text style={styles.score}>
                       {t("review.scoreSummary", {
@@ -283,22 +276,6 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
       ...textStyles.buttonLabel,
       color: colors.inkOnDark,
     },
-    emptyCard: {
-      ...surfaceStyles.card,
-      padding: spacing[6],
-      marginBottom: 12,
-      gap: spacing[3],
-    },
-    emptyTitle: textStyles.titleSm,
-    emptyBody: textStyles.bodySm,
-    emptyAction: {
-      alignSelf: "flex-start",
-      paddingVertical: spacing[1],
-    },
-    emptyActionText: {
-      ...textStyles.meta,
-      color: colors.accentWarmMuted,
-    },
     card: {
       ...surfaceStyles.card,
       padding: 18,
@@ -322,10 +299,17 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
       width: 42,
       textAlign: "center",
     },
-    meaning: textStyles.titleSm,
+    titleRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing[2],
+    },
+    meaning: {
+      ...textStyles.titleSm,
+      flexShrink: 1,
+    },
     reasonBadge: {
-      alignSelf: "flex-start",
-      marginTop: 5,
+      flexShrink: 0,
       borderRadius: 999,
       paddingHorizontal: spacing[2],
       paddingVertical: 3,

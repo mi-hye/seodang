@@ -1,4 +1,3 @@
-import { MaterialIcons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -11,6 +10,8 @@ import {
   View,
 } from "react-native";
 
+import { EmptyState } from "../src/components/common/EmptyState";
+import { ErrorState } from "../src/components/common/ErrorState";
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
 import { getCharacterMeaning } from "../src/data/characters";
 import { KanjiCharacter } from "../src/data/characters";
@@ -92,37 +93,25 @@ export default function SearchScreen() {
           isLoading && deferredSearch ? (
             <SearchResultsSkeleton />
           ) : isError ? (
-            <View style={styles.errorState}>
-              <Text style={styles.errorStateTitle}>
-                {t("search.errorTitle")}
-              </Text>
-              <Pressable
-                style={styles.errorRetryButton}
-                onPress={() => {
-                  void refetch();
-                }}
-                hitSlop={8}
-              >
-                <MaterialIcons
-                  name="refresh"
-                  size={22}
-                  color={colors.accentWarmMuted}
-                />
-              </Pressable>
-            </View>
+            <ErrorState
+              title={t("search.errorTitle")}
+              onRetry={() => {
+                void refetch();
+              }}
+            />
           ) : (
-            <View style={styles.emptyCard}>
-              <Text style={styles.emptyTitle}>
-                {deferredSearch
+            <EmptyState
+              title={
+                deferredSearch
                   ? t("search.emptyTitle")
-                  : t("search.idleTitle")}
-              </Text>
-              <Text style={styles.emptyBody}>
-                {deferredSearch
+                  : t("search.idleTitle")
+              }
+              body={
+                deferredSearch
                   ? t("search.emptyBody")
-                  : t("search.idleBody")}
-              </Text>
-            </View>
+                  : t("search.idleBody")
+              }
+            />
           )
         }
         renderItem={({ item, index }) => (
@@ -291,34 +280,6 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       color: colors.inkMuted,
       fontSize: 18,
       lineHeight: 20,
-    },
-    emptyCard: {
-      ...surfaceStyles.card,
-      padding: spacing[6],
-      gap: 6,
-    },
-    emptyTitle: textStyles.titleSm,
-    emptyBody: textStyles.bodySm,
-    errorState: {
-      alignItems: "center",
-      justifyContent: "center",
-      gap: spacing[3],
-      paddingVertical: spacing[8],
-    },
-    errorStateTitle: {
-      ...textStyles.titleMd,
-      textAlign: "center",
-    },
-    errorRetryButton: {
-      width: 44,
-      height: 44,
-      alignSelf: "center",
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: 999,
-      backgroundColor: colors.bgMuted,
-      borderWidth: 1,
-      borderColor: colors.borderSoft,
     },
     separator: {
       height: 12,

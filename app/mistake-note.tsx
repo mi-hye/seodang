@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { CharacterCardSkeleton } from "../src/components/common/CharacterCardSkeleton";
+import { EmptyState } from "../src/components/common/EmptyState";
 import { FocusedCharacterCard } from "../src/components/common/FocusedCharacterCard";
 import { FocusedReviewActionCard } from "../src/components/common/FocusedReviewActionCard";
 import { ProLockedCard } from "../src/components/common/ProLockedCard";
@@ -300,10 +301,10 @@ export default function MistakeNoteScreen() {
       ) : null}
 
       {hydrated && !isPreparingList && mistakeCharacters.length === 0 ? (
-        <View style={[styles.emptyCard, styles.shadow]}>
-          <Text style={styles.emptyTitle}>{t(emptyStateKeys.titleKey)}</Text>
-          <Text style={styles.emptyBody}>{t(emptyStateKeys.bodyKey)}</Text>
-        </View>
+        <EmptyState
+          title={t(emptyStateKeys.titleKey)}
+          body={t(emptyStateKeys.bodyKey)}
+        />
       ) : null}
 
       {!isPreparingList
@@ -561,13 +562,6 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
       marginBottom: spacing[3],
       textAlign: "right",
     },
-    emptyCard: {
-      ...surfaceStyles.card,
-      padding: spacing[6],
-      gap: spacing[2],
-    },
-    emptyTitle: textStyles.titleSm,
-    emptyBody: textStyles.bodySm,
     shadow: shadows.card,
   });
 }

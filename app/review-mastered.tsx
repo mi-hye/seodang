@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 
 import { CharacterCardSkeleton } from "../src/components/common/CharacterCardSkeleton";
+import { EmptyState } from "../src/components/common/EmptyState";
 import { FocusedReviewActionCard } from "../src/components/common/FocusedReviewActionCard";
 import { FocusedCharacterCard } from "../src/components/common/FocusedCharacterCard";
 import { ProLockedCard } from "../src/components/common/ProLockedCard";
@@ -17,8 +18,8 @@ import { useAppState } from "../src/state/AppStateProvider";
 export default function ReviewMasteredScreen() {
   const { hydrated, isPro, progressByCharacter } = useAppState();
   const { locale, t } = useI18n();
-  const { colors, surfaceStyles, textStyles, shadows } = useTheme();
-  const styles = createStyles({ colors, surfaceStyles, textStyles, shadows });
+  const { textStyles } = useTheme();
+  const styles = createStyles({ textStyles });
   const stats = buildReviewStats(progressByCharacter);
   const {
     handleListScroll,
@@ -79,11 +80,7 @@ export default function ReviewMasteredScreen() {
       ) : null}
 
       {hydrated && !isPreparingList && masteredCharacters.length === 0 ? (
-        <View style={[styles.emptyCard, styles.shadow]}>
-          <Text style={styles.emptyTitle}>
-            {t("reviewStats.masteredListEmpty")}
-          </Text>
-        </View>
+        <EmptyState title={t("reviewStats.masteredListEmpty")} />
       ) : null}
 
       {!isPreparingList
@@ -112,22 +109,16 @@ export default function ReviewMasteredScreen() {
   );
 }
 
-function createStyles({ surfaceStyles, textStyles, shadows }: any) {
+function createStyles({ textStyles }: any) {
   return StyleSheet.create({
     title: {
       ...textStyles.displayMd,
       marginBottom: spacing[6],
-    },
-    emptyCard: {
-      ...surfaceStyles.card,
-      padding: spacing[6],
     },
     listCountMeta: {
       ...textStyles.meta,
       marginBottom: spacing[3],
       textAlign: "right",
     },
-    emptyTitle: textStyles.titleSm,
-    shadow: shadows.card,
   });
 }

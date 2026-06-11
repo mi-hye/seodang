@@ -42,6 +42,8 @@ export function evaluatePractice({
   const matchedCount = Math.min(drawnStrokes, expectedStrokes);
   let directionMatches = 0;
   let positionMatches = 0;
+  let shapeEligibleStrokes = 0;
+  let shapeMatches = 0;
   const feedback: string[] = [];
 
   for (let index = 0; index < matchedCount; index += 1) {
@@ -61,6 +63,10 @@ export function evaluatePractice({
     const startDistance = distance(normalized.start, reference.start);
     const endDistance = distance(normalized.end, reference.end);
     const positionPassed = startDistance <= 34 && endDistance <= 36;
+    const shouldCheckShape = directionPassed && positionPassed;
+    const shapePassed =
+      shouldCheckShape &&
+      getMaxDistanceFromReferenceLine(normalized.points, reference) <= 24;
 
     if (directionPassed) {
       directionMatches += 1;
@@ -76,6 +82,18 @@ export function evaluatePractice({
     if (positionPassed) {
       positionMatches += 1;
     } else if (feedback.length < 4) {
+      feedback.push(
+        t("practice.eval.positionMismatch", { index: index + 1 })
+      );
+    }
+
+    if (shouldCheckShape) {
+      shapeEligibleStrokes += 1;
+    }
+
+    if (shapePassed) {
+      shapeMatches += 1;
+    } else if (shouldCheckShape && feedback.length < 4) {
       feedback.push(
         t("practice.eval.positionMismatch", { index: index + 1 })
       );
@@ -104,11 +122,16 @@ export function evaluatePractice({
     expectedStrokes === 0 ? 0 : Math.round((directionMatches / expectedStrokes) * 33);
   const positionScore =
     expectedStrokes === 0 ? 0 : Math.round((positionMatches / expectedStrokes) * 29);
-  const score = Math.max(18, Math.min(99, countScore + directionScore + positionScore));
+  const shapePenalty = (shapeEligibleStrokes - shapeMatches) * 18;
+  const score = Math.max(
+    18,
+    Math.min(99, countScore + directionScore + positionScore - shapePenalty),
+  );
   const passed =
     countGap <= 2 &&
     directionMatches >= Math.ceil(expectedStrokes * 0.4) &&
     positionMatches >= Math.ceil(expectedStrokes * 0.25) &&
+    shapeMatches >= Math.ceil(expectedStrokes * 0.6) &&
     score >= PRACTICE_PASS_SCORE_THRESHOLD;
 
   if (feedback.length === 0) {
@@ -138,10 +161,11 @@ function normalizeStroke(stroke: InputStroke, canvasSize: CanvasSize) {
     return undefined;
   }
 
-  const start = normalizePoint(stroke.points[0], canvasSize);
-  const end = normalizePoint(stroke.points[stroke.points.length - 1], canvasSize);
+  const points = stroke.points.map((point) => normalizePoint(point, canvasSize));
+  const start = points[0];
+  const end = points[points.length - 1];
 
-  return { start, end };
+  return { start, end, points };
 }
 
 function normalizePoint(point: CanvasPoint, canvasSize: CanvasSize): CanvasPoint {
@@ -175,4 +199,42 @@ function distance(left: CanvasPoint, right: CanvasPoint) {
   const dx = left.x - right.x;
   const dy = left.y - right.y;
   return Math.sqrt(dx * dx + dy * dy);
+}
+
+function getMaxDistanceFromReferenceLine(
+  points: CanvasPoint[],
+  reference: KanjiVgStroke,
+) {
+  return Math.max(
+    ...points.map((point) =>
+      distanceFromLineSegment(point, reference.start, reference.end),
+    ),
+  );
+}
+
+function distanceFromLineSegment(
+  point: CanvasPoint,
+  start: CanvasPoint,
+  end: CanvasPoint,
+) {
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  const lengthSquared = dx * dx + dy * dy;
+
+  if (lengthSquared === 0) {
+    return distance(point, start);
+  }
+
+  const t = Math.max(
+    0,
+    Math.min(
+      1,
+      ((point.x - start.x) * dx + (point.y - start.y) * dy) / lengthSquared,
+    ),
+  );
+
+  return distance(point, {
+    x: start.x + t * dx,
+    y: start.y + t * dy,
+  });
 }

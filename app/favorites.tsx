@@ -3,13 +3,17 @@ import { Link, useRouter } from "expo-router";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { EmptyState } from "../src/components/common/EmptyState";
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning } from "../src/data/characters";
 import { isForcedEmptyState } from "../src/data/debugFetchFailure";
 import { spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
-import { useFavoriteKanjiCharactersQuery } from "../src/queries/kanjiQueries";
+import {
+  kanjiQueryKeys,
+  useFavoriteKanjiCharactersQuery,
+} from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
 import { KanjiCharacter } from "../src/data/characters";
 
@@ -29,26 +33,18 @@ export default function FavoritesScreen() {
     surfaceStyles,
     textStyles,
   });
-  const favoritesQueryKey = [
-    "kanji-characters",
-    "favorites",
-    ...characterIds,
-  ] as const;
+  const favoritesQueryKey = kanjiQueryKeys.favorites(characterIds);
   const unfavoriteMutation = useMutation({
     mutationFn: async (characterId: string) => characterId,
     onMutate: async (characterId) => {
       await queryClient.cancelQueries({
-        queryKey: ["kanji-characters", "favorites"],
+        queryKey: kanjiQueryKeys.favoritesRoot(),
       });
 
       const previousItems =
         queryClient.getQueryData<KanjiCharacter[]>(favoritesQueryKey) ?? [];
       const nextIds = characterIds.filter((id) => id !== characterId);
-      const nextQueryKey = [
-        "kanji-characters",
-        "favorites",
-        ...nextIds,
-      ] as const;
+      const nextQueryKey = kanjiQueryKeys.favorites(nextIds);
       const nextItems = previousItems.filter(
         (character) => character.id !== characterId,
       );
@@ -69,14 +65,14 @@ export default function FavoritesScreen() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: ["kanji-characters", "favorites"],
+        queryKey: kanjiQueryKeys.favoritesRoot(),
       });
     },
   });
 
   useEffect(() => {
     if (characterIds.length === 0) {
-      queryClient.setQueryData(["kanji-characters", "favorites"], []);
+      queryClient.setQueryData(kanjiQueryKeys.favoritesRoot(), []);
     }
   }, [characterIds.length, queryClient]);
 
@@ -87,17 +83,11 @@ export default function FavoritesScreen() {
       {isLoading && characterIds.length > 0 ? <FavoritesSkeleton /> : null}
 
       {hydrated && !isLoading && items.length === 0 ? (
-        <View style={styles.emptyCard}>
-          <Text style={styles.emptyTitle}>{t("favorites.emptyTitle")}</Text>
-          <Pressable
-            style={styles.emptyAction}
-            onPress={() => router.push("/categories")}
-          >
-            <Text style={styles.emptyActionText}>
-              {t("favorites.emptyAction")}
-            </Text>
-          </Pressable>
-        </View>
+        <EmptyState
+          title={t("favorites.emptyTitle")}
+          actionLabel={t("favorites.emptyAction")}
+          onActionPress={() => router.push("/categories")}
+        />
       ) : null}
 
       {!isLoading &&
@@ -193,22 +183,6 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
     title: {
       ...textStyles.displayMd,
       marginBottom: spacing[6],
-    },
-    emptyCard: {
-      ...surfaceStyles.card,
-      padding: spacing[6],
-      marginBottom: 12,
-      gap: spacing[3],
-    },
-    emptyTitle: textStyles.titleSm,
-    emptyBody: textStyles.bodySm,
-    emptyAction: {
-      alignSelf: "flex-start",
-      paddingVertical: spacing[1],
-    },
-    emptyActionText: {
-      ...textStyles.meta,
-      color: colors.accentWarmMuted,
     },
     card: {
       ...surfaceStyles.card,

@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { MaterialIcons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import { ErrorState } from "../../src/components/common/ErrorState";
 import { FavoriteButton } from "../../src/components/common/FavoriteButton";
 import { Screen } from "../../src/components/common/Screen";
 import { spacing, useTheme } from "../../src/design/theme";
@@ -155,21 +155,14 @@ export default function PracticeResultScreen() {
           ) : null}
 
           {isCategoryLoadError ? (
-            <View style={styles.errorState}>
-              <Text style={styles.errorStateTitle}>{t("result.errorTitle")}</Text>
-              <Pressable
-                style={styles.errorRetryButton}
-                onPress={() => {
+            <View style={styles.nextErrorState}>
+              <ErrorState
+                title={t("result.errorTitle")}
+                body={t("result.errorBody")}
+                onRetry={() => {
                   void refetchCategoryCharacters();
                 }}
-                hitSlop={8}
-              >
-                <MaterialIcons
-                  name="refresh"
-                  size={22}
-                  color={colors.accentWarmMuted}
-                />
-              </Pressable>
+              />
             </View>
           ) : (
             <Pressable
@@ -302,27 +295,8 @@ function createStyles({
     nextActionWrap: {
       position: "relative",
     },
-    errorState: {
-      alignItems: "center",
-      justifyContent: "center",
-      gap: spacing[3],
-      paddingVertical: spacing[4],
+    nextErrorState: {
       marginBottom: 20,
-    },
-    errorStateTitle: {
-      ...textStyles.titleMd,
-      textAlign: "center",
-    },
-    errorRetryButton: {
-      width: 44,
-      height: 44,
-      alignSelf: "center",
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: 999,
-      backgroundColor: colors.bgMuted,
-      borderWidth: 1,
-      borderColor: colors.borderSoft,
     },
     onboardingHint: {
       position: "absolute",

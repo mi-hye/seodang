@@ -1,4 +1,4 @@
-import { requireSupabaseConfig } from "./supabaseEnv";
+import { supabaseFetchJson } from "./supabaseFetch";
 
 type CharacterCategoryMappingRow = {
   character_id: string;
@@ -13,14 +13,9 @@ export async function fetchCategoryMappingsByCharacterIds(characterIds: string[]
   if (characterIds.length === 0) {
     return [];
   }
-  const { supabaseUrl, supabaseAnonKey } = requireSupabaseConfig();
 
   const practicalCharacterIds = new Set(
-    await fetchPracticalCharacterIdsByIds(
-      characterIds,
-      supabaseUrl,
-      supabaseAnonKey,
-    ),
+    await fetchPracticalCharacterIdsByIds(characterIds),
   );
   if (!practicalCharacterIds.size) {
     return [];
@@ -39,31 +34,17 @@ export async function fetchCategoryMappingsByCharacterIds(characterIds: string[]
         character_id: `in.(${practicalIds.map(encodeSupabaseValue).join(",")})`,
       });
 
-      const response = await fetch(
-        `${supabaseUrl}/rest/v1/kanji_character_categories?${params.toString()}`,
-        {
-          headers: buildHeaders(supabaseAnonKey),
-        },
+      return supabaseFetchJson<CharacterCategoryMappingRow[]>(
+        `/rest/v1/kanji_character_categories?${params.toString()}`,
+        "Failed to fetch category mappings",
       );
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch category mappings: ${response.status}`,
-        );
-      }
-
-      return (await response.json()) as CharacterCategoryMappingRow[];
     }),
   );
 
   return pages.flat();
 }
 
-async function fetchPracticalCharacterIdsByIds(
-  characterIds: string[],
-  supabaseUrl: string,
-  supabaseAnonKey: string,
-) {
+async function fetchPracticalCharacterIdsByIds(characterIds: string[]) {
   const chunks = chunk(characterIds, characterIdsChunkSize);
   const pages = await Promise.all(
     chunks.map(async (ids) => {
@@ -71,20 +52,10 @@ async function fetchPracticalCharacterIdsByIds(
         select: "id",
         id: `in.(${ids.map(encodeSupabaseValue).join(",")})`,
       });
-      const response = await fetch(
-        `${supabaseUrl}/rest/v1/kanji_characters?${params.toString()}&${practicalCharacterFilter}`,
-        {
-          headers: buildHeaders(supabaseAnonKey),
-        },
+      return supabaseFetchJson<Array<{ id: string }>>(
+        `/rest/v1/kanji_characters?${params.toString()}&${practicalCharacterFilter}`,
+        "Failed to fetch practical characters",
       );
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch practical characters: ${response.status}`,
-        );
-      }
-
-      return (await response.json()) as Array<{ id: string }>;
     }),
   );
 
@@ -99,13 +70,6 @@ function chunk<T>(items: T[], size: number) {
   }
 
   return chunks;
-}
-
-function buildHeaders(supabaseAnonKey: string) {
-  return {
-    apikey: supabaseAnonKey,
-    Authorization: `Bearer ${supabaseAnonKey}`,
-  };
 }
 
 function encodeSupabaseValue(value: string) {

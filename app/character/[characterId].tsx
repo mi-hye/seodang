@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { MaterialIcons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import { ErrorState } from "../../src/components/common/ErrorState";
 import { Screen } from "../../src/components/common/Screen";
 import { getCharacterMeaning } from "../../src/data/characters";
 import { spacing, useTheme } from "../../src/design/theme";
@@ -49,22 +49,13 @@ export default function CharacterDetailScreen() {
     return (
       <Screen>
         {isError ? (
-          <View style={styles.errorState}>
-            <Text style={styles.errorStateTitle}>{t("detail.errorTitle")}</Text>
-            <Pressable
-              style={styles.errorRetryButton}
-              onPress={() => {
-                void refetch();
-              }}
-              hitSlop={8}
-            >
-              <MaterialIcons
-                name="refresh"
-                size={22}
-                color={colors.accentWarmMuted}
-              />
-            </Pressable>
-          </View>
+          <ErrorState
+            title={t("detail.errorTitle")}
+            body={t("detail.errorBody")}
+            onRetry={() => {
+              void refetch();
+            }}
+          />
         ) : (
           <Text style={styles.errorTitle}>{t("detail.missing")}</Text>
         )}
@@ -243,12 +234,6 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
       color: colors.accentWarmMuted,
       fontSize: 16,
     },
-    errorState: {
-      alignItems: "center",
-      justifyContent: "center",
-      gap: spacing[3],
-      paddingVertical: spacing[8],
-    },
     loadingState: {
       alignItems: "center",
       justifyContent: "center",
@@ -257,21 +242,6 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
     loadingStateTitle: {
       ...textStyles.titleMd,
       textAlign: "center",
-    },
-    errorStateTitle: {
-      ...textStyles.titleMd,
-      textAlign: "center",
-    },
-    errorRetryButton: {
-      width: 44,
-      height: 44,
-      alignSelf: "center",
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: 999,
-      backgroundColor: colors.bgMuted,
-      borderWidth: 1,
-      borderColor: colors.borderSoft,
     },
     errorTitle: textStyles.displaySm,
   });
