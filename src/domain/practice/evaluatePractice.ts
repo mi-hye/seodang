@@ -8,6 +8,7 @@ import type {
 } from "../../types/practice";
 
 export const PRACTICE_PASS_SCORE_THRESHOLD = 70;
+const STRUCTURAL_FAILURE_SCORE_CAP = 64;
 
 type EvaluatePracticeInput = {
   strokes: InputStroke[];
@@ -58,12 +59,20 @@ export function evaluatePractice({
       continue;
     }
 
+    if (isStrokeTooShort(normalized.points, reference)) {
+      feedback.push(
+        t("practice.eval.strokeTooShort", { index: index + 1 })
+      );
+      continue;
+    }
+
     const direction = classifyDirection(normalized.start, normalized.end);
     const directionPassed = direction === reference.direction;
     const startDistance = distance(normalized.start, reference.start);
     const endDistance = distance(normalized.end, reference.end);
     const positionPassed = startDistance <= 34 && endDistance <= 36;
-    const shouldCheckShape = directionPassed && positionPassed;
+    const shouldCheckShape =
+      directionPassed && positionPassed && isStraightReferenceStroke(reference);
     const shapePassed =
       shouldCheckShape &&
       getMaxDistanceFromReferenceLine(normalized.points, reference) <= 24;
@@ -95,7 +104,7 @@ export function evaluatePractice({
       shapeMatches += 1;
     } else if (shouldCheckShape && feedback.length < 4) {
       feedback.push(
-        t("practice.eval.positionMismatch", { index: index + 1 })
+        t("practice.eval.shapeMismatch", { index: index + 1 })
       );
     }
   }
@@ -123,16 +132,23 @@ export function evaluatePractice({
   const positionScore =
     expectedStrokes === 0 ? 0 : Math.round((positionMatches / expectedStrokes) * 29);
   const shapePenalty = (shapeEligibleStrokes - shapeMatches) * 18;
-  const score = Math.max(
+  const allowedCountGap = getAllowedCountGap(expectedStrokes);
+  const rawScore = Math.max(
     18,
     Math.min(99, countScore + directionScore + positionScore - shapePenalty),
   );
-  const passed =
-    countGap <= 2 &&
+  const requiredShapeMatches =
+    shapeEligibleStrokes === 0 ? 0 : Math.ceil(shapeEligibleStrokes * 0.6);
+  const structurallyPassed =
+    countGap <= allowedCountGap &&
     directionMatches >= Math.ceil(expectedStrokes * 0.4) &&
     positionMatches >= Math.ceil(expectedStrokes * 0.25) &&
-    shapeMatches >= Math.ceil(expectedStrokes * 0.6) &&
-    score >= PRACTICE_PASS_SCORE_THRESHOLD;
+    shapeMatches >= requiredShapeMatches;
+  const passed =
+    structurallyPassed && rawScore >= PRACTICE_PASS_SCORE_THRESHOLD;
+  const score = passed
+    ? rawScore
+    : Math.min(STRUCTURAL_FAILURE_SCORE_CAP, rawScore);
 
   if (feedback.length === 0) {
     feedback.push(t("practice.eval.goodMatch"));
@@ -154,6 +170,12 @@ function getScoreSummaryKey(score: number) {
   if (score >= 65) return "practice.eval.summary.good";
   if (score >= 50) return "practice.eval.summary.close";
   return "practice.eval.summary.tryAgain";
+}
+
+function getAllowedCountGap(expectedStrokes: number) {
+  if (expectedStrokes <= 2) return 0;
+  if (expectedStrokes <= 8) return 1;
+  return 2;
 }
 
 function normalizeStroke(stroke: InputStroke, canvasSize: CanvasSize) {
@@ -210,6 +232,38 @@ function getMaxDistanceFromReferenceLine(
       distanceFromLineSegment(point, reference.start, reference.end),
     ),
   );
+}
+
+function isStrokeTooShort(points: CanvasPoint[], reference: KanjiVgStroke) {
+  const drawnLength = getPathLength(points);
+  const referenceLength = distance(reference.start, reference.end);
+  const minimumLength = reference.type === "dot" ? 2 : 8;
+  const referenceRatio = reference.type === "dot" ? 0.15 : 0.22;
+
+  if (referenceLength <= 0) {
+    return drawnLength < minimumLength;
+  }
+
+  return drawnLength < Math.max(minimumLength, referenceLength * referenceRatio);
+}
+
+function isStraightReferenceStroke(reference: KanjiVgStroke) {
+  return (
+    reference.type === "horizontal" ||
+    reference.type === "vertical" ||
+    reference.type === "sweep_left" ||
+    reference.type === "sweep_right"
+  );
+}
+
+function getPathLength(points: CanvasPoint[]) {
+  let length = 0;
+
+  for (let index = 1; index < points.length; index += 1) {
+    length += distance(points[index - 1], points[index]);
+  }
+
+  return length;
 }
 
 function distanceFromLineSegment(

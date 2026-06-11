@@ -103,6 +103,7 @@
   "practice.eval.strokeTooShort": "%{index}번째 획이 너무 짧게 입력되었습니다.",
   "practice.eval.directionMismatch": "%{index}번째 획 방향이 다릅니다.%{note}",
   "practice.eval.positionMismatch": "%{index}번째 획의 시작점이나 끝점 위치가 기준과 조금 다릅니다.",
+  "practice.eval.shapeMismatch": "%{index}번째 획의 흐름이 기준 경로에서 많이 벗어났습니다.",
   "practice.eval.notEnoughStrokes": "획 수가 부족합니다. %{expected}획 중 %{drawn}획을 썼습니다.",
   "practice.eval.tooManyStrokes": "획 수가 많습니다. %{expected}획보다 많이 그렸습니다.",
   "practice.eval.goodMatch": "획 수, 방향, 시작 위치가 기준과 전반적으로 잘 맞았습니다.",
