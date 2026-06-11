@@ -230,6 +230,42 @@ test("rejects extra strokes for simple one-stroke templates", () => {
 test("does not show good-match feedback for failed practice results", () => {
   const failedResults = [
     evaluate({
+      strokes: [
+        { points: [{ x: 10, y: 10 }, { x: 50, y: 10 }] },
+        { points: [{ x: 10, y: 25 }, { x: 50, y: 25 }] },
+        { points: [{ x: 90, y: 90 }, { x: 90, y: 50 }] },
+        { points: [{ x: 80, y: 80 }, { x: 80, y: 40 }] },
+        { points: [{ x: 70, y: 70 }, { x: 70, y: 30 }] },
+      ],
+      template: [
+        {
+          direction: "left_to_right",
+          start: { x: 10, y: 10 },
+          end: { x: 50, y: 10 },
+        },
+        {
+          direction: "left_to_right",
+          start: { x: 10, y: 25 },
+          end: { x: 50, y: 25 },
+        },
+        {
+          direction: "left_to_right",
+          start: { x: 10, y: 40 },
+          end: { x: 50, y: 40 },
+        },
+        {
+          direction: "left_to_right",
+          start: { x: 10, y: 55 },
+          end: { x: 50, y: 55 },
+        },
+        {
+          direction: "left_to_right",
+          start: { x: 10, y: 70 },
+          end: { x: 50, y: 70 },
+        },
+      ],
+    }),
+    evaluate({
       strokes: [{ points: [{ x: 10, y: 10 }, { x: 13, y: 10 }] }],
       template: [
         {
