@@ -74,3 +74,29 @@ test("fails practice below 70 even when minimum stroke checks pass", () => {
   assert.equal(result.score, 65);
   assert.equal(result.passed, false);
 });
+
+test("penalizes strokes that curve far away from the expected path", () => {
+  const result = evaluatePractice({
+    canvasSize: { width: 100, height: 100 },
+    strokes: [
+      {
+        points: [
+          { x: 10, y: 10 },
+          { x: 30, y: 70 },
+          { x: 50, y: 10 },
+        ],
+      },
+    ],
+    template: [
+      {
+        direction: "left_to_right",
+        start: { x: 10, y: 10 },
+        end: { x: 50, y: 10 },
+      },
+    ],
+    t,
+  });
+
+  assert.equal(result.passed, false);
+  assert.ok(result.score < 90);
+});
