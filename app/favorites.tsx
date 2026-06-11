@@ -3,6 +3,7 @@ import { Link, useRouter } from "expo-router";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { EmptyState } from "../src/components/common/EmptyState";
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning } from "../src/data/characters";
@@ -82,17 +83,11 @@ export default function FavoritesScreen() {
       {isLoading && characterIds.length > 0 ? <FavoritesSkeleton /> : null}
 
       {hydrated && !isLoading && items.length === 0 ? (
-        <View style={styles.emptyCard}>
-          <Text style={styles.emptyTitle}>{t("favorites.emptyTitle")}</Text>
-          <Pressable
-            style={styles.emptyAction}
-            onPress={() => router.push("/categories")}
-          >
-            <Text style={styles.emptyActionText}>
-              {t("favorites.emptyAction")}
-            </Text>
-          </Pressable>
-        </View>
+        <EmptyState
+          title={t("favorites.emptyTitle")}
+          actionLabel={t("favorites.emptyAction")}
+          onActionPress={() => router.push("/categories")}
+        />
       ) : null}
 
       {!isLoading &&
@@ -188,22 +183,6 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
     title: {
       ...textStyles.displayMd,
       marginBottom: spacing[6],
-    },
-    emptyCard: {
-      ...surfaceStyles.card,
-      padding: spacing[6],
-      marginBottom: 12,
-      gap: spacing[3],
-    },
-    emptyTitle: textStyles.titleSm,
-    emptyBody: textStyles.bodySm,
-    emptyAction: {
-      alignSelf: "flex-start",
-      paddingVertical: spacing[1],
-    },
-    emptyActionText: {
-      ...textStyles.meta,
-      color: colors.accentWarmMuted,
     },
     card: {
       ...surfaceStyles.card,

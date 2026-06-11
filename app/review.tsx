@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { Link, useRouter } from "expo-router";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 
+import { EmptyState } from "../src/components/common/EmptyState";
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
 import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning, KanjiCharacter } from "../src/data/characters";
@@ -66,6 +67,16 @@ export default function ReviewScreen() {
     [progressByCharacter],
   );
   const { locale, t } = useI18n();
+  const reviewEmptyBody = nextScheduledReviewAt
+    ? t("review.nextScheduled", {
+        date: formatReviewDateLabel({
+          locale,
+          reviewAt: nextScheduledReviewAt,
+        }),
+      })
+    : completedToday
+      ? undefined
+      : t("review.emptyBody");
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({
     buttonStyles,
@@ -99,36 +110,16 @@ export default function ReviewScreen() {
       ) : null}
 
       {hydrated && !isLoading && items.length === 0 ? (
-        <View style={styles.emptyCard}>
-          <Text style={styles.emptyTitle}>
-            {completedToday
-              ? t("review.completedTitle")
-              : t("review.emptyTitle")}
-          </Text>
-          {!completedToday ? (
-            <Text style={styles.emptyBody}>{t("review.emptyBody")}</Text>
-          ) : null}
-          {nextScheduledReviewAt ? (
-            <Text style={styles.emptyBody}>
-              {t("review.nextScheduled", {
-                date: formatReviewDateLabel({
-                  locale,
-                  reviewAt: nextScheduledReviewAt,
-                }),
-              })}
-            </Text>
-          ) : null}
-          {!completedToday ? (
-            <Pressable
-              style={styles.emptyAction}
-              onPress={() => router.push("/categories")}
-            >
-              <Text style={styles.emptyActionText}>
-                {t("review.emptyAction")}
-              </Text>
-            </Pressable>
-          ) : null}
-        </View>
+        <EmptyState
+          title={
+            completedToday ? t("review.completedTitle") : t("review.emptyTitle")
+          }
+          body={reviewEmptyBody}
+          actionLabel={!completedToday ? t("review.emptyAction") : undefined}
+          onActionPress={
+            !completedToday ? () => router.push("/categories") : undefined
+          }
+        />
       ) : null}
 
       {!isLoading &&
@@ -282,22 +273,6 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
     startButtonLabel: {
       ...textStyles.buttonLabel,
       color: colors.inkOnDark,
-    },
-    emptyCard: {
-      ...surfaceStyles.card,
-      padding: spacing[6],
-      marginBottom: 12,
-      gap: spacing[3],
-    },
-    emptyTitle: textStyles.titleSm,
-    emptyBody: textStyles.bodySm,
-    emptyAction: {
-      alignSelf: "flex-start",
-      paddingVertical: spacing[1],
-    },
-    emptyActionText: {
-      ...textStyles.meta,
-      color: colors.accentWarmMuted,
     },
     card: {
       ...surfaceStyles.card,
