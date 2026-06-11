@@ -181,7 +181,7 @@ test("penalizes curved drawings for diagonal sweep strokes", () => {
   });
 
   assert.equal(result.passed, false);
-  assert.ok(result.score < 90);
+  assert.ok(result.score < 70);
   assert.ok(result.feedback.includes("practice.eval.shapeMismatch"));
 });
 
