@@ -12,9 +12,36 @@ import { fetchKanjiStrokeDataByLiteral } from "../data/fetchKanjiStrokeData";
 
 const CATALOG_QUERY_VERSION = "2026-06-04-practical-v1";
 
+export const kanjiQueryKeys = {
+  allCharacters: () => ["kanji-characters", "all"] as const,
+  categoryCharacters: (
+    categoryKey: string | undefined,
+    locale: "ko" | "ja",
+  ) =>
+    [
+      "kanji-category-characters",
+      CATALOG_QUERY_VERSION,
+      categoryKey,
+      locale,
+    ] as const,
+  categoryGroups: (locale: "ko" | "ja") =>
+    ["kanji-category-groups", CATALOG_QUERY_VERSION, locale] as const,
+  categoryProgressMappings: (characterIds: string[]) =>
+    ["kanji-category-progress-mappings", ...characterIds] as const,
+  character: (characterId: string | undefined, debugScope: string) =>
+    ["kanji-character", characterId, debugScope] as const,
+  charactersByIds: (characterIds: string[]) =>
+    ["kanji-characters", "ids", ...characterIds] as const,
+  favorites: (characterIds: string[] = []) =>
+    ["kanji-characters", "favorites", ...characterIds] as const,
+  favoritesRoot: () => ["kanji-characters", "favorites"] as const,
+  strokeData: (literal: string | undefined, debugScope: string) =>
+    ["kanji-stroke-data", literal, debugScope] as const,
+};
+
 export function useKanjiCategoryGroupsQuery(locale: "ko" | "ja") {
   return useQuery({
-    queryKey: ["kanji-category-groups", CATALOG_QUERY_VERSION, locale],
+    queryKey: kanjiQueryKeys.categoryGroups(locale),
     queryFn: () => fetchKanjiCategoryGroups(locale, "categories"),
   });
 }
@@ -25,12 +52,7 @@ export function useKanjiCharactersByCategoryQuery(
   debugScope = "list",
 ) {
   return useInfiniteQuery({
-    queryKey: [
-      "kanji-category-characters",
-      CATALOG_QUERY_VERSION,
-      categoryKey,
-      locale,
-    ],
+    queryKey: kanjiQueryKeys.categoryCharacters(categoryKey, locale),
     queryFn: ({ pageParam = 0 }) =>
       fetchKanjiCategoryCharactersByKey({
         categoryKey,
@@ -53,7 +75,7 @@ export function useKanjiCharactersByCategoryQuery(
 
 export function useKanjiCharactersByIdsQuery(characterIds: string[]) {
   return useQuery({
-    queryKey: ["kanji-characters", "ids", ...characterIds],
+    queryKey: kanjiQueryKeys.charactersByIds(characterIds),
     queryFn: () => fetchKanjiCharactersByIds(characterIds),
     enabled: characterIds.length > 0,
     placeholderData: (previousData) =>
@@ -63,7 +85,7 @@ export function useKanjiCharactersByIdsQuery(characterIds: string[]) {
 
 export function useFavoriteKanjiCharactersQuery(characterIds: string[]) {
   return useQuery({
-    queryKey: ["kanji-characters", "favorites", ...characterIds],
+    queryKey: kanjiQueryKeys.favorites(characterIds),
     queryFn: () => fetchKanjiCharactersByIds(characterIds),
   });
 }
@@ -73,7 +95,7 @@ export function useKanjiCharacterQuery(
   debugScope = "detail",
 ) {
   return useQuery({
-    queryKey: ["kanji-character", characterId, debugScope],
+    queryKey: kanjiQueryKeys.character(characterId, debugScope),
     queryFn: () => fetchKanjiCharacterById(characterId, debugScope),
     enabled: Boolean(characterId),
   });
@@ -81,7 +103,7 @@ export function useKanjiCharacterQuery(
 
 export function useKanjiCategoryProgressMappingsQuery(characterIds: string[]) {
   return useQuery({
-    queryKey: ["kanji-category-progress-mappings", ...characterIds],
+    queryKey: kanjiQueryKeys.categoryProgressMappings(characterIds),
     queryFn: () => fetchCategoryMappingsByCharacterIds(characterIds),
     enabled: characterIds.length > 0,
     staleTime: 1000 * 60 * 10,
@@ -90,7 +112,7 @@ export function useKanjiCategoryProgressMappingsQuery(characterIds: string[]) {
 
 export function useAllKanjiCharactersQuery() {
   return useQuery({
-    queryKey: ["kanji-characters", "all"],
+    queryKey: kanjiQueryKeys.allCharacters(),
     queryFn: () => fetchAllKanjiCharacters("search"),
     staleTime: 1000 * 60 * 10,
   });
@@ -101,7 +123,7 @@ export function useKanjiStrokeDataQuery(
   debugScope = "practice",
 ) {
   return useQuery({
-    queryKey: ["kanji-stroke-data", literal, debugScope],
+    queryKey: kanjiQueryKeys.strokeData(literal, debugScope),
     queryFn: () => fetchKanjiStrokeDataByLiteral(literal ?? "", debugScope),
     enabled: Boolean(literal),
   });

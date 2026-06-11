@@ -1,7 +1,7 @@
 import { KanjiCharacter, KanjiCharacterMetadata } from "./characters";
 import { throwIfForcedFetchFailure } from "./debugFetchFailure";
 import { KanjiCategory } from "./fetchKanjiCategories";
-import { requireSupabaseConfig } from "./supabaseEnv";
+import { supabaseFetchJson } from "./supabaseFetch";
 
 type KanjiCharacterRow = {
   id: string;
@@ -56,7 +56,6 @@ export async function fetchKanjiCategoryCharactersByKey({
   if (!categoryKey) {
     return null;
   }
-  const { supabaseUrl, supabaseAnonKey } = requireSupabaseConfig();
 
   const params = new URLSearchParams({
     locale,
@@ -64,25 +63,16 @@ export async function fetchKanjiCategoryCharactersByKey({
     limit: String(limit),
     offset: String(offset),
   });
-  const response = await fetch(
-    `${supabaseUrl}/functions/v1/kanji-catalog?${params.toString()}`,
-    {
-      headers: buildHeaders(supabaseAnonKey),
-    }
+  return supabaseFetchJson<KanjiCategoryCharactersPayload | null>(
+    `/functions/v1/kanji-catalog?${params.toString()}`,
+    "Failed to fetch kanji category characters",
   );
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch kanji category characters: ${response.status}`);
-  }
-
-  return (await response.json()) as KanjiCategoryCharactersPayload | null;
 }
 
 export async function fetchKanjiCharactersByIds(characterIds: string[]) {
   if (characterIds.length === 0) {
     return [];
   }
-  const { supabaseUrl, supabaseAnonKey } = requireSupabaseConfig();
 
   const params = new URLSearchParams({
     select: characterSelect,
@@ -90,15 +80,10 @@ export async function fetchKanjiCharactersByIds(characterIds: string[]) {
     order: "sort_order.asc.nullslast,literal.asc",
   });
 
-  const response = await fetch(`${supabaseUrl}/rest/v1/kanji_characters?${params.toString()}`, {
-    headers: buildHeaders(supabaseAnonKey),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch kanji characters: ${response.status}`);
-  }
-
-  const rows = (await response.json()) as KanjiCharacterRow[];
+  const rows = await supabaseFetchJson<KanjiCharacterRow[]>(
+    `/rest/v1/kanji_characters?${params.toString()}`,
+    "Failed to fetch kanji characters",
+  );
   const rowsById = new Map(rows.map((row) => [row.id, mapKanjiCharacter(row)]));
 
   return characterIds
@@ -115,7 +100,6 @@ export async function fetchKanjiCharacterById(
   if (!characterId) {
     return null;
   }
-  const { supabaseUrl, supabaseAnonKey } = requireSupabaseConfig();
 
   const params = new URLSearchParams({
     select: characterSelect,
@@ -123,21 +107,15 @@ export async function fetchKanjiCharacterById(
     limit: "1",
   });
 
-  const response = await fetch(`${supabaseUrl}/rest/v1/kanji_characters?${params.toString()}`, {
-    headers: buildHeaders(supabaseAnonKey),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch kanji character: ${response.status}`);
-  }
-
-  const rows = (await response.json()) as KanjiCharacterRow[];
+  const rows = await supabaseFetchJson<KanjiCharacterRow[]>(
+    `/rest/v1/kanji_characters?${params.toString()}`,
+    "Failed to fetch kanji character",
+  );
   return rows[0] ? mapKanjiCharacter(rows[0]) : null;
 }
 
 export async function fetchAllKanjiCharacters(debugScope = "search") {
   throwIfForcedFetchFailure(debugScope);
-  const { supabaseUrl, supabaseAnonKey } = requireSupabaseConfig();
 
   const pageSize = 1000;
   let offset = 0;
@@ -148,23 +126,15 @@ export async function fetchAllKanjiCharacters(debugScope = "search") {
       select: characterSelect,
       order: "literal.asc",
     });
-    const response = await fetch(
-      `${supabaseUrl}/rest/v1/kanji_characters?${params.toString()}&${practicalCharacterFilter}`,
+    const pageRows = await supabaseFetchJson<KanjiCharacterRow[]>(
+      `/rest/v1/kanji_characters?${params.toString()}&${practicalCharacterFilter}`,
+      "Failed to fetch all kanji characters",
       {
         headers: {
-          ...buildHeaders(supabaseAnonKey),
           Range: `${offset}-${offset + pageSize - 1}`,
         },
       },
     );
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch all kanji characters: ${response.status}`,
-      );
-    }
-
-    const pageRows = (await response.json()) as KanjiCharacterRow[];
     rows.push(...pageRows);
 
     if (pageRows.length < pageSize) {
@@ -194,13 +164,6 @@ function mapKanjiCharacter(row: KanjiCharacterRow): KanjiCharacter {
     sortOrder: row.sort_order,
     isJoyo: row.is_joyo,
     metadata: row.metadata ?? null,
-  };
-}
-
-function buildHeaders(supabaseAnonKey: string) {
-  return {
-    apikey: supabaseAnonKey,
-    Authorization: `Bearer ${supabaseAnonKey}`,
   };
 }
 

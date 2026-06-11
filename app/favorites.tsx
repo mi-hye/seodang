@@ -9,7 +9,10 @@ import { getCharacterMeaning } from "../src/data/characters";
 import { isForcedEmptyState } from "../src/data/debugFetchFailure";
 import { spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
-import { useFavoriteKanjiCharactersQuery } from "../src/queries/kanjiQueries";
+import {
+  kanjiQueryKeys,
+  useFavoriteKanjiCharactersQuery,
+} from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
 import { KanjiCharacter } from "../src/data/characters";
 
@@ -29,26 +32,18 @@ export default function FavoritesScreen() {
     surfaceStyles,
     textStyles,
   });
-  const favoritesQueryKey = [
-    "kanji-characters",
-    "favorites",
-    ...characterIds,
-  ] as const;
+  const favoritesQueryKey = kanjiQueryKeys.favorites(characterIds);
   const unfavoriteMutation = useMutation({
     mutationFn: async (characterId: string) => characterId,
     onMutate: async (characterId) => {
       await queryClient.cancelQueries({
-        queryKey: ["kanji-characters", "favorites"],
+        queryKey: kanjiQueryKeys.favoritesRoot(),
       });
 
       const previousItems =
         queryClient.getQueryData<KanjiCharacter[]>(favoritesQueryKey) ?? [];
       const nextIds = characterIds.filter((id) => id !== characterId);
-      const nextQueryKey = [
-        "kanji-characters",
-        "favorites",
-        ...nextIds,
-      ] as const;
+      const nextQueryKey = kanjiQueryKeys.favorites(nextIds);
       const nextItems = previousItems.filter(
         (character) => character.id !== characterId,
       );
@@ -69,14 +64,14 @@ export default function FavoritesScreen() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: ["kanji-characters", "favorites"],
+        queryKey: kanjiQueryKeys.favoritesRoot(),
       });
     },
   });
 
   useEffect(() => {
     if (characterIds.length === 0) {
-      queryClient.setQueryData(["kanji-characters", "favorites"], []);
+      queryClient.setQueryData(kanjiQueryKeys.favoritesRoot(), []);
     }
   }, [characterIds.length, queryClient]);
 
