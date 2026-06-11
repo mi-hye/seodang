@@ -184,3 +184,30 @@ test("penalizes curved drawings for diagonal sweep strokes", () => {
   assert.ok(result.score < 90);
   assert.ok(result.feedback.includes("practice.eval.shapeMismatch"));
 });
+
+test("accepts intentionally short dot strokes", () => {
+  const result = evaluatePractice({
+    canvasSize: { width: 100, height: 100 },
+    strokes: [
+      {
+        points: [
+          { x: 50, y: 50 },
+          { x: 53, y: 53 },
+        ],
+      },
+    ],
+    template: [
+      {
+        direction: "diagonal_down_right",
+        start: { x: 50, y: 50 },
+        end: { x: 54, y: 54 },
+        type: "dot",
+      },
+    ],
+    t,
+  });
+
+  assert.equal(result.passed, true);
+  assert.equal(result.score, 99);
+  assert.deepEqual(result.feedback, ["practice.eval.goodMatch"]);
+});

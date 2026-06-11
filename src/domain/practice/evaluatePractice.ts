@@ -225,12 +225,14 @@ function getMaxDistanceFromReferenceLine(
 function isStrokeTooShort(points: CanvasPoint[], reference: KanjiVgStroke) {
   const drawnLength = getPathLength(points);
   const referenceLength = distance(reference.start, reference.end);
+  const minimumLength = reference.type === "dot" ? 2 : 8;
+  const referenceRatio = reference.type === "dot" ? 0.15 : 0.22;
 
   if (referenceLength <= 0) {
-    return drawnLength <= 4;
+    return drawnLength < minimumLength;
   }
 
-  return drawnLength < Math.max(8, referenceLength * 0.22);
+  return drawnLength < Math.max(minimumLength, referenceLength * referenceRatio);
 }
 
 function isStraightReferenceStroke(reference: KanjiVgStroke) {
