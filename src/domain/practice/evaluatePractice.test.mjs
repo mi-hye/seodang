@@ -156,3 +156,31 @@ test("does not apply straight-line shape penalties to curved reference strokes",
   assert.equal(result.score, 99);
   assert.deepEqual(result.feedback, ["practice.eval.goodMatch"]);
 });
+
+test("penalizes curved drawings for diagonal sweep strokes", () => {
+  const result = evaluatePractice({
+    canvasSize: { width: 100, height: 100 },
+    strokes: [
+      {
+        points: [
+          { x: 80, y: 10 },
+          { x: 90, y: 90 },
+          { x: 20, y: 80 },
+        ],
+      },
+    ],
+    template: [
+      {
+        direction: "diagonal_down_left",
+        start: { x: 80, y: 10 },
+        end: { x: 20, y: 80 },
+        type: "sweep_left",
+      },
+    ],
+    t,
+  });
+
+  assert.equal(result.passed, false);
+  assert.ok(result.score < 90);
+  assert.ok(result.feedback.includes("practice.eval.shapeMismatch"));
+});

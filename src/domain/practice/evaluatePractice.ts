@@ -234,7 +234,12 @@ function isStrokeTooShort(points: CanvasPoint[], reference: KanjiVgStroke) {
 }
 
 function isStraightReferenceStroke(reference: KanjiVgStroke) {
-  return reference.type === "horizontal" || reference.type === "vertical";
+  return (
+    reference.type === "horizontal" ||
+    reference.type === "vertical" ||
+    reference.type === "sweep_left" ||
+    reference.type === "sweep_right"
+  );
 }
 
 function getPathLength(points: CanvasPoint[]) {
