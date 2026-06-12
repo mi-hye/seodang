@@ -170,6 +170,7 @@
   - 기본 실행은 빠른 smoke scan으로 전체 카테고리 총계와 그룹당 대표 카테고리 첫 페이지를 확인한다.
   - 모든 카테고리 첫 페이지까지 보려면 `npm run kanji:report:catalog-consistency -- --all-categories`
   - 모든 카테고리의 전체 페이지까지 보려면 `npm run kanji:report:catalog-consistency -- --all-categories --deep`
+  - `--all-categories`와 `--deep`은 호출 수가 많으므로 릴리즈 기본 검증이 아니라 장시간 진단용으로 사용한다.
 
 ### 뜻/예문 품질 정책
 
