@@ -155,6 +155,23 @@
   - 예: `npm run supabase:upsert:kanji-enrichment -- --input data/generated/kanji-enrichment-review.generated.json`
   - 업서트는 DB에 이미 존재하는 `kanji_characters.id`와 매칭되는 row만 반영한다.
   - 현재 DB row 수는 `6819`, 현재 review와 매칭되어 업서트되는 row 수는 `6799`다.
+- Supabase DB 기준 품질 리포트 생성
+  - [scripts/report-kanji-db-quality.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/report-kanji-db-quality.mjs:1)
+  - 실행: `npm run kanji:report:db-quality`
+  - 기본 scope는 앱에서 실사용하는 practical 한자다.
+  - 전체 DB를 보려면 `npm run kanji:report:db-quality -- --all`
+  - 회귀 검사용으로 실패 코드를 원하면 `npm run kanji:report:db-quality -- --fail-on-issues`
+  - `--all`은 비실사용 희귀 한자의 설명형 fallback까지 포함하므로 참고 리포트용으로만 사용한다.
+
+### 뜻/예문 품질 정책
+
+- 실사용 한자에서는 `meaning_ko`, `meaning_ja`, `example_ja`, `example_ko`가 모두 있어야 한다.
+- `뜻 미상`, `意味未詳`는 DB에 남기지 않는다. 의미가 없거나 불명확한 비실사용 한자는 `null` 또는 설명형 fallback을 사용한다.
+- `example_ja`는 가능하면 대상 한자를 직접 포함해야 한다.
+- `JLPT`, `일본 학교 한자`, `상용한자` 범위에서는 일반 예문을 우선한다.
+- 희귀 한자, 이름용 한자, 십간/고문 표현처럼 자연스러운 단문 예문을 만들기 어려운 경우 설명형 예문을 허용한다.
+  - 예: `「晟」は日常ではあまり使われず、主に名前などで使われます。`
+  - 이 허용 목록은 [scripts/report-kanji-db-quality.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/report-kanji-db-quality.mjs:1)의 `allowedFallbackIds`로 관리한다.
 
 ### 소스 차집합 분석
 
