@@ -12,7 +12,6 @@ const defaultOutputPath = path.join(
 );
 const locales = ["ko", "ja"];
 const pageLimit = 50;
-const categoryConcurrency = 6;
 
 const options = parseArgs(process.argv.slice(2));
 const env = await loadEnv(envPath);
@@ -36,6 +35,10 @@ const output = {
   generatedAt: new Date().toISOString(),
   mode: options.deep ? "deep" : "smoke",
   summary: {
+    allCategories: options.allCategories,
+    deep: options.deep,
+    concurrency: options.concurrency,
+    requestTimeoutMs: options.requestTimeoutMs,
     locales: localeReports.length,
     groups: localeReports.reduce((sum, report) => sum + report.groups, 0),
     categories: localeReports.reduce((sum, report) => sum + report.categories, 0),
@@ -148,7 +151,7 @@ async function checkLocale(locale) {
 
   const categoryReports = await mapWithConcurrency(
     categoryChecks,
-    categoryConcurrency,
+    options.concurrency,
     checkCategory
   );
   const charactersScanned = categoryReports.reduce(
@@ -170,12 +173,18 @@ async function checkLocale(locale) {
 async function mapWithConcurrency(items, concurrency, mapper) {
   const results = new Array(items.length);
   let nextIndex = 0;
+  let completedCount = 0;
 
   async function worker() {
     while (nextIndex < items.length) {
       const currentIndex = nextIndex;
       nextIndex += 1;
       results[currentIndex] = await mapper(items[currentIndex]);
+      completedCount += 1;
+
+      if (options.allCategories && completedCount % 50 === 0) {
+        console.log(`Checked ${completedCount}/${items.length} categories...`);
+      }
     }
   }
 
@@ -297,12 +306,16 @@ async function checkCategory({ locale, groupKey, categoryKey, expectedTotal, dee
 }
 
 async function fetchJson(pathname, errorMessage) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), options.requestTimeoutMs);
+
   const response = await fetch(`${supabaseUrl}${pathname}`, {
+    signal: controller.signal,
     headers: {
       apikey: supabaseAnonKey,
       Authorization: `Bearer ${supabaseAnonKey}`,
     },
-  });
+  }).finally(() => clearTimeout(timeout));
 
   if (!response.ok) {
     throw new Error(`${errorMessage}: ${response.status} ${await response.text()}`);
@@ -322,6 +335,10 @@ function isPracticalCharacter(character) {
 
 function printSummary(summary, outputPath) {
   console.log(`Wrote ${path.relative(rootDir, outputPath)}`);
+  console.log(`Mode: ${summary.deep ? "deep" : "smoke"}`);
+  console.log(`All categories: ${summary.allCategories}`);
+  console.log(`Concurrency: ${summary.concurrency}`);
+  console.log(`Request timeout ms: ${summary.requestTimeoutMs}`);
   console.log(`Locales: ${summary.locales}`);
   console.log(`Groups: ${summary.groups}`);
   console.log(`Categories: ${summary.categories}`);
@@ -333,9 +350,11 @@ function printSummary(summary, outputPath) {
 function parseArgs(argv) {
   const options = {
     allCategories: false,
+    concurrency: 6,
     deep: false,
     failOnIssues: false,
     output: defaultOutputPath,
+    requestTimeoutMs: 30000,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -356,6 +375,18 @@ function parseArgs(argv) {
       continue;
     }
 
+    if (arg === "--concurrency") {
+      options.concurrency = parsePositiveInteger(requireValue(argv, index, arg), arg);
+      index += 1;
+      continue;
+    }
+
+    if (arg === "--request-timeout-ms") {
+      options.requestTimeoutMs = parsePositiveInteger(requireValue(argv, index, arg), arg);
+      index += 1;
+      continue;
+    }
+
     if (arg === "--output") {
       options.output = path.resolve(rootDir, requireValue(argv, index, arg));
       index += 1;
@@ -366,6 +397,16 @@ function parseArgs(argv) {
   }
 
   return options;
+}
+
+function parsePositiveInteger(value, arg) {
+  const parsed = Number(value);
+
+  if (!Number.isInteger(parsed) || parsed <= 0) {
+    throw new Error(`Expected a positive integer after ${arg}.`);
+  }
+
+  return parsed;
 }
 
 function requireValue(argv, index, arg) {
