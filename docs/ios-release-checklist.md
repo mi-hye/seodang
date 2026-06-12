@@ -40,7 +40,7 @@ Use this checklist before creating the first App Store production submission.
 
 ## Build Verification
 
-- Run `npx tsc --noEmit`.
+- Run `npm run quality:check`.
 - Run the app on iOS simulator.
 - Verify the production EAS profile uses the expected Expo config.
 - Verify Supabase URL and anon key exist in the EAS production environment.
@@ -127,7 +127,7 @@ Use this checklist before creating the first App Store production submission.
 ## Pre-Submission Commands
 
 ```sh
-npx tsc --noEmit
+npm run quality:check
 npx eas-cli@latest build -p ios --profile production
 ```
 
