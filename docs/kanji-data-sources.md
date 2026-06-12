@@ -162,6 +162,14 @@
   - 전체 DB를 보려면 `npm run kanji:report:db-quality -- --all`
   - 회귀 검사용으로 실패 코드를 원하면 `npm run kanji:report:db-quality -- --fail-on-issues`
   - `--all`은 비실사용 희귀 한자의 설명형 fallback까지 포함하므로 참고 리포트용으로만 사용한다.
+- 배포된 카탈로그 API 기준 노출 데이터 consistency 리포트 생성
+  - [scripts/report-kanji-catalog-consistency.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/report-kanji-catalog-consistency.mjs:1)
+  - 실행: `npm run kanji:report:catalog-consistency`
+  - 출력: `data/generated/kanji-catalog-consistency.generated.json`
+  - 회귀 검사용으로 실패 코드를 원하면 `npm run kanji:report:catalog-consistency -- --fail-on-issues`
+  - 기본 실행은 빠른 smoke scan으로 전체 카테고리 총계와 그룹당 대표 카테고리 첫 페이지를 확인한다.
+  - 모든 카테고리 첫 페이지까지 보려면 `npm run kanji:report:catalog-consistency -- --all-categories`
+  - 모든 카테고리의 전체 페이지까지 보려면 `npm run kanji:report:catalog-consistency -- --all-categories --deep`
 
 ### 뜻/예문 품질 정책
 

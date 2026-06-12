@@ -17,6 +17,7 @@
     "kanji:apply:enrichment-suggestions": "node scripts/apply-kanji-enrichment-suggestions.mjs",
     "kanji:print:enrichment-audit-batch": "node scripts/print-kanji-enrichment-audit-batch.mjs",
     "kanji:report:db-quality": "node scripts/report-kanji-db-quality.mjs",
+    "kanji:report:catalog-consistency": "node scripts/report-kanji-catalog-consistency.mjs",
     "kanji:report:source-set-diff": "node scripts/report-kanji-source-set-diff.mjs",
     "kanji:build:mazii-enrichment": "node scripts/build-mazii-kanji-enrichment.mjs",
     "kanji:build:meaning-ko-queue": "node scripts/build-google-meaning-ko-review-queue.mjs",
