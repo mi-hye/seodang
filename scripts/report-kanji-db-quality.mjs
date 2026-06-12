@@ -8,23 +8,7 @@ const envPath = path.join(rootDir, ".env");
 const generatedDir = path.join(rootDir, "data/generated");
 const defaultOutputPath = path.join(generatedDir, "kanji-db-quality.generated.json");
 
-const allowedFallbackIds = new Set([
-  "u04e19",
-  "u0594e",
-  "u05d1a",
-  "u05f6a",
-  "u0664f",
-  "u0665f",
-  "u067fe",
-  "u06d35",
-  "u07473",
-  "u078a9",
-  "u08389",
-  "u0839e",
-  "u08a62",
-  "u08d73",
-  "u09ebf",
-]);
+const allowedFallbackIds = new Set([]);
 
 const options = parseArgs(process.argv.slice(2));
 const env = await loadEnv(envPath);
@@ -50,7 +34,7 @@ const output = {
   policy: {
     allowedFallbackIds: [...allowedFallbackIds],
     note:
-      "Fallback explanatory examples are allowed only for rare/name-use kanji listed in allowedFallbackIds.",
+      "Fallback explanatory examples should not appear in practical kanji quality checks.",
   },
   summary,
   issueRows,
