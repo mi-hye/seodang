@@ -1,6 +1,6 @@
 # App Store Screenshot Plan
 
-Last updated: 2026-06-08
+Last updated: 2026-06-12
 
 Use this plan when capturing the first App Store screenshot set. The goal is to
 show the real app flow, not marketing-only mockups.
@@ -8,6 +8,7 @@ show the real app flow, not marketing-only mockups.
 ## Capture Setup
 
 - Use an iOS simulator or device with a clean install.
+- Recommended simulator: `iPhone 16 Plus`.
 - Use light theme first.
 - Complete onboarding before capturing regular store screenshots.
 - Use Korean UI for Korea storefront screenshots.
@@ -18,6 +19,61 @@ show the real app flow, not marketing-only mockups.
 - Use data that looks complete:
   category list loaded, kanji list loaded, at least one favorite, and one recent
   practice item.
+- Turn off low power mode and avoid simulator status overlays.
+- Capture after loading finishes. Do not capture skeletons, retry screens, or
+  permission prompts.
+
+## Capture Runbook
+
+Use this order for the first Korean screenshot set.
+
+1. Fresh install or clear app data.
+2. Open the app and complete onboarding.
+3. Set language to Korean and theme to light.
+4. Open `카테고리` and choose `JLPT N5`.
+5. Add at least three common kanji to favorites.
+6. Open one common kanji detail, then complete one clean writing practice.
+7. Return to Home so recent practice and category progress are visible.
+8. Capture screenshots in the order below.
+
+Recommended demo data:
+
+- Category: `JLPT N5`
+- Detail/practice kanji candidates: `日`, `月`, `水`, `火`, `人`, `本`
+- Favorites candidates: `日`, `月`, `水`
+- Notification time: `20:00`
+- Notification title: `저녁 한자 연습`
+
+Avoid these states:
+
+- Rare kanji with reference-style examples.
+- Empty favorites or empty review screens.
+- Search results with zero items.
+- Practice drawings that look messy or intentionally wrong.
+- Permission-denied notification warning.
+
+## File Naming
+
+Use predictable names so App Store Connect upload is easier.
+
+- Korean iPhone set:
+  `ko-iphone-01-home.png`
+  `ko-iphone-02-categories.png`
+  `ko-iphone-03-list.png`
+  `ko-iphone-04-detail.png`
+  `ko-iphone-05-practice.png`
+  `ko-iphone-06-result.png`
+  `ko-iphone-07-favorites.png`
+  `ko-iphone-08-notifications.png`
+- Japanese iPhone set:
+  `ja-iphone-01-home.png`
+  `ja-iphone-02-categories.png`
+  `ja-iphone-03-list.png`
+  `ja-iphone-04-detail.png`
+  `ja-iphone-05-practice.png`
+  `ja-iphone-06-result.png`
+  `ja-iphone-07-favorites.png`
+  `ja-iphone-08-notifications.png`
 
 ## Recommended Screenshot Set
 
@@ -32,6 +88,8 @@ State to prepare:
 - At least one favorite exists.
 - At least one recent practice exists.
 - Category progress has one or two visible rows.
+- Recommended visible progress: `JLPT N5`, `초1`.
+- If the onboarding hint appears, dismiss it before capture.
 
 Korean caption:
 
@@ -51,6 +109,8 @@ State to prepare:
 
 - Korean UI: JLPT, 학년별, 상용 한자, 획수별 groups are visible when available.
 - Japanese UI: JLPT is hidden, Japanese-relevant groups are visible.
+- For Korean screenshots, keep the first screen near the top so `JLPT` appears.
+- If capturing radicals, leave the collapsed `더보기` state visible.
 
 Korean caption:
 
@@ -71,6 +131,9 @@ State to prepare:
 - Open a populated category such as JLPT N5 for Korean screenshots.
 - Search input should be empty unless intentionally showing search.
 - Favorite star should be visible on a list item.
+- Recommended category: `JLPT N5`.
+- Recommended scroll position: top of list.
+- Progress subtitle should show a natural value such as `1/79`.
 
 Korean caption:
 
@@ -90,6 +153,8 @@ State to prepare:
 
 - Pick a kanji with complete meaning, readings, and examples.
 - Prefer a common simple kanji for readability.
+- Recommended characters: `日`, `月`, `水`, `火`, `人`, `本`.
+- Confirm the example section says `예문` rather than `참고`.
 
 Korean caption:
 
@@ -110,6 +175,8 @@ State to prepare:
 - Open a kanji practice screen.
 - Show stroke guide or a partially drawn character if it looks clean.
 - Avoid messy drawings in the final screenshot.
+- Recommended character: the same one used in the detail screenshot.
+- If using a partial drawing, keep the strokes inside the guide area.
 
 Korean caption:
 
@@ -129,6 +196,8 @@ State to prepare:
 
 - Submit a clean enough drawing to produce a reasonable score.
 - Ensure the next-kanji action is visible.
+- Prefer a passing result. Avoid a very low score in store screenshots.
+- If feedback text is too long or clipped, retake with a cleaner drawing.
 
 Korean caption:
 
@@ -148,6 +217,8 @@ State to prepare:
 
 - Add 3 or more favorites.
 - Avoid empty-state screenshot for the store page.
+- Recommended favorites: `日`, `月`, `水`.
+- Make sure each card has meaning text, not `-`.
 
 Korean caption:
 
@@ -168,6 +239,10 @@ State to prepare:
 - Create one reminder with a simple title.
 - Use a normal time such as 08:00 or 20:00.
 - Keep permission warning hidden if permission is granted.
+- Recommended title: `저녁 한자 연습`.
+- Recommended repeat: every day.
+- Keep the native time picker closed for the final screenshot unless the store
+  screenshot intentionally shows time selection.
 
 Korean caption:
 
@@ -188,6 +263,39 @@ Japanese caption:
 - Safe-area spacing is correct on iPhone with Dynamic Island.
 - Dark theme screenshots are optional for the first submission, but should be
   checked during QA.
+- Text must be readable at App Store thumbnail size.
+- Captions must not claim features that are locked, missing, or not visible in
+  the screenshot.
+- If screenshots include Pro-related screens, make sure paid/locked behavior is
+  consistent with the submitted build.
+
+## Optional Secondary Screenshots
+
+Use these only if the first set needs more variety.
+
+- Category progress: shows progress across recent categories.
+- Review: shows due-review flow after at least one practiced kanji is due.
+- Mistake note: useful if enough failed attempts exist.
+- Review stats: useful for explaining the Pro value, but avoid if the feature is
+  locked in the submitted build.
+
+## First Submission Recommendation
+
+For the first iOS submission, use 6 to 8 Korean screenshots.
+
+Minimum recommended set:
+
+1. Home
+2. Category Selection
+3. Kanji List
+4. Kanji Detail
+5. Writing Practice
+6. Practice Result
+
+Add these if they look polished:
+
+7. Favorites
+8. Study Notifications
 
 ## App Store Connect Notes
 
