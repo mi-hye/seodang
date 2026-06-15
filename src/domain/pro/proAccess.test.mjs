@@ -13,13 +13,13 @@ test("allows Pro users to access review stats", () => {
   );
 });
 
-test("locks review stats for free users", () => {
+test("allows review stats during the free launch", () => {
   assert.equal(
     canAccessProFeature({
       feature: "review_stats",
       isPro: false,
     }),
-    false,
+    true,
   );
 });
 
@@ -33,13 +33,13 @@ test("allows Pro users to access focused review sessions", () => {
   );
 });
 
-test("locks focused review sessions for free users", () => {
+test("allows focused review sessions during the free launch", () => {
   assert.equal(
     canAccessProFeature({
       feature: "focused_review",
       isPro: false,
     }),
-    false,
+    true,
   );
 });
 
@@ -53,12 +53,12 @@ test("allows Pro users to access mistake note", () => {
   );
 });
 
-test("locks mistake note for free users", () => {
+test("allows mistake note during the free launch", () => {
   assert.equal(
     canAccessProFeature({
       feature: "mistake_note",
       isPro: false,
     }),
-    false,
+    true,
   );
 });

@@ -63,7 +63,7 @@ export default function ReviewMasteredScreen() {
           })}
           characterIds={stats.masteredCharacterIds}
           icon="shield-checkmark-outline"
-          isPro={isPro}
+          isPro={canViewFocusedReview}
           title={t("reviewStats.masteredFocusTitle")}
         />
       ) : null}

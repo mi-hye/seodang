@@ -284,7 +284,7 @@ export default function MistakeNoteScreen() {
           })}
           characterIds={selectedMistakeCharacterIds}
           icon="trophy-outline"
-          isPro={isPro}
+          isPro={canViewMistakeNote}
           title={t(practiceActionKeys.titleKey)}
         />
       ) : null}

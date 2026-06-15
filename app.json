@@ -48,7 +48,6 @@
     "plugins": [
       "expo-router",
       "expo-localization",
-      "expo-iap",
       [
         "expo-notifications",
         {

@@ -63,7 +63,7 @@ export default function ReviewProgressingScreen() {
           })}
           characterIds={stats.inProgressCharacterIds}
           icon="play-outline"
-          isPro={isPro}
+          isPro={canViewFocusedReview}
           title={t("reviewStats.progressingFocusTitle")}
         />
       ) : null}
