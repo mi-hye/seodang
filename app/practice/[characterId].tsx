@@ -308,11 +308,11 @@ export default function PracticeScreen() {
         <View style={styles.landscapeLayout}>
           <View style={styles.landscapeSide}>
             {headerPanel}
+            {actionPanel}
           </View>
           <View style={styles.landscapeCanvas}>
             {canvasPanel}
           </View>
-          <View>{actionPanel}</View>
         </View>
       ) : (
         <>
