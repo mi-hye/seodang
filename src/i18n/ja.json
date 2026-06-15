@@ -212,6 +212,7 @@
   "pro.included.focusedReview": "状態別の集中復習セッション",
   "pro.included.oneTime": "月額なしの買い切り",
   "pro.active": "Pro有効",
+  "pro.productPreparing": "商品準備中",
   "pro.purchaseAction": "%{price}でProを購入",
   "pro.purchaseLoading": "購入処理中...",
   "pro.purchaseSuccessTitle": "Proが有効になりました。",

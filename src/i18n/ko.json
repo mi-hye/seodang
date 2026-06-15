@@ -212,6 +212,7 @@
   "pro.included.focusedReview": "상태별 집중 복습 세션",
   "pro.included.oneTime": "월 구독 없는 일회성 구매",
   "pro.active": "Pro 활성화됨",
+  "pro.productPreparing": "상품 준비 중",
   "pro.purchaseAction": "%{price}에 Pro 구매",
   "pro.purchaseLoading": "구매 처리 중...",
   "pro.purchaseSuccessTitle": "Pro가 활성화되었습니다.",

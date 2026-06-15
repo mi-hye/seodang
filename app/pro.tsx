@@ -47,6 +47,7 @@ export default function ProScreen() {
     [products],
   );
   const displayPrice = proStoreProduct?.displayPrice ?? PRO_PRODUCT.price[locale];
+  const canPurchasePro = connected && Boolean(proStoreProduct) && !isPro;
 
   useEffect(() => {
     if (!connected) {
@@ -76,7 +77,7 @@ export default function ProScreen() {
       return;
     }
 
-    if (!connected) {
+    if (!connected || !proStoreProduct) {
       Alert.alert(t("pro.storeUnavailableTitle"), t("pro.storeUnavailableBody"));
       return;
     }
@@ -173,7 +174,9 @@ export default function ProScreen() {
     ? t("pro.active")
     : isPurchaseBusy
       ? t("pro.purchaseLoading")
-      : t("pro.purchaseAction", { price: displayPrice });
+      : proStoreProduct
+        ? t("pro.purchaseAction", { price: displayPrice })
+        : t("pro.productPreparing");
 
   return (
     <Screen>
@@ -235,8 +238,12 @@ export default function ProScreen() {
           ))}
         </View>
         <Pressable
-          style={[styles.primaryButton, isPro ? styles.activeButton : null]}
-          disabled={isPro || isPurchaseBusy}
+          style={[
+            styles.primaryButton,
+            !canPurchasePro ? styles.primaryButtonDisabled : null,
+            isPro ? styles.activeButton : null,
+          ]}
+          disabled={!canPurchasePro || isPurchaseBusy}
           onPress={handlePurchase}
         >
           <Text
@@ -430,6 +437,11 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
     primaryButtonText: {
       ...textStyles.buttonLabel,
       color: colors.inkOnDark,
+    },
+    primaryButtonDisabled: {
+      backgroundColor: colors.bgMutedStrong,
+      borderColor: colors.borderSoft,
+      opacity: 0.72,
     },
     activeButton: {
       backgroundColor: colors.inkStrongAlt,
