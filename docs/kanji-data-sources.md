@@ -132,17 +132,64 @@
 
 - 뜻/예문 보강용 리뷰 파일 생성
   - [scripts/build-kanji-enrichment-review.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/build-kanji-enrichment-review.mjs:1)
+  - 기준 소스는 `KANJIDIC2` 기반 [kanji-metadata.generated.json](/Users/kangmihye/Desktop/study/seodang/data/generated/kanji-metadata.generated.json:1)
+  - 현재 review row 수: `12559`
+- 뜻/예문/메타데이터 보강 대상 audit 생성
+  - [scripts/audit-kanji-enrichment.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/audit-kanji-enrichment.mjs:1)
+  - 결과 파일: [kanji-enrichment-audit.generated.json](/Users/kangmihye/Desktop/study/seodang/data/generated/kanji-enrichment-audit.generated.json:1)
+- 검수/제안 JSON을 리뷰 파일에 반영
+  - [scripts/apply-kanji-enrichment-suggestions.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/apply-kanji-enrichment-suggestions.mjs:1)
+  - 예: `npm run kanji:apply:enrichment-suggestions -- --input data/generated/kanji-enrichment-suggestions.batch-0001.generated.json --status=approved`
+- audit 기준 다음 보강 대상 출력
+  - [scripts/print-kanji-enrichment-audit-batch.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/print-kanji-enrichment-audit-batch.mjs:1)
+  - 기본값은 실사용 대상 한자 50개이며, 전체 대상은 `-- --all`로 출력
+- audit 기준 희귀/비실용 잔여분 자동 제안 생성
+  - [scripts/build-kanji-enrichment-auto-suggestions.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/build-kanji-enrichment-auto-suggestions.mjs:1)
+  - 예: `npm run kanji:build:auto-enrichment-suggestions -- --all --output data/generated/kanji-enrichment-suggestions.remaining.generated.json`
 - 20개 검수 출력
   - [scripts/print-kanji-enrichment-batch.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/print-kanji-enrichment-batch.mjs:1)
 - 리뷰 상태 변경
   - [scripts/update-kanji-enrichment-review.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/update-kanji-enrichment-review.mjs:1)
 - 승인된 뜻 데이터만 Supabase 업로드
   - [scripts/supabase-upsert-kanji-enrichment.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/supabase-upsert-kanji-enrichment.mjs:1)
+  - 예: `npm run supabase:upsert:kanji-enrichment -- --input data/generated/kanji-enrichment-review.generated.json`
+  - 업서트는 DB에 이미 존재하는 `kanji_characters.id`와 매칭되는 row만 반영한다.
+  - 현재 DB row 수는 `6819`, 현재 review와 매칭되어 업서트되는 row 수는 `6799`다.
+- Supabase DB 기준 품질 리포트 생성
+  - [scripts/report-kanji-db-quality.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/report-kanji-db-quality.mjs:1)
+  - 실행: `npm run kanji:report:db-quality`
+  - 기본 scope는 앱에서 실사용하는 practical 한자다.
+  - 전체 DB를 보려면 `npm run kanji:report:db-quality -- --all`
+  - 회귀 검사용으로 실패 코드를 원하면 `npm run kanji:report:db-quality -- --fail-on-issues`
+  - `--all`은 비실사용 희귀 한자의 설명형 fallback까지 포함하므로 참고 리포트용으로만 사용한다.
+- 배포된 카탈로그 API 기준 노출 데이터 consistency 리포트 생성
+  - [scripts/report-kanji-catalog-consistency.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/report-kanji-catalog-consistency.mjs:1)
+  - 실행: `npm run kanji:report:catalog-consistency`
+  - 출력: `data/generated/kanji-catalog-consistency.generated.json`
+  - 회귀 검사용으로 실패 코드를 원하면 `npm run kanji:report:catalog-consistency -- --fail-on-issues`
+  - 기본 실행은 빠른 smoke scan으로 전체 카테고리 총계와 그룹당 대표 카테고리 첫 페이지를 확인한다.
+  - 모든 카테고리 첫 페이지까지 보려면 `npm run kanji:report:catalog-consistency -- --all-categories`
+  - 모든 카테고리의 전체 페이지까지 보려면 `npm run kanji:report:catalog-consistency -- --all-categories --deep`
+  - 장시간 진단 시 `--concurrency 12`, `--request-timeout-ms 60000`처럼 호출 동시성과 timeout을 조정할 수 있다.
+  - `--all-categories`와 `--deep`은 호출 수가 많으므로 릴리즈 기본 검증이 아니라 장시간 진단용으로 사용한다.
+
+### 뜻/예문 품질 정책
+
+- 실사용 한자에서는 `meaning_ko`, `meaning_ja`, `example_ja`, `example_ko`가 모두 있어야 한다.
+- `뜻 미상`, `意味未詳`는 DB에 남기지 않는다. 의미가 없거나 불명확한 비실사용 한자는 `null` 또는 설명형 fallback을 사용한다.
+- `example_ja`는 가능하면 대상 한자를 직접 포함해야 한다.
+- `JLPT`, `일본 학교 한자`, `상용한자` 범위에서는 일반 예문을 우선한다.
+- 희귀 한자, 이름용 한자, 십간/고문 표현도 가능하면 실제 용례나 이름 문장처럼 짧은 문장으로 처리한다.
+- `日常ではあまり使われず...`, `이름 등에서 쓰입니다` 같은 설명형 fallback 문장은 실사용 범위 품질 리포트에서 실패로 본다.
 
 ### 소스 차집합 분석
 
 - `KANJIDIC2 reviewOnly` / `DB only` 차집합 리포트 생성
   - [scripts/report-kanji-source-set-diff.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/report-kanji-source-set-diff.mjs:1)
+  - 실행: `npm run kanji:report:source-set-diff`
+  - 현재 결과: `reviewOnly=5760`, `dbOnly=20`
+  - `reviewOnly`는 `KANJIDIC2`에는 있지만 현재 DB에 stroke row가 없어 앱에 표시되지 않는 한자다.
+  - `dbOnly` 20개는 `KanjiVG`에는 있지만 `KANJIDIC2` 메타데이터에는 없는 CJK 확장/호환 문자다. 예: `㐬`, `㓁`, `㔾`, `仝`, `喻`, `冷`, `令`, `𠮟`.
 
 ### Mazii 조사 / 추출
 

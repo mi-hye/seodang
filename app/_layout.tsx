@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useMemo } from "react";
-import { Appearance } from "react-native";
+import { Appearance, Platform } from "react-native";
 import {
   DarkTheme,
   DefaultTheme,
@@ -29,9 +29,11 @@ function RootNavigator() {
   const { t } = useI18n();
   const { colors, themeMode } = useTheme();
 
-  if (hydrated) {
-    Appearance.setColorScheme(themeMode);
-  }
+  useEffect(() => {
+    if (hydrated && Platform.OS !== "web") {
+      Appearance.setColorScheme(themeMode);
+    }
+  }, [hydrated, themeMode]);
 
   useEffect(() => {
     void initializeNotifications();

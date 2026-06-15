@@ -12,6 +12,8 @@ declare const Deno: {
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL");
 const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+const cacheTtlMs = 5 * 60 * 1000;
+const cache = new Map<string, { expiresAt: number; promise: Promise<unknown> }>();
 
 type Locale = "ko" | "ja";
 
@@ -41,10 +43,6 @@ type CategoryRow = {
 
 type CategoryMappingCountRow = {
   category_id: string;
-  character_id: string;
-};
-
-type CharacterCategoryRow = {
   character_id: string;
 };
 
@@ -100,20 +98,11 @@ Deno.serve(async (request) => {
 });
 
 async function fetchCategoryGroups(locale: Locale) {
-  const [groups, categories, categoryMappings, practicalCharacterIds] = await Promise.all([
-    fetchRows<CategoryGroupRow>(
-      "kanji_category_groups?select=id,group_key,label_ko,label_ja,description_ko,description_ja,sort_order&order=sort_order.asc"
-    ),
-    fetchRows<CategoryRow>(
-      "kanji_categories?select=id,group_id,category_key,label_ko,label_ja,description_ko,description_ja,sort_order,metadata&order=sort_order.asc"
-    ),
-    fetchAllCategoryMappings(),
-    fetchAllPracticalCharacterIds(),
+  const [groups, categories, practicalCharacterIdsByCategoryId] = await Promise.all([
+    fetchAllCategoryGroups(),
+    fetchAllCategories(),
+    fetchPracticalCharacterIdsByCategoryId(),
   ]);
-  const practicalIdSet = new Set(practicalCharacterIds);
-  const totalByCategoryId = countByCategoryId(
-    categoryMappings.filter((row) => practicalIdSet.has(row.character_id))
-  );
 
   return groups
     .map((group) => ({
@@ -131,7 +120,7 @@ async function fetchCategoryGroups(locale: Locale) {
           (category) =>
             category.group_id === group.id &&
             (category.metadata?.visibleLocales ?? ["ko", "ja"]).includes(locale) &&
-            (totalByCategoryId.get(category.id) ?? 0) > 0
+            (practicalCharacterIdsByCategoryId.get(category.id)?.length ?? 0) > 0
         )
         .sort((left, right) => left.sort_order - right.sort_order)
         .map((category) => ({
@@ -146,31 +135,49 @@ async function fetchCategoryGroups(locale: Locale) {
           ),
           sortOrder: category.sort_order,
           visibleLocales: category.metadata?.visibleLocales ?? ["ko", "ja"],
-          totalCharacters: totalByCategoryId.get(category.id) ?? 0,
+          totalCharacters: practicalCharacterIdsByCategoryId.get(category.id)?.length ?? 0,
         })),
     }))
     .filter((group) => group.categories.length > 0);
 }
 
+function fetchAllCategoryGroups() {
+  return readThroughCache("category-groups", () =>
+    fetchRows<CategoryGroupRow>(
+      "kanji_category_groups?select=id,group_key,label_ko,label_ja,description_ko,description_ja,sort_order&order=sort_order.asc"
+    )
+  );
+}
+
+function fetchAllCategories() {
+  return readThroughCache("categories", () =>
+    fetchRows<CategoryRow>(
+      "kanji_categories?select=id,group_id,category_key,label_ko,label_ja,description_ko,description_ja,sort_order,metadata&order=sort_order.asc"
+    )
+  );
+}
+
 async function fetchAllCategoryMappings() {
-  const pageSize = 1000;
-  let offset = 0;
-  const rows: CategoryMappingCountRow[] = [];
+  return readThroughCache("category-mappings", async () => {
+    const pageSize = 1000;
+    let offset = 0;
+    const rows: CategoryMappingCountRow[] = [];
 
-  while (true) {
-    const page = await fetchRows<CategoryMappingCountRow>(
-      `kanji_character_categories?select=category_id,character_id&offset=${offset}&limit=${pageSize}`
-    );
-    rows.push(...page);
+    while (true) {
+      const page = await fetchRows<CategoryMappingCountRow>(
+        `kanji_character_categories?select=category_id,character_id&order=category_id.asc,character_id.asc&offset=${offset}&limit=${pageSize}`
+      );
+      rows.push(...page);
 
-    if (page.length < pageSize) {
-      break;
+      if (page.length < pageSize) {
+        break;
+      }
+
+      offset += pageSize;
     }
 
-    offset += pageSize;
-  }
-
-  return rows;
+    return rows;
+  });
 }
 
 async function fetchCategoryCharacters(
@@ -179,25 +186,19 @@ async function fetchCategoryCharacters(
   limit: number,
   offset: number
 ) {
-  const categoryRows = await fetchRows<CategoryRow>(
-    `kanji_categories?select=id,group_id,category_key,label_ko,label_ja,description_ko,description_ja,sort_order,metadata&category_key=eq.${encodeURIComponent(categoryKey)}&limit=1`
-  );
-  const category = categoryRows[0];
+  const categories = await fetchAllCategories();
+  const category = categories.find((row) => row.category_key === categoryKey);
 
   if (!category) {
     return null;
   }
 
-  const [practicalCharacterIds, mappings] = await Promise.all([
-    fetchAllPracticalCharacterIds(),
-    fetchAllCategoryCharacterMappings(category.id),
-  ]);
-  const practicalIdSet = new Set(practicalCharacterIds);
-  const filteredMappings = mappings.filter((row) => practicalIdSet.has(row.character_id));
-  const total = filteredMappings.length;
-  const characterIds = filteredMappings
+  const practicalCharacterIdsByCategoryId = await fetchPracticalCharacterIdsByCategoryId();
+  const categoryCharacterIds = practicalCharacterIdsByCategoryId.get(category.id) ?? [];
+  const total = categoryCharacterIds.length;
+  const characterIds = categoryCharacterIds
     .slice(offset, offset + limit)
-    .map((row) => row.character_id);
+    .map((characterId) => characterId);
   const characters = await fetchCharactersByIds(characterIds);
 
   return {
@@ -223,46 +224,50 @@ async function fetchCategoryCharacters(
   };
 }
 
-async function fetchAllCategoryCharacterMappings(categoryId: string) {
-  const pageSize = 1000;
-  let offset = 0;
-  const rows: CharacterCategoryRow[] = [];
+async function fetchAllPracticalCharacterIds() {
+  return readThroughCache("practical-character-ids", async () => {
+    const pageSize = 1000;
+    let offset = 0;
+    const rows: { id: string }[] = [];
 
-  while (true) {
-    const page = await fetchRows<CharacterCategoryRow>(
-      `kanji_character_categories?select=character_id&category_id=eq.${encodeURIComponent(categoryId)}&order=character_id.asc&offset=${offset}&limit=${pageSize}`
-    );
-    rows.push(...page);
+    while (true) {
+      const page = await fetchRows<{ id: string }>(
+        `kanji_characters?select=id&or=(is_joyo.eq.true,jlpt_level.not.is.null,japanese_grade.not.is.null,japanese_school_level.not.is.null)&order=id.asc&offset=${offset}&limit=${pageSize}`
+      );
+      rows.push(...page);
 
-    if (page.length < pageSize) {
-      break;
+      if (page.length < pageSize) {
+        break;
+      }
+
+      offset += pageSize;
     }
 
-    offset += pageSize;
-  }
-
-  return rows;
+    return rows.map((row) => row.id);
+  });
 }
 
-async function fetchAllPracticalCharacterIds() {
-  const pageSize = 1000;
-  let offset = 0;
-  const rows: { id: string }[] = [];
+function fetchPracticalCharacterIdsByCategoryId() {
+  return readThroughCache("practical-character-ids-by-category-id", async () => {
+    const [categoryMappings, practicalCharacterIds] = await Promise.all([
+      fetchAllCategoryMappings(),
+      fetchAllPracticalCharacterIds(),
+    ]);
+    const practicalIdSet = new Set(practicalCharacterIds);
+    const idsByCategoryId = new Map<string, string[]>();
 
-  while (true) {
-    const page = await fetchRows<{ id: string }>(
-      `kanji_characters?select=id&or=(is_joyo.eq.true,jlpt_level.not.is.null,japanese_grade.not.is.null,japanese_school_level.not.is.null)&order=id.asc&offset=${offset}&limit=${pageSize}`
-    );
-    rows.push(...page);
+    for (const mapping of categoryMappings) {
+      if (!practicalIdSet.has(mapping.character_id)) {
+        continue;
+      }
 
-    if (page.length < pageSize) {
-      break;
+      const currentIds = idsByCategoryId.get(mapping.category_id) ?? [];
+      currentIds.push(mapping.character_id);
+      idsByCategoryId.set(mapping.category_id, currentIds);
     }
 
-    offset += pageSize;
-  }
-
-  return rows.map((row) => row.id);
+    return idsByCategoryId;
+  });
 }
 
 async function fetchCharactersByIds(characterIds: string[]) {
@@ -317,37 +322,24 @@ async function fetchRows<T>(path: string): Promise<T[]> {
   return (await response.json()) as T[];
 }
 
-async function fetchExactCount(path: string): Promise<number> {
-  const response = await fetch(`${supabaseUrl}/rest/v1/${path}`, {
-    method: "HEAD",
-    headers: {
-      apikey: serviceRoleKey ?? "",
-      Authorization: `Bearer ${serviceRoleKey ?? ""}`,
-      Prefer: "count=exact",
-    },
-  });
+function readThroughCache<T>(key: string, loader: () => Promise<T>): Promise<T> {
+  const now = Date.now();
+  const existing = cache.get(key);
 
-  if (!response.ok) {
-    throw new Error(`Failed to count ${path}: ${response.status} ${await response.text()}`);
+  if (existing && existing.expiresAt > now) {
+    return existing.promise as Promise<T>;
   }
 
-  const contentRange = response.headers.get("content-range");
-  const total = contentRange?.split("/")[1];
-  return total ? Number(total) || 0 : 0;
+  const promise = loader().catch((error) => {
+    cache.delete(key);
+    throw error;
+  });
+  cache.set(key, { expiresAt: now + cacheTtlMs, promise });
+  return promise;
 }
 
 function selectLocalizedText(locale: Locale, ko: string, ja: string) {
   return locale === "ja" ? ja : ko;
-}
-
-function countByCategoryId(rows: Array<{ category_id: string }>) {
-  const counts = new Map<string, number>();
-
-  for (const row of rows) {
-    counts.set(row.category_id, (counts.get(row.category_id) ?? 0) + 1);
-  }
-
-  return counts;
 }
 
 function selectLocalizedNullableText(

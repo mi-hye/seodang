@@ -39,10 +39,14 @@ const existingRowMap = new Map(existingRows.map((row) => [row.id, row]));
 const mergedPayload = payload
   .map((row) => mergeWithExistingRow(row, existingRowMap.get(row.id)))
   .filter(Boolean);
+const skippedCount = payload.length - mergedPayload.length;
 await upsertRowsInChunks(mergedPayload, 500);
 
 console.log(
   `Upserted ${mergedPayload.length} approved kanji enrichment rows into kanji_characters.`
+);
+console.log(
+  `Approved rows: ${payload.length}; matched DB rows: ${mergedPayload.length}; skipped rows not in DB: ${skippedCount}.`
 );
 
 async function upsertRowsInChunks(rows, chunkSize) {
