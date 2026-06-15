@@ -44,5 +44,8 @@ yarn-error.*
 # imported datasets
 /data/
 
+# generated local artifacts
+/artifacts/
+
 # Supabase local CLI state
 /supabase/.temp/
