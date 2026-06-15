@@ -75,10 +75,6 @@ function RootNavigator() {
     [colors],
   );
 
-  if (!hydrated) {
-    return null;
-  }
-
   return (
     <ThemeProvider value={navigationTheme}>
       <StatusBar style={themeMode === "dark" ? "light" : "dark"} />
