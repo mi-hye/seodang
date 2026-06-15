@@ -1,3 +1,9 @@
+import {
+  catalogCategories,
+  catalogCategoryGroups,
+  catalogCharacterIdsByCategoryKey,
+} from "./catalog-data.ts";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -12,8 +18,6 @@ declare const Deno: {
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL");
 const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-const cacheTtlMs = 5 * 60 * 1000;
-const cache = new Map<string, { expiresAt: number; promise: Promise<unknown> }>();
 
 type Locale = "ko" | "ja";
 
@@ -37,13 +41,8 @@ type CategoryRow = {
   description_ja: string | null;
   sort_order: number;
   metadata: {
-    visibleLocales?: string[];
+    visibleLocales?: readonly string[];
   } | null;
-};
-
-type CategoryMappingCountRow = {
-  category_id: string;
-  character_id: string;
 };
 
 type CharacterRow = {
@@ -98,13 +97,7 @@ Deno.serve(async (request) => {
 });
 
 async function fetchCategoryGroups(locale: Locale) {
-  const [groups, categories, practicalCharacterIdsByCategoryId] = await Promise.all([
-    fetchAllCategoryGroups(),
-    fetchAllCategories(),
-    fetchPracticalCharacterIdsByCategoryId(),
-  ]);
-
-  return groups
+  return catalogCategoryGroups
     .map((group) => ({
       id: group.id,
       groupKey: group.group_key,
@@ -115,12 +108,12 @@ async function fetchCategoryGroups(locale: Locale) {
         group.description_ja
       ),
       sortOrder: group.sort_order,
-      categories: categories
+      categories: catalogCategories
         .filter(
           (category) =>
             category.group_id === group.id &&
-            (category.metadata?.visibleLocales ?? ["ko", "ja"]).includes(locale) &&
-            (practicalCharacterIdsByCategoryId.get(category.id)?.length ?? 0) > 0
+            getVisibleLocales(category).includes(locale) &&
+            getCategoryCharacterIds(category.category_key).length > 0
         )
         .sort((left, right) => left.sort_order - right.sort_order)
         .map((category) => ({
@@ -134,50 +127,11 @@ async function fetchCategoryGroups(locale: Locale) {
             category.description_ja
           ),
           sortOrder: category.sort_order,
-          visibleLocales: category.metadata?.visibleLocales ?? ["ko", "ja"],
-          totalCharacters: practicalCharacterIdsByCategoryId.get(category.id)?.length ?? 0,
+          visibleLocales: getVisibleLocales(category),
+          totalCharacters: getCategoryCharacterIds(category.category_key).length,
         })),
     }))
     .filter((group) => group.categories.length > 0);
-}
-
-function fetchAllCategoryGroups() {
-  return readThroughCache("category-groups", () =>
-    fetchRows<CategoryGroupRow>(
-      "kanji_category_groups?select=id,group_key,label_ko,label_ja,description_ko,description_ja,sort_order&order=sort_order.asc"
-    )
-  );
-}
-
-function fetchAllCategories() {
-  return readThroughCache("categories", () =>
-    fetchRows<CategoryRow>(
-      "kanji_categories?select=id,group_id,category_key,label_ko,label_ja,description_ko,description_ja,sort_order,metadata&order=sort_order.asc"
-    )
-  );
-}
-
-async function fetchAllCategoryMappings() {
-  return readThroughCache("category-mappings", async () => {
-    const pageSize = 1000;
-    let offset = 0;
-    const rows: CategoryMappingCountRow[] = [];
-
-    while (true) {
-      const page = await fetchRows<CategoryMappingCountRow>(
-        `kanji_character_categories?select=category_id,character_id&order=category_id.asc,character_id.asc&offset=${offset}&limit=${pageSize}`
-      );
-      rows.push(...page);
-
-      if (page.length < pageSize) {
-        break;
-      }
-
-      offset += pageSize;
-    }
-
-    return rows;
-  });
 }
 
 async function fetchCategoryCharacters(
@@ -186,19 +140,15 @@ async function fetchCategoryCharacters(
   limit: number,
   offset: number
 ) {
-  const categories = await fetchAllCategories();
-  const category = categories.find((row) => row.category_key === categoryKey);
+  const category = catalogCategories.find((row) => row.category_key === categoryKey);
 
   if (!category) {
     return null;
   }
 
-  const practicalCharacterIdsByCategoryId = await fetchPracticalCharacterIdsByCategoryId();
-  const categoryCharacterIds = practicalCharacterIdsByCategoryId.get(category.id) ?? [];
+  const categoryCharacterIds = getCategoryCharacterIds(categoryKey);
   const total = categoryCharacterIds.length;
-  const characterIds = categoryCharacterIds
-    .slice(offset, offset + limit)
-    .map((characterId) => characterId);
+  const characterIds = categoryCharacterIds.slice(offset, offset + limit);
   const characters = await fetchCharactersByIds(characterIds);
 
   return {
@@ -213,7 +163,7 @@ async function fetchCategoryCharacters(
         category.description_ja
       ),
       sortOrder: category.sort_order,
-      visibleLocales: category.metadata?.visibleLocales ?? ["ko", "ja"],
+      visibleLocales: getVisibleLocales(category),
       totalCharacters: total,
     },
     characters,
@@ -222,52 +172,6 @@ async function fetchCategoryCharacters(
     offset,
     hasMore: offset + characters.length < total,
   };
-}
-
-async function fetchAllPracticalCharacterIds() {
-  return readThroughCache("practical-character-ids", async () => {
-    const pageSize = 1000;
-    let offset = 0;
-    const rows: { id: string }[] = [];
-
-    while (true) {
-      const page = await fetchRows<{ id: string }>(
-        `kanji_characters?select=id&or=(is_joyo.eq.true,jlpt_level.not.is.null,japanese_grade.not.is.null,japanese_school_level.not.is.null)&order=id.asc&offset=${offset}&limit=${pageSize}`
-      );
-      rows.push(...page);
-
-      if (page.length < pageSize) {
-        break;
-      }
-
-      offset += pageSize;
-    }
-
-    return rows.map((row) => row.id);
-  });
-}
-
-function fetchPracticalCharacterIdsByCategoryId() {
-  return readThroughCache("practical-character-ids-by-category-id", async () => {
-    const [categoryMappings, practicalCharacterIds] = await Promise.all([
-      fetchAllCategoryMappings(),
-      fetchAllPracticalCharacterIds(),
-    ]);
-    const practicalIdSet = new Set(practicalCharacterIds);
-    const idsByCategoryId = new Map<string, string[]>();
-
-    for (const mapping of categoryMappings) {
-      if (!practicalIdSet.has(mapping.character_id)) {
-        continue;
-      }
-
-      const currentIds = idsByCategoryId.get(mapping.category_id) ?? [];
-      currentIds.push(mapping.character_id);
-      idsByCategoryId.set(mapping.category_id, currentIds);
-    }
-
-    return idsByCategoryId;
-  });
 }
 
 async function fetchCharactersByIds(characterIds: string[]) {
@@ -322,20 +226,14 @@ async function fetchRows<T>(path: string): Promise<T[]> {
   return (await response.json()) as T[];
 }
 
-function readThroughCache<T>(key: string, loader: () => Promise<T>): Promise<T> {
-  const now = Date.now();
-  const existing = cache.get(key);
+function getCategoryCharacterIds(categoryKey: string) {
+  return (
+    catalogCharacterIdsByCategoryKey as Record<string, readonly string[] | undefined>
+  )[categoryKey] ?? [];
+}
 
-  if (existing && existing.expiresAt > now) {
-    return existing.promise as Promise<T>;
-  }
-
-  const promise = loader().catch((error) => {
-    cache.delete(key);
-    throw error;
-  });
-  cache.set(key, { expiresAt: now + cacheTtlMs, promise });
-  return promise;
+function getVisibleLocales(category: CategoryRow) {
+  return (category.metadata?.visibleLocales ?? ["ko", "ja"]) as readonly string[];
 }
 
 function selectLocalizedText(locale: Locale, ko: string, ja: string) {

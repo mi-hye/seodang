@@ -10,7 +10,7 @@ import {
 } from "../data/fetchKanjiCharacters";
 import { fetchKanjiStrokeDataByLiteral } from "../data/fetchKanjiStrokeData";
 
-const CATALOG_QUERY_VERSION = "2026-06-04-practical-v1";
+const CATALOG_QUERY_VERSION = "2026-06-15-edge-index-v1";
 
 export const kanjiQueryKeys = {
   allCharacters: () => ["kanji-characters", "all"] as const,
@@ -27,7 +27,7 @@ export const kanjiQueryKeys = {
   categoryGroups: (locale: "ko" | "ja") =>
     ["kanji-category-groups", CATALOG_QUERY_VERSION, locale] as const,
   categoryProgressMappings: (characterIds: string[]) =>
-    ["kanji-category-progress-mappings", ...characterIds] as const,
+    ["kanji-category-progress-mappings", characterIds.join(",")] as const,
   character: (characterId: string | undefined, debugScope: string) =>
     ["kanji-character", characterId, debugScope] as const,
   charactersByIds: (characterIds: string[]) =>

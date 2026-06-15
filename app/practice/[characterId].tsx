@@ -301,6 +301,7 @@ export default function PracticeScreen() {
 
   return (
     <Screen
+      contentStyle={isCompactLandscape ? styles.compactLandscapeScreen : undefined}
       scrollContainer={!isLandscape}
       scrollEnabled={screenScrollEnabled && !isCanvasInteracting}
     >
@@ -338,18 +339,25 @@ function createStyles({
     landscapeLayout: {
       flexDirection: "row",
       alignItems: "stretch",
-      gap: spacing[5],
+      gap: isCompactLandscape ? spacing[3] : spacing[5],
       flex: 1,
       width: "100%",
     },
+    compactLandscapeScreen: {
+      paddingHorizontal: spacing[3],
+      paddingTop: spacing[2],
+      paddingBottom: spacing[2],
+    },
     landscapeSide: {
-      flex: isCompactLandscape ? 0.72 : 0.9,
-      minWidth: isCompactLandscape ? 236 : 280,
-      maxWidth: isCompactLandscape ? 300 : 380,
+      flex: isCompactLandscape ? 0.64 : 0.9,
+      minWidth: isCompactLandscape ? 216 : 280,
+      maxWidth: isCompactLandscape ? 280 : 380,
+      flexShrink: 0,
     },
     landscapeCanvas: {
-      flex: 1.2,
-      minWidth: 360,
+      flex: isCompactLandscape ? 1.36 : 1.2,
+      minWidth: isCompactLandscape ? 0 : 360,
+      minHeight: 0,
     },
     dimmedSection: {
       opacity: 0.32,
@@ -400,7 +408,7 @@ function createStyles({
       flexDirection: "row",
       flexWrap: "wrap",
       gap: isCompactLandscape ? spacing[2] : spacing[2] + 2,
-      marginBottom: isCompactLandscape ? spacing[3] : spacing[4],
+      marginBottom: isCompactLandscape ? spacing[2] : spacing[4],
     },
     toolChip: {
       ...chipStyles.base,
@@ -502,6 +510,7 @@ function createStyles({
       marginTop: isLandscape ? "auto" : 0,
       marginBottom: isLandscape ? 0 : 20,
       width: "100%",
+      flexShrink: 0,
     },
     submitWrap: {
       flex: 1,
