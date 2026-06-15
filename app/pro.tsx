@@ -423,13 +423,13 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
       borderRadius: 999,
       paddingHorizontal: spacing[5],
       paddingVertical: spacing[3],
-      backgroundColor: colors.bgMutedStrong,
-      borderWidth: StyleSheet.hairlineWidth,
-      borderColor: colors.borderSoft,
+      backgroundColor: colors.accentWarm,
+      borderWidth: 1,
+      borderColor: colors.accentWarm,
     },
     primaryButtonText: {
-      ...textStyles.meta,
-      color: colors.inkMuted,
+      ...textStyles.buttonLabel,
+      color: colors.inkOnDark,
     },
     activeButton: {
       backgroundColor: colors.inkStrongAlt,
