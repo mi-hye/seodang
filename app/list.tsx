@@ -131,7 +131,7 @@ export default function CharacterListScreen() {
   const showListOnboarding = showFavoriteOnboarding || showItemOnboarding;
   const itemHintStyle = firstCardLayout
     ? {
-        top: firstCardLayout.y + firstCardLayout.height + 180,
+        top: firstCardLayout.y + firstCardLayout.height + 177,
         left: firstCardLayout.x + 14,
       }
     : styles.itemHint;

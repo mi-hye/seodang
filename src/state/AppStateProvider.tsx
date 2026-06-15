@@ -45,6 +45,7 @@ type AppStateContextValue = {
   isPro: boolean;
   lastCompletedPractice?: LastCompletedPractice;
   mistakeNoteBadgesExpanded: boolean;
+  activateProPurchase: () => void;
   setLocale: (locale: AppLocale) => void;
   setProForDevelopment: (isPro: boolean) => void;
   setMistakeNoteBadgesExpanded: (expanded: boolean) => void;
@@ -187,6 +188,10 @@ export function AppStateProvider({ children }: PropsWithChildren) {
   }, [hydrated, state]);
 
   const value = useMemo<AppStateContextValue>(() => {
+    const activateProPurchase = () => {
+      setState((current) => ({ ...current, isPro: true }));
+    };
+
     const setLocale = (locale: AppLocale) => {
       setState((current) => ({ ...current, locale }));
     };
@@ -429,6 +434,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       isPro: state.isPro,
       lastCompletedPractice: state.lastCompletedPractice,
       mistakeNoteBadgesExpanded: state.mistakeNoteBadgesExpanded,
+      activateProPurchase,
       setLocale,
       setProForDevelopment,
       setMistakeNoteBadgesExpanded,
