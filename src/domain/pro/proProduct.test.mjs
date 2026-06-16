@@ -6,8 +6,8 @@ const { PRO_PRODUCT } = await import("./proProduct.ts");
 test("defines a one-time Pro product for purchase integration", () => {
   assert.equal(PRO_PRODUCT.id, "seodang_pro_lifetime");
   assert.equal(PRO_PRODUCT.purchaseType, "one_time");
-  assert.equal(PRO_PRODUCT.price.ko, "₩3,900");
-  assert.equal(PRO_PRODUCT.price.ja, "¥390");
+  assert.equal(PRO_PRODUCT.price.ko, "₩3,300");
+  assert.equal(PRO_PRODUCT.price.ja, "¥300");
 });
 
 test("includes the first Pro benefits", () => {

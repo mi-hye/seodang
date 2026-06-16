@@ -20,6 +20,7 @@
     "kanji:report:db-quality": "node scripts/report-kanji-db-quality.mjs",
     "kanji:report:catalog-consistency": "node scripts/report-kanji-catalog-consistency.mjs",
     "kanji:report:source-set-diff": "node scripts/report-kanji-source-set-diff.mjs",
+    "kanji:build:catalog-edge-index": "node scripts/build-kanji-catalog-edge-index.mjs",
     "kanji:build:mazii-enrichment": "node scripts/build-mazii-kanji-enrichment.mjs",
     "kanji:build:meaning-ko-queue": "node scripts/build-google-meaning-ko-review-queue.mjs",
     "kanji:build:naver-example-queue": "node scripts/build-naver-example-verification-queue.mjs",

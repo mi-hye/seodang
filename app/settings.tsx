@@ -4,6 +4,8 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
 import { spacing, useTheme } from "../src/design/theme";
+import { canAccessProFeature } from "../src/domain/pro/proAccess";
+import { PRO_PURCHASES_ENABLED } from "../src/domain/pro/proConfig";
 import { useI18n } from "../src/i18n/useI18n";
 import { useAppState } from "../src/state/AppStateProvider";
 
@@ -12,6 +14,14 @@ export default function SettingsScreen() {
   const { isPro, setProForDevelopment, setTheme } = useAppState();
   const { themeMode, colors, chipStyles, surfaceStyles, textStyles, shadows } =
     useTheme();
+  const canUseReviewStats = canAccessProFeature({
+    feature: "review_stats",
+    isPro,
+  });
+  const canUseMistakeNote = canAccessProFeature({
+    feature: "mistake_note",
+    isPro,
+  });
   const styles = createStyles({
     themeMode,
     colors,
@@ -71,12 +81,18 @@ export default function SettingsScreen() {
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>{t("settings.pro")}</Text>
+          <Text style={styles.sectionTitle}>
+            {PRO_PURCHASES_ENABLED
+              ? t("settings.pro")
+              : t("settings.learningTools")}
+          </Text>
         </View>
 
         <Pressable
           style={[styles.infoCard, styles.shadow]}
-          onPress={() => router.navigate(isPro ? "/review-stats" : "/pro")}
+          onPress={() =>
+            router.navigate(canUseReviewStats ? "/review-stats" : "/pro")
+          }
         >
           <View style={styles.infoCardHeader}>
             <View style={styles.infoCardTitleRow}>
@@ -89,15 +105,25 @@ export default function SettingsScreen() {
                 {t("settings.reviewStatsTitle")}
               </Text>
             </View>
-            <View style={styles.proChip}>
-              <Text style={styles.proChipText}>{t("settings.proBadge")}</Text>
-            </View>
+            {PRO_PURCHASES_ENABLED ? (
+              <View style={styles.proChip}>
+                <Text style={styles.proChipText}>{t("settings.proBadge")}</Text>
+              </View>
+            ) : (
+              <Ionicons
+                name="chevron-forward"
+                size={18}
+                color={colors.inkMuted}
+              />
+            )}
           </View>
         </Pressable>
 
         <Pressable
           style={[styles.infoCard, styles.shadow]}
-          onPress={() => router.navigate(isPro ? "/mistake-note" : "/pro")}
+          onPress={() =>
+            router.navigate(canUseMistakeNote ? "/mistake-note" : "/pro")
+          }
         >
           <View style={styles.infoCardHeader}>
             <View style={styles.infoCardTitleRow}>
@@ -110,9 +136,17 @@ export default function SettingsScreen() {
                 {t("settings.mistakeNoteTitle")}
               </Text>
             </View>
-            <View style={styles.proChip}>
-              <Text style={styles.proChipText}>{t("settings.proBadge")}</Text>
-            </View>
+            {PRO_PURCHASES_ENABLED ? (
+              <View style={styles.proChip}>
+                <Text style={styles.proChipText}>{t("settings.proBadge")}</Text>
+              </View>
+            ) : (
+              <Ionicons
+                name="chevron-forward"
+                size={18}
+                color={colors.inkMuted}
+              />
+            )}
           </View>
         </Pressable>
 

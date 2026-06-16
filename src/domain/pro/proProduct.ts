@@ -2,8 +2,8 @@ export const PRO_PRODUCT = {
   id: "seodang_pro_lifetime",
   purchaseType: "one_time",
   price: {
-    ko: "₩3,900",
-    ja: "¥390",
+    ko: "₩3,300",
+    ja: "¥300",
   },
   benefitKeys: [
     "pro.included.stats",

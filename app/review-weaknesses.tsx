@@ -63,7 +63,7 @@ export default function ReviewWeaknessesScreen() {
           })}
           characterIds={stats.weakCharacterIds}
           icon="flash-outline"
-          isPro={isPro}
+          isPro={canViewFocusedReview}
           title={t("reviewStats.weakFocusTitle")}
         />
       ) : null}

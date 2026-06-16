@@ -6,11 +6,9 @@ import { Screen } from "../src/components/common/Screen";
 import { spacing, useTheme } from "../src/design/theme";
 import { PRO_PRODUCT } from "../src/domain/pro/proProduct";
 import { useI18n } from "../src/i18n/useI18n";
-import { useAppState } from "../src/state/AppStateProvider";
 
 export default function ProScreen() {
-  const { isPro } = useAppState();
-  const { locale, t } = useI18n();
+  const { t } = useI18n();
   const { colors, surfaceStyles, textStyles, shadows } = useTheme();
   const styles = createStyles({ colors, surfaceStyles, textStyles, shadows });
 
@@ -18,10 +16,10 @@ export default function ProScreen() {
     <Screen>
       <View style={[styles.heroCard, styles.shadow]}>
         <View style={styles.badge}>
-          <Text style={styles.badgeText}>{t("pro.badge")}</Text>
+          <Text style={styles.badgeText}>{t("pro.freeLaunchBadge")}</Text>
         </View>
-        <Text style={styles.title}>{t("pro.title")}</Text>
-        <Text style={styles.body}>{t("pro.body")}</Text>
+        <Text style={styles.title}>{t("pro.freeLaunchTitle")}</Text>
+        <Text style={styles.body}>{t("pro.freeLaunchBody")}</Text>
       </View>
 
       <View style={styles.featureList}>
@@ -60,9 +58,8 @@ export default function ProScreen() {
       </View>
 
       <View style={[styles.priceCard, styles.shadow]}>
-        <Text style={styles.priceLabel}>{t("pro.priceLabel")}</Text>
-        <Text style={styles.price}>{PRO_PRODUCT.price[locale]}</Text>
-        <Text style={styles.priceBody}>{t("pro.priceBody")}</Text>
+        <Text style={styles.priceLabel}>{t("pro.freeLaunchIncludedTitle")}</Text>
+        <Text style={styles.priceBody}>{t("pro.freeLaunchIncludedBody")}</Text>
         <View style={styles.includedList}>
           {PRO_PRODUCT.benefitKeys.map((benefitKey) => (
             <IncludedRow
@@ -74,28 +71,14 @@ export default function ProScreen() {
           ))}
         </View>
         <Pressable
-          style={[styles.disabledButton, isPro ? styles.activeButton : null]}
-          disabled
+          style={styles.primaryButton}
+          onPress={() => router.push("/review-stats")}
         >
-          <Text
-            style={[
-              styles.disabledButtonText,
-              isPro ? styles.activeButtonText : null,
-            ]}
-          >
-            {isPro ? t("pro.active") : t("pro.purchasePending")}
+          <Text style={styles.primaryButtonText}>
+            {t("pro.freeLaunchPrimaryAction")}
           </Text>
         </Pressable>
       </View>
-
-      <Pressable
-        style={styles.secondaryButton}
-        onPress={() => router.push("/review-stats")}
-      >
-        <Text style={styles.secondaryButtonText}>
-          {t("pro.viewReviewStats")}
-        </Text>
-      </Pressable>
     </Screen>
   );
 }
@@ -132,11 +115,7 @@ function ProFeature({
         <Text style={styles.featureTitle}>{title}</Text>
         <Text style={styles.featureBody}>{body}</Text>
       </View>
-      <Ionicons
-        name="chevron-forward"
-        size={18}
-        color={colors.inkFaint}
-      />
+      <Ionicons name="chevron-forward" size={18} color={colors.inkFaint} />
     </Pressable>
   );
 }
@@ -152,11 +131,7 @@ function IncludedRow({
 }) {
   return (
     <View style={styles.includedRow}>
-      <Ionicons
-        name="checkmark"
-        size={16}
-        color={colors.accentWarmMuted}
-      />
+      <Ionicons name="checkmark" size={16} color={colors.accentWarmMuted} />
       <Text style={styles.includedText}>{label}</Text>
     </View>
   );
@@ -220,7 +195,6 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
       ...textStyles.meta,
       color: colors.accentWarmMuted,
     },
-    price: textStyles.displayMd,
     priceBody: textStyles.bodySm,
     includedList: {
       gap: spacing[2],
@@ -232,33 +206,18 @@ function createStyles({ colors, surfaceStyles, textStyles, shadows }: any) {
       gap: spacing[2],
     },
     includedText: textStyles.bodySm,
-    disabledButton: {
+    primaryButton: {
       alignItems: "center",
       borderRadius: 999,
       paddingHorizontal: spacing[5],
       paddingVertical: spacing[3],
-      backgroundColor: colors.bgMutedStrong,
-      borderWidth: StyleSheet.hairlineWidth,
-      borderColor: colors.borderSoft,
+      backgroundColor: colors.accentWarm,
+      borderWidth: 1,
+      borderColor: colors.accentWarm,
     },
-    disabledButtonText: {
-      ...textStyles.meta,
-      color: colors.inkMuted,
-    },
-    activeButton: {
-      backgroundColor: colors.inkStrongAlt,
-      borderColor: colors.inkStrongAlt,
-    },
-    activeButtonText: {
+    primaryButtonText: {
+      ...textStyles.buttonLabel,
       color: colors.inkOnDark,
-    },
-    secondaryButton: {
-      alignItems: "center",
-      paddingVertical: spacing[3],
-    },
-    secondaryButtonText: {
-      ...textStyles.meta,
-      color: colors.accentWarmMuted,
     },
     shadow: shadows.card,
   });
