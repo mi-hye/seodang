@@ -82,16 +82,39 @@ function buildHeaders() {
 function mapKanjiEnrichmentRow(row) {
   const mappedRow = {
     id: row.id,
-    meaning_ko: row.meaningKo ?? null,
-    meaning_ja: row.meaningJa ?? null,
-    example_ja: row.exampleJa ?? null,
-    example_ko: row.exampleKo ?? null,
-    sort_order: row.sortOrder ?? null,
   };
+
+  if (Object.hasOwn(row, "meaningKo")) {
+    mappedRow.meaning_ko = row.meaningKo ?? null;
+  }
+
+  if (Object.hasOwn(row, "meaningJa")) {
+    mappedRow.meaning_ja = row.meaningJa ?? null;
+  }
+
+  if (Object.hasOwn(row, "exampleJa")) {
+    mappedRow.example_ja = row.exampleJa ?? null;
+  }
+
+  if (Object.hasOwn(row, "exampleKo")) {
+    mappedRow.example_ko = row.exampleKo ?? null;
+  }
+
+  if (Object.hasOwn(row, "sortOrder")) {
+    mappedRow.sort_order = row.sortOrder ?? null;
+  }
 
   if (Object.hasOwn(row, "exampleJaFurigana")) {
     mappedRow.metadata = {
+      ...(mappedRow.metadata ?? {}),
       exampleJaFurigana: normalizeExampleJaFurigana(row.exampleJaFurigana),
+    };
+  }
+
+  if (Object.hasOwn(row, "specialReadings")) {
+    mappedRow.metadata = {
+      ...(mappedRow.metadata ?? {}),
+      specialReadings: normalizeSpecialReadings(row.specialReadings),
     };
   }
 
@@ -110,12 +133,22 @@ function mergeWithExistingRow(row, existingRow) {
     license: existingRow.license,
     view_box_width: existingRow.view_box_width,
     view_box_height: existingRow.view_box_height,
-    meaning_ko: row.meaning_ko,
-    meaning_ja: row.meaning_ja,
-    example_ja: row.example_ja,
-    example_ko: row.example_ko,
+    meaning_ko: Object.hasOwn(row, "meaning_ko")
+      ? row.meaning_ko
+      : existingRow.meaning_ko,
+    meaning_ja: Object.hasOwn(row, "meaning_ja")
+      ? row.meaning_ja
+      : existingRow.meaning_ja,
+    example_ja: Object.hasOwn(row, "example_ja")
+      ? row.example_ja
+      : existingRow.example_ja,
+    example_ko: Object.hasOwn(row, "example_ko")
+      ? row.example_ko
+      : existingRow.example_ko,
     metadata: mergeMetadata(existingRow.metadata, row.metadata),
-    sort_order: row.sort_order,
+    sort_order: Object.hasOwn(row, "sort_order")
+      ? row.sort_order
+      : existingRow.sort_order,
   };
 }
 
@@ -139,6 +172,10 @@ function normalizeInputRows(input) {
         normalizedRow.exampleJaFurigana = row.exampleJaFurigana ?? null;
       }
 
+      if (Object.hasOwn(row, "specialReadings")) {
+        normalizedRow.specialReadings = row.specialReadings ?? null;
+      }
+
       return normalizedRow;
     });
   }
@@ -153,7 +190,7 @@ async function fetchExistingCharacterBaseRows() {
 
   while (true) {
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/kanji_characters?select=id,literal,source,license,view_box_width,view_box_height,metadata&order=id.asc`,
+      `${supabaseUrl}/rest/v1/kanji_characters?select=id,literal,source,license,view_box_width,view_box_height,meaning_ko,meaning_ja,example_ja,example_ko,sort_order,metadata&order=id.asc`,
       {
         headers: {
           ...buildHeaders(),
@@ -186,10 +223,30 @@ function mergeMetadata(existingMetadata, nextMetadata) {
   const merged = isPlainObject(existingMetadata) ? { ...existingMetadata } : {};
 
   if (!Object.hasOwn(nextMetadata ?? {}, "exampleJaFurigana")) {
+    if (!Object.hasOwn(nextMetadata ?? {}, "specialReadings")) {
+      return merged;
+    }
+  }
+
+  if (Object.hasOwn(nextMetadata ?? {}, "specialReadings")) {
+    const normalizedSpecialReadings = normalizeSpecialReadings(
+      nextMetadata.specialReadings,
+    );
+
+    if (normalizedSpecialReadings) {
+      merged.specialReadings = normalizedSpecialReadings;
+    } else {
+      delete merged.specialReadings;
+    }
+  }
+
+  if (!Object.hasOwn(nextMetadata ?? {}, "exampleJaFurigana")) {
     return merged;
   }
 
-  const normalizedFurigana = normalizeExampleJaFurigana(nextMetadata.exampleJaFurigana);
+  const normalizedFurigana = normalizeExampleJaFurigana(
+    nextMetadata.exampleJaFurigana,
+  );
 
   if (normalizedFurigana) {
     merged.exampleJaFurigana = normalizedFurigana;
@@ -216,6 +273,33 @@ function normalizeExampleJaFurigana(parts) {
     .filter((part) => part.text);
 
   return normalized.length > 0 ? normalized : null;
+}
+
+function normalizeSpecialReadings(rows) {
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return null;
+  }
+
+  const normalized = rows
+    .map((row) => ({
+      word: normalizeString(row?.word),
+      reading: normalizeString(row?.reading),
+      meaningKo: normalizeNullableString(row?.meaningKo),
+      meaningJa: normalizeNullableString(row?.meaningJa),
+      noteKo: normalizeNullableString(row?.noteKo),
+      noteJa: normalizeNullableString(row?.noteJa),
+    }))
+    .filter((row) => row.word && row.reading && (row.meaningKo || row.meaningJa));
+
+  return normalized.length > 0 ? normalized : null;
+}
+
+function normalizeString(value) {
+  return typeof value === "string" && value.trim() ? value.trim() : null;
+}
+
+function normalizeNullableString(value) {
+  return typeof value === "string" && value.trim() ? value.trim() : null;
 }
 
 function toHiragana(value) {

@@ -18,6 +18,7 @@ import { Screen } from "../src/components/common/Screen";
 import { getCharacterMeaning, KanjiCharacter } from "../src/data/characters";
 import { isForcedEmptyState } from "../src/data/debugFetchFailure";
 import { layout, spacing, useTheme } from "../src/design/theme";
+import { filterAndRankKanjiSearchResults } from "../src/domain/characters/searchResults";
 import { useI18n } from "../src/i18n/useI18n";
 import { buildCategoryProgressMap } from "../src/lib/categoryProgress";
 import {
@@ -100,28 +101,7 @@ export default function CharacterListScreen() {
       : t("list.subtitle");
   const normalizedSearch = searchText.trim().toLowerCase();
   const filteredItems = useMemo(
-    () =>
-      items.filter((character) => {
-        if (!normalizedSearch) {
-          return true;
-        }
-
-        const haystack = [
-          character.literal,
-          character.meaningKo,
-          character.meaningJa,
-          character.exampleKo,
-          character.exampleJa,
-          ...character.onyomi,
-          ...character.kunyomi,
-          ...(character.metadata?.meaningEn ?? []),
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-
-        return haystack.includes(normalizedSearch);
-      }),
+    () => filterAndRankKanjiSearchResults(items, normalizedSearch),
     [items, normalizedSearch],
   );
   const firstCharacterId = filteredItems[0]?.id;

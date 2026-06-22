@@ -83,6 +83,8 @@
   "detail.kunyomi": "訓読み: %{value}",
   "detail.examples": "例文",
   "detail.reference": "参考",
+  "detail.specialReadings": "特別な読み",
+  "detail.specialReadingsDescription": "この語では含まれる漢字の読みが通常と変わります。",
   "detail.examplesPending": "準備中です。",
   "detail.onboardingAction": "書き取り練習を始めてみましょうか。",
   "detail.startPractice": "書き取り練習を始める",

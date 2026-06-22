@@ -4,6 +4,14 @@ export type KanjiCharacterMetadata = {
     text: string;
   }>;
   meaningEn?: string[];
+  specialReadings?: Array<{
+    meaningJa?: string | null;
+    meaningKo?: string | null;
+    noteJa?: string | null;
+    noteKo?: string | null;
+    reading: string;
+    word: string;
+  }>;
 };
 
 export type KanjiCharacter = {

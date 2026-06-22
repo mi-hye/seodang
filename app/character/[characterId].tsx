@@ -11,6 +11,12 @@ import {
   normalizeReviewedFuriganaParts,
 } from "../../src/domain/kanji/exampleFurigana";
 import { getDevCharacterIdLabel } from "../../src/domain/kanji/devCharacterLabel";
+import {
+  getSpecialReadingBody,
+  hasSpecialReadings,
+  normalizeSpecialReadings,
+} from "../../src/domain/kanji/specialReadings";
+import type { SpecialReading } from "../../src/domain/kanji/specialReadings";
 import { useI18n } from "../../src/i18n/useI18n";
 import { useKanjiCharacterQuery } from "../../src/queries/kanjiQueries";
 import { useAppState } from "../../src/state/AppStateProvider";
@@ -51,6 +57,10 @@ export default function CharacterDetailScreen() {
         })
       : null;
   const exampleKo = character?.exampleKo;
+  const specialReadings = useMemo(
+    () => normalizeSpecialReadings(character?.metadata?.specialReadings),
+    [character?.metadata?.specialReadings],
+  );
   const devCharacterIdLabel = character
     ? getDevCharacterIdLabel({
         characterId: character.id,
@@ -60,6 +70,7 @@ export default function CharacterDetailScreen() {
   const isReference = isReferenceExample(exampleJa);
   const hasExample =
     locale === "ja" ? Boolean(exampleJa) : Boolean(exampleJa || exampleKo);
+  const hasSpecialReadingCard = hasSpecialReadings(specialReadings);
   const showOnboarding = Boolean(character) && onboardingStep === "detail";
 
   if (isLoading) {
@@ -142,6 +153,25 @@ export default function CharacterDetailScreen() {
               <Text style={styles.infoLine}>{t("detail.examplesPending")}</Text>
             </View>
           )}
+
+          {hasSpecialReadingCard ? (
+            <View style={styles.infoCard}>
+              <Text style={styles.sectionTitle}>{t("detail.specialReadings")}</Text>
+              <Text style={styles.specialReadingDescription}>
+                {t("detail.specialReadingsDescription")}
+              </Text>
+              <View style={styles.specialReadingList}>
+                {specialReadings.map((specialReading) => (
+                  <SpecialReadingItem
+                    key={`${specialReading.word}-${specialReading.reading}`}
+                    locale={locale}
+                    specialReading={specialReading}
+                    styles={styles}
+                  />
+                ))}
+              </View>
+            </View>
+          ) : null}
         </View>
 
         {showOnboarding ? (
@@ -198,6 +228,28 @@ function FuriganaExample({
           <Text style={styles.exampleWord}>{part.text}</Text>
         </View>
       ))}
+    </View>
+  );
+}
+
+function SpecialReadingItem({
+  locale,
+  specialReading,
+  styles,
+}: {
+  locale: "ko" | "ja";
+  specialReading: SpecialReading;
+  styles: ReturnType<typeof createStyles>;
+}) {
+  const body = getSpecialReadingBody(specialReading, locale);
+
+  return (
+    <View style={styles.specialReadingItem}>
+      <Text style={styles.specialReadingWord}>{specialReading.word}</Text>
+      <Text style={styles.specialReadingMeta}>
+        {specialReading.reading}
+        {body ? ` ${body}` : ""}
+      </Text>
     </View>
   );
 }
@@ -270,6 +322,21 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
     },
     exampleWord: textStyles.titleSm,
     exampleMeta: textStyles.caption,
+    specialReadingList: {
+      gap: 10,
+    },
+    specialReadingDescription: {
+      ...textStyles.caption,
+      color: colors.inkMuted,
+    },
+    specialReadingItem: {
+      gap: 3,
+    },
+    specialReadingWord: textStyles.titleSm,
+    specialReadingMeta: {
+      ...textStyles.caption,
+      color: colors.inkMuted,
+    },
     actionButton: {
       ...buttonStyles.secondary,
       marginTop: 8,
