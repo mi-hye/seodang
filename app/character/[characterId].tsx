@@ -119,7 +119,7 @@ export default function CharacterDetailScreen() {
           </View>
 
           {hasExample ? (
-            <View style={styles.infoCard}>
+            <View style={[styles.infoCard, styles.exampleCard]}>
               <Text style={styles.sectionTitle}>
                 {t(isReference ? "detail.reference" : "detail.examples")}
               </Text>
@@ -244,10 +244,12 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
       marginBottom: 12,
       gap: 8,
     },
+    exampleCard: {
+      gap: 4,
+    },
     sectionTitle: textStyles.titleSm,
     infoLine: textStyles.bodySm,
     exampleRow: {
-      paddingTop: 4,
       gap: 2,
     },
     furiganaLine: {
