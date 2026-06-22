@@ -15,6 +15,8 @@
     "kanji:build:enrichment-review": "node scripts/build-kanji-enrichment-review.mjs",
     "kanji:audit:enrichment": "node scripts/audit-kanji-enrichment.mjs",
     "kanji:build:auto-enrichment-suggestions": "node scripts/build-kanji-enrichment-auto-suggestions.mjs",
+    "kanji:build:example-review-queue": "node scripts/build-kanji-example-review-queue.mjs",
+    "kanji:validate:enrichment-suggestions": "node scripts/validate-kanji-enrichment-suggestions.mjs",
     "kanji:apply:enrichment-suggestions": "node scripts/apply-kanji-enrichment-suggestions.mjs",
     "kanji:print:enrichment-audit-batch": "node scripts/print-kanji-enrichment-audit-batch.mjs",
     "kanji:report:db-quality": "node scripts/report-kanji-db-quality.mjs",

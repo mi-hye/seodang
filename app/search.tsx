@@ -16,6 +16,7 @@ import { FavoriteButton } from "../src/components/common/FavoriteButton";
 import { getCharacterMeaning } from "../src/data/characters";
 import { KanjiCharacter } from "../src/data/characters";
 import { layout, spacing, useTheme } from "../src/design/theme";
+import { filterAndRankKanjiSearchResults } from "../src/domain/characters/searchResults";
 import { useI18n } from "../src/i18n/useI18n";
 import { useAllKanjiCharactersQuery } from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
@@ -35,25 +36,10 @@ export default function SearchScreen() {
       return [];
     }
 
-    return allCharacters
-      .filter((character) => {
-        const haystack = [
-          character.literal,
-          character.meaningKo,
-          character.meaningJa,
-          character.exampleKo,
-          character.exampleJa,
-          ...character.onyomi,
-          ...character.kunyomi,
-          ...(character.metadata?.meaningEn ?? []),
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-
-        return haystack.includes(deferredSearch);
-      })
-      .slice(0, 80);
+    return filterAndRankKanjiSearchResults(
+      allCharacters,
+      deferredSearch,
+    ).slice(0, 80);
   }, [allCharacters, deferredSearch]);
 
   return (
