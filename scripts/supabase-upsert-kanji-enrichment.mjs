@@ -80,7 +80,7 @@ function buildHeaders() {
 }
 
 function mapKanjiEnrichmentRow(row) {
-  return {
+  const mappedRow = {
     id: row.id,
     meaning_ko: row.meaningKo ?? null,
     meaning_ja: row.meaningJa ?? null,
@@ -88,6 +88,14 @@ function mapKanjiEnrichmentRow(row) {
     example_ko: row.exampleKo ?? null,
     sort_order: row.sortOrder ?? null,
   };
+
+  if (Object.hasOwn(row, "exampleJaFurigana")) {
+    mappedRow.metadata = {
+      exampleJaFurigana: normalizeExampleJaFurigana(row.exampleJaFurigana),
+    };
+  }
+
+  return mappedRow;
 }
 
 function mergeWithExistingRow(row, existingRow) {
@@ -106,6 +114,7 @@ function mergeWithExistingRow(row, existingRow) {
     meaning_ja: row.meaning_ja,
     example_ja: row.example_ja,
     example_ko: row.example_ko,
+    metadata: mergeMetadata(existingRow.metadata, row.metadata),
     sort_order: row.sort_order,
   };
 }
@@ -116,14 +125,22 @@ function normalizeInputRows(input) {
   }
 
   if (Array.isArray(input?.results)) {
-    return input.results.map((row) => ({
-      id: row.id,
-      meaningKo: row.meaningKo ?? null,
-      meaningJa: row.meaningJa ?? null,
-      exampleJa: row.exampleJa ?? null,
-      exampleKo: row.exampleKo ?? null,
-      sortOrder: row.sortOrder ?? null,
-    }));
+    return input.results.map((row) => {
+      const normalizedRow = {
+        id: row.id,
+        meaningKo: row.meaningKo ?? null,
+        meaningJa: row.meaningJa ?? null,
+        exampleJa: row.exampleJa ?? null,
+        exampleKo: row.exampleKo ?? null,
+        sortOrder: row.sortOrder ?? null,
+      };
+
+      if (Object.hasOwn(row, "exampleJaFurigana")) {
+        normalizedRow.exampleJaFurigana = row.exampleJaFurigana ?? null;
+      }
+
+      return normalizedRow;
+    });
   }
 
   return [];
@@ -136,7 +153,7 @@ async function fetchExistingCharacterBaseRows() {
 
   while (true) {
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/kanji_characters?select=id,literal,source,license,view_box_width,view_box_height&order=id.asc`,
+      `${supabaseUrl}/rest/v1/kanji_characters?select=id,literal,source,license,view_box_width,view_box_height,metadata&order=id.asc`,
       {
         headers: {
           ...buildHeaders(),
@@ -163,6 +180,60 @@ async function fetchExistingCharacterBaseRows() {
   }
 
   return rows;
+}
+
+function mergeMetadata(existingMetadata, nextMetadata) {
+  const merged = isPlainObject(existingMetadata) ? { ...existingMetadata } : {};
+
+  if (!Object.hasOwn(nextMetadata ?? {}, "exampleJaFurigana")) {
+    return merged;
+  }
+
+  const normalizedFurigana = normalizeExampleJaFurigana(nextMetadata.exampleJaFurigana);
+
+  if (normalizedFurigana) {
+    merged.exampleJaFurigana = normalizedFurigana;
+  } else {
+    delete merged.exampleJaFurigana;
+  }
+
+  return merged;
+}
+
+function normalizeExampleJaFurigana(parts) {
+  if (!Array.isArray(parts) || parts.length === 0) {
+    return null;
+  }
+
+  const normalized = parts
+    .map((part) => ({
+      text: typeof part?.text === "string" ? part.text : "",
+      reading:
+        typeof part?.reading === "string" && part.reading.trim()
+          ? toHiragana(part.reading.trim())
+          : null,
+    }))
+    .filter((part) => part.text);
+
+  return normalized.length > 0 ? normalized : null;
+}
+
+function toHiragana(value) {
+  return Array.from(value)
+    .map((character) => {
+      const codePoint = character.codePointAt(0);
+
+      if (codePoint != null && codePoint >= 0x30a1 && codePoint <= 0x30f6) {
+        return String.fromCodePoint(codePoint - 0x60);
+      }
+
+      return character;
+    })
+    .join("");
+}
+
+function isPlainObject(value) {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
 async function readJson(filePath) {

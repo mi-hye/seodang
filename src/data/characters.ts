@@ -1,4 +1,8 @@
 export type KanjiCharacterMetadata = {
+  exampleJaFurigana?: Array<{
+    reading?: string | null;
+    text: string;
+  }>;
   meaningEn?: string[];
 };
 

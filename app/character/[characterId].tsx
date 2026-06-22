@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -5,6 +6,11 @@ import { ErrorState } from "../../src/components/common/ErrorState";
 import { Screen } from "../../src/components/common/Screen";
 import { getCharacterMeaning } from "../../src/data/characters";
 import { spacing, useTheme } from "../../src/design/theme";
+import {
+  getReviewedExampleFuriganaPartsForDisplay,
+  normalizeReviewedFuriganaParts,
+} from "../../src/domain/kanji/exampleFurigana";
+import { getDevCharacterIdLabel } from "../../src/domain/kanji/devCharacterLabel";
 import { useI18n } from "../../src/i18n/useI18n";
 import { useKanjiCharacterQuery } from "../../src/queries/kanjiQueries";
 import { useAppState } from "../../src/state/AppStateProvider";
@@ -29,7 +35,28 @@ export default function CharacterDetailScreen() {
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ buttonStyles, colors, surfaceStyles, textStyles });
   const exampleJa = character?.exampleJa;
+  const reviewedExampleFuriganaParts = useMemo(
+    () =>
+      normalizeReviewedFuriganaParts(
+        character?.metadata?.exampleJaFurigana,
+        exampleJa,
+      ),
+    [character?.metadata?.exampleJaFurigana, exampleJa],
+  );
+  const displayFuriganaParts =
+    exampleJa != null
+      ? getReviewedExampleFuriganaPartsForDisplay({
+          example: exampleJa,
+          reviewedParts: reviewedExampleFuriganaParts,
+        })
+      : null;
   const exampleKo = character?.exampleKo;
+  const devCharacterIdLabel = character
+    ? getDevCharacterIdLabel({
+        characterId: character.id,
+        isDevelopment: __DEV__,
+      })
+    : null;
   const isReference = isReferenceExample(exampleJa);
   const hasExample =
     locale === "ja" ? Boolean(exampleJa) : Boolean(exampleJa || exampleKo);
@@ -76,6 +103,9 @@ export default function CharacterDetailScreen() {
                 ? t("common.strokes", { count: character.strokeCount })
                 : "-"}
             </Text>
+            {devCharacterIdLabel ? (
+              <Text style={styles.devCharacterId}>{devCharacterIdLabel}</Text>
+            ) : null}
           </View>
 
           <View style={styles.infoCard}>
@@ -95,7 +125,11 @@ export default function CharacterDetailScreen() {
               </Text>
               <View style={styles.exampleRow}>
                 {exampleJa ? (
-                  <Text style={styles.exampleWord}>{exampleJa}</Text>
+                  displayFuriganaParts ? (
+                    <FuriganaExample parts={displayFuriganaParts} styles={styles} />
+                  ) : (
+                    <Text style={styles.exampleWord}>{exampleJa}</Text>
+                  )
                 ) : null}
                 {locale === "ko" && exampleKo ? (
                   <Text style={styles.exampleMeta}>{exampleKo}</Text>
@@ -149,6 +183,25 @@ function isReferenceExample(exampleJa?: string | null) {
   return Boolean(exampleJa?.includes("日常ではあまり使われず"));
 }
 
+function FuriganaExample({
+  parts,
+  styles,
+}: {
+  parts: NonNullable<ReturnType<typeof getReviewedExampleFuriganaPartsForDisplay>>;
+  styles: ReturnType<typeof createStyles>;
+}) {
+  return (
+    <View style={styles.furiganaLine}>
+      {parts.map((part, index) => (
+        <View key={`${part.text}-${index}`} style={styles.furiganaPart}>
+          <Text style={styles.furiganaReading}>{part.reading ?? " "}</Text>
+          <Text style={styles.exampleWord}>{part.text}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
 function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) {
   return StyleSheet.create({
     screenStack: {
@@ -179,6 +232,12 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
       fontWeight: "700",
       color: colors.inkOnDarkMuted,
     },
+    devCharacterId: {
+      fontSize: 11,
+      fontWeight: "800",
+      color: colors.inkOnDarkMuted,
+      marginTop: spacing[1],
+    },
     infoCard: {
       ...surfaceStyles.card,
       padding: 18,
@@ -190,6 +249,22 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
     exampleRow: {
       paddingTop: 4,
       gap: 2,
+    },
+    furiganaLine: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      alignItems: "flex-end",
+    },
+    furiganaPart: {
+      alignItems: "center",
+      justifyContent: "flex-end",
+    },
+    furiganaReading: {
+      ...textStyles.caption,
+      color: colors.inkMuted,
+      fontSize: 10,
+      lineHeight: 12,
+      fontWeight: "700",
     },
     exampleWord: textStyles.titleSm,
     exampleMeta: textStyles.caption,

@@ -108,7 +108,7 @@ function mergeSuggestions(reviewRows, suggestionRows, status) {
       return row;
     }
 
-    return {
+    const nextRow = {
       ...row,
       meaningKo: normalizeNullableString(suggestion.meaningKo),
       meaningJa: normalizeNullableString(suggestion.meaningJa),
@@ -117,6 +117,14 @@ function mergeSuggestions(reviewRows, suggestionRows, status) {
       reviewStatus: status,
       notes: normalizeNullableString(suggestion.notes ?? row.notes),
     };
+
+    if (Object.hasOwn(suggestion, "exampleJaFurigana")) {
+      nextRow.exampleJaFurigana = normalizeExampleJaFurigana(
+        suggestion.exampleJaFurigana,
+      );
+    }
+
+    return nextRow;
   });
 }
 
@@ -131,6 +139,38 @@ function normalizeNullableString(value) {
 
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : null;
+}
+
+function normalizeExampleJaFurigana(parts) {
+  if (!Array.isArray(parts) || parts.length === 0) {
+    return null;
+  }
+
+  const normalized = parts
+    .map((part) => ({
+      text: typeof part?.text === "string" ? part.text : "",
+      reading:
+        typeof part?.reading === "string" && part.reading.trim()
+          ? toHiragana(part.reading.trim())
+          : null,
+    }))
+    .filter((part) => part.text);
+
+  return normalized.length > 0 ? normalized : null;
+}
+
+function toHiragana(value) {
+  return Array.from(value)
+    .map((character) => {
+      const codePoint = character.codePointAt(0);
+
+      if (codePoint != null && codePoint >= 0x30a1 && codePoint <= 0x30f6) {
+        return String.fromCodePoint(codePoint - 0x60);
+      }
+
+      return character;
+    })
+    .join("");
 }
 
 async function writeJsonAtomically(filePath, value) {

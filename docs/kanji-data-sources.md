@@ -137,9 +137,17 @@
 - 뜻/예문/메타데이터 보강 대상 audit 생성
   - [scripts/audit-kanji-enrichment.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/audit-kanji-enrichment.mjs:1)
   - 결과 파일: [kanji-enrichment-audit.generated.json](/Users/kangmihye/Desktop/study/seodang/data/generated/kanji-enrichment-audit.generated.json:1)
+- 예문/후리가나 검수 큐 생성
+  - [scripts/build-kanji-example-review-queue.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/build-kanji-example-review-queue.mjs:1)
+  - 실행: `npm run kanji:build:example-review-queue`
+  - 결과 파일: [kanji-example-review-queue.generated.json](/Users/kangmihye/Desktop/study/seodang/data/generated/kanji-example-review-queue.generated.json:1)
+  - 큐는 `missingFurigana`, `quotedLiteralMeta`, `practicalQuotedMeta`, `bareLiteralGeneric` 같은 이슈를 우선순위로 정렬한다.
 - 검수/제안 JSON을 리뷰 파일에 반영
   - [scripts/apply-kanji-enrichment-suggestions.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/apply-kanji-enrichment-suggestions.mjs:1)
+  - 반영 전 검증: `npm run kanji:validate:enrichment-suggestions -- --input data/generated/kanji-enrichment-suggestions.batch-0001.generated.json`
   - 예: `npm run kanji:apply:enrichment-suggestions -- --input data/generated/kanji-enrichment-suggestions.batch-0001.generated.json --status=approved`
+  - 예문/후리가나 correction batch는 sparse row를 쓰지 말고 `meaningKo`, `meaningJa`, `exampleJa`, `exampleKo`, `exampleJaFurigana`를 모두 포함한다.
+  - `exampleJaFurigana[*].text`를 이어 붙인 값은 `exampleJa`와 정확히 같아야 하고, `reading`은 히라가나 또는 `null`만 허용한다.
 - audit 기준 다음 보강 대상 출력
   - [scripts/print-kanji-enrichment-audit-batch.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/print-kanji-enrichment-audit-batch.mjs:1)
   - 기본값은 실사용 대상 한자 50개이며, 전체 대상은 `-- --all`로 출력
@@ -154,6 +162,8 @@
   - [scripts/supabase-upsert-kanji-enrichment.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/supabase-upsert-kanji-enrichment.mjs:1)
   - 예: `npm run supabase:upsert:kanji-enrichment -- --input data/generated/kanji-enrichment-review.generated.json`
   - 업서트는 DB에 이미 존재하는 `kanji_characters.id`와 매칭되는 row만 반영한다.
+  - 검수된 예문 요미가나는 `kanji_characters.metadata.exampleJaFurigana`에 저장한다.
+  - `exampleJaFurigana`가 없는 입력은 기존 값을 보존하고, `exampleJaFurigana: null`은 기존 값을 제거한다.
   - 현재 DB row 수는 `6819`, 현재 review와 매칭되어 업서트되는 row 수는 `6799`다.
 - Supabase DB 기준 품질 리포트 생성
   - [scripts/report-kanji-db-quality.mjs](/Users/kangmihye/Desktop/study/seodang/scripts/report-kanji-db-quality.mjs:1)
@@ -178,9 +188,31 @@
 - 실사용 한자에서는 `meaning_ko`, `meaning_ja`, `example_ja`, `example_ko`가 모두 있어야 한다.
 - `뜻 미상`, `意味未詳`는 DB에 남기지 않는다. 의미가 없거나 불명확한 비실사용 한자는 `null` 또는 설명형 fallback을 사용한다.
 - `example_ja`는 가능하면 대상 한자를 직접 포함해야 한다.
+- 검수된 요미가나는 `exampleJaFurigana` 배열로 저장한다. 각 `text`를 이어 붙인 값이 `exampleJa`와 정확히 같아야 앱에서 검수본으로 사용한다.
+- `reading`은 히라가나로 저장한다. 스크립트는 가타카나 입력도 히라가나로 정규화한다.
 - `JLPT`, `일본 학교 한자`, `상용한자` 범위에서는 일반 예문을 우선한다.
 - 희귀 한자, 이름용 한자, 십간/고문 표현도 가능하면 실제 용례나 이름 문장처럼 짧은 문장으로 처리한다.
 - `日常ではあまり使われず...`, `이름 등에서 쓰입니다` 같은 설명형 fallback 문장은 실사용 범위 품질 리포트에서 실패로 본다.
+
+예문 검수 JSON 예시:
+
+```json
+{
+  "id": "u065e5",
+  "literal": "日",
+  "meaningKo": "날, 해",
+  "meaningJa": "日、太陽",
+  "exampleJa": "日本へ行きます。",
+  "exampleKo": "일본에 갑니다.",
+  "exampleJaFurigana": [
+    { "text": "日", "reading": "に" },
+    { "text": "本", "reading": "ほん" },
+    { "text": "へ", "reading": null },
+    { "text": "行", "reading": "い" },
+    { "text": "きます。", "reading": null }
+  ]
+}
+```
 
 ### 소스 차집합 분석
 
