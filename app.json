@@ -54,7 +54,8 @@
           "icon": "./assets/notification-icon.png",
           "color": "#c4473a"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "extra": {
       "router": {},
