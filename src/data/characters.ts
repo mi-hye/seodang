@@ -12,6 +12,12 @@ export type KanjiCharacterMetadata = {
     reading: string;
     word: string;
   }>;
+  words?: Array<{
+    meaningJa?: string | null;
+    meaningKo?: string | null;
+    reading: string;
+    word: string;
+  }>;
 };
 
 export type KanjiCharacter = {

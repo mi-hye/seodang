@@ -37,7 +37,7 @@ test("normalizes valid special readings and drops incomplete rows", () => {
   );
 });
 
-test("selects localized special reading body with fallback", () => {
+test("selects Korean special reading body", () => {
   const reading = normalizeSpecialReadings([
     {
       word: "部屋",
@@ -50,7 +50,20 @@ test("selects localized special reading body with fallback", () => {
   ])?.[0];
 
   assert.equal(getSpecialReadingBody(reading, "ko"), "방");
-  assert.equal(getSpecialReadingBody(reading, "ja"), "部屋");
   assert.equal(hasSpecialReadings([reading]), true);
   assert.equal(hasSpecialReadings([]), false);
+});
+
+test("shows special reading meaning only in Korean locale", () => {
+  const reading = normalizeSpecialReadings([
+    {
+      word: "部屋",
+      reading: "へや",
+      meaningKo: "방",
+      meaningJa: "部屋",
+    },
+  ])?.[0];
+
+  assert.equal(getSpecialReadingBody(reading, "ko"), "방");
+  assert.equal(getSpecialReadingBody(reading, "ja"), null);
 });

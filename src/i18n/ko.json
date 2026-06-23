@@ -83,6 +83,7 @@
   "detail.kunyomi": "훈독: %{value}",
   "detail.examples": "예문",
   "detail.reference": "참고",
+  "detail.words": "단어",
   "detail.specialReadings": "특수 읽기",
   "detail.specialReadingsDescription": "이 단어에서는 포함 한자의 읽기가 일반 읽기와 달라집니다.",
   "detail.examplesPending": "준비중입니다.",
