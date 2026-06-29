@@ -4,7 +4,9 @@ import {
   LayoutChangeEvent,
   PanResponder,
   StyleSheet,
+  StyleProp,
   View,
+  ViewStyle,
 } from "react-native";
 import Svg, { Line, Path } from "react-native-svg";
 
@@ -22,6 +24,7 @@ type WritingCanvasProps = {
   onCanvasLayout?: (size: { width: number; height: number }) => void;
   onInteractionStart?: () => void;
   onInteractionEnd?: () => void;
+  style?: StyleProp<ViewStyle>;
 };
 
 export const WritingCanvas = memo(function WritingCanvas({
@@ -33,6 +36,7 @@ export const WritingCanvas = memo(function WritingCanvas({
   onCanvasLayout,
   onInteractionStart,
   onInteractionEnd,
+  style,
 }: WritingCanvasProps) {
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [animatedStrokeIndex, setAnimatedStrokeIndex] = useState(0);
@@ -152,7 +156,7 @@ export const WritingCanvas = memo(function WritingCanvas({
   return (
     <View
       collapsable={false}
-      style={[styles.canvas, fillMode && styles.fillCanvas]}
+      style={[styles.canvas, fillMode && styles.fillCanvas, style]}
       onLayout={handleLayout}
       {...panResponder.panHandlers}
     >

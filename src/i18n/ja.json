@@ -96,7 +96,6 @@
   "practice.hideGuide": "画を隠す",
   "practice.undoStroke": "一画取り消す",
   "practice.onboardingAction": "漢字を書く順番を確認できます。",
-  "practice.canvasHint": "一画ごとに指を離すと次の画として記録されます。今は画数、方向、始点と終点を基準データと比較します。",
   "practice.submitHint": "漢字を書くと提出ボタンが有効になります。",
   "practice.errorBody": "ネットワーク状態やSupabase接続を確認してください。",
   "practice.loadGuideError": "画データをまだ読み込めませんでした。",
