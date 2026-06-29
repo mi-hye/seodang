@@ -4,6 +4,7 @@ import path from "node:path";
 const rootDir = process.cwd();
 const kanjidicPath = path.join(rootDir, "data/import/kanjidic2.xml");
 const jlptSourcePath = path.join(rootDir, "data/import/jlpt-kanji-source.json");
+const hanjadictPath = path.join(rootDir, "data/import/hanjadict-table.json");
 const generatedDir = path.join(rootDir, "data/generated");
 const metadataOutputPath = path.join(generatedDir, "kanji-metadata.generated.json");
 const mappingsOutputPath = path.join(
@@ -13,10 +14,12 @@ const mappingsOutputPath = path.join(
 
 const kanjidicXml = await readText(kanjidicPath);
 const jlptSource = await readJson(jlptSourcePath);
+const hanjadictTable = await readJsonIfExists(hanjadictPath, {});
 const jlptMap = buildJlptMapFromOpenSourceJson(jlptSource);
+const koreanHuneumByLiteral = buildKoreanHuneumLookup(hanjadictTable);
 
 const characters = parseKanjidicCharacters(kanjidicXml);
-const metadataRows = buildMetadataRows(characters, jlptMap);
+const metadataRows = buildMetadataRows(characters, jlptMap, koreanHuneumByLiteral);
 const mappingRows = buildCategoryMappings(characters, jlptMap);
 
 await mkdir(generatedDir, { recursive: true });
@@ -56,6 +59,14 @@ function parseCharacterBlock(block) {
   const kunyomi = extractAll(block, /<reading r_type="ja_kun">([\s\S]*?)<\/reading>/g).map(
     decodeXml
   );
+  const koreanReadingRomanized = extractAll(
+    block,
+    /<reading r_type="korean_r">([\s\S]*?)<\/reading>/g
+  ).map(decodeXml);
+  const koreanReadingHangul = extractAll(
+    block,
+    /<reading r_type="korean_h">([\s\S]*?)<\/reading>/g
+  ).map(decodeXml);
   const meaningsEn = extractMeaningEn(block);
 
   return {
@@ -67,17 +78,24 @@ function parseCharacterBlock(block) {
     oldJlptLevel,
     onyomi,
     kunyomi,
+    koreanReadingHangul,
+    koreanReadingRomanized,
     meaningsEn,
   };
 }
 
-function buildMetadataRows(characters, jlptMap) {
+function buildMetadataRows(characters, jlptMap, koreanHuneumByLiteral) {
   const jlptByLiteral = createJlptLookup(jlptMap);
 
   return characters
     .map((character) => {
       const jlptLevel = jlptByLiteral.get(character.literal) ?? null;
       const schoolInfo = mapJapaneseSchoolInfo(character.grade);
+      const koreanHuneum = koreanHuneumByLiteral.get(character.literal);
+      const koreanReadingHangul =
+        koreanHuneum?.reading != null
+          ? [koreanHuneum.reading]
+          : character.koreanReadingHangul;
 
       return {
         id: character.id,
@@ -96,6 +114,15 @@ function buildMetadataRows(characters, jlptMap) {
         isJoyo: isJoyoGrade(character.grade),
         metadata: {
           meaningEn: character.meaningsEn,
+          ...(koreanHuneum?.meaning
+            ? { koreanHanjaMeaning: [koreanHuneum.meaning] }
+            : {}),
+          ...(koreanReadingHangul.length > 0
+            ? { koreanReadingHangul }
+            : {}),
+          ...(character.koreanReadingRomanized.length > 0
+            ? { koreanReadingRomanized: character.koreanReadingRomanized }
+            : {}),
           kanjidicGrade: character.grade,
           kanjidicJlptOld: character.oldJlptLevel,
           radicalNumber: character.radicalNumber,
@@ -104,6 +131,37 @@ function buildMetadataRows(characters, jlptMap) {
       };
     })
     .sort((left, right) => left.literal.localeCompare(right.literal, "ja"));
+}
+
+function buildKoreanHuneumLookup(table) {
+  const map = new Map();
+
+  for (const [literal, rawHuneum] of Object.entries(table)) {
+    const huneum = parseKoreanHuneum(rawHuneum);
+    if (!huneum) {
+      continue;
+    }
+
+    map.set(literal, huneum);
+  }
+
+  return map;
+}
+
+function parseKoreanHuneum(rawHuneum) {
+  if (typeof rawHuneum !== "string") {
+    return null;
+  }
+
+  const parts = rawHuneum.trim().split(/\s+/).filter(Boolean);
+  if (parts.length < 2) {
+    return null;
+  }
+
+  const reading = parts.at(-1);
+  const meaning = parts.slice(0, -1).join(" ");
+
+  return meaning && reading ? { meaning, reading } : null;
 }
 
 function buildCategoryMappings(characters, jlptMap) {
@@ -417,6 +475,18 @@ async function writeJson(filePath, value) {
 
 async function readJson(filePath) {
   return JSON.parse(await readText(filePath));
+}
+
+async function readJsonIfExists(filePath, fallback) {
+  try {
+    return await readJson(filePath);
+  } catch (error) {
+    if (error?.code === "ENOENT") {
+      return fallback;
+    }
+
+    throw error;
+  }
 }
 
 async function readText(filePath) {

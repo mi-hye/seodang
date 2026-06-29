@@ -16,6 +16,7 @@ import {
   normalizeExampleWords,
 } from "../../src/domain/kanji/exampleWords";
 import type { ExampleWord } from "../../src/domain/kanji/exampleWords";
+import { getKoreanHanjaReadingLabel } from "../../src/domain/kanji/koreanHanjaReading";
 import { getDevCharacterIdLabel } from "../../src/domain/kanji/devCharacterLabel";
 import {
   getSpecialReadingBody,
@@ -87,6 +88,8 @@ export default function CharacterDetailScreen() {
   const hasSpecialReadingCard = hasSpecialReadings(specialReadings);
   const hasExampleWords = exampleWords.length > 0;
   const showOnboarding = Boolean(character) && onboardingStep === "detail";
+  const koreanHanjaReadingLabel =
+    character && locale === "ko" ? getKoreanHanjaReadingLabel(character) : null;
 
   if (isLoading) {
     return (
@@ -129,6 +132,9 @@ export default function CharacterDetailScreen() {
                 ? t("common.strokes", { count: character.strokeCount })
                 : "-"}
             </Text>
+            {koreanHanjaReadingLabel ? (
+              <Text style={styles.devCharacterId}>{koreanHanjaReadingLabel}</Text>
+            ) : null}
             {devCharacterIdLabel ? (
               <Text style={styles.devCharacterId}>{devCharacterIdLabel}</Text>
             ) : null}
