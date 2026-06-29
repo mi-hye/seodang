@@ -10,6 +10,7 @@ import { getCharacterMeaning } from "../../src/data/characters";
 import { spacing, useTheme } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
 import { evaluatePractice } from "../../src/domain/practice/evaluatePractice";
+import { getPracticePortraitLayout } from "../../src/domain/practice/practiceLayout";
 import {
   useKanjiCharacterQuery,
   useKanjiStrokeDataQuery,
@@ -39,6 +40,9 @@ export default function PracticeScreen() {
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height && width >= 700;
   const isCompactLandscape = isLandscape && height < 520;
+  const portraitLayout = isLandscape
+    ? null
+    : getPracticePortraitLayout({ height, width });
   const screenScrollEnabled = !isLandscape;
   const { buttonStyles, chipStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({
@@ -46,7 +50,9 @@ export default function PracticeScreen() {
     chipStyles,
     colors,
     isCompactLandscape,
+    isCompactPortrait: portraitLayout?.isCompactPortrait ?? false,
     isLandscape,
+    portraitCanvasSideLength: portraitLayout?.canvasSideLength,
     surfaceStyles,
     textStyles,
   });
@@ -224,12 +230,12 @@ export default function PracticeScreen() {
           showGuide={showGuide}
           guideData={kanjiStrokeData}
           strokes={strokes}
+          style={!isLandscape ? styles.portraitCanvas : undefined}
           onChange={setStrokes}
           onCanvasLayout={setCanvasSize}
           onInteractionStart={handleCanvasInteractionStart}
           onInteractionEnd={handleCanvasInteractionEnd}
         />
-        <Text style={styles.canvasHint}>{t("practice.canvasHint")}</Text>
         {isGuideLoadError ? (
           <View style={styles.canvasErrorState}>
             <Text style={styles.canvasErrorTitle}>{t("practice.loadGuideError")}</Text>
@@ -332,6 +338,8 @@ function createStyles({
   colors,
   isLandscape,
   isCompactLandscape,
+  isCompactPortrait,
+  portraitCanvasSideLength,
   surfaceStyles,
   textStyles,
 }: any) {
@@ -365,9 +373,11 @@ function createStyles({
     headerCard: {
       ...surfaceStyles.card,
       borderRadius: 28,
-      padding: isCompactLandscape ? spacing[4] : isLandscape ? spacing[5] : spacing[7],
+      padding: isCompactLandscape || isCompactPortrait
+        ? spacing[4]
+        : isLandscape ? spacing[5] : spacing[7],
       alignItems: "center",
-      marginBottom: isCompactLandscape ? spacing[3] : spacing[4],
+      marginBottom: isCompactLandscape || isCompactPortrait ? spacing[3] : spacing[4],
     },
     caption: {
       ...textStyles.eyebrow,
@@ -375,7 +385,7 @@ function createStyles({
     },
     literal: {
       ...textStyles.glyphLg,
-      fontSize: isCompactLandscape ? 42 : isLandscape ? 54 : textStyles.glyphLg.fontSize,
+      fontSize: isCompactLandscape ? 42 : isLandscape ? 54 : isCompactPortrait ? 46 : textStyles.glyphLg.fontSize,
       marginBottom: 6,
     },
     meaning: {
@@ -408,12 +418,16 @@ function createStyles({
       flexDirection: "row",
       flexWrap: "wrap",
       gap: isCompactLandscape ? spacing[2] : spacing[2] + 2,
-      marginBottom: isCompactLandscape ? spacing[2] : spacing[4],
+      marginBottom: isCompactLandscape || isCompactPortrait ? spacing[2] : spacing[4],
     },
     toolChip: {
       ...chipStyles.base,
-      paddingHorizontal: isCompactLandscape ? 10 : chipStyles.base.paddingHorizontal,
-      paddingVertical: isCompactLandscape ? 7 : chipStyles.base.paddingVertical,
+      paddingHorizontal: isCompactLandscape || isCompactPortrait
+        ? 10
+        : chipStyles.base.paddingHorizontal,
+      paddingVertical: isCompactLandscape || isCompactPortrait
+        ? 7
+        : chipStyles.base.paddingVertical,
     },
     toolChipActive: {
       ...chipStyles.active,
@@ -436,11 +450,16 @@ function createStyles({
     canvasCard: {
       ...surfaceStyles.card,
       borderRadius: 28,
-      padding: isLandscape ? 10 : 18,
-      marginBottom: isLandscape ? 0 : 16,
+      padding: isLandscape ? 10 : isCompactPortrait ? 10 : 18,
+      marginBottom: isLandscape ? 0 : isCompactPortrait ? 10 : 16,
       width: "100%",
       flex: isLandscape ? 1 : undefined,
       maxHeight: isLandscape ? "100%" : undefined,
+    },
+    portraitCanvas: {
+      width: portraitCanvasSideLength,
+      height: portraitCanvasSideLength,
+      alignSelf: "center",
     },
     canvasStack: {
       position: "relative",
@@ -480,11 +499,6 @@ function createStyles({
       color: colors.inkOnDark,
       fontWeight: "800",
     },
-    canvasHint: {
-      ...textStyles.bodySm,
-      display: isLandscape ? "none" : "flex",
-      marginTop: 14,
-    },
     canvasSubHint: {
       display: isLandscape ? "none" : "flex",
       fontSize: 12,
@@ -508,7 +522,7 @@ function createStyles({
       flexDirection: "row",
       gap: isCompactLandscape ? spacing[2] : spacing[3],
       marginTop: isLandscape ? "auto" : 0,
-      marginBottom: isLandscape ? 0 : 20,
+      marginBottom: isLandscape || isCompactPortrait ? 0 : 20,
       width: "100%",
       flexShrink: 0,
     },
@@ -518,7 +532,9 @@ function createStyles({
     },
     secondaryButton: {
       ...buttonStyles.secondary,
-      paddingVertical: isCompactLandscape ? 10 : buttonStyles.secondary.paddingVertical,
+      paddingVertical: isCompactLandscape || isCompactPortrait
+        ? 10
+        : buttonStyles.secondary.paddingVertical,
       flex: 1,
     },
     secondaryLabel: {
@@ -528,7 +544,9 @@ function createStyles({
     primaryButton: {
       ...buttonStyles.primary,
       backgroundColor: colors.accentWarm,
-      paddingVertical: isCompactLandscape ? 10 : buttonStyles.primary.paddingVertical,
+      paddingVertical: isCompactLandscape || isCompactPortrait
+        ? 10
+        : buttonStyles.primary.paddingVertical,
       flex: 1,
     },
     primaryButtonDisabled: {

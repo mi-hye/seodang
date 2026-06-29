@@ -42,12 +42,7 @@ export function getSpecialReadingBody(
     return null;
   }
 
-  const preferred =
-    locale === "ja" ? specialReading.meaningJa : specialReading.meaningKo;
-  const fallback =
-    locale === "ja" ? specialReading.meaningKo : specialReading.meaningJa;
-
-  return preferred ?? fallback;
+  return locale === "ko" ? specialReading.meaningKo : null;
 }
 
 export function getSpecialReadingNote(

@@ -134,6 +134,7 @@ function validateSuggestions(rows, reviewById) {
     }
 
     validateFurigana(row, label, errors);
+    validateWords(row, label, errors);
   });
 
   return errors;
@@ -176,6 +177,58 @@ function validateFurigana(row, label, errors) {
   if (isNonEmptyString(row.exampleJa) && combinedText !== row.exampleJa) {
     errors.push(`${label}: furigana text must concatenate exactly to exampleJa.`);
   }
+}
+
+function validateWords(row, label, errors) {
+  if (!Object.hasOwn(row, "words")) {
+    return;
+  }
+
+  if (!Array.isArray(row.words)) {
+    errors.push(`${label}: words must be an array when provided.`);
+    return;
+  }
+
+  const seen = new Set();
+
+  row.words.forEach((word, wordIndex) => {
+    if (!word || typeof word !== "object" || Array.isArray(word)) {
+      errors.push(`${label}: words[${wordIndex}] must be an object.`);
+      return;
+    }
+
+    if (!isNonEmptyString(word.word)) {
+      errors.push(`${label}: words[${wordIndex}].word must be non-empty.`);
+      return;
+    }
+
+    if (!isNonEmptyString(word.reading)) {
+      errors.push(`${label}: words[${wordIndex}].reading must be non-empty.`);
+      return;
+    }
+
+    if (isNonEmptyString(word.reading) && containsKatakana(word.reading)) {
+      errors.push(`${label}: words[${wordIndex}].reading must be hiragana, not katakana.`);
+    }
+
+    if (isNonEmptyString(word.reading) && !isHiraganaReading(word.reading)) {
+      errors.push(`${label}: words[${wordIndex}].reading must contain only hiragana.`);
+    }
+
+    if (
+      isNonEmptyString(row.exampleJa) &&
+      isNonEmptyString(word.word) &&
+      row.exampleJa.includes(word.word)
+    ) {
+      errors.push(`${label}: words[${wordIndex}].word must not already appear in exampleJa.`);
+    }
+
+    const key = `${word.word}:${word.reading}`;
+    if (seen.has(key)) {
+      errors.push(`${label}: duplicate words entry ${key}.`);
+    }
+    seen.add(key);
+  });
 }
 
 function isNonEmptyString(value) {

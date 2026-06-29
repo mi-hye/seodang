@@ -3,12 +3,23 @@ export type KanjiCharacterMetadata = {
     reading?: string | null;
     text: string;
   }>;
+  koreanHanjaMeaning?: string[];
+  koreanHanjaMeanings?: string[];
+  koreanReadingHangul?: string[];
+  koreanReadingHanguls?: string[];
+  koreanReadingRomanized?: string[];
   meaningEn?: string[];
   specialReadings?: Array<{
     meaningJa?: string | null;
     meaningKo?: string | null;
     noteJa?: string | null;
     noteKo?: string | null;
+    reading: string;
+    word: string;
+  }>;
+  words?: Array<{
+    meaningJa?: string | null;
+    meaningKo?: string | null;
     reading: string;
     word: string;
   }>;

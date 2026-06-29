@@ -118,6 +118,13 @@ function mapKanjiEnrichmentRow(row) {
     };
   }
 
+  if (Object.hasOwn(row, "words")) {
+    mappedRow.metadata = {
+      ...(mappedRow.metadata ?? {}),
+      words: normalizeWords(row.words),
+    };
+  }
+
   return mappedRow;
 }
 
@@ -176,6 +183,10 @@ function normalizeInputRows(input) {
         normalizedRow.specialReadings = row.specialReadings ?? null;
       }
 
+      if (Object.hasOwn(row, "words")) {
+        normalizedRow.words = row.words ?? null;
+      }
+
       return normalizedRow;
     });
   }
@@ -222,10 +233,12 @@ async function fetchExistingCharacterBaseRows() {
 function mergeMetadata(existingMetadata, nextMetadata) {
   const merged = isPlainObject(existingMetadata) ? { ...existingMetadata } : {};
 
-  if (!Object.hasOwn(nextMetadata ?? {}, "exampleJaFurigana")) {
-    if (!Object.hasOwn(nextMetadata ?? {}, "specialReadings")) {
-      return merged;
-    }
+  if (
+    !Object.hasOwn(nextMetadata ?? {}, "exampleJaFurigana") &&
+    !Object.hasOwn(nextMetadata ?? {}, "specialReadings") &&
+    !Object.hasOwn(nextMetadata ?? {}, "words")
+  ) {
+    return merged;
   }
 
   if (Object.hasOwn(nextMetadata ?? {}, "specialReadings")) {
@@ -237,6 +250,16 @@ function mergeMetadata(existingMetadata, nextMetadata) {
       merged.specialReadings = normalizedSpecialReadings;
     } else {
       delete merged.specialReadings;
+    }
+  }
+
+  if (Object.hasOwn(nextMetadata ?? {}, "words")) {
+    const normalizedWords = normalizeWords(nextMetadata.words);
+
+    if (normalizedWords) {
+      merged.words = normalizedWords;
+    } else {
+      delete merged.words;
     }
   }
 
@@ -294,12 +317,46 @@ function normalizeSpecialReadings(rows) {
   return normalized.length > 0 ? normalized : null;
 }
 
+function normalizeWords(rows) {
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return null;
+  }
+
+  const seen = new Set();
+  const normalized = rows
+    .map((row) => ({
+      word: normalizeString(row?.word),
+      reading: normalizeReading(row?.reading),
+      meaningKo: normalizeNullableString(row?.meaningKo),
+      meaningJa: normalizeNullableString(row?.meaningJa),
+    }))
+    .filter((row) => row.word && row.reading)
+    .filter((row) => {
+      const key = `${row.word}:${row.reading}`;
+
+      if (seen.has(key)) {
+        return false;
+      }
+
+      seen.add(key);
+      return true;
+    });
+
+  return normalized.length > 0 ? normalized : null;
+}
+
 function normalizeString(value) {
   return typeof value === "string" && value.trim() ? value.trim() : null;
 }
 
 function normalizeNullableString(value) {
   return typeof value === "string" && value.trim() ? value.trim() : null;
+}
+
+function normalizeReading(value) {
+  return typeof value === "string" && value.trim()
+    ? toHiragana(value.trim())
+    : null;
 }
 
 function toHiragana(value) {

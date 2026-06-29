@@ -10,6 +10,13 @@ import {
   getReviewedExampleFuriganaPartsForDisplay,
   normalizeReviewedFuriganaParts,
 } from "../../src/domain/kanji/exampleFurigana";
+import {
+  getExampleWordBody,
+  getVisibleExampleWords,
+  normalizeExampleWords,
+} from "../../src/domain/kanji/exampleWords";
+import type { ExampleWord } from "../../src/domain/kanji/exampleWords";
+import { getKoreanHanjaReadingLabel } from "../../src/domain/kanji/koreanHanjaReading";
 import { getDevCharacterIdLabel } from "../../src/domain/kanji/devCharacterLabel";
 import {
   getSpecialReadingBody,
@@ -61,6 +68,14 @@ export default function CharacterDetailScreen() {
     () => normalizeSpecialReadings(character?.metadata?.specialReadings),
     [character?.metadata?.specialReadings],
   );
+  const exampleWords = useMemo(
+    () =>
+      getVisibleExampleWords({
+        words: normalizeExampleWords(character?.metadata?.words),
+        exampleJa,
+      }),
+    [character?.metadata?.words, exampleJa],
+  );
   const devCharacterIdLabel = character
     ? getDevCharacterIdLabel({
         characterId: character.id,
@@ -71,7 +86,10 @@ export default function CharacterDetailScreen() {
   const hasExample =
     locale === "ja" ? Boolean(exampleJa) : Boolean(exampleJa || exampleKo);
   const hasSpecialReadingCard = hasSpecialReadings(specialReadings);
+  const hasExampleWords = exampleWords.length > 0;
   const showOnboarding = Boolean(character) && onboardingStep === "detail";
+  const koreanHanjaReadingLabel =
+    character && locale === "ko" ? getKoreanHanjaReadingLabel(character) : null;
 
   if (isLoading) {
     return (
@@ -114,6 +132,9 @@ export default function CharacterDetailScreen() {
                 ? t("common.strokes", { count: character.strokeCount })
                 : "-"}
             </Text>
+            {koreanHanjaReadingLabel ? (
+              <Text style={styles.devCharacterId}>{koreanHanjaReadingLabel}</Text>
+            ) : null}
             {devCharacterIdLabel ? (
               <Text style={styles.devCharacterId}>{devCharacterIdLabel}</Text>
             ) : null}
@@ -153,6 +174,22 @@ export default function CharacterDetailScreen() {
               <Text style={styles.infoLine}>{t("detail.examplesPending")}</Text>
             </View>
           )}
+
+          {hasExampleWords ? (
+            <View style={styles.infoCard}>
+              <Text style={styles.sectionTitle}>{t("detail.words")}</Text>
+              <View style={styles.wordList}>
+                {exampleWords.map((word) => (
+                  <ExampleWordItem
+                    key={`${word.word}-${word.reading}`}
+                    locale={locale}
+                    styles={styles}
+                    word={word}
+                  />
+                ))}
+              </View>
+            </View>
+          ) : null}
 
           {hasSpecialReadingCard ? (
             <View style={styles.infoCard}>
@@ -228,6 +265,28 @@ function FuriganaExample({
           <Text style={styles.exampleWord}>{part.text}</Text>
         </View>
       ))}
+    </View>
+  );
+}
+
+function ExampleWordItem({
+  locale,
+  styles,
+  word,
+}: {
+  locale: "ko" | "ja";
+  styles: ReturnType<typeof createStyles>;
+  word: ExampleWord;
+}) {
+  const body = getExampleWordBody(word, locale);
+
+  return (
+    <View style={styles.exampleWordItem}>
+      <Text style={styles.exampleWordText}>{word.word}</Text>
+      <Text style={styles.exampleWordMeta}>
+        {word.reading}
+        {body ? ` ${body}` : ""}
+      </Text>
     </View>
   );
 }
@@ -322,6 +381,17 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
     },
     exampleWord: textStyles.titleSm,
     exampleMeta: textStyles.caption,
+    wordList: {
+      gap: 10,
+    },
+    exampleWordItem: {
+      gap: 3,
+    },
+    exampleWordText: textStyles.titleSm,
+    exampleWordMeta: {
+      ...textStyles.caption,
+      color: colors.inkMuted,
+    },
     specialReadingList: {
       gap: 10,
     },
