@@ -1,9 +1,10 @@
-name: Deploy iOS production
+name: Deploy iOS TestFlight
 
 on:
   push:
     branches:
-      - main
+      - develop
+      - dev
     paths-ignore:
       - .github/workflows/**
       - docs/**
@@ -13,12 +14,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: eas-production-ios
-  cancel-in-progress: false
+  group: eas-testflight-ios-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-submit:
-    name: Build and submit iOS
+    name: Build and upload iOS to TestFlight
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -46,7 +47,7 @@ jobs:
       - name: Run local quality checks
         run: npm run quality:check:local
 
-      - name: Build and submit to App Store Connect
+      - name: Build and upload to TestFlight
         run: >
           npm exec --yes eas-cli --
           build
