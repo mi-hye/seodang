@@ -314,6 +314,7 @@
   "settings.devProMode": "개발용 Pro 모드",
   "settings.devProOn": "ON",
   "settings.devProOff": "OFF",
+  "settings.devOnboardingMode": "온보딩 다시 보기",
   "settings.notificationsTitle": "학습 알림",
   "settings.notificationsAdd": "알람 추가",
   "settings.notificationsEmpty": "등록된 알람이 없습니다.",

@@ -11,7 +11,12 @@ import { useAppState } from "../src/state/AppStateProvider";
 
 export default function SettingsScreen() {
   const { locale, setLocale, t } = useI18n();
-  const { isPro, setProForDevelopment, setTheme } = useAppState();
+  const {
+    isPro,
+    resetOnboardingForDevelopment,
+    setProForDevelopment,
+    setTheme,
+  } = useAppState();
   const { themeMode, colors, chipStyles, surfaceStyles, textStyles, shadows } =
     useTheme();
   const canUseReviewStats = canAccessProFeature({
@@ -151,33 +156,61 @@ export default function SettingsScreen() {
         </Pressable>
 
         {__DEV__ ? (
-          <Pressable
-            style={[styles.infoCard, styles.shadow]}
-            onPress={() => setProForDevelopment(!isPro)}
-          >
-            <View style={styles.infoCardHeader}>
-              <View style={styles.infoCardTitleRow}>
+          <>
+            <Pressable
+              style={[styles.infoCard, styles.shadow]}
+              onPress={() => setProForDevelopment(!isPro)}
+            >
+              <View style={styles.infoCardHeader}>
+                <View style={styles.infoCardTitleRow}>
+                  <Ionicons
+                    name="construct-outline"
+                    size={18}
+                    color={colors.accentWarmMuted}
+                  />
+                  <Text style={styles.infoCardTitle}>
+                    {t("settings.devProMode")}
+                  </Text>
+                </View>
+                <View style={[styles.devToggle, isPro ? styles.devToggleOn : null]}>
+                  <Text
+                    style={[
+                      styles.devToggleText,
+                      isPro ? styles.devToggleTextOn : null,
+                    ]}
+                  >
+                    {isPro ? t("settings.devProOn") : t("settings.devProOff")}
+                  </Text>
+                </View>
+              </View>
+            </Pressable>
+
+            <Pressable
+              style={[styles.infoCard, styles.shadow]}
+              onPress={() => {
+                resetOnboardingForDevelopment();
+                router.replace("/");
+              }}
+            >
+              <View style={styles.infoCardHeader}>
+                <View style={styles.infoCardTitleRow}>
+                  <Ionicons
+                    name="trail-sign-outline"
+                    size={18}
+                    color={colors.accentWarmMuted}
+                  />
+                  <Text style={styles.infoCardTitle}>
+                    {t("settings.devOnboardingMode")}
+                  </Text>
+                </View>
                 <Ionicons
-                  name="construct-outline"
+                  name="refresh-outline"
                   size={18}
-                  color={colors.accentWarmMuted}
+                  color={colors.inkMuted}
                 />
-                <Text style={styles.infoCardTitle}>
-                  {t("settings.devProMode")}
-                </Text>
               </View>
-              <View style={[styles.devToggle, isPro ? styles.devToggleOn : null]}>
-                <Text
-                  style={[
-                    styles.devToggleText,
-                    isPro ? styles.devToggleTextOn : null,
-                  ]}
-                >
-                  {isPro ? t("settings.devProOn") : t("settings.devProOff")}
-                </Text>
-              </View>
-            </View>
-          </Pressable>
+            </Pressable>
+          </>
         ) : null}
       </View>
 

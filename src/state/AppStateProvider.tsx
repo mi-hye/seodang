@@ -22,6 +22,7 @@ import {
 } from "../types/app-state";
 import { calculateNextReviewAt } from "../domain/review/reviewSchedule";
 import { FORCE_ONBOARDING_FLOW } from "./debugOnboarding";
+import { resetOnboardingForDevelopment } from "./onboardingState";
 
 const STORAGE_KEY = "seodang-app-state-v1";
 const MAX_RECORDED_ATTEMPTS = 50;
@@ -48,6 +49,7 @@ type AppStateContextValue = {
   activateProPurchase: () => void;
   setLocale: (locale: AppLocale) => void;
   setProForDevelopment: (isPro: boolean) => void;
+  resetOnboardingForDevelopment: () => void;
   setMistakeNoteBadgesExpanded: (expanded: boolean) => void;
   setTheme: (theme: ThemeMode) => void;
   setUserType: (userType: UserType) => void;
@@ -202,6 +204,17 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       }
 
       setState((current) => ({ ...current, isPro }));
+    };
+
+    const resetOnboardingForDevelopmentAction = () => {
+      if (!__DEV__) {
+        return;
+      }
+
+      setState((current) => ({
+        ...current,
+        ...resetOnboardingForDevelopment(current),
+      }));
     };
 
     const setMistakeNoteBadgesExpanded = (mistakeNoteBadgesExpanded: boolean) => {
@@ -437,6 +450,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       activateProPurchase,
       setLocale,
       setProForDevelopment,
+      resetOnboardingForDevelopment: resetOnboardingForDevelopmentAction,
       setMistakeNoteBadgesExpanded,
       setTheme,
       setUserType,

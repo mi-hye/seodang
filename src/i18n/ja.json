@@ -314,6 +314,7 @@
   "settings.devProMode": "開発用Proモード",
   "settings.devProOn": "ON",
   "settings.devProOff": "OFF",
+  "settings.devOnboardingMode": "オンボーディングを再表示",
   "settings.notificationsTitle": "学習通知",
   "settings.notificationsAdd": "通知を追加",
   "settings.notificationsEmpty": "登録された通知がありません。",
