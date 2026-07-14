@@ -8,11 +8,15 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { AppStateProvider } from "../src/state/AppStateProvider";
+import { applyAppFontScalingDefaults } from "../src/design/fontScaling";
+import { scaledFont } from "../src/design/fontScalingConfig";
 import { useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import { initializeNotifications } from "../src/lib/notifications";
 import { QueryProvider } from "../src/state/QueryProvider";
 import { useAppState } from "../src/state/AppStateProvider";
+
+applyAppFontScalingDefaults();
 
 export default function RootLayout() {
   return (
@@ -27,7 +31,7 @@ export default function RootLayout() {
 function RootNavigator() {
   const { hydrated } = useAppState();
   const { t } = useI18n();
-  const { colors, themeMode } = useTheme();
+  const { colors, textScale, themeMode } = useTheme();
 
   useEffect(() => {
     if (hydrated && Platform.OS !== "web") {
@@ -64,7 +68,7 @@ function RootNavigator() {
       },
       headerTintColor: colors.inkStrong,
       headerTitleStyle: {
-        fontSize: 18,
+        fontSize: scaledFont(18, textScale),
         fontWeight: "700" as const,
         color: colors.inkStrong,
       },
@@ -72,7 +76,7 @@ function RootNavigator() {
         backgroundColor: colors.bgCanvas,
       },
     }),
-    [colors],
+    [colors, textScale],
   );
 
   return (

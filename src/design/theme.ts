@@ -1,7 +1,8 @@
-import { TextStyle, ViewStyle } from "react-native";
+import { TextStyle, useWindowDimensions, ViewStyle } from "react-native";
 
 import { ThemeMode } from "../types/app-state";
 import { useAppState } from "../state/AppStateProvider";
+import { getAppTextScale, scaledFont } from "./fontScalingConfig";
 
 export type ThemeColors = {
   bgCanvas: string;
@@ -95,92 +96,94 @@ const darkColors: ThemeColors = {
 
 export function useTheme() {
   const { theme } = useAppState();
-  return getTheme(theme);
+  const { fontScale } = useWindowDimensions();
+
+  return getTheme(theme, getAppTextScale(fontScale));
 }
 
-export function getTheme(themeMode: ThemeMode) {
+export function getTheme(themeMode: ThemeMode, textScale = 1) {
   const colors = themeMode === "dark" ? darkColors : lightColors;
 
   const textStyles = {
     eyebrow: {
-      fontSize: 12,
+      fontSize: scaledFont(12, textScale),
       fontWeight: "800",
       letterSpacing: 1.2,
       color: colors.accentWarmMuted,
       textTransform: "uppercase",
     } satisfies TextStyle,
     displayLg: {
-      fontSize: 34,
-      lineHeight: 40,
+      fontSize: scaledFont(34, textScale),
+      lineHeight: scaledFont(40, textScale),
       fontWeight: "800",
       color: colors.inkStrong,
     } satisfies TextStyle,
     displayMd: {
-      fontSize: 28,
+      fontSize: scaledFont(28, textScale),
       fontWeight: "800",
       color: colors.inkStrong,
     } satisfies TextStyle,
     displaySm: {
-      fontSize: 24,
+      fontSize: scaledFont(24, textScale),
       fontWeight: "800",
       color: colors.inkStrong,
     } satisfies TextStyle,
     heroGlyph: {
-      fontSize: 72,
+      fontSize: scaledFont(72, textScale),
       fontWeight: "800",
       color: colors.inkOnDark,
     } satisfies TextStyle,
     glyphLg: {
-      fontSize: 64,
+      fontSize: scaledFont(64, textScale),
       fontWeight: "800",
       color: colors.inkStrong,
     } satisfies TextStyle,
     glyphMd: {
-      fontSize: 36,
+      fontSize: scaledFont(36, textScale),
       fontWeight: "800",
       color: colors.inkStrong,
     } satisfies TextStyle,
     glyphSm: {
-      fontSize: 28,
+      fontSize: scaledFont(28, textScale),
       fontWeight: "800",
       color: colors.inkStrong,
     } satisfies TextStyle,
     sectionTitle: {
-      fontSize: 20,
+      fontSize: scaledFont(20, textScale),
       fontWeight: "800",
       color: colors.inkStrong,
     } satisfies TextStyle,
     titleMd: {
-      fontSize: 18,
+      fontSize: scaledFont(18, textScale),
       fontWeight: "800",
       color: colors.inkStrong,
     } satisfies TextStyle,
     titleSm: {
-      fontSize: 16,
+      fontSize: scaledFont(16, textScale),
       fontWeight: "800",
       color: colors.inkStrong,
     } satisfies TextStyle,
     bodyMd: {
-      fontSize: 15,
-      lineHeight: 23,
+      fontSize: scaledFont(15, textScale),
+      lineHeight: scaledFont(23, textScale),
       color: colors.inkBody,
     } satisfies TextStyle,
     bodySm: {
-      fontSize: 14,
-      lineHeight: 21,
+      fontSize: scaledFont(14, textScale),
+      lineHeight: scaledFont(21, textScale),
       color: colors.inkMuted,
     } satisfies TextStyle,
     caption: {
-      fontSize: 13,
+      fontSize: scaledFont(13, textScale),
       color: colors.inkFaint,
     } satisfies TextStyle,
     meta: {
-      fontSize: 12,
+      fontSize: scaledFont(12, textScale),
       fontWeight: "700",
       color: colors.inkFaint,
     } satisfies TextStyle,
     buttonLabel: {
-      fontSize: 15,
+      fontSize: scaledFont(15, textScale),
       fontWeight: "800",
     } satisfies TextStyle,
   } as const;
@@ -249,6 +252,7 @@ export function getTheme(themeMode: ThemeMode) {
   return {
     themeMode,
     colors,
+    textScale,
     textStyles,
     surfaceStyles,
     buttonStyles,
