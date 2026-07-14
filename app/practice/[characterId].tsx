@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 
 import { KanjiLoadingScreen } from "../../src/components/common/KanjiLoadingScreen";
@@ -11,14 +11,13 @@ import { spacing, useTheme } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
 import { evaluatePractice } from "../../src/domain/practice/evaluatePractice";
 import { getPracticePortraitLayout } from "../../src/domain/practice/practiceLayout";
+import { getStrokeGuideProgressStepMultiplier } from "../../src/domain/practice/strokeGuidePlayback";
 import {
   useKanjiCharacterQuery,
   useKanjiStrokeDataQuery,
 } from "../../src/queries/kanjiQueries";
 import { useAppState } from "../../src/state/AppStateProvider";
 import { CanvasSize, InputStroke } from "../../src/types/practice";
-
-const SCROLL_RESTORE_DELAY_MS = 1200;
 
 export default function PracticeScreen() {
   const router = useRouter();
@@ -43,7 +42,6 @@ export default function PracticeScreen() {
   const portraitLayout = isLandscape
     ? null
     : getPracticePortraitLayout({ height, width });
-  const screenScrollEnabled = !isLandscape;
   const { buttonStyles, chipStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({
     buttonStyles,
@@ -56,9 +54,7 @@ export default function PracticeScreen() {
     surfaceStyles,
     textStyles,
   });
-  const scrollRestoreTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showGuide, setShowGuide] = useState(false);
-  const [isCanvasInteracting, setIsCanvasInteracting] = useState(false);
   const [strokes, setStrokes] = useState<InputStroke[]>([]);
   const [canvasSize, setCanvasSize] = useState<CanvasSize>({
     width: 0,
@@ -70,38 +66,13 @@ export default function PracticeScreen() {
     isError: isGuideLoadError,
     refetch: refetchGuide,
   } = useKanjiStrokeDataQuery(character?.literal, "practice");
+  const guideProgressStepMultiplier = getStrokeGuideProgressStepMultiplier(
+    character?.strokeCount ?? kanjiStrokeData?.strokes.length,
+  );
   const showGuideOnboarding =
     Boolean(character) && onboardingStep === "practice_guide";
   const showSubmitOnboarding =
     Boolean(character) && onboardingStep === "practice_submit";
-
-  useEffect(() => {
-    return () => {
-      if (scrollRestoreTimerRef.current) {
-        clearTimeout(scrollRestoreTimerRef.current);
-      }
-    };
-  }, []);
-
-  const handleCanvasInteractionStart = () => {
-    if (scrollRestoreTimerRef.current) {
-      clearTimeout(scrollRestoreTimerRef.current);
-      scrollRestoreTimerRef.current = null;
-    }
-
-    setIsCanvasInteracting(true);
-  };
-
-  const handleCanvasInteractionEnd = () => {
-    if (scrollRestoreTimerRef.current) {
-      clearTimeout(scrollRestoreTimerRef.current);
-    }
-
-    scrollRestoreTimerRef.current = setTimeout(() => {
-      setIsCanvasInteracting(false);
-      scrollRestoreTimerRef.current = null;
-    }, SCROLL_RESTORE_DELAY_MS);
-  };
 
   if (isCharacterLoading) {
     return <KanjiLoadingScreen />;
@@ -229,12 +200,11 @@ export default function PracticeScreen() {
           fillMode={isLandscape}
           showGuide={showGuide}
           guideData={kanjiStrokeData}
+          guideProgressStepMultiplier={guideProgressStepMultiplier}
           strokes={strokes}
           style={!isLandscape ? styles.portraitCanvas : undefined}
           onChange={setStrokes}
           onCanvasLayout={setCanvasSize}
-          onInteractionStart={handleCanvasInteractionStart}
-          onInteractionEnd={handleCanvasInteractionEnd}
         />
         {isGuideLoadError ? (
           <View style={styles.canvasErrorState}>
@@ -308,8 +278,9 @@ export default function PracticeScreen() {
   return (
     <Screen
       contentStyle={isCompactLandscape ? styles.compactLandscapeScreen : undefined}
+      disableScrollViewPanResponder
       scrollContainer={!isLandscape}
-      scrollEnabled={screenScrollEnabled && !isCanvasInteracting}
+      scrollEnabled={false}
     >
       {isLandscape ? (
         <View style={styles.landscapeLayout}>
