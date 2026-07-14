@@ -327,6 +327,8 @@
   "settings.notificationsMessage": "リマインダーメッセージ",
   "settings.notificationsMessagePlaceholder": "今日も一文字書いてみましょう。",
   "settings.notificationsPermissionDenied": "通知権限がオフです。端末設定で通知を許可してください。",
+  "settings.feedbackTitle": "フィードバックを送る",
+  "settings.legalAndSupport": "ポリシー・サポート",
   "settings.legal": "ポリシー",
   "settings.privacyPolicyTitle": "プライバシーポリシー",
   "settings.thirdPartyNoticesTitle": "データ出典",

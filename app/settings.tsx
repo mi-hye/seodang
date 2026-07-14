@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "../src/components/common/Screen";
 import { spacing, useTheme } from "../src/design/theme";
@@ -8,6 +8,9 @@ import { canAccessProFeature } from "../src/domain/pro/proAccess";
 import { PRO_PURCHASES_ENABLED } from "../src/domain/pro/proConfig";
 import { useI18n } from "../src/i18n/useI18n";
 import { useAppState } from "../src/state/AppStateProvider";
+
+const FEEDBACK_FORM_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSfUnJmUd0VCn850B6NH8V184MjlKOcvJgVoqrv3PuBWQZU14A/viewform?usp=header";
 
 export default function SettingsScreen() {
   const { locale, setLocale, t } = useI18n();
@@ -245,8 +248,33 @@ export default function SettingsScreen() {
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>{t("settings.legal")}</Text>
+          <Text style={styles.sectionTitle}>{t("settings.legalAndSupport")}</Text>
         </View>
+
+        <Pressable
+          style={[styles.infoCard, styles.shadow]}
+          onPress={() => {
+            void Linking.openURL(FEEDBACK_FORM_URL);
+          }}
+        >
+          <View style={styles.infoCardHeader}>
+            <View style={styles.infoCardTitleRow}>
+              <Ionicons
+                name="chatbubble-ellipses-outline"
+                size={18}
+                color={colors.accentWarmMuted}
+              />
+              <Text style={styles.infoCardTitle}>
+                {t("settings.feedbackTitle")}
+              </Text>
+            </View>
+            <Ionicons
+              name="open-outline"
+              size={18}
+              color={colors.inkMuted}
+            />
+          </View>
+        </Pressable>
 
         <Pressable
           style={[styles.infoCard, styles.shadow]}

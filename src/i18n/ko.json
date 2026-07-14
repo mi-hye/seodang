@@ -327,6 +327,8 @@
   "settings.notificationsMessage": "리마인더 메시지",
   "settings.notificationsMessagePlaceholder": "오늘도 한 글자 써볼까요?",
   "settings.notificationsPermissionDenied": "알림 권한이 꺼져 있어요. 기기 설정에서 알림을 허용해 주세요.",
+  "settings.feedbackTitle": "피드백 보내기",
+  "settings.legalAndSupport": "정책 및 지원",
   "settings.legal": "정책",
   "settings.privacyPolicyTitle": "개인정보 처리방침",
   "settings.thirdPartyNoticesTitle": "데이터 출처",
