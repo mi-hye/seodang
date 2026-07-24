@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import * as Speech from "expo-speech";
 import {
   LayoutChangeEvent,
   NativeScrollEvent,
@@ -131,6 +133,16 @@ export default function CharacterDetailScreen() {
     },
     [],
   );
+  const handleSpeakExample = useCallback(() => {
+    if (!exampleJa) return;
+
+    Speech.stop();
+    Speech.speak(exampleJa, {
+      language: "ja-JP",
+      pitch: 1,
+      rate: 0.86,
+    });
+  }, [exampleJa]);
 
   if (isLoading) {
     return (
@@ -227,21 +239,39 @@ export default function CharacterDetailScreen() {
 
             {hasExample ? (
               <View style={[styles.infoCard, styles.exampleCard]}>
-                <Text style={styles.sectionTitle}>
-                  {t(isReference ? "detail.reference" : "detail.examples")}
-                </Text>
-                <View style={styles.exampleRow}>
-                  {exampleJa ? (
-                    displayFuriganaParts ? (
-                      <FuriganaExample parts={displayFuriganaParts} styles={styles} />
-                    ) : (
-                      <Text style={styles.exampleWord}>{exampleJa}</Text>
-                    )
-                  ) : null}
-                  {locale === "ko" && exampleKo ? (
-                    <Text style={styles.exampleMeta}>{exampleKo}</Text>
-                  ) : null}
+                <View style={styles.exampleContent}>
+                  <View style={styles.sectionTitleRow}>
+                    <Text style={styles.sectionTitle}>
+                      {t(isReference ? "detail.reference" : "detail.examples")}
+                    </Text>
+                  </View>
+                  <View style={styles.exampleRow}>
+                    {exampleJa ? (
+                      displayFuriganaParts ? (
+                        <FuriganaExample parts={displayFuriganaParts} styles={styles} />
+                      ) : (
+                        <Text style={styles.exampleWord}>{exampleJa}</Text>
+                      )
+                    ) : null}
+                    {locale === "ko" && exampleKo ? (
+                      <Text style={styles.exampleMeta}>{exampleKo}</Text>
+                    ) : null}
+                  </View>
                 </View>
+                {exampleJa ? (
+                  <Pressable
+                    accessibilityLabel={t("detail.speakExample")}
+                    hitSlop={10}
+                    onPress={handleSpeakExample}
+                    style={styles.speakButton}
+                  >
+                    <Ionicons
+                      name="volume-high-outline"
+                      size={18}
+                      color={colors.accentWarmMuted}
+                    />
+                  </Pressable>
+                ) : null}
               </View>
             ) : (
               <View style={styles.infoCard}>
@@ -442,9 +472,29 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
       gap: 8,
     },
     exampleCard: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing[3],
+    },
+    exampleContent: {
+      flex: 1,
       gap: 4,
     },
     sectionTitle: textStyles.titleSm,
+    sectionTitleRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: spacing[3],
+    },
+    speakButton: {
+      width: 34,
+      height: 34,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 999,
+      flexShrink: 0,
+    },
     infoLine: textStyles.bodySm,
     exampleRow: {
       gap: 2,

@@ -82,6 +82,7 @@
   "detail.onyomi": "음독: %{value}",
   "detail.kunyomi": "훈독: %{value}",
   "detail.examples": "예문",
+  "detail.speakExample": "예문 듣기",
   "detail.reference": "참고",
   "detail.words": "단어",
   "detail.specialReadings": "특수 읽기",

@@ -82,6 +82,7 @@
   "detail.onyomi": "音読み: %{value}",
   "detail.kunyomi": "訓読み: %{value}",
   "detail.examples": "例文",
+  "detail.speakExample": "例文を聞く",
   "detail.reference": "参考",
   "detail.words": "単語",
   "detail.specialReadings": "特別な読み",
