@@ -5,7 +5,7 @@ const {
   getExampleWordBody,
   getVisibleExampleWords,
   normalizeExampleWords,
-} = await import("/Users/kangmihye/Desktop/study/seodang/src/domain/kanji/exampleWords.ts");
+} = await import("./exampleWords.ts");
 
 test("normalizes valid example words and drops incomplete rows", () => {
   assert.deepEqual(
