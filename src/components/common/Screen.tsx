@@ -17,6 +17,7 @@ type ScreenProps = PropsWithChildren<{
   contentStyle?: StyleProp<ViewStyle>;
   edges?: Edge[];
   onScroll?: ScrollViewProps["onScroll"];
+  disableScrollViewPanResponder?: ScrollViewProps["disableScrollViewPanResponder"];
   scrollContainer?: boolean;
   scrollEnabled?: boolean;
   scrollEventThrottle?: number;
@@ -27,6 +28,7 @@ export function Screen({
   contentStyle,
   edges = ["left", "right", "bottom"],
   onScroll,
+  disableScrollViewPanResponder,
   scrollContainer = true,
   scrollEnabled = true,
   scrollEventThrottle,
@@ -44,8 +46,14 @@ export function Screen({
         </View>
       ) : (
         <ScrollView
+          alwaysBounceHorizontal={false}
           contentContainerStyle={[styles.content, contentStyle]}
+          directionalLockEnabled
+          disableScrollViewPanResponder={disableScrollViewPanResponder}
+          horizontal={false}
           onScroll={onScroll}
+          overScrollMode="never"
+          showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           scrollEnabled={scrollEnabled}
           scrollEventThrottle={scrollEventThrottle}

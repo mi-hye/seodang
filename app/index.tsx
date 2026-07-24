@@ -12,6 +12,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 
 import { Screen } from "../src/components/common/Screen";
+import { getAppTextScale, scaledFont } from "../src/design/fontScalingConfig";
 import { spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import {
@@ -549,12 +550,7 @@ function CategoryProgressSkeleton() {
 
 function getHomeTextScale(screenWidth: number, fontScale: number) {
   const widthScale = Math.min(1, Math.max(0.84, screenWidth / 390));
-  const accessibilityScale = fontScale > 1 ? Math.max(0.86, 1 / fontScale) : 1;
-  return widthScale * accessibilityScale;
-}
-
-function scaledFont(size: number, textScale: number) {
-  return Math.round(size * textScale);
+  return widthScale * getAppTextScale(fontScale);
 }
 
 function createStyles({

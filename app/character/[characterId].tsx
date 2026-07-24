@@ -1,11 +1,23 @@
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import * as Speech from "expo-speech";
+import {
+  LayoutChangeEvent,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 import { ErrorState } from "../../src/components/common/ErrorState";
 import { Screen } from "../../src/components/common/Screen";
 import { getCharacterMeaning } from "../../src/data/characters";
 import { spacing, useTheme } from "../../src/design/theme";
+import { isInlineActionFullyVisible } from "../../src/domain/detail/floatingActionVisibility";
 import {
   getReviewedExampleFuriganaPartsForDisplay,
   normalizeReviewedFuriganaParts,
@@ -18,6 +30,7 @@ import {
 import type { ExampleWord } from "../../src/domain/kanji/exampleWords";
 import { getKoreanHanjaReadingLabel } from "../../src/domain/kanji/koreanHanjaReading";
 import { getDevCharacterIdLabel } from "../../src/domain/kanji/devCharacterLabel";
+import { getDetailOnboardingLayout } from "../../src/domain/onboarding/detailOnboardingLayout";
 import {
   getSpecialReadingBody,
   hasSpecialReadings,
@@ -47,6 +60,10 @@ export default function CharacterDetailScreen() {
   const { onboardingStep, setOnboardingStep } = useAppState();
   const { buttonStyles, colors, surfaceStyles, textStyles } = useTheme();
   const styles = createStyles({ buttonStyles, colors, surfaceStyles, textStyles });
+  const [inlineActionTop, setInlineActionTop] = useState<number | null>(null);
+  const [inlineActionHeight, setInlineActionHeight] = useState<number | null>(null);
+  const [scrollOffsetY, setScrollOffsetY] = useState(0);
+  const [scrollViewportHeight, setScrollViewportHeight] = useState(0);
   const exampleJa = character?.exampleJa;
   const reviewedExampleFuriganaParts = useMemo(
     () =>
@@ -88,8 +105,44 @@ export default function CharacterDetailScreen() {
   const hasSpecialReadingCard = hasSpecialReadings(specialReadings);
   const hasExampleWords = exampleWords.length > 0;
   const showOnboarding = Boolean(character) && onboardingStep === "detail";
+  const detailOnboardingLayout = getDetailOnboardingLayout(showOnboarding);
   const koreanHanjaReadingLabel =
     character && locale === "ko" ? getKoreanHanjaReadingLabel(character) : null;
+  const inlineActionFullyVisible = isInlineActionFullyVisible({
+    inlineActionHeight,
+    inlineActionTop,
+    scrollOffsetY,
+    viewportHeight: scrollViewportHeight,
+  });
+  const handleInlineActionLayout = useCallback((event: LayoutChangeEvent) => {
+    setInlineActionTop(event.nativeEvent.layout.y);
+    setInlineActionHeight(event.nativeEvent.layout.height);
+  }, []);
+  const handleScrollLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      setScrollViewportHeight(event.nativeEvent.layout.height);
+    },
+    [],
+  );
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const { contentOffset, layoutMeasurement } = event.nativeEvent;
+
+      setScrollOffsetY(contentOffset.y);
+      setScrollViewportHeight(layoutMeasurement.height);
+    },
+    [],
+  );
+  const handleSpeakExample = useCallback(() => {
+    if (!exampleJa) return;
+
+    Speech.stop();
+    Speech.speak(exampleJa, {
+      language: "ja-JP",
+      pitch: 1,
+      rate: 0.86,
+    });
+  }, [exampleJa]);
 
   if (isLoading) {
     return (
@@ -119,100 +172,169 @@ export default function CharacterDetailScreen() {
     );
   }
 
+  const actionButton = (
+    <Pressable
+      style={styles.actionButton}
+      onPress={() => {
+        if (showOnboarding) {
+          setOnboardingStep("practice_guide");
+        }
+
+        router.replace({
+          pathname: "/practice/[characterId]",
+          params: {
+            characterId: character.id,
+            categoryKey: normalizedCategoryKey,
+            reviewIds: normalizedReviewIds,
+          },
+        });
+      }}
+    >
+      <Text style={styles.actionLabel}>{t("detail.startPractice")}</Text>
+    </Pressable>
+  );
+
   return (
-    <Screen>
+    <Screen contentStyle={styles.screenContent} scrollContainer={false}>
       <View style={styles.screenStack}>
-        <View style={showOnboarding ? styles.dimmedSection : null}>
-          <View style={styles.heroCard}>
-            <Text style={styles.literal}>{character.literal}</Text>
-            <Text style={styles.meaning}>{getCharacterMeaning(character, locale)}</Text>
-            <Text style={styles.meta}>
-              {character.jlptLevel ? `${t("common.jlpt")} ${character.jlptLevel} · ` : ""}
-              {character.strokeCount != null
-                ? t("common.strokes", { count: character.strokeCount })
-                : "-"}
-            </Text>
-            {koreanHanjaReadingLabel ? (
-              <Text style={styles.devCharacterId}>{koreanHanjaReadingLabel}</Text>
-            ) : null}
-            {devCharacterIdLabel ? (
-              <Text style={styles.devCharacterId}>{devCharacterIdLabel}</Text>
-            ) : null}
-          </View>
-
-          <View style={styles.infoCard}>
-            <Text style={styles.sectionTitle}>{t("detail.reading")}</Text>
-            <Text style={styles.infoLine}>
-              {t("detail.onyomi", { value: character.onyomi.join(", ") || "-" })}
-            </Text>
-            <Text style={styles.infoLine}>
-              {t("detail.kunyomi", { value: character.kunyomi.join(", ") || "-" })}
-            </Text>
-          </View>
-
-          {hasExample ? (
-            <View style={[styles.infoCard, styles.exampleCard]}>
-              <Text style={styles.sectionTitle}>
-                {t(isReference ? "detail.reference" : "detail.examples")}
+        <ScrollView
+          contentContainerStyle={[
+            styles.scrollContent,
+            { paddingBottom: detailOnboardingLayout.scrollBottomPadding },
+          ]}
+          onLayout={handleScrollLayout}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={showOnboarding ? styles.dimmedSection : null}>
+            <View style={styles.heroCard}>
+              <Text style={styles.literal}>{character.literal}</Text>
+              <Text style={styles.meaning}>
+                {getCharacterMeaning(character, locale)}
               </Text>
-              <View style={styles.exampleRow}>
+              <Text style={styles.meta}>
+                {character.jlptLevel ? `${t("common.jlpt")} ${character.jlptLevel} · ` : ""}
+                {character.strokeCount != null
+                  ? t("common.strokes", { count: character.strokeCount })
+                  : "-"}
+              </Text>
+              {koreanHanjaReadingLabel ? (
+                <Text style={styles.devCharacterId}>{koreanHanjaReadingLabel}</Text>
+              ) : null}
+              {devCharacterIdLabel ? (
+                <Text style={styles.devCharacterId}>{devCharacterIdLabel}</Text>
+              ) : null}
+            </View>
+
+            <View style={styles.infoCard}>
+              <Text style={styles.sectionTitle}>{t("detail.reading")}</Text>
+              <Text style={styles.infoLine}>
+                {t("detail.onyomi", { value: character.onyomi.join(", ") || "-" })}
+              </Text>
+              <Text style={styles.infoLine}>
+                {t("detail.kunyomi", { value: character.kunyomi.join(", ") || "-" })}
+              </Text>
+            </View>
+
+            {hasExample ? (
+              <View style={[styles.infoCard, styles.exampleCard]}>
+                <View style={styles.exampleContent}>
+                  <View style={styles.sectionTitleRow}>
+                    <Text style={styles.sectionTitle}>
+                      {t(isReference ? "detail.reference" : "detail.examples")}
+                    </Text>
+                  </View>
+                  <View style={styles.exampleRow}>
+                    {exampleJa ? (
+                      displayFuriganaParts ? (
+                        <FuriganaExample parts={displayFuriganaParts} styles={styles} />
+                      ) : (
+                        <Text style={styles.exampleWord}>{exampleJa}</Text>
+                      )
+                    ) : null}
+                    {locale === "ko" && exampleKo ? (
+                      <Text style={styles.exampleMeta}>{exampleKo}</Text>
+                    ) : null}
+                  </View>
+                </View>
                 {exampleJa ? (
-                  displayFuriganaParts ? (
-                    <FuriganaExample parts={displayFuriganaParts} styles={styles} />
-                  ) : (
-                    <Text style={styles.exampleWord}>{exampleJa}</Text>
-                  )
+                  <Pressable
+                    accessibilityLabel={t("detail.speakExample")}
+                    hitSlop={10}
+                    onPress={handleSpeakExample}
+                    style={styles.speakButton}
+                  >
+                    <Ionicons
+                      name="volume-high-outline"
+                      size={18}
+                      color={colors.accentWarmMuted}
+                    />
+                  </Pressable>
                 ) : null}
-                {locale === "ko" && exampleKo ? (
-                  <Text style={styles.exampleMeta}>{exampleKo}</Text>
-                ) : null}
               </View>
-            </View>
-          ) : (
-            <View style={styles.infoCard}>
-              <Text style={styles.sectionTitle}>{t("detail.examples")}</Text>
-              <Text style={styles.infoLine}>{t("detail.examplesPending")}</Text>
-            </View>
-          )}
+            ) : (
+              <View style={styles.infoCard}>
+                <Text style={styles.sectionTitle}>{t("detail.examples")}</Text>
+                <Text style={styles.infoLine}>{t("detail.examplesPending")}</Text>
+              </View>
+            )}
 
-          {hasExampleWords ? (
-            <View style={styles.infoCard}>
-              <Text style={styles.sectionTitle}>{t("detail.words")}</Text>
-              <View style={styles.wordList}>
-                {exampleWords.map((word) => (
-                  <ExampleWordItem
-                    key={`${word.word}-${word.reading}`}
-                    locale={locale}
-                    styles={styles}
-                    word={word}
-                  />
-                ))}
+            {hasExampleWords ? (
+              <View style={styles.infoCard}>
+                <Text style={styles.sectionTitle}>{t("detail.words")}</Text>
+                <View style={styles.wordList}>
+                  {exampleWords.map((word) => (
+                    <ExampleWordItem
+                      key={`${word.word}-${word.reading}`}
+                      locale={locale}
+                      styles={styles}
+                      word={word}
+                    />
+                  ))}
+                </View>
               </View>
-            </View>
-          ) : null}
+            ) : null}
 
-          {hasSpecialReadingCard ? (
-            <View style={styles.infoCard}>
-              <Text style={styles.sectionTitle}>{t("detail.specialReadings")}</Text>
-              <Text style={styles.specialReadingDescription}>
-                {t("detail.specialReadingsDescription")}
-              </Text>
-              <View style={styles.specialReadingList}>
-                {specialReadings.map((specialReading) => (
-                  <SpecialReadingItem
-                    key={`${specialReading.word}-${specialReading.reading}`}
-                    locale={locale}
-                    specialReading={specialReading}
-                    styles={styles}
-                  />
-                ))}
+            {hasSpecialReadingCard ? (
+              <View style={styles.infoCard}>
+                <Text style={styles.sectionTitle}>{t("detail.specialReadings")}</Text>
+                <Text style={styles.specialReadingDescription}>
+                  {t("detail.specialReadingsDescription")}
+                </Text>
+                <View style={styles.specialReadingList}>
+                  {specialReadings.map((specialReading) => (
+                    <SpecialReadingItem
+                      key={`${specialReading.word}-${specialReading.reading}`}
+                      locale={locale}
+                      specialReading={specialReading}
+                      styles={styles}
+                    />
+                  ))}
+                </View>
               </View>
-            </View>
-          ) : null}
-        </View>
+            ) : null}
+          </View>
+
+          <View
+            style={[
+              styles.inlineActionSlot,
+              inlineActionFullyVisible ? null : styles.hiddenInlineActionSlot,
+            ]}
+            onLayout={handleInlineActionLayout}
+          >
+            {actionButton}
+          </View>
+        </ScrollView>
 
         {showOnboarding ? (
-          <View pointerEvents="none" style={styles.onboardingHint}>
+          <View
+            pointerEvents="none"
+            style={[
+              styles.onboardingHint,
+              { bottom: detailOnboardingLayout.hintBottom ?? 84 },
+            ]}
+          >
             <View style={styles.onboardingBubble}>
               <Text style={styles.onboardingHintText}>
                 {t("detail.onboardingAction")}
@@ -222,25 +344,9 @@ export default function CharacterDetailScreen() {
           </View>
         ) : null}
 
-        <Pressable
-          style={styles.actionButton}
-          onPress={() => {
-            if (showOnboarding) {
-              setOnboardingStep("practice_guide");
-            }
-
-            router.replace({
-              pathname: "/practice/[characterId]",
-              params: {
-                characterId: character.id,
-                categoryKey: normalizedCategoryKey,
-                reviewIds: normalizedReviewIds,
-              },
-            });
-          }}
-        >
-          <Text style={styles.actionLabel}>{t("detail.startPractice")}</Text>
-        </Pressable>
+        {!inlineActionFullyVisible ? (
+          <View style={styles.floatingAction}>{actionButton}</View>
+        ) : null}
       </View>
     </Screen>
   );
@@ -315,8 +421,18 @@ function SpecialReadingItem({
 
 function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) {
   return StyleSheet.create({
+    screenContent: {
+      paddingHorizontal: 0,
+      paddingTop: 0,
+      paddingBottom: 0,
+    },
     screenStack: {
+      flex: 1,
       position: "relative",
+    },
+    scrollContent: {
+      paddingHorizontal: 20,
+      paddingTop: 16,
     },
     dimmedSection: {
       opacity: 0.32,
@@ -356,9 +472,29 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
       gap: 8,
     },
     exampleCard: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing[3],
+    },
+    exampleContent: {
+      flex: 1,
       gap: 4,
     },
     sectionTitle: textStyles.titleSm,
+    sectionTitleRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: spacing[3],
+    },
+    speakButton: {
+      width: 34,
+      height: 34,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 999,
+      flexShrink: 0,
+    },
     infoLine: textStyles.bodySm,
     exampleRow: {
       gap: 2,
@@ -409,15 +545,33 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
     },
     actionButton: {
       ...buttonStyles.secondary,
+    },
+    inlineActionSlot: {
       marginTop: 8,
       marginBottom: 20,
+    },
+    hiddenInlineActionSlot: {
+      opacity: 0,
+    },
+    floatingAction: {
+      position: "absolute",
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 30,
+      elevation: 30,
+      backgroundColor: colors.bgCanvas,
+      paddingHorizontal: 20,
+      paddingTop: 12,
+      paddingBottom: 20,
     },
     onboardingHint: {
       position: "absolute",
       right: 12,
-      bottom: 84,
       alignItems: "flex-end",
       maxWidth: 260,
+      zIndex: 40,
+      elevation: 40,
     },
     onboardingBubble: {
       backgroundColor: colors.accentWarm,

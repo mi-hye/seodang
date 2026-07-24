@@ -3,6 +3,7 @@ import {
   GestureResponderEvent,
   LayoutChangeEvent,
   PanResponder,
+  Platform,
   StyleSheet,
   StyleProp,
   View,
@@ -13,12 +14,20 @@ import Svg, { Line, Path } from "react-native-svg";
 import { CanvasPoint, InputStroke, KanjiVgCharacter } from "../../types/practice";
 
 const MIN_POINT_DISTANCE = 3;
-const MAX_POINT_JUMP_DISTANCE = 96;
+const MAX_POINT_JUMP_DISTANCE = 104;
+const MAX_POINT_STEP_DISTANCE = 60;
+const ANDROID_MIN_POINT_DISTANCE = 2;
+const ANDROID_MAX_POINT_JUMP_DISTANCE = 180;
+const ANDROID_PENDING_POINT_DISTANCE = 72;
+const ANDROID_PENDING_CONFIRM_DISTANCE = 46;
+const ANDROID_INTERPOLATION_DISTANCE = 18;
+const GUIDE_PROGRESS_STEP = 0.08;
 
 type WritingCanvasProps = {
   fillMode?: boolean;
   showGuide: boolean;
   guideData?: KanjiVgCharacter;
+  guideProgressStepMultiplier?: number;
   strokes: InputStroke[];
   onChange: Dispatch<SetStateAction<InputStroke[]>>;
   onCanvasLayout?: (size: { width: number; height: number }) => void;
@@ -31,6 +40,7 @@ export const WritingCanvas = memo(function WritingCanvas({
   fillMode = false,
   showGuide,
   guideData,
+  guideProgressStepMultiplier = 1,
   strokes,
   onChange,
   onCanvasLayout,
@@ -42,6 +52,7 @@ export const WritingCanvas = memo(function WritingCanvas({
   const [animatedStrokeIndex, setAnimatedStrokeIndex] = useState(0);
   const [animatedProgress, setAnimatedProgress] = useState(0);
   const currentStrokeIdRef = useRef<string | null>(null);
+  const pendingAndroidPointRef = useRef<CanvasPoint | null>(null);
 
   useEffect(() => {
     if (!showGuide || !guideData?.strokes.length) {
@@ -58,7 +69,7 @@ export const WritingCanvas = memo(function WritingCanvas({
     setAnimatedProgress(0);
 
     timer = setInterval(() => {
-      progress += 0.08;
+      progress += GUIDE_PROGRESS_STEP * guideProgressStepMultiplier;
 
       if (progress >= 1) {
         progress = 0;
@@ -76,13 +87,14 @@ export const WritingCanvas = memo(function WritingCanvas({
     return () => {
       if (timer) clearInterval(timer);
     };
-  }, [showGuide, guideData]);
+  }, [showGuide, guideData, guideProgressStepMultiplier]);
 
   const startStroke = (event: GestureResponderEvent) => {
     onInteractionStart?.();
     const point = getRelativePoint(event, size.width, size.height);
     const strokeId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     currentStrokeIdRef.current = strokeId;
+    pendingAndroidPointRef.current = null;
     onChange((currentStrokes) => [
       ...currentStrokes,
       { id: strokeId, points: [point] },
@@ -107,13 +119,47 @@ export const WritingCanvas = memo(function WritingCanvas({
         }
 
         const distance = getDistance(lastPoint, point);
-        if (distance < MIN_POINT_DISTANCE || distance > MAX_POINT_JUMP_DISTANCE) {
+        const minPointDistance =
+          Platform.OS === "android" ? ANDROID_MIN_POINT_DISTANCE : MIN_POINT_DISTANCE;
+        const maxPointJumpDistance =
+          Platform.OS === "android" ? ANDROID_MAX_POINT_JUMP_DISTANCE : MAX_POINT_JUMP_DISTANCE;
+        if (distance < minPointDistance || distance > maxPointJumpDistance) {
+          if (Platform.OS === "android") {
+            pendingAndroidPointRef.current = null;
+          }
           return stroke;
         }
 
+        if (Platform.OS === "android") {
+          if (distance > ANDROID_PENDING_POINT_DISTANCE) {
+            const pendingPoint = pendingAndroidPointRef.current;
+            pendingAndroidPointRef.current = point;
+
+            if (!pendingPoint) {
+              return stroke;
+            }
+
+            const confirmDistance = getDistance(pendingPoint, point);
+            if (confirmDistance > ANDROID_PENDING_CONFIRM_DISTANCE) {
+              return stroke;
+            }
+          } else {
+            pendingAndroidPointRef.current = null;
+          }
+        }
+
+        const nextPoints =
+          Platform.OS === "android"
+            ? getInterpolatedPoints(lastPoint, point, ANDROID_INTERPOLATION_DISTANCE)
+            : [
+                distance > MAX_POINT_STEP_DISTANCE
+                  ? getLimitedStepPoint(lastPoint, point, MAX_POINT_STEP_DISTANCE)
+                  : point,
+              ];
+
         return {
           ...stroke,
-          points: [...stroke.points, point],
+          points: [...stroke.points, ...nextPoints],
         };
       })
     );
@@ -121,6 +167,7 @@ export const WritingCanvas = memo(function WritingCanvas({
 
   const endStroke = () => {
     currentStrokeIdRef.current = null;
+    pendingAndroidPointRef.current = null;
     onInteractionEnd?.();
   };
 
@@ -282,6 +329,47 @@ function getDistance(left: CanvasPoint, right: CanvasPoint) {
   return Math.sqrt(dx * dx + dy * dy);
 }
 
+function getLimitedStepPoint(
+  from: CanvasPoint,
+  to: CanvasPoint,
+  maxDistance: number,
+) {
+  const distance = getDistance(from, to);
+  if (distance <= maxDistance || distance === 0) {
+    return to;
+  }
+
+  const ratio = maxDistance / distance;
+  return {
+    x: from.x + (to.x - from.x) * ratio,
+    y: from.y + (to.y - from.y) * ratio,
+  };
+}
+
+function getInterpolatedPoints(
+  from: CanvasPoint,
+  to: CanvasPoint,
+  maxDistance: number,
+) {
+  const distance = getDistance(from, to);
+  if (distance <= maxDistance || distance === 0) {
+    return [to];
+  }
+
+  const stepCount = Math.ceil(distance / maxDistance);
+  const points: CanvasPoint[] = [];
+
+  for (let index = 1; index <= stepCount; index += 1) {
+    const ratio = index / stepCount;
+    points.push({
+      x: from.x + (to.x - from.x) * ratio,
+      y: from.y + (to.y - from.y) * ratio,
+    });
+  }
+
+  return points;
+}
+
 function buildPath(points: CanvasPoint[]) {
   if (points.length < 2) {
     const point = points[0];
@@ -290,16 +378,10 @@ function buildPath(points: CanvasPoint[]) {
 
   let path = `M${points[0].x} ${points[0].y}`;
 
-  for (let index = 1; index < points.length - 1; index += 1) {
-    const current = points[index];
-    const next = points[index + 1];
-    const midX = (current.x + next.x) / 2;
-    const midY = (current.y + next.y) / 2;
-    path += ` Q${current.x} ${current.y} ${midX} ${midY}`;
+  for (let index = 1; index < points.length; index += 1) {
+    const point = points[index];
+    path += ` L${point.x} ${point.y}`;
   }
-
-  const last = points[points.length - 1];
-  path += ` L${last.x} ${last.y}`;
 
   return path;
 }
