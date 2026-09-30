@@ -269,6 +269,49 @@ export default function HomeScreen() {
           </View>
         </Pressable>
 
+        {locale === "ko" ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => router.push("/daily-reading")}
+            style={[
+              styles.readingCard,
+              showOnboarding ? styles.dimmedCard : styles.shadow,
+            ]}
+          >
+            <View style={styles.readingIcon}>
+              <Ionicons
+                name="book-outline"
+                size={22}
+                color={showOnboarding ? colors.inkFaint : colors.accentWarmMuted}
+              />
+            </View>
+            <View style={styles.readingContent}>
+              <View style={styles.readingTitleRow}>
+                <Text
+                  style={[
+                    styles.readingTitle,
+                    showOnboarding ? styles.dimmedText : null,
+                  ]}
+                >
+                  {t("home.dailyReading")}
+                </Text>
+                <View style={styles.readingBadge}>
+                  <Text style={styles.readingBadgeText}>{t("home.dailyReadingBadge")}</Text>
+                </View>
+              </View>
+              <Text
+                style={[
+                  styles.readingBody,
+                  showOnboarding ? styles.dimmedBodyText : null,
+                ]}
+              >
+                {t("home.dailyReadingBody")}
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={colors.inkFaint} />
+          </Pressable>
+        ) : null}
+
         <View
           pointerEvents={showOnboarding ? "none" : "auto"}
           style={styles.row}
@@ -659,6 +702,53 @@ function createStyles({
       padding: spacing[5],
       marginBottom: spacing[4],
       gap: spacing[3],
+    },
+    readingCard: {
+      ...surfaceStyles.card,
+      padding: spacing[5],
+      marginBottom: spacing[4],
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing[3],
+    },
+    readingIcon: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: colors.bgMuted,
+    },
+    readingContent: {
+      flex: 1,
+      gap: spacing[1],
+    },
+    readingTitleRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing[2],
+      flexWrap: "wrap",
+    },
+    readingTitle: {
+      ...textStyles.titleSm,
+      fontSize: scaledFont(16, textScale),
+      lineHeight: scaledFont(22, textScale),
+    },
+    readingBadge: {
+      paddingHorizontal: spacing[2],
+      paddingVertical: 3,
+      borderRadius: 999,
+      backgroundColor: colors.accentWarm,
+    },
+    readingBadgeText: {
+      ...textStyles.meta,
+      fontSize: scaledFont(10, textScale),
+      color: colors.inkOnDark,
+    },
+    readingBody: {
+      ...textStyles.bodySm,
+      fontSize: scaledFont(13, textScale),
+      lineHeight: scaledFont(19, textScale),
     },
     reviewCardTop: {
       flexDirection: "row",

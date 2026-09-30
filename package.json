@@ -4,8 +4,8 @@
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
     "test:unit": "node --experimental-strip-types --test $(find src -name '*.test.mjs' -type f | sort)",
@@ -35,7 +35,9 @@
     "supabase:upsert:animcjk": "node scripts/supabase-upsert-animcjk-import.mjs",
     "supabase:upsert:enrichment": "node scripts/supabase-upsert-kanji-enrichment.mjs",
     "supabase:upsert:kanji-enrichment": "node scripts/supabase-upsert-kanji-enrichment.mjs",
-    "supabase:upsert:metadata": "node scripts/supabase-upsert-kanji-metadata.mjs"
+    "supabase:upsert:metadata": "node scripts/supabase-upsert-kanji-metadata.mjs",
+    "daily-reading:backfill": "node scripts/backfill-daily-readings.mjs",
+    "daily-reading:publish": "node scripts/publish-daily-reading.mjs"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.1.1",
@@ -58,6 +60,8 @@
     "react": "19.1.0",
     "react-dom": "^19.1.0",
     "react-native": "0.81.5",
+    "react-native-google-mobile-ads": "15.8.3",
+    "react-native-purchases": "^10.7.2",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
     "react-native-svg": "^15.12.1",

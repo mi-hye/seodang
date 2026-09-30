@@ -23,6 +23,10 @@ export default function PrivacyPolicyScreen() {
       body: t("privacy.notificationsBody"),
     },
     {
+      title: t("privacy.paymentsAdsTitle"),
+      body: t("privacy.paymentsAdsBody"),
+    },
+    {
       title: t("privacy.contactTitle"),
       body: t("privacy.contactBody"),
     },

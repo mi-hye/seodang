@@ -1,6 +1,6 @@
 # Store Privacy Answers Draft
 
-Last updated: 2026-06-08
+Last updated: 2026-08-25
 
 This draft helps fill App Store Connect App Privacy and Google Play Data safety
 forms. Re-check this file before submission if analytics, crash reporting,
@@ -9,10 +9,10 @@ accounts, ads, payments, or any new SDK is added.
 ## Current App Behavior Assumption
 
 - No user account or login
-- No ads
+- Optional Google AdMob rewarded ads
 - No analytics SDK
 - No crash reporting SDK
-- No payment or subscription
+- Apple / Google monthly subscription managed through RevenueCat
 - No server upload of individual practice history
 - Local storage for settings, favorites, progress, reminders, and onboarding
 - Supabase requests for public kanji content
@@ -26,7 +26,8 @@ Privacy Policy URL:
 
 Data Collection:
 
-- Recommended answer for the current release: `Data Not Collected`
+- Do not submit the previous `Data Not Collected` draft. Re-answer the form
+  using the current RevenueCat and Google Mobile Ads SDK data disclosures.
 
 Reasoning:
 
@@ -45,7 +46,9 @@ Important review note:
 
 Tracking:
 
-- Does this app use data for tracking purposes? `No`
+- Confirm AdMob personalization and consent settings before submission. If ad
+  data is linked across third-party apps or websites, answer `Yes` where the
+  store definition requires it.
 
 Data linked to the user:
 
@@ -59,11 +62,13 @@ Data not linked to the user:
 
 Does your app collect or share any required user data types?
 
-- Current draft: `No`
+- Re-evaluate device identifiers, app interactions, diagnostics, purchase
+  history, and approximate location against the current SDK disclosures.
 
 Does your app share user data with third parties?
 
-- Current draft: `No`
+- `Yes` may apply for Google Mobile Ads advertising processing. Complete the
+  final answer from the production AdMob configuration and consent choices.
 
 Security practices:
 
