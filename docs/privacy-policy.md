@@ -1,6 +1,6 @@
 # Seodang Privacy Policy Draft
 
-Last updated: 2026-06-08
+Last updated: 2026-08-25
 
 This draft is for App Store / Play Store preparation. Review the hosting URL
 and actual release behavior before publishing.
@@ -47,6 +47,21 @@ and schedules local notifications on the device.
 Notification settings are stored locally. The app does not send reminder
 messages to a remote server.
 
+## Subscriptions and Rewarded Ads
+
+The optional Today’s Reading subscription is processed by Apple App Store or
+Google Play in-app purchase systems. RevenueCat processes an anonymous app user
+identifier, product and entitlement information, subscription status, and
+purchase history to provide and restore subscription access. Seodang does not
+receive the user's full payment-card details.
+
+Free users may choose to watch a Google AdMob rewarded ad to unlock one reading
+level for the day. Google and its advertising partners may process device and
+advertising identifiers, IP address, approximate location derived from network
+information, diagnostics, and ad interactions to deliver ads, measure
+performance, and prevent fraud. Where required, the app presents Google's
+consent flow before requesting an ad.
+
 ## Data Sharing
 
 Seodang does not sell user data.
@@ -62,12 +77,14 @@ Seodang uses the following third-party services and libraries:
 
 - Supabase, for public kanji data and Edge Functions
 - Expo / React Native, for app runtime, builds, and notifications
+- RevenueCat, for subscription entitlement and purchase-status management
+- Google AdMob, for optional rewarded ads
 
 Open-source data source and license notices are available in the app Settings
 screen and in `docs/third-party-notices.md`.
 
-Before release, confirm whether any additional analytics, crash reporting, ads,
-or authentication SDKs have been added. If so, update this policy and the store
+Before release, confirm whether any additional analytics, crash reporting, or
+authentication SDKs have been added. If so, update this policy and the store
 privacy forms.
 
 ## Children's Privacy

@@ -15,6 +15,7 @@ import { useI18n } from "../src/i18n/useI18n";
 import { initializeNotifications } from "../src/lib/notifications";
 import { QueryProvider } from "../src/state/QueryProvider";
 import { useAppState } from "../src/state/AppStateProvider";
+import { ReadingAccessProvider } from "../src/state/ReadingAccessProvider";
 
 applyAppFontScalingDefaults();
 
@@ -22,7 +23,9 @@ export default function RootLayout() {
   return (
     <QueryProvider>
       <AppStateProvider>
-        <RootNavigator />
+        <ReadingAccessProvider>
+          <RootNavigator />
+        </ReadingAccessProvider>
       </AppStateProvider>
     </QueryProvider>
   );
@@ -116,6 +119,10 @@ function RootNavigator() {
         <Stack.Screen
           name="review"
           options={{ title: t("nav.review") }}
+        />
+        <Stack.Screen
+          name="daily-reading"
+          options={{ title: t("nav.dailyReading") }}
         />
         <Stack.Screen
           name="review-stats"
