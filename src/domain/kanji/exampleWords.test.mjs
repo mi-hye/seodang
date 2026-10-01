@@ -41,6 +41,18 @@ test("filters words that already appear in the example sentence", () => {
   );
 });
 
+test("shows only representative two-kanji compounds", () => {
+  const words = normalizeExampleWords([
+    { word: "注意", reading: "ちゅうい", meaningKo: "주의" },
+    { word: "日曜日", reading: "にちようび", meaningKo: "일요일" },
+    { word: "カード", reading: "かーど", meaningKo: "카드" },
+  ]);
+
+  assert.deepEqual(getVisibleExampleWords({ words }), [
+    { word: "注意", reading: "ちゅうい", meaningKo: "주의", meaningJa: null },
+  ]);
+});
+
 test("keeps the word text unchanged while normalizing only the reading", () => {
   assert.deepEqual(
     normalizeExampleWords([

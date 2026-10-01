@@ -47,5 +47,11 @@ yarn-error.*
 # generated local artifacts
 /artifacts/
 
+# generated marketing render intermediates
+/marketing/shorts/output/
+/marketing/social/*-frames/
+/marketing/social/*-preview/
+/marketing/social/migi-capture/
+
 # Supabase local CLI state
 /supabase/.temp/

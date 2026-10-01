@@ -234,6 +234,8 @@ export const WritingCanvas = memo(function WritingCanvas({
       {showGuide && guideData?.strokes.length ? (
         <Svg
           pointerEvents="none"
+          width="100%"
+          height="100%"
           style={StyleSheet.absoluteFill}
           viewBox={`0 0 ${guideData.viewBox.width} ${guideData.viewBox.height}`}
         >
@@ -260,7 +262,7 @@ export const WritingCanvas = memo(function WritingCanvas({
           })}
         </Svg>
       ) : null}
-      <Svg pointerEvents="none" style={StyleSheet.absoluteFill}>
+      <Svg pointerEvents="none" width="100%" height="100%" style={StyleSheet.absoluteFill}>
         {strokes.map((stroke) => {
           if (stroke.points.length === 1) {
             const point = stroke.points[0];

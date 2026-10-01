@@ -1,0 +1,23 @@
+{
+  "app_id": "6780309771",
+  "provider_token": "129039245",
+  "source": "Local Chrome App Store Connect campaign link generator, verified 2026-10-01 KST",
+  "links": {
+    "instagram": "https://apps.apple.com/app/apple-store/id6780309771?pt=129039245&ct=seodang_ig_202610&mt=8",
+    "threads": "https://apps.apple.com/app/apple-store/id6780309771?pt=129039245&ct=seodang_threads_202610&mt=8"
+  },
+  "campaign_data": "측정 불가 — 캠페인을 표시할 데이터가 충분하지 않습니다.",
+  "retention": "측정 불가 — 유지율을 표시할 데이터가 충분하지 않습니다. (UI latest date September 29)",
+  "placements": {
+    "threads": {
+      "profile": "verified installed",
+      "post": "https://www.threads.com/@seodang_app/post/Dd7y05QDkBy",
+      "title": "서당 iOS 다운로드"
+    },
+    "instagram": {
+      "profile": "pending: after user completed iCloud authentication, iPhone Mirroring reports cannot connect to iPhone; Mac Wi-Fi and Bluetooth verified enabled",
+      "caption": "https://www.instagram.com/seodang_app/reel/Dd7z2-yBHrA/",
+      "caption_clickable": false
+    }
+  }
+}
