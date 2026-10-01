@@ -29,6 +29,17 @@ import {
 } from "../../src/domain/kanji/exampleWords";
 import type { ExampleWord } from "../../src/domain/kanji/exampleWords";
 import { getKoreanHanjaReadingLabel } from "../../src/domain/kanji/koreanHanjaReading";
+import {
+  getKanjiOriginBody,
+  getOldFormNote,
+  normalizeKanjiOrigin,
+  normalizeOldForms,
+  normalizeVerbCollocations,
+} from "../../src/domain/kanji/learningNotes";
+import type {
+  OldForm,
+  VerbCollocation,
+} from "../../src/domain/kanji/learningNotes";
 import { getDevCharacterIdLabel } from "../../src/domain/kanji/devCharacterLabel";
 import { getDetailOnboardingLayout } from "../../src/domain/onboarding/detailOnboardingLayout";
 import {
@@ -92,6 +103,18 @@ export default function CharacterDetailScreen() {
         exampleJa,
       }),
     [character?.metadata?.words, exampleJa],
+  );
+  const origin = useMemo(
+    () => normalizeKanjiOrigin(character?.metadata?.origin),
+    [character?.metadata?.origin],
+  );
+  const oldForms = useMemo(
+    () => normalizeOldForms(character?.metadata?.oldForms),
+    [character?.metadata?.oldForms],
+  );
+  const verbCollocations = useMemo(
+    () => normalizeVerbCollocations(character?.metadata?.verbCollocations),
+    [character?.metadata?.verbCollocations],
   );
   const devCharacterIdLabel = character
     ? getDevCharacterIdLabel({
@@ -237,6 +260,29 @@ export default function CharacterDetailScreen() {
               </Text>
             </View>
 
+            {origin ? (
+              <View style={styles.infoCard}>
+                <Text style={styles.sectionTitle}>{t("detail.origin")}</Text>
+                <Text style={styles.infoLine}>{getKanjiOriginBody(origin, locale)}</Text>
+              </View>
+            ) : null}
+
+            {oldForms.length > 0 ? (
+              <View style={styles.infoCard}>
+                <Text style={styles.sectionTitle}>{t("detail.oldForms")}</Text>
+                <View style={styles.oldFormList}>
+                  {oldForms.map((oldForm) => (
+                    <OldFormItem
+                      key={oldForm.literal}
+                      locale={locale}
+                      oldForm={oldForm}
+                      styles={styles}
+                    />
+                  ))}
+                </View>
+              </View>
+            ) : null}
+
             {hasExample ? (
               <View style={[styles.infoCard, styles.exampleCard]}>
                 <View style={styles.exampleContent}>
@@ -308,6 +354,25 @@ export default function CharacterDetailScreen() {
                       key={`${specialReading.word}-${specialReading.reading}`}
                       locale={locale}
                       specialReading={specialReading}
+                      styles={styles}
+                    />
+                  ))}
+                </View>
+              </View>
+            ) : null}
+
+            {verbCollocations.length > 0 ? (
+              <View style={styles.infoCard}>
+                <Text style={styles.sectionTitle}>{t("detail.verbCollocations")}</Text>
+                <Text style={styles.specialReadingDescription}>
+                  {t("detail.verbCollocationsDescription")}
+                </Text>
+                <View style={styles.wordList}>
+                  {verbCollocations.map((collocation) => (
+                    <VerbCollocationItem
+                      key={`${collocation.word}-${collocation.reading}`}
+                      collocation={collocation}
+                      locale={locale}
                       styles={styles}
                     />
                   ))}
@@ -419,6 +484,55 @@ function SpecialReadingItem({
   );
 }
 
+function OldFormItem({
+  locale,
+  oldForm,
+  styles,
+}: {
+  locale: "ko" | "ja";
+  oldForm: OldForm;
+  styles: ReturnType<typeof createStyles>;
+}) {
+  const note = getOldFormNote(oldForm, locale);
+
+  return (
+    <View style={styles.oldFormItem}>
+      <Text style={styles.oldFormLiteral}>{oldForm.literal}</Text>
+      {note ? <Text style={styles.exampleWordMeta}>{note}</Text> : null}
+    </View>
+  );
+}
+
+function VerbCollocationItem({
+  collocation,
+  locale,
+  styles,
+}: {
+  collocation: VerbCollocation;
+  locale: "ko" | "ja";
+  styles: ReturnType<typeof createStyles>;
+}) {
+  const meaning = locale === "ko" ? collocation.meaningKo : null;
+
+  return (
+    <View style={styles.exampleWordItem}>
+      <Text style={styles.exampleWordText}>{collocation.word}</Text>
+      <Text style={styles.exampleWordMeta}>
+        {collocation.reading}{meaning ? ` · ${meaning}` : ""}
+      </Text>
+      <View style={styles.collocationList}>
+        {collocation.verbs.map((verb) => (
+          <View key={verb} style={styles.collocationChip}>
+            <Text style={styles.collocationChipText}>
+              {collocation.word}{verb}
+            </Text>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+}
+
 function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) {
   return StyleSheet.create({
     screenContent: {
@@ -520,6 +634,19 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
     wordList: {
       gap: 10,
     },
+    oldFormList: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: spacing[3],
+    },
+    oldFormItem: {
+      alignItems: "center",
+      gap: spacing[1],
+    },
+    oldFormLiteral: {
+      ...textStyles.displaySm,
+      fontSize: 32,
+    },
     exampleWordItem: {
       gap: 3,
     },
@@ -542,6 +669,23 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
     specialReadingMeta: {
       ...textStyles.caption,
       color: colors.inkMuted,
+    },
+    collocationList: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: spacing[2],
+      marginTop: spacing[1],
+    },
+    collocationChip: {
+      backgroundColor: colors.bgCanvas,
+      borderRadius: 999,
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
+    },
+    collocationChipText: {
+      ...textStyles.caption,
+      color: colors.ink,
+      fontWeight: "700",
     },
     actionButton: {
       ...buttonStyles.secondary,

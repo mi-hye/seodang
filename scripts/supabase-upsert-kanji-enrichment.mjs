@@ -125,6 +125,27 @@ function mapKanjiEnrichmentRow(row) {
     };
   }
 
+  if (Object.hasOwn(row, "origin")) {
+    mappedRow.metadata = {
+      ...(mappedRow.metadata ?? {}),
+      origin: normalizeOrigin(row.origin),
+    };
+  }
+
+  if (Object.hasOwn(row, "oldForms")) {
+    mappedRow.metadata = {
+      ...(mappedRow.metadata ?? {}),
+      oldForms: normalizeOldForms(row.oldForms),
+    };
+  }
+
+  if (Object.hasOwn(row, "verbCollocations")) {
+    mappedRow.metadata = {
+      ...(mappedRow.metadata ?? {}),
+      verbCollocations: normalizeVerbCollocations(row.verbCollocations),
+    };
+  }
+
   return mappedRow;
 }
 
@@ -187,6 +208,18 @@ function normalizeInputRows(input) {
         normalizedRow.words = row.words ?? null;
       }
 
+      if (Object.hasOwn(row, "origin")) {
+        normalizedRow.origin = row.origin ?? null;
+      }
+
+      if (Object.hasOwn(row, "oldForms")) {
+        normalizedRow.oldForms = row.oldForms ?? null;
+      }
+
+      if (Object.hasOwn(row, "verbCollocations")) {
+        normalizedRow.verbCollocations = row.verbCollocations ?? null;
+      }
+
       return normalizedRow;
     });
   }
@@ -236,7 +269,10 @@ function mergeMetadata(existingMetadata, nextMetadata) {
   if (
     !Object.hasOwn(nextMetadata ?? {}, "exampleJaFurigana") &&
     !Object.hasOwn(nextMetadata ?? {}, "specialReadings") &&
-    !Object.hasOwn(nextMetadata ?? {}, "words")
+    !Object.hasOwn(nextMetadata ?? {}, "words") &&
+    !Object.hasOwn(nextMetadata ?? {}, "origin") &&
+    !Object.hasOwn(nextMetadata ?? {}, "oldForms") &&
+    !Object.hasOwn(nextMetadata ?? {}, "verbCollocations")
   ) {
     return merged;
   }
@@ -260,6 +296,21 @@ function mergeMetadata(existingMetadata, nextMetadata) {
       merged.words = normalizedWords;
     } else {
       delete merged.words;
+    }
+  }
+
+  for (const [field, normalize] of [
+    ["origin", normalizeOrigin],
+    ["oldForms", normalizeOldForms],
+    ["verbCollocations", normalizeVerbCollocations],
+  ]) {
+    if (!Object.hasOwn(nextMetadata ?? {}, field)) continue;
+
+    const normalizedValue = normalize(nextMetadata[field]);
+    if (normalizedValue) {
+      merged[field] = normalizedValue;
+    } else {
+      delete merged[field];
     }
   }
 
@@ -338,6 +389,80 @@ function normalizeWords(rows) {
         return false;
       }
 
+      seen.add(key);
+      return true;
+    });
+
+  return normalized.length > 0 ? normalized : null;
+}
+
+function normalizeOrigin(value) {
+  if (!isPlainObject(value)) return null;
+
+  const ja = normalizeString(value.ja);
+  if (!ja) return null;
+
+  return {
+    ja,
+    ko: normalizeNullableString(value.ko),
+  };
+}
+
+function normalizeOldForms(rows) {
+  if (!Array.isArray(rows) || rows.length === 0) return null;
+
+  const seen = new Set();
+  const normalized = rows
+    .map((row) => {
+      if (typeof row === "string") {
+        return { literal: normalizeString(row), noteJa: null, noteKo: null };
+      }
+
+      if (!isPlainObject(row)) return null;
+
+      return {
+        literal: normalizeString(row.literal),
+        noteJa: normalizeNullableString(row.noteJa),
+        noteKo: normalizeNullableString(row.noteKo),
+      };
+    })
+    .filter((row) => row?.literal)
+    .filter((row) => {
+      if (seen.has(row.literal)) return false;
+      seen.add(row.literal);
+      return true;
+    });
+
+  return normalized.length > 0 ? normalized : null;
+}
+
+function normalizeVerbCollocations(rows) {
+  if (!Array.isArray(rows) || rows.length === 0) return null;
+
+  const seen = new Set();
+  const normalized = rows
+    .map((row) => {
+      if (!isPlainObject(row)) return null;
+
+      const word = normalizeString(row.word);
+      const reading = normalizeReading(row.reading);
+      const verbs = Array.isArray(row.verbs)
+        ? [...new Set(row.verbs.map(normalizeString).filter(Boolean))]
+        : [];
+
+      if (!word || !reading || verbs.length === 0) return null;
+
+      return {
+        word,
+        reading,
+        verbs,
+        meaningKo: normalizeNullableString(row.meaningKo),
+      };
+    })
+    .filter(Boolean)
+    .filter((row) => {
+      const key = `${row.word}:${row.reading}`;
+      if (seen.has(key)) return false;
       seen.add(key);
       return true;
     });

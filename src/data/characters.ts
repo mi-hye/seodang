@@ -1,4 +1,16 @@
 export type KanjiCharacterMetadata = {
+  origin?: {
+    ja: string;
+    ko?: string | null;
+  };
+  oldForms?: Array<
+    | string
+    | {
+        literal: string;
+        noteJa?: string | null;
+        noteKo?: string | null;
+      }
+  >;
   exampleJaFurigana?: Array<{
     reading?: string | null;
     text: string;
@@ -22,6 +34,12 @@ export type KanjiCharacterMetadata = {
     meaningKo?: string | null;
     reading: string;
     word: string;
+  }>;
+  verbCollocations?: Array<{
+    word: string;
+    reading: string;
+    verbs: string[];
+    meaningKo?: string | null;
   }>;
 };
 

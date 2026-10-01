@@ -41,11 +41,11 @@ export function getVisibleExampleWords({
   words: ExampleWord[];
   exampleJa?: string | null;
 }) {
-  if (!exampleJa) {
-    return words;
-  }
-
-  return words.filter((word) => !exampleJa.includes(word.word));
+  return words.filter(
+    (word) =>
+      isTwoKanjiCompound(word.word) &&
+      (!exampleJa || !exampleJa.includes(word.word)),
+  );
 }
 
 export function getExampleWordBody(word: ExampleWord, locale: "ko" | "ja") {
@@ -82,6 +82,10 @@ function toHiragana(value: string) {
       return character;
     })
     .join("");
+}
+
+function isTwoKanjiCompound(value: string) {
+  return /^\p{Script=Han}{2}$/u.test(value);
 }
 
 const KATAKANA_START_CODE_POINT = 0x30a1;

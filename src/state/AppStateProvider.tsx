@@ -1,5 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getLocales } from "expo-localization";
 import {
   createContext,
   PropsWithChildren,
@@ -26,7 +25,7 @@ import { resetOnboardingForDevelopment } from "./onboardingState";
 
 const STORAGE_KEY = "seodang-app-state-v1";
 const MAX_RECORDED_ATTEMPTS = 50;
-const DEVICE_LOCALE = resolveInitialLocale();
+const DEFAULT_LOCALE: AppLocale = "ko";
 
 type AppStateContextValue = {
   hydrated: boolean;
@@ -82,7 +81,7 @@ type AppStateContextValue = {
 };
 
 const defaultState: PersistedAppState = {
-  locale: DEVICE_LOCALE,
+  locale: DEFAULT_LOCALE,
   theme: "light",
   userType: "korean_learner",
   onboardingStep: "home",
@@ -537,9 +536,4 @@ export function useAppState() {
   }
 
   return context;
-}
-
-function resolveInitialLocale(): AppLocale {
-  const [locale] = getLocales();
-  return locale?.languageCode === "ja" ? "ja" : "ko";
 }
