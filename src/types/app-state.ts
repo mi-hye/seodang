@@ -43,6 +43,54 @@ export type DismissedReviewCharacter = {
   dismissedAt: string;
 };
 
+// Calendar day in the device's local timezone at the time of practice.
+export type WritingActivityDay = {
+  attempts: number;
+  successes: number;
+  totalScore: number;
+  lastPracticedAt: string;
+};
+
+export type WritingActivity = {
+  startedAt: string;
+  days: Record<string, WritingActivityDay>;
+};
+
+export type LearningPet = {
+  species: "dog";
+  food: number;
+  totalFed: number;
+  rewardsByDay: Record<string, { characterIds: string[]; attemptIds: string[] }>;
+};
+
+export type LearningStage = "starter" | "kana" | "words" | "sentences" | "advanced";
+export type LessonQuiz = {
+  id: string;
+  mode: "choice" | "order";
+  prompt: { ko: string; ja: string };
+  cue: string;
+  choices: string[];
+  answer: string[];
+  hint: { ko: string; ja: string };
+};
+export type GuidedProgress = Record<string, { completions: number; lastCompletedAt: string }>;
+
+export type DailyLessonItem = {
+  characterId: string;
+  categoryKey?: string;
+  kind: "review" | "new";
+  completedAt?: string;
+  quiz?: LessonQuiz;
+};
+
+export type DailyLesson = {
+  id: string;
+  day: string;
+  startedAt: string;
+  items: DailyLessonItem[];
+  stage?: LearningStage;
+};
+
 export type PersistedAppState = {
   locale: AppLocale;
   theme: ThemeMode;
@@ -57,6 +105,12 @@ export type PersistedAppState = {
   progressByCharacter: Record<string, CharacterProgress>;
   dismissedReviewCharacterIds: Record<string, DismissedReviewCharacter>;
   recordedAttemptIds: string[];
+  writingActivity?: WritingActivity;
+  learningPet?: LearningPet;
+  dailyLesson?: DailyLesson;
+  learningStage?: LearningStage;
+  learningWelcomeSeen?: boolean;
+  guidedProgress?: GuidedProgress;
   favoriteCharacterIds: Record<string, true>;
   isPro: boolean;
   lastCompletedPractice?: LastCompletedPractice;

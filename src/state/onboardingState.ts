@@ -1,10 +1,12 @@
-import type { OnboardingStep } from "../types/app-state.ts";
+import type { LearningStage, OnboardingStep } from "../types/app-state.ts";
 
 type OnboardingState = {
   onboardingStep: OnboardingStep;
   onboardingCompleted: boolean;
   homeOnboardingDismissed: boolean;
   categoryOnboardingDismissed: boolean;
+  learningStage?: LearningStage;
+  learningWelcomeSeen?: boolean;
 };
 
 export function resetOnboardingForDevelopment(
@@ -16,5 +18,7 @@ export function resetOnboardingForDevelopment(
     onboardingCompleted: false,
     homeOnboardingDismissed: false,
     categoryOnboardingDismissed: false,
+    learningStage: undefined,
+    learningWelcomeSeen: false,
   };
 }

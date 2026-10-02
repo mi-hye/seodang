@@ -16,5 +16,7 @@ test("resets completed onboarding so the first onboarding step can be tested aga
     onboardingCompleted: false,
     homeOnboardingDismissed: false,
     categoryOnboardingDismissed: false,
+    learningStage: undefined,
+    learningWelcomeSeen: false,
   });
 });

@@ -10,6 +10,7 @@ type SearchableKanjiCharacter = Pick<
   | "onyomi"
   | "kunyomi"
   | "metadata"
+  | "kana"
 >;
 
 type RankedCharacter<T> = {
@@ -78,6 +79,9 @@ function buildSearchFields(character: SearchableKanjiCharacter) {
     character.meaningJa,
     character.exampleKo,
     character.exampleJa,
+    character.kana?.reading,
+    character.kana?.romaji,
+    character.kana?.counterpart,
     ...character.onyomi,
     ...character.kunyomi,
     ...(character.metadata?.meaningEn ?? []),

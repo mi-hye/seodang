@@ -1,4 +1,5 @@
 import { supabaseFetchJson } from "./supabaseFetch";
+import { getKanaCategoryKeyById, getKanaScriptById } from "./kanaCatalog";
 
 type CharacterCategoryMappingRow = {
   character_id: string;
@@ -12,7 +13,11 @@ export async function fetchCategoryMappingsByCharacterIds(characterIds: string[]
     return [];
   }
 
-  const chunks = chunk(characterIds, characterIdsChunkSize);
+  const localMappings = characterIds.flatMap((id) => {
+    const key = getKanaCategoryKeyById(id);
+    return key ? [{ character_id: id, category_id: key }] : [];
+  });
+  const chunks = chunk(characterIds.filter((id) => !getKanaScriptById(id)), characterIdsChunkSize);
   const pages = await Promise.all(
     chunks.map(async (ids) => {
       const params = new URLSearchParams({
@@ -27,7 +32,7 @@ export async function fetchCategoryMappingsByCharacterIds(characterIds: string[]
     }),
   );
 
-  return pages.flat();
+  return [...localMappings, ...pages.flat()];
 }
 
 function chunk<T>(items: T[], size: number) {

@@ -44,6 +44,7 @@ export type KanjiVgStroke = ReferenceStroke & {
     | "curve";
   rawType?: string;
   path: string;
+  pathLength?: number;
 };
 
 export type KanjiVgCharacter = {

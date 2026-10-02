@@ -3,6 +3,7 @@ import { router } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { spacing, useTheme } from "../../design/theme";
+import { KanaText } from "./KanaText";
 
 type FocusedCharacterCardProps = {
   characterId: string;
@@ -37,7 +38,7 @@ export function FocusedCharacterCard({
         })
       }
     >
-      <Text style={styles.literal}>{literal}</Text>
+      <KanaText numberOfLines={1} adjustsFontSizeToFit style={[styles.literal, literal.length > 1 && { width: 72 }]}>{literal}</KanaText>
       <View style={styles.content}>
         <View style={styles.titleRow}>
           <Text style={styles.meaning}>{meaning}</Text>

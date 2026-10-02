@@ -18,10 +18,20 @@ import {
   PersistedAppState,
   ThemeMode,
   UserType,
+  WritingActivity,
+  LearningPet,
+  DailyLesson,
+  LearningStage,
+  GuidedProgress,
 } from "../types/app-state";
+import { migrateLearningPet, feedLearningPet, rewardLearningPet } from "../domain/pet/learningPet";
+import { recordWritingActivity } from "../domain/review/writingActivity";
 import { calculateNextReviewAt } from "../domain/review/reviewSchedule";
 import { FORCE_ONBOARDING_FLOW } from "./debugOnboarding";
 import { resetOnboardingForDevelopment } from "./onboardingState";
+import { completeLessonItem, getTodayLesson } from "../domain/learning/dailyLessonProgress";
+import { isLearningStage, selectLearningStage } from "../domain/learning/learningStage";
+import { answerLessonQuiz } from "../domain/learning/answerLessonQuiz";
 
 const STORAGE_KEY = "seodang-app-state-v1";
 const MAX_RECORDED_ATTEMPTS = 50;
@@ -40,6 +50,17 @@ type AppStateContextValue = {
   recentCategoryKeys: string[];
   resetProgressByCategoryKey: Record<string, string[]>;
   progressByCharacter: Record<string, CharacterProgress>;
+  writingActivity?: WritingActivity;
+  learningPet: LearningPet;
+  feedPet: () => void;
+  dailyLesson?: DailyLesson;
+  startDailyLesson: (lesson: DailyLesson) => void;
+  learningStage?: LearningStage;
+  learningWelcomeSeen: boolean;
+  guidedProgress: GuidedProgress;
+  markLearningWelcomeSeen: () => void;
+  chooseLearningStage: (stage: LearningStage) => void;
+  completeQuiz: (input: { lessonId: string; questionId: string; answer: string[] }) => void;
   dismissedReviewCharacterIds: Record<string, DismissedReviewCharacter>;
   favoriteCount: number;
   isPro: boolean;
@@ -68,6 +89,7 @@ type AppStateContextValue = {
     score: number;
     passed: boolean;
     practicedAt: string;
+    lessonId?: string;
   }) => void;
   resetCategoryProgress: (input: {
     categoryKey: string;
@@ -130,6 +152,13 @@ export function AppStateProvider({ children }: PropsWithChildren) {
           setState({
             ...defaultState,
             ...parsed,
+            learningStage: isLearningStage(parsed.learningStage) ? parsed.learningStage : undefined,
+            learningWelcomeSeen: parsed.learningWelcomeSeen ?? true,
+            learningPet: migrateLearningPet(parsed.learningPet),
+            writingActivity: parsed.writingActivity ?? {
+              startedAt: new Date().toISOString(),
+              days: {},
+            },
             homeOnboardingDismissed: FORCE_ONBOARDING_FLOW
               ? false
               : (parsed.homeOnboardingDismissed ?? defaultState.homeOnboardingDismissed),
@@ -189,6 +218,33 @@ export function AppStateProvider({ children }: PropsWithChildren) {
   }, [hydrated, state]);
 
   const value = useMemo<AppStateContextValue>(() => {
+    const markLearningWelcomeSeen = () => {
+      if (hydrated) setState((current) => ({ ...current, learningWelcomeSeen: true }));
+    };
+    const chooseLearningStage = (stage: LearningStage) => {
+      if (hydrated) setState((current) => selectLearningStage(current, stage));
+    };
+    const completeQuiz: AppStateContextValue["completeQuiz"] = (input) => {
+      if (hydrated) setState((current) => answerLessonQuiz(current, input));
+    };
+    const startDailyLesson = (lesson: DailyLesson) => {
+      if (!hydrated || lesson.items.length === 0) return;
+      setState((current) => {
+        const now = new Date();
+        if (getTodayLesson(current.dailyLesson, now) || !getTodayLesson(lesson, now)
+          || (lesson.stage && lesson.stage !== current.learningStage)) return current;
+        return { ...current, dailyLesson: lesson };
+      });
+    };
+    const learningPet = migrateLearningPet(state.learningPet);
+    const feedPet = () => {
+      if (!hydrated) return;
+      setState((current) => {
+        const pet = migrateLearningPet(current.learningPet);
+        const next = feedLearningPet(pet);
+        return next === pet ? current : { ...current, learningPet: next };
+      });
+    };
     const activateProPurchase = () => {
       setState((current) => ({ ...current, isPro: true }));
     };
@@ -296,6 +352,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       score,
       passed,
       practicedAt,
+      lessonId,
     }) => {
       setState((current) => {
         if (current.recordedAttemptIds.includes(attemptId)) {
@@ -325,6 +382,9 @@ export function AppStateProvider({ children }: PropsWithChildren) {
 
         return {
           ...current,
+          writingActivity: recordWritingActivity(current.writingActivity, { practicedAt, score, passed }),
+          dailyLesson: completeLessonItem(current.dailyLesson, { lessonId, characterId, passed, practicedAt }),
+          learningPet: rewardLearningPet(migrateLearningPet(current.learningPet), { characterId, attemptId, passed, practicedAt }),
           dismissedReviewCharacterIds: removeDismissedReviewCharacter(
             current.dismissedReviewCharacterIds,
             characterId,
@@ -441,6 +501,17 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       recentCategoryKeys: state.recentCategoryKeys,
       resetProgressByCategoryKey: state.resetProgressByCategoryKey,
       progressByCharacter: state.progressByCharacter,
+      writingActivity: state.writingActivity,
+      learningPet,
+      feedPet,
+      dailyLesson: state.dailyLesson,
+      startDailyLesson,
+      learningStage: state.learningStage,
+      learningWelcomeSeen: state.learningWelcomeSeen ?? false,
+      guidedProgress: state.guidedProgress ?? {},
+      markLearningWelcomeSeen,
+      chooseLearningStage,
+      completeQuiz,
       dismissedReviewCharacterIds: state.dismissedReviewCharacterIds,
       favoriteCount,
       isPro: state.isPro,

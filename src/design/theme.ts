@@ -53,22 +53,22 @@ export const layout = {
 } as const;
 
 const lightColors: ThemeColors = {
-  bgCanvas: "#f7f1e8",
-  bgSurface: "#fffaf3",
-  bgMuted: "#efe4d3",
-  bgMutedStrong: "#e6ddcf",
-  inkStrong: "#173221",
-  inkStrongAlt: "#1d3b2a",
+  bgCanvas: "#faf7f0",
+  bgSurface: "#fffdf8",
+  bgMuted: "#f0e8d9",
+  bgMutedStrong: "#e4dccb",
+  inkStrong: "#354b3e",
+  inkStrongAlt: "#45634f",
   inkBody: "#4d5f52",
   inkMuted: "#5f695e",
   inkFaint: "#6f756b",
   inkOnDark: "#f7f1e8",
   inkOnDarkMuted: "#dce7de",
-  accentWarm: "#c66d3d",
-  accentWarmMuted: "#8b5e34",
+  accentWarm: "#b86b51",
+  accentWarmMuted: "#92553f",
   borderStrong: "#173221",
-  borderSoft: "#ddcfbc",
-  success: "#1d3b2a",
+  borderSoft: "#e3dccf",
+  success: "#45634f",
   danger: "#c4473a",
   shadow: "#5f4b32",
 };
@@ -192,6 +192,8 @@ export function getTheme(themeMode: ThemeMode, textScale = 1) {
     card: {
       backgroundColor: colors.bgSurface,
       borderRadius: radius.md,
+      borderWidth: 1,
+      borderColor: colors.borderSoft,
     } satisfies ViewStyle,
     heroDark: {
       backgroundColor: colors.inkStrongAlt,
@@ -242,10 +244,10 @@ export function getTheme(themeMode: ThemeMode, textScale = 1) {
   const shadows = {
     card: {
       shadowColor: colors.shadow,
-      shadowOpacity: themeMode === "dark" ? 0.22 : 0.08,
-      shadowOffset: { width: 0, height: 8 },
-      shadowRadius: 18,
-      elevation: 3,
+      shadowOpacity: themeMode === "dark" ? 0.16 : 0.04,
+      shadowOffset: { width: 0, height: 3 },
+      shadowRadius: 8,
+      elevation: 1,
     } satisfies ViewStyle,
   } as const;
 

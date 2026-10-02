@@ -13,6 +13,7 @@ import {
 import { EmptyState } from "../src/components/common/EmptyState";
 import { ErrorState } from "../src/components/common/ErrorState";
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
+import { KanaText } from "../src/components/common/KanaText";
 import { getCharacterMeaning } from "../src/data/characters";
 import { KanjiCharacter } from "../src/data/characters";
 import { layout, spacing, useTheme } from "../src/design/theme";
@@ -186,7 +187,7 @@ function SearchResultCard({
     >
       <Pressable style={styles.card}>
         <View style={styles.left}>
-          <Text style={styles.literal}>{character.literal}</Text>
+          <KanaText numberOfLines={1} adjustsFontSizeToFit style={[styles.literal, character.literal.length > 1 && { width: 72 }]}>{character.literal}</KanaText>
           <View style={styles.cardContent}>
             <Text style={styles.meaning}>
               {getCharacterMeaning(character, locale)}
