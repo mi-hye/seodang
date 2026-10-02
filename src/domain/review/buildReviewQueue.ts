@@ -116,7 +116,7 @@ export function isDismissedForDate(
 }
 
 function toDateKey(date: Date) {
-  return date.toISOString().slice(0, 10);
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 }
 
 function toReviewQueueItem(
@@ -137,7 +137,10 @@ function toReviewQueueItem(
     progress.lastScore < options.lowScoreThreshold ||
     progress.averageScore < options.lowScoreThreshold;
   const dueAgain =
-    daysSincePractice != null && daysSincePractice >= options.dueAfterDays;
+    (progress.nextReviewAt != null &&
+      Number.isFinite(new Date(progress.nextReviewAt).getTime()) &&
+      new Date(progress.nextReviewAt).getTime() <= options.now.getTime()) ||
+    (daysSincePractice != null && daysSincePractice >= options.dueAfterDays);
 
   if (recentFailure) {
     return {
@@ -164,7 +167,7 @@ function toReviewQueueItem(
     return {
       characterId: progress.characterId,
       reason: "due_again",
-      priority: 100 + daysSincePractice,
+      priority: 100 + (daysSincePractice ?? 0),
       daysSincePractice,
     };
   }

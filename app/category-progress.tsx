@@ -26,6 +26,7 @@ import {
   useKanjiCategoryProgressMappingsQuery,
 } from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
+import { getKanaCategoryGroup } from "../src/data/kanaCatalog";
 
 export default function CategoryProgressScreen() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function CategoryProgressScreen() {
     resetProgressByCategoryKey,
     resetCategoryProgress,
   } = useAppState();
-  const { data: categoryGroups = [], isLoading, isError, refetch } =
+  const { data: categoryGroups = [getKanaCategoryGroup(locale)], isLoading, isError, refetch } =
     useKanjiCategoryGroupsQuery(locale);
   const completedCharacterIds = useMemo(
     () =>
@@ -116,8 +117,9 @@ export default function CategoryProgressScreen() {
           />
         ) : null}
 
-        {!isLoading && !isError
-          ? activeCategories.map((category) => (
+        {activeCategories
+          .filter((category) => category.categoryKey.startsWith("kana_") || (!isLoading && !isError))
+          .map((category) => (
               <SwipeableCategoryProgressCard
                 key={category.categoryKey}
                 category={category}
@@ -135,8 +137,7 @@ export default function CategoryProgressScreen() {
                   })
                 }
               />
-            ))
-          : null}
+            ))}
       </View>
     </Screen>
   );

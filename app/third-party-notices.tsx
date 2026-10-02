@@ -24,6 +24,12 @@ const notices = [
     licenseUrl: "https://www.freedesktop.org/wiki/Arphic_Public_License/",
   },
   {
+    name: "AnimCJK Kana · FM-SH",
+    license: "GNU Lesser General Public License 3.0 or later",
+    sourceUrl: "https://github.com/parsimonhi/animCJK/tree/ec5e17cca76c87587790bcbce5ea0b4d4fb753d6/svgsJaKana",
+    licenseUrl: "https://www.gnu.org/licenses/lgpl-3.0.html",
+  },
+  {
     name: "JLPT kanji category data",
     license: "Open-source JLPT kanji JSON",
     sourceUrl: "https://kanjiapi.dev/",

@@ -12,6 +12,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import type { Edge } from "react-native-safe-area-context";
 import { layout, useTheme } from "../../design/theme";
+import { usePathname } from "expo-router";
+import { getMainTab } from "../../domain/navigation/mainTabs";
 
 type ScreenProps = PropsWithChildren<{
   contentStyle?: StyleProp<ViewStyle>;
@@ -34,10 +36,11 @@ export function Screen({
   scrollEventThrottle,
 }: ScreenProps) {
   const { colors } = useTheme();
+  const hasTabBar = Boolean(getMainTab(usePathname()));
 
   return (
     <SafeAreaView
-      edges={edges}
+      edges={hasTabBar ? edges.filter((edge) => edge !== "bottom") : edges}
       style={[styles.safeArea, { backgroundColor: colors.bgCanvas }]}
     >
       {!scrollContainer ? (

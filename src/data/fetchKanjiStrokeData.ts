@@ -1,6 +1,7 @@
-import { KanjiVgCharacter, KanjiVgStroke } from "../types/practice";
+import type { KanjiVgCharacter, KanjiVgStroke } from "../types/practice";
 import { throwIfForcedFetchFailure } from "./debugFetchFailure";
 import { supabaseFetchJson } from "./supabaseFetch";
+import { getKanaCharacterId, isKanaLiteral } from "./kanaCatalog";
 
 type KanjiCharacterRow = {
   id: string;
@@ -33,6 +34,22 @@ export async function fetchKanjiStrokeDataByLiteral(
 
   if (!literal) {
     return undefined;
+  }
+
+  if (isKanaLiteral(literal)) {
+    const { getKanaStrokes } = await import("./kanaStrokeLayout");
+    const characterId = getKanaCharacterId(literal);
+    return {
+      characterId,
+      literal,
+      source: "AnimCJK",
+      license: "LGPL-3.0-or-later",
+      viewBox: { width: 100, height: 100 },
+      strokes: getKanaStrokes(literal).map((stroke) => ({
+        ...stroke,
+        id: `${characterId}-s${stroke.order}`,
+      })),
+    } satisfies KanjiVgCharacter;
   }
 
   const character = await fetchCharacterByLiteral(literal);

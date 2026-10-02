@@ -9,8 +9,9 @@ import {
   fetchKanjiCharactersByIds,
 } from "../data/fetchKanjiCharacters";
 import { fetchKanjiStrokeDataByLiteral } from "../data/fetchKanjiStrokeData";
+import { getKanaCategoryGroup, getKanaLessonByCategoryKey } from "../data/kanaCatalog";
 
-const CATALOG_QUERY_VERSION = "2026-06-15-edge-index-v1";
+const CATALOG_QUERY_VERSION = "2026-10-02-katakana-lessons-v2";
 
 export const kanjiQueryKeys = {
   allCharacters: () => ["kanji-characters", "all"] as const,
@@ -43,6 +44,7 @@ export function useKanjiCategoryGroupsQuery(locale: "ko" | "ja") {
   return useQuery({
     queryKey: kanjiQueryKeys.categoryGroups(locale),
     queryFn: () => fetchKanjiCategoryGroups(locale, "categories"),
+    select: (groups) => [getKanaCategoryGroup(locale), ...groups],
   });
 }
 
@@ -57,7 +59,7 @@ export function useKanjiCharactersByCategoryQuery(
       fetchKanjiCategoryCharactersByKey({
         categoryKey,
         locale,
-        limit: 20,
+        limit: getKanaLessonByCategoryKey(categoryKey)?.literals.length ?? 20,
         offset: pageParam,
         debugScope,
       }),

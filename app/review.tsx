@@ -5,6 +5,7 @@ import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import { EmptyState } from "../src/components/common/EmptyState";
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
 import { Screen } from "../src/components/common/Screen";
+import { KanaText } from "../src/components/common/KanaText";
 import { getCharacterMeaning, KanjiCharacter } from "../src/data/characters";
 import { isForcedEmptyState } from "../src/data/debugFetchFailure";
 import { spacing, useTheme } from "../src/design/theme";
@@ -19,9 +20,11 @@ import { encodeReviewIds } from "../src/domain/review/reviewSession";
 import { useI18n } from "../src/i18n/useI18n";
 import { useKanjiCharactersByIdsQuery } from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
+import { useReviewClock } from "../src/domain/review/useReviewClock";
 
 export default function ReviewScreen() {
   const router = useRouter();
+  const now = useReviewClock();
   const {
     dismissedReviewCharacterIds,
     hydrated,
@@ -31,9 +34,10 @@ export default function ReviewScreen() {
   const reviewQueue = useMemo(
     () =>
       buildReviewQueue(progressByCharacter, {
+        now,
         dismissedCharacterIds: dismissedReviewCharacterIds,
       }),
-    [dismissedReviewCharacterIds, progressByCharacter],
+    [dismissedReviewCharacterIds, progressByCharacter, now],
   );
   const characterIds = reviewQueue.map((item) => item.characterId);
   const reviewByCharacterId = useMemo(
@@ -59,12 +63,12 @@ export default function ReviewScreen() {
   const hasAnyProgress = Object.keys(progressByCharacter).length > 0;
   const hasDismissedToday = Object.values(dismissedReviewCharacterIds).some(
     (dismissedReviewCharacter) =>
-      isDismissedForDate(dismissedReviewCharacter, new Date()),
+      isDismissedForDate(dismissedReviewCharacter, now),
   );
   const completedToday = hasAnyProgress && hasDismissedToday && items.length === 0;
   const nextScheduledReviewAt = useMemo(
-    () => findNextScheduledReviewAt(progressByCharacter),
-    [progressByCharacter],
+    () => findNextScheduledReviewAt(progressByCharacter, { now }),
+    [progressByCharacter, now],
   );
   const { locale, t } = useI18n();
   const reviewEmptyBody = nextScheduledReviewAt
@@ -89,6 +93,9 @@ export default function ReviewScreen() {
     <Screen>
       <Text style={styles.title}>{t("review.title")}</Text>
       <Text style={styles.subtitle}>{t("review.subtitle")}</Text>
+      <Pressable accessibilityRole="button" style={[buttonStyles.secondary, { marginBottom: 16 }]} onPress={() => router.push("/writing-history")}>
+        <Text style={[textStyles.buttonLabel, { color: colors.inkStrong }]}>{t("writingHistory.open")}</Text>
+      </Pressable>
 
       {isLoading && characterIds.length > 0 ? <ReviewSkeleton /> : null}
 
@@ -142,7 +149,7 @@ export default function ReviewScreen() {
             >
               <Pressable style={styles.card}>
                 <View style={styles.left}>
-                  <Text style={styles.literal}>{character.literal}</Text>
+                  <KanaText numberOfLines={1} adjustsFontSizeToFit style={[styles.literal, character.literal.length > 1 && { width: 72 }]}>{character.literal}</KanaText>
                   <View style={styles.content}>
                     <View style={styles.titleRow}>
                       <Text style={styles.meaning} numberOfLines={1}>

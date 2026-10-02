@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { EmptyState } from "../src/components/common/EmptyState";
 import { FavoriteButton } from "../src/components/common/FavoriteButton";
 import { Screen } from "../src/components/common/Screen";
+import { KanaText } from "../src/components/common/KanaText";
 import { getCharacterMeaning } from "../src/data/characters";
 import { isForcedEmptyState } from "../src/data/debugFetchFailure";
 import { spacing, useTheme } from "../src/design/theme";
@@ -104,8 +105,8 @@ export default function FavoritesScreen() {
           >
             <Pressable style={styles.card}>
               <View style={styles.left}>
-                <Text style={styles.literal}>{character.literal}</Text>
-                <View>
+                <KanaText numberOfLines={1} adjustsFontSizeToFit style={[styles.literal, character.literal.length > 1 && { width: 72 }]}>{character.literal}</KanaText>
+                <View style={styles.cardContent}>
                   <Text style={styles.meaning}>
                     {getCharacterMeaning(character, locale)}
                   </Text>
@@ -205,6 +206,7 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       textAlign: "center",
     },
     meaning: textStyles.titleSm,
+    cardContent: { flex: 1 },
     meta: {
       ...textStyles.meta,
       marginTop: 3,

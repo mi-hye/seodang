@@ -2,7 +2,6 @@ import { Link, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import {
   FlatList,
-  LayoutChangeEvent,
   Pressable,
   StyleSheet,
   Text,
@@ -15,6 +14,7 @@ import { KanjiLoadingScreen } from "../src/components/common/KanjiLoadingScreen"
 import { EmptyState } from "../src/components/common/EmptyState";
 import { ErrorState } from "../src/components/common/ErrorState";
 import { Screen } from "../src/components/common/Screen";
+import { KanaText } from "../src/components/common/KanaText";
 import { getCharacterMeaning, KanjiCharacter } from "../src/data/characters";
 import { isForcedEmptyState } from "../src/data/debugFetchFailure";
 import { layout, spacing, useTheme } from "../src/design/theme";
@@ -27,6 +27,7 @@ import {
   useKanjiCharactersByCategoryQuery,
 } from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
+import { getKanaCategoryGroup, getKanaScriptByCategoryKey } from "../src/data/kanaCatalog";
 
 export default function CharacterListScreen() {
   const { categoryKey } = useLocalSearchParams<{ categoryKey?: string }>();
@@ -44,12 +45,7 @@ export default function CharacterListScreen() {
     setOnboardingStep,
   } = useAppState();
   const [searchText, setSearchText] = useState("");
-  const [firstCardLayout, setFirstCardLayout] = useState<{
-    x: number;
-    y: number;
-    height: number;
-  } | null>(null);
-  const { data: categoryGroups = [] } = useKanjiCategoryGroupsQuery(locale);
+  const { data: categoryGroups = [getKanaCategoryGroup(locale)] } = useKanjiCategoryGroupsQuery(locale);
   const completedCharacterIds = useMemo(
     () =>
       Object.values(progressByCharacter)
@@ -109,12 +105,6 @@ export default function CharacterListScreen() {
   const showFavoriteOnboarding = onboardingStep === "list_favorite";
   const showItemOnboarding = onboardingStep === "list_item";
   const showListOnboarding = showFavoriteOnboarding || showItemOnboarding;
-  const itemHintStyle = firstCardLayout
-    ? {
-        top: firstCardLayout.y + firstCardLayout.height + 177,
-        left: firstCardLayout.x + 14,
-      }
-    : styles.itemHint;
 
   if (isLoading) {
     return <KanjiLoadingScreen />;
@@ -164,7 +154,7 @@ export default function CharacterListScreen() {
                   <TextInput
                     value={searchText}
                     onChangeText={setSearchText}
-                    placeholder={t("list.searchPlaceholder")}
+                    placeholder={t(getKanaScriptByCategoryKey(normalizedCategoryKey) ? "kana.searchPlaceholder" : "list.searchPlaceholder")}
                     placeholderTextColor={colors.inkMuted}
                     autoCapitalize="none"
                     autoCorrect={false}
@@ -208,11 +198,7 @@ export default function CharacterListScreen() {
               index={index}
               getProgress={getProgress}
               showFavoriteHint={index === 0 && showFavoriteOnboarding}
-              onFirstCardLayout={
-                index === 0
-                  ? (layout) => setFirstCardLayout(layout)
-                  : undefined
-              }
+              showItemHint={index === 0 && showItemOnboarding}
               isDimmed={
                 Boolean(firstCharacterId) &&
                 item.id !== firstCharacterId &&
@@ -243,15 +229,6 @@ export default function CharacterListScreen() {
             onPress={() => setOnboardingStep("list_item")}
           />
         ) : null}
-
-        {firstCharacterId && showItemOnboarding ? (
-          <View pointerEvents="none" style={[styles.itemHint, itemHintStyle]}>
-            <View style={styles.itemHintTail} />
-            <View style={styles.itemHintBubble}>
-              <Text style={styles.itemHintText}>{t("list.itemHint")}</Text>
-            </View>
-          </View>
-        ) : null}
       </View>
     </Screen>
   );
@@ -263,7 +240,7 @@ function CharacterCard({
   index,
   getProgress,
   showFavoriteHint,
-  onFirstCardLayout,
+  showItemHint,
   isDimmed,
   onAdvanceItemOnboarding,
 }: {
@@ -272,11 +249,7 @@ function CharacterCard({
   index: number;
   getProgress: ReturnType<typeof useAppState>["getProgress"];
   showFavoriteHint?: boolean;
-  onFirstCardLayout?: (layout: {
-    x: number;
-    y: number;
-    height: number;
-  }) => void;
+  showItemHint?: boolean;
   isDimmed?: boolean;
   onAdvanceItemOnboarding?: () => void;
 }) {
@@ -300,18 +273,10 @@ function CharacterCard({
         <Pressable
           disabled={isDimmed}
           style={styles.card}
-          onLayout={
-            onFirstCardLayout
-              ? (event: LayoutChangeEvent) => {
-                  const { x, y, height } = event.nativeEvent.layout;
-                  onFirstCardLayout({ x, y, height });
-                }
-              : undefined
-          }
           onPress={onAdvanceItemOnboarding}
         >
           <View style={styles.left}>
-            <Text style={styles.literal}>{character.literal}</Text>
+            <KanaText numberOfLines={1} adjustsFontSizeToFit style={[styles.literal, character.literal.length > 1 && styles.combinationLiteral]}>{character.literal}</KanaText>
             <View style={styles.cardContent}>
               <Text style={styles.meaning}>
                 {getCharacterMeaning(character, locale)}
@@ -358,7 +323,14 @@ function CharacterCard({
           ) : null}
         </Pressable>
       </Link>
-
+      {showItemHint ? (
+        <View pointerEvents="none" style={styles.itemHint}>
+          <View style={styles.itemHintTail} />
+          <View style={styles.itemHintBubble}>
+            <Text style={styles.itemHintText}>{t("list.itemHint")}</Text>
+          </View>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -472,6 +444,9 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       flex: 1,
       gap: 3,
     },
+    combinationLiteral: {
+      width: 72,
+    },
     meaning: textStyles.titleSm,
     meta: {
       ...textStyles.meta,
@@ -523,12 +498,9 @@ function createStyles({ colors, surfaceStyles, textStyles }: any) {
       fontWeight: "800",
     },
     itemHint: {
-      position: "absolute",
-      top: "100%",
-      left: 14,
+      marginTop: 3,
+      marginLeft: 14,
       alignItems: "flex-start",
-      zIndex: 50,
-      elevation: 50,
       maxWidth: 280,
     },
     itemHintBubble: {

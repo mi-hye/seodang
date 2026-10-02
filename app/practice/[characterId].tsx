@@ -1,11 +1,12 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 
 import { KanjiLoadingScreen } from "../../src/components/common/KanjiLoadingScreen";
 import { WritingCanvas } from "../../src/components/practice/WritingCanvas";
 import { Screen } from "../../src/components/common/Screen";
+import { KanaText } from "../../src/components/common/KanaText";
 import { getCharacterMeaning } from "../../src/data/characters";
 import { spacing, useTheme } from "../../src/design/theme";
 import { useI18n } from "../../src/i18n/useI18n";
@@ -21,13 +22,15 @@ import { CanvasSize, InputStroke } from "../../src/types/practice";
 
 export default function PracticeScreen() {
   const router = useRouter();
-  const { characterId, categoryKey, reviewIds } = useLocalSearchParams<{
+  const { characterId, categoryKey, reviewIds, lessonId } = useLocalSearchParams<{
     characterId: string;
     categoryKey?: string;
     reviewIds?: string;
+    lessonId?: string;
   }>();
   const normalizedCategoryKey = Array.isArray(categoryKey) ? categoryKey[0] : categoryKey;
   const normalizedReviewIds = Array.isArray(reviewIds) ? reviewIds[0] : reviewIds;
+  const normalizedLessonId = Array.isArray(lessonId) ? lessonId[0] : lessonId;
   const {
     data: character,
     isLoading: isCharacterLoading,
@@ -55,6 +58,7 @@ export default function PracticeScreen() {
     textStyles,
   });
   const [showGuide, setShowGuide] = useState(false);
+  const [recallMode, setRecallMode] = useState(false);
   const [strokes, setStrokes] = useState<InputStroke[]>([]);
   const [canvasSize, setCanvasSize] = useState<CanvasSize>({
     width: 0,
@@ -73,6 +77,12 @@ export default function PracticeScreen() {
     Boolean(character) && onboardingStep === "practice_guide";
   const showSubmitOnboarding =
     Boolean(character) && onboardingStep === "practice_submit";
+
+  useEffect(() => {
+    setShowGuide(false);
+    setRecallMode(false);
+    setStrokes([]);
+  }, [characterId]);
 
   if (isCharacterLoading) {
     return <KanjiLoadingScreen />;
@@ -119,6 +129,7 @@ export default function PracticeScreen() {
         characterId: character.id,
         categoryKey: normalizedCategoryKey,
         reviewIds: normalizedReviewIds,
+        lessonId: normalizedLessonId,
         literal: character.literal,
         score: String(evaluation.score),
         passed: String(evaluation.passed),
@@ -135,9 +146,9 @@ export default function PracticeScreen() {
   const headerPanel = (
     <>
       <View style={styles.headerCard}>
-        <Text style={styles.caption}>{t("practice.target")}</Text>
-        <Text style={styles.literal}>{character.literal}</Text>
-        <Text style={styles.meaning}>{getCharacterMeaning(character, locale)}</Text>
+        <Text style={styles.caption}>{t(character.kana ? recallMode ? "kana.memory.recallTitle" : showGuide ? "kana.memory.traceTitle" : "kana.practiceTarget" : "practice.target")}</Text>
+        <KanaText style={styles.literal}>{recallMode ? "?" : character.literal}</KanaText>
+        <Text style={styles.meaning}>{recallMode ? character.kana?.romaji : getCharacterMeaning(character, locale)}</Text>
       </View>
 
       <View style={styles.toolbar}>
@@ -167,6 +178,7 @@ export default function PracticeScreen() {
                 setOnboardingStep("practice_submit");
               }
               setShowGuide((current) => !current);
+              setRecallMode(false);
             }}
           >
             <Text
@@ -175,7 +187,7 @@ export default function PracticeScreen() {
                 showGuide && styles.toolChipTextActive,
               ]}
             >
-              {showGuide ? t("practice.hideGuide") : t("practice.showGuide")}
+              {showGuide ? t("practice.hideGuide") : t(recallMode ? "kana.memory.reveal" : "practice.showGuide")}
             </Text>
           </Pressable>
         </View>
@@ -240,10 +252,16 @@ export default function PracticeScreen() {
             ? styles.dimmedSection
             : null,
         ]}
-        onPress={() => setStrokes([])}
+        onPress={() => {
+          setStrokes([]);
+          if (character.kana && showGuide) {
+            setShowGuide(false);
+            setRecallMode(true);
+          }
+        }}
         disabled={showGuideOnboarding || showSubmitOnboarding}
       >
-        <Text style={styles.secondaryLabel}>{t("practice.reset")}</Text>
+        <Text style={styles.secondaryLabel}>{t(character.kana && showGuide ? "kana.memory.hideAndWrite" : "practice.reset")}</Text>
       </Pressable>
       <View style={styles.submitWrap}>
         {showSubmitOnboarding ? (

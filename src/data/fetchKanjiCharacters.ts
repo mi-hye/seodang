@@ -1,7 +1,8 @@
-import { KanjiCharacter, KanjiCharacterMetadata } from "./characters";
+import type { KanjiCharacter, KanjiCharacterMetadata } from "./characters";
 import { throwIfForcedFetchFailure } from "./debugFetchFailure";
-import { KanjiCategory } from "./fetchKanjiCategories";
+import type { KanjiCategory } from "./fetchKanjiCategories";
 import { supabaseFetchJson } from "./supabaseFetch";
+import { getKanaCategoryGroup, getKanaScriptByCategoryKey, getKanaScriptById } from "./kanaCatalog";
 
 type KanjiCharacterRow = {
   id: string;
@@ -57,6 +58,21 @@ export async function fetchKanjiCategoryCharactersByKey({
     return null;
   }
 
+  const kanaScript = getKanaScriptByCategoryKey(categoryKey);
+  if (kanaScript) {
+    const { getKanaCharactersByCategoryKey } = await import("./kanaCharacters");
+    const characters = getKanaCharactersByCategoryKey(categoryKey);
+    const pageCharacters = characters.slice(offset, offset + limit);
+    return {
+      category: getKanaCategoryGroup(locale).categories.find((category) => category.categoryKey === categoryKey)!,
+      characters: pageCharacters,
+      total: characters.length,
+      limit,
+      offset,
+      hasMore: offset + pageCharacters.length < characters.length,
+    };
+  }
+
   const params = new URLSearchParams({
     locale,
     categoryKey,
@@ -74,17 +90,23 @@ export async function fetchKanjiCharactersByIds(characterIds: string[]) {
     return [];
   }
 
+  const kanaIds = characterIds.filter((id) => getKanaScriptById(id));
+  const remoteIds = characterIds.filter((id) => !getKanaScriptById(id));
+  const localCharacters = kanaIds.length
+    ? (await import("./kanaCharacters")).getAllKanaCharacters().filter((character) => kanaIds.includes(character.id))
+    : [];
+
   const params = new URLSearchParams({
     select: characterSelect,
-    id: `in.(${characterIds.map(encodeSupabaseValue).join(",")})`,
+    id: `in.(${remoteIds.map(encodeSupabaseValue).join(",")})`,
     order: "sort_order.asc.nullslast,literal.asc",
   });
 
-  const rows = await supabaseFetchJson<KanjiCharacterRow[]>(
+  const rows = remoteIds.length ? await supabaseFetchJson<KanjiCharacterRow[]>(
     `/rest/v1/kanji_characters?${params.toString()}`,
     "Failed to fetch kanji characters",
-  );
-  const rowsById = new Map(rows.map((row) => [row.id, mapKanjiCharacter(row)]));
+  ) : [];
+  const rowsById = new Map([...rows.map(mapKanjiCharacter), ...localCharacters].map((character) => [character.id, character]));
 
   return characterIds
     .map((id) => rowsById.get(id))
@@ -99,6 +121,12 @@ export async function fetchKanjiCharacterById(
 
   if (!characterId) {
     return null;
+  }
+
+  const kanaScript = getKanaScriptById(characterId);
+  if (kanaScript) {
+    const { getKanaCharacters } = await import("./kanaCharacters");
+    return getKanaCharacters(kanaScript).find((character) => character.id === characterId) ?? null;
   }
 
   const params = new URLSearchParams({
@@ -144,7 +172,8 @@ export async function fetchAllKanjiCharacters(debugScope = "search") {
     offset += pageSize;
   }
 
-  return rows.map(mapKanjiCharacter);
+  const { getAllKanaCharacters } = await import("./kanaCharacters");
+  return [...getAllKanaCharacters(), ...rows.map(mapKanjiCharacter)];
 }
 
 function mapKanjiCharacter(row: KanjiCharacterRow): KanjiCharacter {

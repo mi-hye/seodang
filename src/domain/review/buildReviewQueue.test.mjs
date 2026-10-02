@@ -166,16 +166,26 @@ test("includes dismissed characters again on the next day", () => {
       },
     },
     {
-      now: new Date("2026-06-11T01:00:00.000Z"),
+      now: new Date(2026, 5, 11, 1),
       dismissedCharacterIds: {
         failed: {
-          dismissedAt: "2026-06-10T23:00:00.000Z",
+          dismissedAt: new Date(2026, 5, 10, 23).toISOString(),
         },
       },
     },
   );
 
   assert.deepEqual(queue.map((item) => item.characterId), ["failed"]);
+});
+
+test("includes a passed 82-point character at its three-day deadline", () => {
+  const progress = {
+    characterId: "medium", attempts: 1, successes: 1, failures: 0,
+    averageScore: 82, lastScore: 82,
+    lastPracticedAt: "2026-10-01T00:00:00Z", nextReviewAt: "2026-10-04T00:00:00Z",
+  };
+  assert.equal(buildReviewQueue({ medium: progress }, { now: new Date("2026-10-03T23:59:59Z") }).length, 0);
+  assert.equal(buildReviewQueue({ medium: progress }, { now: new Date("2026-10-04T00:00:00Z") })[0].reason, "due_again");
 });
 
 test("finds the next scheduled review including items completed today", () => {

@@ -16,6 +16,7 @@ import { radius, spacing, useTheme } from "../src/design/theme";
 import { useI18n } from "../src/i18n/useI18n";
 import { useKanjiCategoryGroupsQuery } from "../src/queries/kanjiQueries";
 import { useAppState } from "../src/state/AppStateProvider";
+import { getKanaCategoryGroup } from "../src/data/kanaCatalog";
 
 export default function CategoriesScreen() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default function CategoriesScreen() {
     surfaceStyles,
     textStyles,
   });
-  const visibleGroups = (data ?? [])
+  const visibleGroups = (data ?? [getKanaCategoryGroup(locale)])
     .map((group) => ({
       ...group,
       categories: group.categories.filter(
@@ -117,8 +118,9 @@ export default function CategoriesScreen() {
           </View>
         ) : null}
 
-        {!isLoading && !isError
-          ? visibleGroups.map((group) => (
+        {visibleGroups
+          .filter((group) => group.groupKey === "kana" || (!isLoading && !isError))
+          .map((group) => (
               <View
                 key={group.id}
                 pointerEvents={
@@ -229,8 +231,7 @@ export default function CategoriesScreen() {
                   );
                 })()}
               </View>
-            ))
-          : null}
+            ))}
       </View>
     </Screen>
   );

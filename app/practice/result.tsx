@@ -10,6 +10,9 @@ import { buildReviewSession } from "../../src/domain/review/reviewSession";
 import { useI18n } from "../../src/i18n/useI18n";
 import { useKanjiCharactersByCategoryQuery } from "../../src/queries/kanjiQueries";
 import { useAppState } from "../../src/state/AppStateProvider";
+import { getKanaScriptByCategoryKey } from "../../src/data/kanaCatalog";
+import { hasPetReward } from "../../src/domain/pet/learningPet";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function PracticeResultScreen() {
   const router = useRouter();
@@ -17,6 +20,7 @@ export default function PracticeResultScreen() {
     characterId,
     categoryKey,
     reviewIds,
+    lessonId,
     literal,
     score,
     passed,
@@ -30,6 +34,7 @@ export default function PracticeResultScreen() {
     characterId: string;
     categoryKey?: string;
     reviewIds?: string;
+    lessonId?: string;
     literal?: string;
     score: string;
     passed: string;
@@ -42,6 +47,7 @@ export default function PracticeResultScreen() {
   }>();
   const normalizedCategoryKey = Array.isArray(categoryKey) ? categoryKey[0] : categoryKey;
   const normalizedReviewIds = Array.isArray(reviewIds) ? reviewIds[0] : reviewIds;
+  const normalizedLessonId = Array.isArray(lessonId) ? lessonId[0] : lessonId;
   const reviewSession = buildReviewSession({
     currentCharacterId: characterId,
     encodedReviewIds: normalizedReviewIds,
@@ -50,6 +56,8 @@ export default function PracticeResultScreen() {
   const didPass = passed === "true";
   const numericScore = Number(score ?? 0);
   const {
+    hydrated,
+    learningPet,
     dismissReviewCharacters,
     recordAttempt,
     onboardingStep,
@@ -69,7 +77,7 @@ export default function PracticeResultScreen() {
   const nextCharacter = currentIndex >= 0 ? characters[currentIndex + 1] : undefined;
   const showOnboarding = onboardingStep === "result";
   useEffect(() => {
-    if (!characterId || !attemptId) return;
+    if (!hydrated || !characterId || !attemptId) return;
 
     recordAttempt({
       attemptId,
@@ -78,8 +86,9 @@ export default function PracticeResultScreen() {
       score: numericScore,
       passed: didPass,
       practicedAt: practicedAt ?? new Date().toISOString(),
+      lessonId: normalizedLessonId,
     });
-  }, [attemptId, characterId, didPass, numericScore, practicedAt, recordAttempt]);
+  }, [hydrated, attemptId, characterId, didPass, numericScore, practicedAt, normalizedCategoryKey, normalizedLessonId, recordAttempt]);
 
   return (
     <Screen>
@@ -104,6 +113,15 @@ export default function PracticeResultScreen() {
             </Text>
           </View>
 
+          {hydrated && attemptId && practicedAt && hasPetReward(learningPet, attemptId, practicedAt) ? (
+            <Pressable accessibilityRole="button" onPress={() => { if (showOnboarding) setOnboardingStep("done"); router.dismissTo(normalizedLessonId ? "/today-lesson" : "/"); }}
+              style={[surfaceStyles.card, { padding: 16, marginBottom: 16, flexDirection: "row", alignItems: "center", gap: 12 }]}>
+              <Ionicons name="restaurant" size={26} color={colors.accentWarmMuted} />
+              <View style={{ flex: 1 }}><Text style={textStyles.titleSm}>{t("pet.rewardTitle")}</Text><Text style={textStyles.bodySm}>{t(normalizedLessonId ? "lesson.continue" : "pet.rewardBody")}</Text></View>
+              <Ionicons name="chevron-forward" size={18} color={colors.inkMuted} />
+            </Pressable>
+          ) : null}
+
           <View style={styles.feedbackCard}>
             {characterId ? (
               <FavoriteButton characterId={characterId} showLabel style={styles.favoriteButton} />
@@ -123,7 +141,7 @@ export default function PracticeResultScreen() {
             ))}
           </View>
 
-          <Pressable
+          {!normalizedLessonId || didPass ? <Pressable
             style={styles.secondaryButton}
             onPress={() =>
               characterId
@@ -133,17 +151,18 @@ export default function PracticeResultScreen() {
                       characterId,
                       categoryKey: normalizedCategoryKey,
                       reviewIds: normalizedReviewIds,
+                      lessonId: normalizedLessonId,
                     },
                   })
                 : router.replace("/list")
             }
           >
             <Text style={styles.secondaryLabel}>{t("result.practiceAgain")}</Text>
-          </Pressable>
+          </Pressable> : null}
         </View>
 
         <View style={styles.nextActionWrap}>
-          {showOnboarding && !isCategoryLoadError ? (
+          {showOnboarding && !isCategoryLoadError && !normalizedLessonId ? (
             <View pointerEvents="none" style={styles.onboardingHint}>
               <View style={styles.onboardingBubble}>
                 <Text style={styles.onboardingHintText}>
@@ -154,7 +173,13 @@ export default function PracticeResultScreen() {
             </View>
           ) : null}
 
-          {isCategoryLoadError ? (
+          {normalizedLessonId ? (
+            <Pressable accessibilityRole="button" disabled={!hydrated} style={styles.primaryButton} onPress={() => {
+              if (showOnboarding) setOnboardingStep("done");
+              if (didPass) router.dismissTo("/today-lesson");
+              else router.replace({ pathname: "/practice/[characterId]", params: { characterId, categoryKey: normalizedCategoryKey, lessonId: normalizedLessonId } });
+            }}><Text style={styles.primaryLabel}>{t(didPass ? "lesson.continue" : "result.practiceAgain")}</Text></Pressable>
+          ) : isCategoryLoadError ? (
             <View style={styles.nextErrorState}>
               <ErrorState
                 title={t("result.errorTitle")}
@@ -211,7 +236,9 @@ export default function PracticeResultScreen() {
                   ? reviewSession.nextCharacterId
                     ? t("result.nextReview")
                     : t("result.finishReview")
-                  : t("result.nextCharacter")}
+                  : getKanaScriptByCategoryKey(normalizedCategoryKey)
+                    ? t(nextCharacter ? "kana.nextCharacter" : "kana.backToList")
+                    : t("result.nextCharacter")}
               </Text>
             </Pressable>
           )}

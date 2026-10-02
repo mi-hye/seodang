@@ -221,7 +221,7 @@ export const WritingCanvas = memo(function WritingCanvas({
                   key={`ghost-${stroke.id}`}
                   d={stroke.path}
                   stroke="rgba(137, 110, 73, 0.14)"
-                  strokeWidth={6}
+                  strokeWidth={guideData.literal.length > 1 ? 3 : 6}
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   fill="none"
@@ -243,6 +243,7 @@ export const WritingCanvas = memo(function WritingCanvas({
             const isPast = index < animatedStrokeIndex;
             const isCurrent = index === animatedStrokeIndex;
             const progress = isPast ? 1 : isCurrent ? animatedProgress : 0;
+            const pathLength = stroke.pathLength ?? 1000;
 
             if (!progress) return null;
 
@@ -251,12 +252,12 @@ export const WritingCanvas = memo(function WritingCanvas({
                 key={`guide-${stroke.id}`}
                 d={stroke.path}
                 stroke={isCurrent ? "#c66d3d" : "rgba(198, 109, 61, 0.26)"}
-                strokeWidth={isCurrent ? 7 : 5}
+                strokeWidth={guideData.literal.length > 1 ? (isCurrent ? 3.5 : 2.5) : (isCurrent ? 7 : 5)}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 fill="none"
-                strokeDasharray="1000 1000"
-                strokeDashoffset={1000 * (1 - progress)}
+                strokeDasharray={`${pathLength} ${pathLength}`}
+                strokeDashoffset={pathLength * (1 - progress)}
               />
             );
           })}

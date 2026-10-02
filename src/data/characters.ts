@@ -46,6 +46,17 @@ export type KanjiCharacterMetadata = {
 export type KanjiCharacter = {
   id: string;
   literal: string;
+  kana?: {
+    script: "hiragana" | "katakana";
+    reading: string;
+    romaji: string;
+    counterpart?: string;
+    categoryKey?: string;
+    noteKo?: string;
+    noteJa?: string;
+    speechText?: string;
+    memory?: KanaMemory;
+  };
   meaningKo: string | null;
   meaningJa: string | null;
   onyomi: string[];
@@ -59,6 +70,17 @@ export type KanjiCharacter = {
   sortOrder: number | null;
   isJoyo: boolean;
   metadata: KanjiCharacterMetadata | null;
+};
+
+export type KanaMemory = {
+  cueKo: string;
+  cueJa: string;
+  formation?: string;
+  contrast?: string;
+  contrastKo?: string;
+  contrastJa?: string;
+  word?: string;
+  wordMeaningKo?: string;
 };
 
 export function getCharacterMeaning(

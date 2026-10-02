@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
 import * as Speech from "expo-speech";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import {
   LayoutChangeEvent,
   NativeScrollEvent,
@@ -15,6 +15,8 @@ import {
 
 import { ErrorState } from "../../src/components/common/ErrorState";
 import { Screen } from "../../src/components/common/Screen";
+import { KanaMemoryCard } from "../../src/components/common/KanaMemoryCard";
+import { KanaText } from "../../src/components/common/KanaText";
 import { getCharacterMeaning } from "../../src/data/characters";
 import { spacing, useTheme } from "../../src/design/theme";
 import { isInlineActionFullyVisible } from "../../src/domain/detail/floatingActionVisibility";
@@ -41,7 +43,6 @@ import type {
   VerbCollocation,
 } from "../../src/domain/kanji/learningNotes";
 import { getDevCharacterIdLabel } from "../../src/domain/kanji/devCharacterLabel";
-import { getDetailOnboardingLayout } from "../../src/domain/onboarding/detailOnboardingLayout";
 import {
   getSpecialReadingBody,
   hasSpecialReadings,
@@ -128,7 +129,6 @@ export default function CharacterDetailScreen() {
   const hasSpecialReadingCard = hasSpecialReadings(specialReadings);
   const hasExampleWords = exampleWords.length > 0;
   const showOnboarding = Boolean(character) && onboardingStep === "detail";
-  const detailOnboardingLayout = getDetailOnboardingLayout(showOnboarding);
   const koreanHanjaReadingLabel =
     character && locale === "ko" ? getKoreanHanjaReadingLabel(character) : null;
   const inlineActionFullyVisible = isInlineActionFullyVisible({
@@ -156,17 +156,6 @@ export default function CharacterDetailScreen() {
     },
     [],
   );
-  const handleSpeakExample = useCallback(() => {
-    if (!exampleJa) return;
-
-    Speech.stop();
-    Speech.speak(exampleJa, {
-      language: "ja-JP",
-      pitch: 1,
-      rate: 0.86,
-    });
-  }, [exampleJa]);
-
   if (isLoading) {
     return (
       <Screen>
@@ -216,23 +205,35 @@ export default function CharacterDetailScreen() {
       <Text style={styles.actionLabel}>{t("detail.startPractice")}</Text>
     </Pressable>
   );
+  const practiceAction = (
+    <View>
+      {actionButton}
+      {showOnboarding ? (
+        <View pointerEvents="none" style={styles.onboardingHint}>
+          <View style={styles.onboardingTail} />
+          <View style={styles.onboardingBubble}>
+            <Text style={styles.onboardingHintText}>
+              {t("detail.onboardingAction")}
+            </Text>
+          </View>
+        </View>
+      ) : null}
+    </View>
+  );
 
   return (
     <Screen contentStyle={styles.screenContent} scrollContainer={false}>
       <View style={styles.screenStack}>
         <ScrollView
-          contentContainerStyle={[
-            styles.scrollContent,
-            { paddingBottom: detailOnboardingLayout.scrollBottomPadding },
-          ]}
+          contentContainerStyle={styles.scrollContent}
           onLayout={handleScrollLayout}
           onScroll={handleScroll}
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
         >
           <View style={showOnboarding ? styles.dimmedSection : null}>
-            <View style={styles.heroCard}>
-              <Text style={styles.literal}>{character.literal}</Text>
+            <View style={[styles.heroCard, character.kana && styles.kanaHeroCard]}>
+              <KanaText style={styles.literal}>{character.literal}</KanaText>
               <Text style={styles.meaning}>
                 {getCharacterMeaning(character, locale)}
               </Text>
@@ -242,23 +243,36 @@ export default function CharacterDetailScreen() {
                   ? t("common.strokes", { count: character.strokeCount })
                   : "-"}
               </Text>
+              {character.kana ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={t("kana.listen")}
+                  style={styles.kanaSpeakButton}
+                  onPress={() => {
+                    Speech.stop();
+                    Speech.speak(character.kana!.speechText ?? character.kana!.reading, { language: "ja-JP", rate: 0.7 });
+                  }}
+                >
+                  <Ionicons name="volume-high-outline" size={22} color={colors.inkOnDark} />
+                </Pressable>
+              ) : null}
               {koreanHanjaReadingLabel ? (
                 <Text style={styles.devCharacterId}>{koreanHanjaReadingLabel}</Text>
               ) : null}
-              {devCharacterIdLabel ? (
+              {devCharacterIdLabel && !character.kana ? (
                 <Text style={styles.devCharacterId}>{devCharacterIdLabel}</Text>
               ) : null}
             </View>
 
-            <View style={styles.infoCard}>
-              <Text style={styles.sectionTitle}>{t("detail.reading")}</Text>
-              <Text style={styles.infoLine}>
-                {t("detail.onyomi", { value: character.onyomi.join(", ") || "-" })}
-              </Text>
-              <Text style={styles.infoLine}>
-                {t("detail.kunyomi", { value: character.kunyomi.join(", ") || "-" })}
-              </Text>
-            </View>
+            {character.kana ? (
+              <KanaMemoryCard key={character.id} character={character} />
+            ) : (
+              <View style={styles.infoCard}>
+                <Text style={styles.sectionTitle}>{t("detail.reading")}</Text>
+                <Text style={styles.infoLine}>{t("detail.onyomi", { value: character.onyomi.join(", ") || "-" })}</Text>
+                <Text style={styles.infoLine}>{t("detail.kunyomi", { value: character.kunyomi.join(", ") || "-" })}</Text>
+              </View>
+            )}
 
             {origin ? (
               <View style={styles.infoCard}>
@@ -283,12 +297,12 @@ export default function CharacterDetailScreen() {
               </View>
             ) : null}
 
-            {hasExample ? (
+            {hasExample && !character.kana?.memory?.word ? (
               <View style={[styles.infoCard, styles.exampleCard]}>
                 <View style={styles.exampleContent}>
                   <View style={styles.sectionTitleRow}>
                     <Text style={styles.sectionTitle}>
-                      {t(isReference ? "detail.reference" : "detail.examples")}
+                      {t(character.kana ? "kana.usageExample" : isReference ? "detail.reference" : "detail.examples")}
                     </Text>
                   </View>
                   <View style={styles.exampleRow}>
@@ -305,26 +319,18 @@ export default function CharacterDetailScreen() {
                   </View>
                 </View>
                 {exampleJa ? (
-                  <Pressable
-                    accessibilityLabel={t("detail.speakExample")}
-                    hitSlop={10}
-                    onPress={handleSpeakExample}
-                    style={styles.speakButton}
-                  >
-                    <Ionicons
-                      name="volume-high-outline"
-                      size={18}
-                      color={colors.accentWarmMuted}
-                    />
+                  <Pressable accessibilityLabel={t("detail.speakExample")} hitSlop={10} style={styles.speakButton}
+                    onPress={() => { Speech.stop(); Speech.speak(exampleJa, { language: "ja-JP", pitch: 1, rate: 0.86 }); }}>
+                    <Ionicons name="volume-high-outline" size={18} color={colors.accentWarmMuted} />
                   </Pressable>
                 ) : null}
               </View>
-            ) : (
+            ) : !character.kana ? (
               <View style={styles.infoCard}>
                 <Text style={styles.sectionTitle}>{t("detail.examples")}</Text>
                 <Text style={styles.infoLine}>{t("detail.examplesPending")}</Text>
               </View>
-            )}
+            ) : null}
 
             {hasExampleWords ? (
               <View style={styles.infoCard}>
@@ -388,29 +394,12 @@ export default function CharacterDetailScreen() {
             ]}
             onLayout={handleInlineActionLayout}
           >
-            {actionButton}
+            {practiceAction}
           </View>
         </ScrollView>
 
-        {showOnboarding ? (
-          <View
-            pointerEvents="none"
-            style={[
-              styles.onboardingHint,
-              { bottom: detailOnboardingLayout.hintBottom ?? 84 },
-            ]}
-          >
-            <View style={styles.onboardingBubble}>
-              <Text style={styles.onboardingHintText}>
-                {t("detail.onboardingAction")}
-              </Text>
-            </View>
-            <View style={styles.onboardingTail} />
-          </View>
-        ) : null}
-
         {!inlineActionFullyVisible ? (
-          <View style={styles.floatingAction}>{actionButton}</View>
+          <View style={styles.floatingAction}>{practiceAction}</View>
         ) : null}
       </View>
     </Screen>
@@ -547,6 +536,7 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
     scrollContent: {
       paddingHorizontal: 20,
       paddingTop: 16,
+      paddingBottom: 32,
     },
     dimmedSection: {
       opacity: 0.32,
@@ -561,6 +551,20 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
     literal: {
       ...textStyles.heroGlyph,
       marginBottom: spacing[2],
+    },
+    kanaHeroCard: {
+      paddingVertical: 20,
+    },
+    kanaSpeakButton: {
+      position: "absolute",
+      right: 12,
+      bottom: 12,
+      width: 44,
+      height: 44,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 22,
+      backgroundColor: "rgba(255, 255, 255, 0.12)",
     },
     meaning: {
       fontSize: 20,
@@ -601,14 +605,7 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
       justifyContent: "space-between",
       gap: spacing[3],
     },
-    speakButton: {
-      width: 34,
-      height: 34,
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: 999,
-      flexShrink: 0,
-    },
+    speakButton: { width: 34, height: 34, alignItems: "center", justifyContent: "center", borderRadius: 999, flexShrink: 0 },
     infoLine: textStyles.bodySm,
     exampleRow: {
       gap: 2,
@@ -710,12 +707,11 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
       paddingBottom: 20,
     },
     onboardingHint: {
-      position: "absolute",
-      right: 12,
+      marginTop: 3,
+      marginRight: 14,
+      alignSelf: "flex-end",
       alignItems: "flex-end",
       maxWidth: 260,
-      zIndex: 40,
-      elevation: 40,
     },
     onboardingBubble: {
       backgroundColor: colors.accentWarm,
@@ -730,11 +726,11 @@ function createStyles({ buttonStyles, colors, surfaceStyles, textStyles }: any) 
       height: 0,
       borderLeftWidth: 8,
       borderRightWidth: 8,
-      borderTopWidth: 12,
+      borderBottomWidth: 12,
       borderLeftColor: "transparent",
       borderRightColor: "transparent",
-      borderTopColor: colors.accentWarm,
-      marginTop: -2,
+      borderBottomColor: colors.accentWarm,
+      marginBottom: -2,
     },
     onboardingHintText: {
       ...textStyles.meta,
