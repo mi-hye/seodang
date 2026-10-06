@@ -3,7 +3,7 @@
     "name": "Seodang",
     "slug": "seodang",
     "scheme": "seodang",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "locales": {
       "ko": "./locales/ko.json",
       "ja": "./locales/ja.json"
