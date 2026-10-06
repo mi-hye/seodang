@@ -11,3 +11,8 @@ export function getPetAppearance(level: number) {
   const safeLevel = Number.isFinite(level) ? Math.max(1, Math.floor(level)) : 1;
   return [...PET_APPEARANCES].reverse().find((appearance) => safeLevel >= appearance.level)!;
 }
+
+export function getNextPetAppearance(level: number) {
+  const current = getPetAppearance(level);
+  return PET_APPEARANCES.find((appearance) => appearance.stage > current.stage);
+}

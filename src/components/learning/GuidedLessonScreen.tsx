@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Screen } from "../common/Screen";
@@ -8,7 +8,7 @@ import { useAppState } from "../../state/AppStateProvider";
 import { useI18n } from "../../i18n/useI18n";
 import { useTheme } from "../../design/theme";
 import { useReviewClock } from "../../domain/review/useReviewClock";
-import { getTodayLesson } from "../../domain/learning/dailyLessonProgress";
+import { getTodayLesson, needsStarterWritingLesson } from "../../domain/learning/dailyLessonProgress";
 import { buildGuidedLesson } from "../../domain/learning/buildGuidedLesson";
 import { getTodayPetRewards } from "../../domain/pet/learningPet";
 import { useKanjiCharacterQuery } from "../../queries/kanjiQueries";
@@ -17,21 +17,37 @@ import type { LessonQuiz } from "../../types/app-state";
 
 export default function GuidedLessonScreen() {
   const router = useRouter();
+  const { startWriting } = useLocalSearchParams<{ startWriting?: string }>();
+  const writingStarted = useRef(false);
+  const [expandedHintKey, setExpandedHintKey] = useState<string | null>(null);
+  const [solvedQuizKey, setSolvedQuizKey] = useState<string | null>(null);
   const now = useReviewClock();
   const { t, locale } = useI18n();
   const { colors, textStyles, surfaceStyles, buttonStyles } = useTheme();
   const { dailyLesson, learningStage, guidedProgress, hydrated, startDailyLesson, completeQuiz,
-    learningPet, progressByCharacter, setOnboardingStep } = useAppState();
-  const lesson = getTodayLesson(dailyLesson, now);
+    learningPet, progressByCharacter, dismissedReviewCharacterIds, setOnboardingStep } = useAppState();
+  const savedLesson = getTodayLesson(dailyLesson, now);
+  const lesson = needsStarterWritingLesson(savedLesson) ? undefined : savedLesson;
   useEffect(() => {
-    if (hydrated && learningStage && !lesson) startDailyLesson(buildGuidedLesson(learningStage, guidedProgress, new Date()));
-  }, [hydrated, learningStage, lesson, guidedProgress, startDailyLesson]);
+    if (hydrated && learningStage && !lesson) startDailyLesson(buildGuidedLesson(learningStage, guidedProgress, new Date(), progressByCharacter, dismissedReviewCharacterIds));
+  }, [hydrated, learningStage, lesson, guidedProgress, progressByCharacter, dismissedReviewCharacterIds, startDailyLesson]);
   const completed = lesson?.items.filter((entry) => entry.completedAt).length ?? 0;
   const item = lesson?.items.find((entry) => !entry.completedAt);
+  const quizKey = lesson?.id + ":" + completed;
+  const showHint = expandedHintKey === quizKey;
   const { data: character, isLoading, refetch } = useKanjiCharacterQuery(item && !item.quiz ? item.characterId : undefined, "guided-writing");
+  useEffect(() => {
+    if (startWriting !== "1" || writingStarted.current || lesson?.stage !== "starter" || !item || item.quiz || !character) return;
+    writingStarted.current = true;
+    router.setParams({ startWriting: "0" });
+    if (Object.keys(progressByCharacter).length === 0) setOnboardingStep("practice_guide");
+    router.push({ pathname: "/practice/[characterId]", params: { characterId: item.characterId, categoryKey: item.categoryKey, lessonId: lesson.id } });
+  }, [startWriting, lesson, item, character, progressByCharacter, setOnboardingStep, router]);
   const styles = StyleSheet.create({
     content: { width: "100%", maxWidth: 620, alignSelf: "center", gap: 20 },
     row: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12 },
+    progressActions: { flexDirection: "row", alignItems: "center", gap: 4 },
+    hintButton: { width: 44, height: 44, alignItems: "center", justifyContent: "center" },
     track: { height: 8, backgroundColor: colors.bgMuted, borderRadius: 4, overflow: "hidden" },
     card: { ...surfaceStyles.card, padding: 24, gap: 16, alignItems: "center" },
     primary: { ...buttonStyles.primary, minHeight: 52, justifyContent: "center" },
@@ -42,10 +58,17 @@ export default function GuidedLessonScreen() {
   return <Screen><View style={styles.content}>
     <View style={styles.row}>
       <Text style={[textStyles.meta, { flex: 1 }]}>{t("stage." + learningStage + ".name")}</Text>
-      <Text style={textStyles.caption}>{t("course.progress", { count: completed, total: lesson?.items.length ?? 4 })}</Text>
+      <View style={styles.progressActions}>
+        <Text style={textStyles.caption}>{t("course.progress", { count: completed, total: lesson?.items.length ?? 3 })}</Text>
+        {item?.quiz && solvedQuizKey !== quizKey ? <Pressable accessibilityRole="button" accessibilityLabel={t("course.hint")}
+          accessibilityState={{ expanded: showHint }} style={styles.hintButton}
+          onPress={() => setExpandedHintKey(showHint ? null : quizKey)}>
+          <Ionicons name={showHint ? "bulb" : "bulb-outline"} size={24} color={showHint ? colors.accentWarm : colors.inkMuted} accessible={false} />
+        </Pressable> : null}
+      </View>
     </View>
     <View style={styles.track} accessibilityRole="progressbar" accessibilityLabel={t("lesson.title")}
-      accessibilityValue={{ min: 0, max: lesson?.items.length ?? 4, now: completed }}>
+      accessibilityValue={{ min: 0, max: lesson?.items.length ?? 3, now: completed }}>
       <View style={{ height: "100%", width: (lesson ? completed / lesson.items.length * 100 : 0) + "%" as `${number}%`, backgroundColor: colors.success }} />
     </View>
     {!lesson ? <ActivityIndicator color={colors.inkStrong} /> : !item ? <>
@@ -57,7 +80,7 @@ export default function GuidedLessonScreen() {
       </View>
       <Pressable accessibilityRole="button" style={styles.primary} onPress={() => router.dismissTo("/")}><Text style={styles.primaryText}>{t("lesson.visitDog")}</Text></Pressable>
       <Pressable accessibilityRole="button" style={styles.link} onPress={() => router.dismissTo("/learn")}><Text style={textStyles.meta}>{t("lesson.free")}</Text></Pressable>
-    </> : item.quiz ? <QuizCard key={lesson.id + ":" + completed} quiz={item.quiz} onComplete={(answer) => completeQuiz({ lessonId: lesson.id, questionId: item.quiz!.id, answer })} /> : isLoading ? <ActivityIndicator color={colors.inkStrong} /> : character ? <>
+    </> : item.quiz ? <QuizCard key={quizKey} quiz={item.quiz} showHint={showHint} onSolved={() => setSolvedQuizKey(quizKey)} onComplete={(answer) => completeQuiz({ lessonId: lesson.id, questionId: item.quiz!.id, answer })} /> : isLoading ? <ActivityIndicator color={colors.inkStrong} /> : character ? <>
       <View style={styles.card}>
         <Text style={textStyles.meta}>{t("course.writeHint")}</Text>
         <KanaText style={[textStyles.displaySm, { fontSize: 80, lineHeight: 104 }]}>{character.literal}</KanaText>
@@ -71,24 +94,21 @@ export default function GuidedLessonScreen() {
       <Text style={textStyles.bodySm}>{t("lesson.error")}</Text>
       <Pressable accessibilityRole="button" style={styles.link} onPress={() => { void refetch(); }}><Text style={textStyles.meta}>{t("lesson.retry")}</Text></Pressable>
     </View>}
-    {item ? <>
-      <Text style={[textStyles.caption, styles.center]}>{t("course.rewardHint")}</Text>
-      <Pressable accessibilityRole="button" style={styles.link} onPress={() => router.dismissTo("/learn")}><Text style={textStyles.caption}>{t("lesson.pause")}</Text></Pressable>
-    </> : null}
   </View></Screen>;
 }
 
-function QuizCard({ quiz, onComplete }: { quiz: LessonQuiz; onComplete: (answer: string[]) => void }) {
+function QuizCard({ quiz, showHint, onSolved, onComplete }: { quiz: LessonQuiz; showHint: boolean; onSolved: () => void; onComplete: (answer: string[]) => void }) {
   const { t, locale } = useI18n();
   const { colors, textStyles, surfaceStyles, buttonStyles } = useTheme();
   const [answer, setAnswer] = useState<string[]>([]);
   const [correct, setCorrect] = useState<boolean | null>(null);
-  const [showHint, setShowHint] = useState(false);
   const isPassage = quiz.cue.length > 55;
   const submitted = useRef(false);
   const check = (values: string[]) => {
     setAnswer(values);
-    setCorrect(values.length === quiz.answer.length && values.every((value, index) => value === quiz.answer[index]));
+    const passed = values.length === quiz.answer.length && values.every((value, index) => value === quiz.answer[index]);
+    setCorrect(passed);
+    if (passed) onSolved();
   };
   const styles = StyleSheet.create({
     card: { ...surfaceStyles.card, padding: 22, gap: 18 },
@@ -109,10 +129,10 @@ function QuizCard({ quiz, onComplete }: { quiz: LessonQuiz; onComplete: (answer:
     feedback: { padding: 16, borderRadius: 18, backgroundColor: colors.bgMuted, gap: 8 },
     primary: { ...buttonStyles.primary, minHeight: 52, justifyContent: "center" },
     primaryText: { ...textStyles.buttonLabel, color: colors.inkOnDark, textAlign: "center" },
-    link: { minHeight: 44, alignItems: "center", justifyContent: "center" },
   });
   return <View style={{ gap: 16 }}>
     <View style={styles.card}>
+      {correct !== true && showHint ? <Text style={textStyles.bodySm}>{quiz.hint[locale]}</Text> : null}
       <Text style={styles.prompt}>{quiz.prompt[locale]}</Text>
       <KanaText style={styles.cue}>{locale === "ja" && quiz.id.startsWith("kana-") ? (quiz.cue.split(" · ").pop() ?? quiz.cue) : quiz.cue}</KanaText>
       {quiz.mode === "order" ? <View style={[styles.row, { minHeight: 60 }]} accessibilityLabel={t("course.yourSentence")}>
@@ -139,7 +159,6 @@ function QuizCard({ quiz, onComplete }: { quiz: LessonQuiz; onComplete: (answer:
     </View>
     {correct !== null ? <View style={styles.feedback} accessibilityLiveRegion="polite">
       <Text style={[textStyles.titleSm, { color: correct ? colors.success : colors.inkStrong }]}>{t(correct ? "course.correct" : "course.tryAgain")}</Text>
-      {!correct ? <Text style={textStyles.bodySm}>{quiz.hint[locale]}</Text> : null}
     </View> : null}
     {correct === true ? <Pressable accessibilityRole="button" style={styles.primary} onPress={() => {
       if (submitted.current) return;
@@ -150,8 +169,6 @@ function QuizCard({ quiz, onComplete }: { quiz: LessonQuiz; onComplete: (answer:
         disabled={answer.length !== quiz.answer.length} style={[styles.primary, answer.length !== quiz.answer.length && { opacity: 0.45 }]} onPress={() => check(answer)}>
         <Text style={styles.primaryText}>{t("course.check")}</Text>
       </Pressable> : null}
-      <Pressable accessibilityRole="button" accessibilityState={{ expanded: showHint }} style={styles.link} onPress={() => setShowHint(!showHint)}><Text style={textStyles.caption}>{t("course.hint")}</Text></Pressable>
-      {showHint && correct !== false ? <Text style={textStyles.bodySm}>{quiz.hint[locale]}</Text> : null}
     </>}
   </View>;
 }

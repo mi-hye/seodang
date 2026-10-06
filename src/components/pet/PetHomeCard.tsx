@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Animated, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { useTheme } from "../../design/theme";
 import { useAppState } from "../../state/AppStateProvider";
 import { useI18n } from "../../i18n/useI18n";
@@ -10,6 +11,7 @@ import { usePetMotion } from "./usePetMotion";
 import { getPetRoomLayout } from "../../domain/pet/petRoomLayout";
 
 export function PetHomeCard({ now, disabled = false }: { now: Date; disabled?: boolean }) {
+  const router = useRouter();
   const { learningPet: pet, feedPet, hydrated } = useAppState();
   const { t } = useI18n();
   const { colors, textStyles, themeMode } = useTheme();
@@ -88,13 +90,18 @@ export function PetHomeCard({ now, disabled = false }: { now: Date; disabled?: b
     track: { height: 9, borderRadius: 5, backgroundColor: colors.bgMuted, overflow: "hidden", marginTop: 9 },
     feed: { position: "absolute", right: "5%", bottom: roomHeight * 0.03, width: 52, height: 52, alignItems: "center", justifyContent: "center", borderRadius: 12 },
     dots: { flexDirection: "row", gap: 4 },
+    help: { width: 44, height: 44, alignItems: "center", justifyContent: "center", borderRadius: 22 },
   });
   return (
     <View style={styles.card}>
       <View style={styles.header}>
-        <View style={{ flex: 1, gap: 3 }}>
-          <Text style={textStyles.titleMd}>{t("pet.name")}</Text>
-          <Text style={textStyles.caption}>{t("pet.proverb")}</Text>
+        <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+          <Text style={[textStyles.titleMd, { flexShrink: 1 }]}>{t("pet.name")}</Text>
+          <Pressable accessibilityRole="button" accessibilityLabel={t("pet.guide.open")}
+            onPress={() => router.push("/pet-growth")} disabled={disabled}
+            style={({ pressed }) => [styles.help, { backgroundColor: pressed ? colors.bgMuted : "transparent" }]}>
+            <Ionicons name="help-circle-outline" size={20} color={colors.inkMuted} />
+          </Pressable>
         </View>
         <View style={styles.badge}><Ionicons name="restaurant-outline" size={16} color={colors.accentWarmMuted} /><Text style={textStyles.meta}>{hydrated ? pet.food : "—"}</Text></View>
       </View>
@@ -121,7 +128,6 @@ export function PetHomeCard({ now, disabled = false }: { now: Date; disabled?: b
         </View>
       </View>
       <View style={styles.footer}>
-        <Text style={[textStyles.caption, { textAlign: "center" }]}>{t("pet.touchHint")}</Text>
         <View style={styles.row}>
           <View style={{ flex: 1 }}>
             <Text style={textStyles.meta}>{t("pet.level", { level: growth.level })} · {growth.progress}/{FEEDS_PER_LEVEL}</Text>
@@ -129,8 +135,7 @@ export function PetHomeCard({ now, disabled = false }: { now: Date; disabled?: b
           </View>
         </View>
         <View style={styles.row}>
-          <Text style={[textStyles.caption, { flex: 1 }]} accessibilityLiveRegion="polite">{t(reaction === "feed" ? "pet.growthThanksShort" : earned === DAILY_FOOD_LIMIT ? "pet.todayDoneShort" : "pet.todayTaskShort")}</Text>
-          <View style={styles.dots} accessible accessibilityLabel={t("pet.todayProgress", { count: earned, total: DAILY_FOOD_LIMIT })}>
+          <View style={styles.dots} accessible accessibilityLiveRegion="polite" accessibilityLabel={t("pet.todayProgress", { count: earned, total: DAILY_FOOD_LIMIT })}>
             {Array.from({ length: DAILY_FOOD_LIMIT }, (_, index) => <Ionicons key={index} name={index < earned ? "checkmark-circle" : "ellipse-outline"} size={17} color={index < earned ? colors.success : colors.inkFaint} />)}
           </View>
         </View>

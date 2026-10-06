@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import { buildGuidedLesson } from "./buildGuidedLesson.ts";
 import { answerLessonQuiz } from "./answerLessonQuiz.ts";
 import { LEARNING_STAGES, isLearningStage, selectLearningStage } from "./learningStage.ts";
-import { getTodayLesson, completeLessonItem } from "./dailyLessonProgress.ts";
+import { getTodayLesson, completeLessonItem, needsStarterWritingLesson, canStartDailyLesson } from "./dailyLessonProgress.ts";
+import { getKanaCharacterId } from "../../data/kanaCatalog.ts";
 import { KANA_QUESTIONS, WORD_QUESTIONS, SENTENCE_QUESTIONS, INTERMEDIATE_QUESTIONS, ADVANCED_QUESTIONS } from "./guidedContent.ts";
 import { createLearningPet, rewardLearningPet, getTodayPetRewards } from "../pet/learningPet.ts";
 
@@ -21,14 +22,16 @@ const answer = (state, patch = {}) => {
 test("every offered stage has a distinct real first lesson", () => {
   assert.equal(LEARNING_STAGES.length, 5);
   const lessons = LEARNING_STAGES.map((stage) => buildGuidedLesson(stage, {}, now));
-  assert.equal(lessons[0].items.filter((item) => item.quiz).length, 3);
+  assert.equal(lessons[0].items.filter((item) => item.quiz).length, 0);
+  assert.deepEqual(lessons[0].items.map((item) => item.characterId), [..."あいう"].map(getKanaCharacterId));
+  assert.ok(lessons[0].items.every((item) => item.categoryKey === "kana_hiragana"));
   assert.equal(lessons[0].items.at(-1).quiz, undefined);
   assert.ok(lessons[1].items.every((item) => item.quiz?.id.startsWith("word:")));
   assert.ok(lessons[2].items.some((item) => item.quiz?.mode === "order"));
   assert.ok(lessons[3].items.every((item) => item.quiz?.id.startsWith("intermediate:")));
   assert.ok(lessons[4].items.every((item) => item.quiz?.id.startsWith("advanced:")));
   assert.equal(new Set(lessons.map((lesson) => lesson.items.map((item) => item.quiz?.id).join(","))).size, 5);
-  assert.deepEqual(lessons.map((lesson) => lesson.items.length), [4, 3, 3, 3, 3]);
+  assert.deepEqual(lessons.map((lesson) => lesson.items.length), [3, 3, 3, 3, 3]);
 });
 
 test("question content has valid answers, unique tokens and both locale hints", () => {
@@ -87,7 +90,7 @@ test("existing saved four-stage plans retain their original questions until comp
 });
 
 test("correct quizzes progress and earn food without fabricating writing history", () => {
-  const original = stateFor();
+  const original = stateFor("kana");
   const input = answer(original);
   const next = answerLessonQuiz(original, input, now);
   assert.equal(next.dailyLesson.items[0].completedAt, now.toISOString());
@@ -100,7 +103,7 @@ test("correct quizzes progress and earn food without fabricating writing history
 });
 
 test("wrong, stale, out-of-order and forged answers never award or advance", () => {
-  const state = stateFor();
+  const state = stateFor("kana");
   for (const patch of [{ answer: [] }, { answer: ["wrong"] }, { lessonId: "old" }, { questionId: "wrong" },
     { questionId: state.dailyLesson.items[1].quiz.id, answer: state.dailyLesson.items[1].quiz.answer }]) {
     assert.equal(answerLessonQuiz(state, answer(state, patch), now), state);
@@ -164,11 +167,62 @@ test("saved quizzes resume; future lessons prioritize unseen content and one due
 });
 
 test("writing finishes the beginner lesson but repeating the same unit earns no extra food", () => {
-  let state = stateFor();
-  for (let i = 0; i < 3; i++) state = answerLessonQuiz(state, answer(state), now);
-  const write = state.dailyLesson.items.at(-1);
-  const input = { lessonId: state.dailyLesson.id, characterId: write.characterId, passed: true, practicedAt: now.toISOString() };
-  const complete = completeLessonItem(state.dailyLesson, input, now);
-  assert.ok(complete.items.every((item) => item.completedAt));
-  assert.equal(rewardLearningPet(state.learningPet, { ...input, attemptId: "writing" }, now), state.learningPet);
+  const state = stateFor();
+  let lesson = state.dailyLesson;
+  let pet = state.learningPet;
+  for (const item of lesson.items) {
+    const input = { lessonId: lesson.id, characterId: item.characterId, passed: true, practicedAt: now.toISOString(), attemptId: item.characterId };
+    assert.equal(completeLessonItem(lesson, { ...input, passed: false }, now), lesson);
+    lesson = completeLessonItem(lesson, input, now);
+    pet = rewardLearningPet(pet, input, now);
+    assert.equal(rewardLearningPet(pet, { ...input, attemptId: "repeat-" + item.characterId }, now), pet);
+  }
+  assert.ok(lesson.items.every((item) => item.completedAt));
+  assert.equal(getTodayPetRewards(pet, now), 3);
+});
+
+const writingRecord = (literal, patch = {}) => ({
+  characterId: getKanaCharacterId(literal), attempts: 1, successes: 1, failures: 0,
+  averageScore: 90, lastScore: 90, lastPracticedAt: new Date(2026, 9, 1).toISOString(),
+  nextReviewAt: new Date(2026, 9, 4).toISOString(), ...patch,
+});
+
+test("beginner writing advances by actual writing history, not recognition quiz history", () => {
+  const records = Object.fromEntries([..."あいう"].map((literal) => [getKanaCharacterId(literal), writingRecord(literal)]));
+  const next = buildGuidedLesson("starter", {}, now, records);
+  assert.deepEqual(next.items.map((item) => item.characterId), [..."えおか"].map(getKanaCharacterId));
+  const quizOnly = { [getKanaCharacterId("あ")]: { completions: 4, lastCompletedAt: now.toISOString() } };
+  assert.equal(buildGuidedLesson("starter", quizOnly, now).items[0].characterId, getKanaCharacterId("あ"));
+});
+
+test("beginner review uses only hiragana and respects due dates and dismissals", () => {
+  const records = Object.fromEntries([..."あいうア日"].map((literal) => [getKanaCharacterId(literal), writingRecord(literal, {
+    nextReviewAt: literal === "い" ? new Date(2026, 9, 4).toISOString() : now.toISOString(),
+  })]));
+  const next = buildGuidedLesson("starter", {}, now, records, { [getKanaCharacterId("う")]: { dismissedAt: now.toISOString() } });
+  assert.deepEqual(next.items.map((item) => [item.characterId, item.kind]), [
+    [getKanaCharacterId("あ"), "review"], [getKanaCharacterId("え"), "new"], [getKanaCharacterId("お"), "new"],
+  ]);
+});
+
+test("unfinished legacy beginner quizzes are replaced once; completed and other stage lessons stay intact", () => {
+  const replacement = buildGuidedLesson("starter", {}, now);
+  const legacy = { ...replacement, id: "old-starter", items: [...KANA_QUESTIONS.slice(0, 3), { characterId: getKanaCharacterId("あ"), categoryKey: "kana_hiragana", kind: "new" }] };
+  for (const completedCount of [0, 1, 3]) {
+    const saved = { ...legacy, items: legacy.items.map((item, index) => index < completedCount ? { ...item, completedAt: now.toISOString() } : item) };
+    assert.equal(needsStarterWritingLesson(saved), true);
+    assert.equal(canStartDailyLesson(saved, replacement, "starter", now), true);
+    assert.equal(canStartDailyLesson(saved, buildGuidedLesson("kana", {}, now), "starter", now), false);
+    assert.equal(canStartDailyLesson(saved, legacy, "starter", now), false);
+    assert.equal(saved.items.filter((item) => item.completedAt).length, completedCount);
+  }
+  const finished = { ...legacy, items: legacy.items.map((item) => ({ ...item, completedAt: now.toISOString() })) };
+  assert.equal(needsStarterWritingLesson(finished), false);
+  assert.equal(canStartDailyLesson(finished, replacement, "starter", now), false);
+  assert.equal(canStartDailyLesson(replacement, replacement, "starter", now), false);
+  const words = buildGuidedLesson("words", {}, now);
+  assert.equal(needsStarterWritingLesson(words), false);
+  assert.equal(canStartDailyLesson(words, words, "words", now), false);
+  assert.equal(canStartDailyLesson(undefined, replacement, "starter", now), true);
+  assert.equal(canStartDailyLesson(undefined, replacement, "starter", new Date(2026, 9, 3)), false);
 });

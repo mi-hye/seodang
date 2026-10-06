@@ -6,6 +6,14 @@ export function isLearningStage(value: unknown): value is LearningStage {
   return LEARNING_STAGES.includes(value as LearningStage);
 }
 
+export function getLearningStartStep({ fromSettings = false, learningStage, learningWelcomeSeen = false }: {
+  fromSettings?: boolean;
+  learningStage?: LearningStage;
+  learningWelcomeSeen?: boolean;
+}): "welcome" | "difficulty" {
+  return fromSettings || learningStage || learningWelcomeSeen ? "difficulty" : "welcome";
+}
+
 export function selectLearningStage(state: PersistedAppState, stage: LearningStage): PersistedAppState {
   if (!isLearningStage(stage)) return state;
   return {

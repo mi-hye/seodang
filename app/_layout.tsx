@@ -92,6 +92,7 @@ function RootNavigator() {
         <View style={{ flex: 1 }}>
           <Stack screenOptions={screenOptions}>
             <Stack.Screen name="index" options={{ title: t("common.appName"), headerShown: false }} />
+            <Stack.Screen name="pet-growth" options={{ title: t("pet.guide.title"), presentation: "modal", headerShown: false }} />
             <Stack.Screen name="learn" options={{ title: t("tabs.learn"), headerShown: false }} />
             <Stack.Screen name="today-lesson" options={{ title: t("lesson.title") }} />
             <Stack.Screen name="learning-start" options={{ headerShown: false }} />
