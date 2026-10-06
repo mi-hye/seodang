@@ -42,6 +42,19 @@ export default function SettingsScreen() {
   return (
     <Screen>
       <View style={styles.section}>
+        <Pressable accessibilityRole="button" accessibilityLabel={t("stage.change")}
+          style={[styles.infoCard, styles.shadow]}
+          onPress={() => router.push({ pathname: "/learning-start", params: { from: "settings" } })}>
+          <View style={styles.infoCardHeader}>
+            <View style={styles.infoCardTitleRow}>
+              <Ionicons name="options-outline" size={18} color={colors.accentWarmMuted} />
+              <Text style={styles.infoCardTitle}>{t("stage.change")}</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={colors.inkMuted} />
+          </View>
+        </Pressable>
+      </View>
+      <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>{t("settings.language")}</Text>
         </View>

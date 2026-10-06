@@ -1,8 +1,22 @@
-import type { DailyLesson } from "../../types/app-state";
+import type { DailyLesson, LearningStage } from "../../types/app-state";
 import { localDateKey } from "../review/writingActivity.ts";
 
 export function getTodayLesson(lesson: DailyLesson | undefined, now: Date) {
   return lesson?.day === localDateKey(now) ? lesson : undefined;
+}
+
+// Only unfinished legacy beginner quizzes need replacing. Finished lessons and
+// all earned writing/quiz history and pet rewards remain untouched.
+export function needsStarterWritingLesson(lesson: DailyLesson | undefined) {
+  return lesson?.stage === "starter" && lesson.items.some((item) => item.quiz)
+    && lesson.items.some((item) => !item.completedAt);
+}
+
+export function canStartDailyLesson(current: DailyLesson | undefined, next: DailyLesson, stage: LearningStage | undefined, now: Date) {
+  if (!next.items.length || !getTodayLesson(next, now) || (next.stage && next.stage !== stage)) return false;
+  const today = getTodayLesson(current, now);
+  return !today || Boolean(needsStarterWritingLesson(today) && next.stage === "starter"
+    && next.items.every((item) => !item.quiz && item.categoryKey === "kana_hiragana"));
 }
 
 export function completeLessonItem(lesson: DailyLesson | undefined, input: {

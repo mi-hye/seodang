@@ -29,7 +29,7 @@ import { recordWritingActivity } from "../domain/review/writingActivity";
 import { calculateNextReviewAt } from "../domain/review/reviewSchedule";
 import { FORCE_ONBOARDING_FLOW } from "./debugOnboarding";
 import { resetOnboardingForDevelopment } from "./onboardingState";
-import { completeLessonItem, getTodayLesson } from "../domain/learning/dailyLessonProgress";
+import { canStartDailyLesson, completeLessonItem } from "../domain/learning/dailyLessonProgress";
 import { isLearningStage, selectLearningStage } from "../domain/learning/learningStage";
 import { answerLessonQuiz } from "../domain/learning/answerLessonQuiz";
 
@@ -231,8 +231,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       if (!hydrated || lesson.items.length === 0) return;
       setState((current) => {
         const now = new Date();
-        if (getTodayLesson(current.dailyLesson, now) || !getTodayLesson(lesson, now)
-          || (lesson.stage && lesson.stage !== current.learningStage)) return current;
+        if (!canStartDailyLesson(current.dailyLesson, lesson, current.learningStage, now)) return current;
         return { ...current, dailyLesson: lesson };
       });
     };

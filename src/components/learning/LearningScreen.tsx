@@ -227,12 +227,6 @@ export default function LearningScreen() {
           </View>
         </Pressable>
 
-        <Pressable accessibilityRole="button" onPress={() => router.push("/learning-start")}
-          style={{ minHeight: 48, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-          <Text style={[textStyles.meta, { flex: 1 }]}>{t("stage." + learningStage + ".name")}</Text>
-          <Text style={textStyles.caption}>{t("stage.change")}</Text>
-        </Pressable>
-
         {showOnboarding ? (
           <View pointerEvents="none" style={styles.onboardingHint}>
             <View style={styles.onboardingTail} />
