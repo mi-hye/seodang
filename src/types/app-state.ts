@@ -74,6 +74,7 @@ export type LessonQuiz = {
   hint: { ko: string; ja: string };
 };
 export type GuidedProgress = Record<string, { completions: number; lastCompletedAt: string }>;
+export type GuidedReviewQuizzes = Record<string, { stage: "kana" | "words"; quiz: LessonQuiz }>;
 
 export type DailyLessonItem = {
   characterId: string;
@@ -89,6 +90,8 @@ export type DailyLesson = {
   startedAt: string;
   items: DailyLessonItem[];
   stage?: LearningStage;
+  source?: "server" | "offline";
+  contentDate?: string;
 };
 
 export type PersistedAppState = {
@@ -111,6 +114,7 @@ export type PersistedAppState = {
   learningStage?: LearningStage;
   learningWelcomeSeen?: boolean;
   guidedProgress?: GuidedProgress;
+  guidedReviewQuizzes?: GuidedReviewQuizzes;
   favoriteCharacterIds: Record<string, true>;
   isPro: boolean;
   lastCompletedPractice?: LastCompletedPractice;

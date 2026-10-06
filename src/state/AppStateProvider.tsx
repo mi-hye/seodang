@@ -23,6 +23,7 @@ import {
   DailyLesson,
   LearningStage,
   GuidedProgress,
+  GuidedReviewQuizzes,
 } from "../types/app-state";
 import { migrateLearningPet, feedLearningPet, rewardLearningPet } from "../domain/pet/learningPet";
 import { recordWritingActivity } from "../domain/review/writingActivity";
@@ -58,6 +59,7 @@ type AppStateContextValue = {
   learningStage?: LearningStage;
   learningWelcomeSeen: boolean;
   guidedProgress: GuidedProgress;
+  guidedReviewQuizzes: GuidedReviewQuizzes;
   markLearningWelcomeSeen: () => void;
   chooseLearningStage: (stage: LearningStage) => void;
   completeQuiz: (input: { lessonId: string; questionId: string; answer: string[] }) => void;
@@ -508,6 +510,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       learningStage: state.learningStage,
       learningWelcomeSeen: state.learningWelcomeSeen ?? false,
       guidedProgress: state.guidedProgress ?? {},
+      guidedReviewQuizzes: state.guidedReviewQuizzes ?? {},
       markLearningWelcomeSeen,
       chooseLearningStage,
       completeQuiz,

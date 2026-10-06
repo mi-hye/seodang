@@ -14,6 +14,8 @@ import { getTodayPetRewards } from "../../domain/pet/learningPet";
 import { useKanjiCharacterQuery } from "../../queries/kanjiQueries";
 import { getCharacterMeaning } from "../../data/characters";
 import type { LessonQuiz } from "../../types/app-state";
+import { buildServerLesson, seoulDateKey } from "../../domain/learning/serverLesson";
+import { useDailyLessonQuery } from "../../queries/dailyLessonQueries";
 
 export default function GuidedLessonScreen() {
   const router = useRouter();
@@ -24,13 +26,21 @@ export default function GuidedLessonScreen() {
   const now = useReviewClock();
   const { t, locale } = useI18n();
   const { colors, textStyles, surfaceStyles, buttonStyles } = useTheme();
-  const { dailyLesson, learningStage, guidedProgress, hydrated, startDailyLesson, completeQuiz,
+  const { dailyLesson, learningStage, guidedProgress, guidedReviewQuizzes, hydrated, startDailyLesson, completeQuiz,
     learningPet, progressByCharacter, dismissedReviewCharacterIds, setOnboardingStep } = useAppState();
   const savedLesson = getTodayLesson(dailyLesson, now);
   const lesson = needsStarterWritingLesson(savedLesson) ? undefined : savedLesson;
+  const contentDate = seoulDateKey(now);
+  const remote = useDailyLessonQuery(contentDate, learningStage, hydrated && !lesson);
   useEffect(() => {
-    if (hydrated && learningStage && !lesson) startDailyLesson(buildGuidedLesson(learningStage, guidedProgress, new Date(), progressByCharacter, dismissedReviewCharacterIds));
-  }, [hydrated, learningStage, lesson, guidedProgress, progressByCharacter, dismissedReviewCharacterIds, startDailyLesson]);
+    if (!hydrated || !learningStage || lesson) return;
+    const startedAt = new Date();
+    if (learningStage === "starter") {
+      startDailyLesson(buildGuidedLesson(learningStage, guidedProgress, startedAt, progressByCharacter, dismissedReviewCharacterIds));
+    } else if (remote.data && remote.data.stage === learningStage && remote.data.lesson_date === seoulDateKey(startedAt)) {
+      startDailyLesson(buildServerLesson(remote.data, guidedProgress, guidedReviewQuizzes, startedAt));
+    }
+  }, [hydrated, learningStage, lesson, remote.data, guidedProgress, guidedReviewQuizzes, progressByCharacter, dismissedReviewCharacterIds, startDailyLesson]);
   const completed = lesson?.items.filter((entry) => entry.completedAt).length ?? 0;
   const item = lesson?.items.find((entry) => !entry.completedAt);
   const quizKey = lesson?.id + ":" + completed;
@@ -71,7 +81,16 @@ export default function GuidedLessonScreen() {
       accessibilityValue={{ min: 0, max: lesson?.items.length ?? 3, now: completed }}>
       <View style={{ height: "100%", width: (lesson ? completed / lesson.items.length * 100 : 0) + "%" as `${number}%`, backgroundColor: colors.success }} />
     </View>
-    {!lesson ? <ActivityIndicator color={colors.inkStrong} /> : !item ? <>
+    {!lesson ? learningStage !== "starter" && (remote.isError || (remote.isSuccess && !remote.data)) ? <View style={styles.card}>
+      <Text style={[textStyles.bodySm, styles.center]}>{t(remote.isError ? "course.loadError" : "course.notReady")}</Text>
+      <Pressable accessibilityRole="button" accessibilityState={{ disabled: remote.isFetching }}
+        style={[styles.primary, { alignSelf: "stretch" }]} disabled={remote.isFetching} onPress={() => void remote.refetch()}>
+        <Text style={styles.primaryText}>{t("lesson.retry")}</Text>
+      </Pressable>
+      <Pressable accessibilityRole="button" style={styles.link} onPress={() => {
+        if (learningStage) startDailyLesson({ ...buildGuidedLesson(learningStage, guidedProgress, new Date(), progressByCharacter, dismissedReviewCharacterIds), source: "offline" });
+      }}><Text style={textStyles.meta}>{t("course.offlinePractice")}</Text></Pressable>
+    </View> : <ActivityIndicator accessibilityLabel={t("course.loading")} color={colors.inkStrong} /> : !item ? <>
       <View style={styles.card}>
         <Ionicons name="paw" size={48} color={colors.accentWarm} />
         <Text style={[textStyles.titleMd, styles.center]}>{t("lesson.doneTitle")}</Text>

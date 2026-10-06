@@ -1,6 +1,7 @@
 import type { PersistedAppState } from "../../types/app-state";
 import { getTodayLesson, completeLessonItem } from "./dailyLessonProgress.ts";
 import { migrateLearningPet, rewardLearningPet } from "../pet/learningPet.ts";
+import { rememberReviewQuiz } from "./serverLesson.ts";
 
 export function answerLessonQuiz(state: PersistedAppState, input: {
   lessonId: string; questionId: string; answer: string[];
@@ -14,10 +15,12 @@ export function answerLessonQuiz(state: PersistedAppState, input: {
   const nextLesson = completeLessonItem(lesson, { lessonId: lesson.id, characterId: item.characterId, passed: true, practicedAt }, now);
   if (nextLesson === lesson) return state;
   const previous = state.guidedProgress?.[quiz.id];
+  const guidedProgress = { ...state.guidedProgress, [quiz.id]: { completions: (previous?.completions ?? 0) + 1, lastCompletedAt: practicedAt } };
   return {
     ...state,
     dailyLesson: nextLesson,
-    guidedProgress: { ...state.guidedProgress, [quiz.id]: { completions: (previous?.completions ?? 0) + 1, lastCompletedAt: practicedAt } },
+    guidedProgress,
+    guidedReviewQuizzes: rememberReviewQuiz(state.guidedReviewQuizzes ?? {}, quiz, lesson.stage, guidedProgress),
     learningPet: rewardLearningPet(migrateLearningPet(state.learningPet), {
       characterId: item.characterId, attemptId: `${lesson.id}:${quiz.id}`, passed: true, practicedAt,
     }, now),
