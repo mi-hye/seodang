@@ -38,7 +38,8 @@
     "supabase:upsert:kanji-enrichment": "node scripts/supabase-upsert-kanji-enrichment.mjs",
     "supabase:upsert:metadata": "node scripts/supabase-upsert-kanji-metadata.mjs",
     "daily-reading:backfill": "node scripts/backfill-daily-readings.mjs",
-    "daily-reading:publish": "node scripts/publish-daily-reading.mjs"
+    "daily-reading:publish": "node scripts/publish-daily-reading.mjs",
+    "daily-lesson:publish": "node --experimental-strip-types scripts/publish-daily-lessons.mjs"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.1.1",
