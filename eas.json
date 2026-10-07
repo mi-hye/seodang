@@ -39,6 +39,11 @@
   },
   "submit": {
     "production": {
+      "android": {
+        "applicationId": "com.mihye.seodang",
+        "track": "production",
+        "releaseStatus": "completed"
+      },
       "ios": {
         "ascAppId": "6780309771"
       }
