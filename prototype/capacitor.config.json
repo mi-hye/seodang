@@ -1,0 +1,11 @@
+{
+  "appId": "com.mihye.seodang.prototype",
+  "appName": "서당 체험판",
+  "webDir": "dist",
+  "ios": {
+    "backgroundColor": "#15121c",
+    "contentInset": "never",
+    "preferredContentMode": "mobile",
+    "zoomEnabled": true
+  }
+}

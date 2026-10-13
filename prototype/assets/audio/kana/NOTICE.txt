@@ -1,0 +1,10 @@
+Kana learning audio: VOICEVOX Nemo
+Voice: 女声1 (normal, style 10005)
+Generated with VOICEVOX CORE 0.17.0 and Nemo model n0.vvm 0.16.4.
+Generated audio may be used commercially or noncommercially with attribution,
+subject to the VOICEVOX Nemo terms:
+https://voicevox.hiroshiba.jp/nemo/term/
+Do not remove the VOICEVOX Nemo credit when distributing these audio files.
+The voice model and generation runtime are not included in this app.
+Generation settings, explicit kana input, file hashes and checks: manifest.json.
+Pronunciation inputs and signal integrity checked; native-speaker listening review pending.

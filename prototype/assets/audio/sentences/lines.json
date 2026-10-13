@@ -1,0 +1,18 @@
+[
+  {
+    "id": "level3.intro.ja",
+    "text": "わたしの鞄を探しています。窓のそばにあります。赤い鞄ではありません。"
+  },
+  {
+    "id": "level3.owner.ja",
+    "text": "これは私の鞄です。"
+  },
+  {
+    "id": "level3.location.ja",
+    "text": "鞄は窓のそばにあります。"
+  },
+  {
+    "id": "level3.not-red.ja",
+    "text": "赤い鞄ではありません。"
+  }
+]

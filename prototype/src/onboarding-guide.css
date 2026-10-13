@@ -1,0 +1,33 @@
+/* Loaded only for the final onboarding guide. No animation or video controls. */
+[data-step="3"]>h1{min-height:0;font-size:22px;margin:0 0 12px}
+.dog-guide{display:flex;flex-direction:column;align-items:center;gap:16px;padding-bottom:4px}
+.guide-mascot{display:block;width:210px;height:210px;flex:none}
+.guide-dialogue{position:relative;width:100%;padding:20px;border:1px solid var(--paper-line);border-radius:18px;background:var(--paper);color:var(--ink)}
+.guide-dialogue::before{content:"";position:absolute;top:-9px;left:calc(50% - 8px);width:16px;height:16px;background:var(--paper);border-top:1px solid var(--paper-line);border-left:1px solid var(--paper-line);transform:rotate(45deg)}
+.guide-dialogue h2{position:relative;font-size:20px;line-height:1.45;font-weight:650;margin:0 0 12px;letter-spacing:-.4px;word-break:keep-all;overflow-wrap:break-word}
+.guide-dialogue p{font-size:17px;line-height:1.7;margin:0;word-break:keep-all;overflow-wrap:break-word}
+.guide-dialogue .guide-home-note{margin-top:14px;padding-top:14px;border-top:1px solid var(--paper-line)}
+.guide-count{font-size:16px;line-height:1.4;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-height:740px){.guide-mascot{width:156px;height:156px}.dog-guide{gap:12px}.guide-dialogue{padding:16px}}
+@media(max-height:620px){.guide-mascot{width:116px;height:116px}}
+
+/* The image itself contains six distinct poses; no floating-photo transform. */
+.mascot-sprite{background-size:300% 200%;background-repeat:no-repeat;background-position:0% 0%;animation:mascot-greet 6s steps(1,end) infinite}
+/* Small atlas-column registration offsets keep the feet from shifting during a blink. */
+@keyframes mascot-greet{
+  0%,36%{background-position:0% 0%}
+  38%{background-position:50.98% 0%}
+  40%{background-position:101.95% 0%}
+  42%{background-position:50.98% 0%}
+  44%,58%{background-position:0% 0%}
+  60%{background-position:0% 100%}
+  66%{background-position:50.98% 100%}
+  72%{background-position:101.95% 100%}
+  78%{background-position:50.98% 100%}
+  84%{background-position:101.95% 100%}
+  88%{background-position:0% 100%}
+  94%,100%{background-position:0% 0%}
+}
+.guide-paused .mascot-sprite{animation-play-state:paused}
+.mascot-sprite.mascot-still{animation:none;background-position:0% 0%}
+@media(prefers-reduced-motion:reduce){.mascot-sprite{animation:none;background-position:0% 0%}}

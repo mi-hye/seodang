@@ -1,0 +1,37 @@
+/* Loaded only when the learning map opens. Both courses share the same layout. */
+.map-page{padding-top:8px}
+.map-overview{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 24px}
+.map-overview h1{font-size:calc(20px * var(--text-scale));line-height:1.4}
+.map-overview>span{font-size:16px;color:var(--muted);white-space:nowrap}
+.map-layout{--map-row-height:calc(220px + (var(--text-scale) - 1) * 120px);--map-path-y:56px;position:relative;isolation:isolate}
+.map-grid{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:var(--map-row-height);margin:0;padding:0 4px}
+.map-stop{min-width:0;position:relative;min-height:var(--map-row-height);isolation:isolate}
+.map-choice{position:relative;z-index:1;width:100%;min-height:192px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px 0;background:transparent;text-align:center;color:var(--text);border-radius:16px}
+.map-choice:disabled{opacity:1;color:var(--muted);cursor:default}
+.map-node{position:relative;display:block;width:96px;height:96px;margin-bottom:7px;border-radius:50%;padding:4px;border:2px solid var(--line);background:var(--stage)}
+.map-picture{display:grid;place-items:center;width:100%;height:100%;overflow:hidden;border-radius:50%;background:var(--stage-raised)}
+.map-picture img{width:100%;height:100%;object-fit:cover}
+.map-picture>svg{width:34px;height:34px;color:var(--muted)}
+.map-number{position:absolute;left:-4px;top:-4px;display:grid;place-items:center;min-width:28px;height:28px;border-radius:50%;background:var(--stage-panel);border:2px solid var(--stage);color:var(--text);font-size:16px;font-weight:600}
+.map-badge{position:absolute;right:-3px;bottom:-3px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:3px solid var(--stage);background:var(--stage-panel);color:var(--muted)}
+.map-badge svg{width:17px;height:17px}
+.map-title{font-size:calc(17px * var(--text-scale));line-height:1.4;font-weight:650;word-break:keep-all;overflow-wrap:break-word}
+.map-detail{font-size:16px;line-height:1.4;color:var(--muted)}
+.map-current-label{font-size:16px;line-height:1.4;color:var(--amber-light)}
+.is-current .map-node{border-color:var(--amber)}
+.is-current .map-number{background:var(--amber);color:var(--button-ink)}
+.is-complete .map-node{border-color:var(--jade)}
+.is-complete .map-badge{background:var(--jade);color:var(--button-ink)}
+.is-locked .map-picture img{filter:grayscale(1);opacity:.5}
+/* Each row holds two cases; alternate rows follow the returning road. */
+.map-road{position:absolute;inset:0 4px;list-style:none;z-index:-1;pointer-events:none}
+.map-road-row{display:block;position:relative;height:var(--map-row-height)}
+.map-road-row::before{content:"";position:absolute;left:26px;right:26px;top:var(--map-path-y);border-top:4px solid var(--line)}
+.map-road-row:not(:last-child)::after{content:"";position:absolute;right:0;top:var(--map-path-y);width:28px;height:calc(var(--map-row-height) + 4px);border:4px solid var(--line);border-left:0;border-radius:0 28px 28px 0;box-sizing:border-box}
+.map-road-row:nth-child(even):not(:last-child)::after{left:0;right:auto;border:4px solid var(--line);border-right:0;border-radius:28px 0 0 28px}
+.map-title,.map-detail,.map-current-label{position:relative;background:var(--stage);padding-inline:5px}
+.map-empty{text-align:center;padding:48px 12px}
+.map-empty>span{display:block;margin:0 auto 20px;color:var(--muted)}
+.map-empty svg{width:40px;height:40px}
+.map-empty h1{font-size:21px;line-height:1.5}
+@media(max-width:374px){.map-node{width:84px;height:84px}.map-layout{--map-path-y:50px;--map-row-height:calc(212px + (var(--text-scale) - 1) * 120px)}.map-choice{min-height:180px;width:100%}}

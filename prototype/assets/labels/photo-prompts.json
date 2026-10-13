@@ -1,0 +1,22 @@
+{
+  "method": "built-in image_gen",
+  "description": "AI-generated photorealistic vocabulary photos; JPEG delivery copies resized to 640px, originals in outputs/label-photos.",
+  "images": {
+    "kasa": {
+      "file": "assets/labels/kasa-photo-v1.jpg",
+      "prompt": "Use case: photorealistic-natural. Asset type: square photographic vocabulary card in a Japanese learning mobile app. Primary request: One open everyday umbrella, muted terracotta fabric canopy, curved wooden handle, entire umbrella visible in a three-quarter side view. Style: authentic high-quality studio photograph, real materials and natural fine texture, never illustration, vector, cartoon, toy, or 3D render. Scene: seamless warm light beige backdrop and surface, soft diffuse daylight, subtle natural contact shadows. Composition: single clear subject centered occupying about 75 percent of image, generous 12 percent safe margins, easily recognizable at thumbnail size. No extra objects, no people, no writing, no letters, no labels, no borders, no watermark. Square image."
+    },
+    "kutsu": {
+      "file": "assets/labels/kutsu-photo-v1.jpg",
+      "prompt": "Use case: photorealistic-natural. Asset type: square photographic vocabulary card in a Japanese learning mobile app. Primary request: One pair of ordinary unbranded cream canvas lace-up sneakers, both shoes fully visible, three-quarter side view. Style: authentic high-quality studio photograph, real materials and natural fine texture, never illustration, vector, cartoon, toy, or 3D render. Scene: seamless warm light beige backdrop and surface, soft diffuse daylight, subtle natural contact shadows. Composition: single clear subject centered occupying about 75 percent of image, generous 12 percent safe margins, easily recognizable at thumbnail size. No extra objects, no people, no writing, no letters, no labels, no borders, no watermark. Square image."
+    },
+    "hana": {
+      "file": "assets/labels/hana-photo-v1.jpg",
+      "prompt": "Use case: photorealistic-natural. Asset type: square photographic vocabulary card in a Japanese learning mobile app. Primary request: One real pink gerbera daisy flower with a short green stem and one leaf, lying naturally on the surface, petals and stem fully visible. No vase. Style: authentic high-quality studio photograph, real materials and natural fine texture, never illustration, vector, cartoon, toy, or 3D render. Scene: seamless warm light beige backdrop and surface, soft diffuse daylight, subtle natural contact shadows. Composition: single clear subject centered occupying about 75 percent of image, generous 12 percent safe margins, easily recognizable at thumbnail size. No extra objects, no people, no writing, no letters, no labels, no borders, no watermark. Square image."
+    },
+    "neko": {
+      "file": "assets/labels/neko-photo-v1.jpg",
+      "prompt": "Use case: photorealistic-natural. Asset type: square photographic vocabulary card in a Japanese learning mobile app. Primary request: One real adult orange tabby domestic cat sitting comfortably, full body and tail visible, looking toward camera. Style: authentic high-quality studio photograph, real materials and natural fine texture, never illustration, vector, cartoon, toy, or 3D render. Scene: seamless warm light beige backdrop and surface, soft diffuse daylight, subtle natural contact shadows. Composition: single clear subject centered occupying about 75 percent of image, generous 12 percent safe margins, easily recognizable at thumbnail size. No extra objects, no people, no writing, no letters, no labels, no borders, no watermark. Square image."
+    }
+  }
+}

@@ -1,0 +1,132 @@
+.kana-page{max-width:480px;margin:auto;text-align:center;padding-bottom:calc(28px + env(safe-area-inset-bottom));}
+.kana-page h1{font-size:calc(23px * var(--text-scale));line-height:1.5;margin:12px 0 20px}
+.kana-progress{font-size:16px;color:var(--muted)}
+.kana-letter{font-size:clamp(88px,28vw,140px);line-height:1.5;color:var(--text);background:var(--stage-raised);border-radius:18px}
+.kana-reading{font-size:calc(22px * var(--text-scale));margin:12px 0 20px}
+.kana-page .primary,.kana-page .secondary{font-size:calc(17px * var(--text-scale));margin-top:16px;min-height:52px}
+.kana-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px}
+.kana-choices .secondary{font-size:44px;min-height:96px;padding:12px 0}
+.kana-choices .correct{border-color:var(--jade);color:var(--jade);opacity:1}
+.kana-feedback{min-height:30px;font-size:17px;margin:20px 0}
+.kana-summary{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;font-size:48px;margin:32px 0}
+
+.kana-tip{font-size:16px;line-height:1.6;color:var(--muted);margin:12px 0}
+
+.kana-case-scene{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:14px;margin-bottom:22px}
+.kana-story{font-size:calc(17px * var(--text-scale));line-height:1.7;text-align:left;margin:16px 0 24px}
+.kana-case-letters{font-size:32px;letter-spacing:.12em;margin:24px 0}
+.kana-case-check{display:inline-flex;padding:16px;border-radius:50%;background:var(--stage-raised);color:var(--jade)}
+.kana-case-check svg{width:32px;height:32px}
+.kana-evidence{display:grid;gap:12px;margin-top:20px}
+.kana-evidence .secondary{margin:0;justify-content:space-between;flex-wrap:wrap;text-align:left}
+.kana-evidence strong{font-size:32px;letter-spacing:.1em}
+.kana-evidence .correct{border-color:var(--jade);color:var(--jade);opacity:1}
+
+.kana-case-letters{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 12px;font-size:24px;letter-spacing:0}
+
+.kana-quiz-progress{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;min-height:44px}
+.kana-quiz-progress .text-button{margin:0;padding:8px;min-height:44px;font-size:16px}
+.kana-quiz-progress + .kana-case-scene{margin-bottom:0;max-height:220px}
+.kana-feedback:empty{display:none}
+
+.kana-preview-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:24px 0}
+.kana-preview-grid span{display:grid;place-items:center;min-height:64px;border-radius:12px;background:var(--stage-raised);font-size:34px;border:2px solid transparent}
+.kana-preview-grid .is-speaking{background:var(--amber);color:var(--button-ink);border-color:var(--amber-light)}
+.kana-preview-status{min-height:28px;font-size:17px}
+.kana-target{font-size:48px;letter-spacing:.1em;background:var(--stage-raised);border-radius:12px;padding:14px}
+
+.kana-letter-nav{display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px}
+
+.kana-writing{max-width:300px;margin:0 auto}
+.writing-board{position:relative;aspect-ratio:1;background-color:#fcf7ef;background-image:linear-gradient(45deg,transparent 49.8%,#ebdfd0 49.8%,#ebdfd0 50.2%,transparent 50.2%),linear-gradient(-45deg,transparent 49.8%,#ebdfd0 49.8%,#ebdfd0 50.2%,transparent 50.2%),linear-gradient(90deg,transparent 49.8%,#e3d6c2 49.8%,#e3d6c2 50.2%,transparent 50.2%),linear-gradient(transparent 49.8%,#e3d6c2 49.8%,#e3d6c2 50.2%,transparent 50.2%);border:1px solid #ddcfbc;border-radius:20px;overflow:hidden;user-select:none;-webkit-user-select:none}
+.writing-guide{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(130px,44vw,190px);line-height:1;color:#896e493d;pointer-events:none}
+.writing-board canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+.writing-tools{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+.writing-tools button{background:transparent;color:var(--amber-light);font-size:16px;min-height:44px;padding:6px}
+@media(max-height:740px){.kana-writing{max-width:240px}.writing-guide{font-size:155px}.kana-page:has(.kana-writing) h1{font-size:20px;margin:8px 0 12px}.kana-page:has(.kana-writing) .kana-reading{margin:6px 0}.kana-page:has(.kana-writing) .secondary,.kana-page:has(.kana-writing) .primary{margin-top:10px}}
+
+.kana-memory-tip{font-size:17px;color:var(--text);line-height:1.6;text-align:left;padding:12px 14px;background:var(--stage-raised);border-radius:12px;margin:10px 0;min-height:78px}
+
+/* Fit the practice board to the usable portrait height; keep content accessible
+   through normal scrolling on unusually short screens or enlarged text. */
+.kana-page.kana-learn{padding-top:4px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));width:100%}
+.kana-page.kana-learn .kana-learn-heading{display:flex;align-items:baseline;justify-content:center;gap:10px;font-size:calc(19px * var(--text-scale));line-height:1.4;margin:0 0 12px}
+.kana-learn-heading span{white-space:nowrap;font-size:calc(17px * var(--text-scale));font-weight:500;font-variant-numeric:tabular-nums}
+.kana-learn .kana-writing{width:100%;max-width:300px}
+.kana-learn .writing-board{container-type:inline-size;width:min(100%,clamp(150px,calc(100svh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 465px - (var(--text-scale) - 1) * 220px),300px));margin-inline:auto}
+.kana-learn .writing-guide{font-size:65cqw}
+.kana-reading-row{display:flex;align-items:center;justify-content:center;gap:4px;margin:4px 0}
+.kana-page.kana-learn .kana-reading{margin:0;line-height:1.4}
+.kana-listen{color:var(--amber-light)}
+.kana-page.kana-learn .kana-tip{margin:6px 0 10px}
+.kana-learn .kana-memory-tip{min-height:0;padding:10px 12px;line-height:1.5}
+.kana-page.kana-learn .kana-letter-nav .primary,.kana-page.kana-learn .kana-letter-nav .secondary{margin-top:0}
+
+.kana-memory-card{display:flex;align-items:center;gap:12px;margin:6px 0 10px;padding:10px;background:var(--stage-raised);border-radius:14px;text-align:left}
+.kana-memory-card img{width:clamp(76px,23vw,100px);height:auto;aspect-ratio:1;flex:none;border-radius:12px}
+.kana-page.kana-learn .kana-memory-card .kana-memory-tip{padding:0;margin:0;font-size:16px;line-height:1.5;background:transparent;min-width:0;word-break:keep-all;overflow-wrap:break-word}
+
+/* Real name tags stay live text over the reused bag illustration. */
+.kana-bags{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0}
+.kana-bags>div,.kana-bags .secondary{display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 4px;background:var(--stage-raised);border-radius:16px;min-width:0;margin:0}
+.kana-bags img{width:100%;height:auto;aspect-ratio:1;object-fit:contain;border-radius:12px}
+.kana-bags strong{font-size:clamp(22px,7vw,30px);line-height:1.4;font-weight:600;background:var(--paper);color:var(--ink);padding:4px 6px;border-radius:6px}
+.kana-bags .correct{border-color:var(--jade);opacity:1}
+.kana-name-sound{display:flex;align-items:center;justify-content:center;gap:8px;font-size:40px}
+.kana-name-progress{display:flex;gap:8px;justify-content:center;font-size:24px;margin:0 0 8px}
+.kana-name-progress span{padding:2px 12px;border-radius:8px;color:var(--muted)}
+.kana-name-progress .current{color:var(--button-ink);background:var(--amber)}
+.kana-learn:has(.kana-name-progress) .writing-board{width:min(100%,clamp(130px,calc(100svh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 505px - (var(--text-scale) - 1) * 220px),270px))}
+
+.stroke-layer{position:absolute;inset:0;pointer-events:none}.stroke-layer svg{width:100%;height:100%}
+.stroke-paths{fill:none;stroke:#bcae9c;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.stroke-paths .active{stroke:#b35c0b}
+.stroke-layer text{font-size:8px;fill:#71583c}.stroke-layer text.active{fill:#a34600;font-weight:700}
+.has-strokes .writing-guide{display:none}.stroke-status{position:absolute;right:8px;bottom:6px;color:#71583c;font-size:14px;pointer-events:none}
+.writing-tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.writing-tools button{padding:6px 2px;white-space:nowrap}
+
+[data-stroke-demo="true"] canvas{cursor:wait}
+
+.bag-return-count{font-size:16px;color:var(--muted);margin:0 0 14px}.bag-guest-sound{display:flex;align-items:center;justify-content:center;gap:8px;font-size:24px;margin:16px 0}.bag-reading-help{padding:16px;border-radius:16px;background:var(--stage-raised);text-align:center;margin:16px 0}.bag-reading-help strong{font-size:28px}.bag-reading-help p{font-size:17px}.bag-finished-names{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:24px 0}.bag-finished-names>div{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 4px;background:var(--stage-raised);border-radius:12px}.bag-finished-names strong{font-size:24px}.bag-finished-names span{font-size:16px}
+
+/* Reading verification: pair a spoken name with its written card. */
+.name-match-source{display:flex;align-items:center;justify-content:center;gap:12px;max-width:240px;min-height:88px;margin:24px auto 0;border:2px solid var(--line);border-radius:16px;background:var(--stage-raised);font-size:calc(26px * var(--text-scale))}
+.name-match-link{display:flex;justify-content:center;align-items:center;height:52px;color:var(--muted)}
+.name-match-link svg{width:24px;height:24px;transform:rotate(90deg)}
+.name-match-link.matched svg{transform:none}
+.name-match-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.kana-page .name-match-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-width:0;min-height:96px;margin:0;padding:12px 4px;border:2px solid var(--line);border-radius:14px;font-size:clamp(23px,7vw,30px)}
+.name-match-card svg{width:20px;height:20px}
+.name-match-source.matched,.name-match-card.correct{border-color:var(--jade);color:var(--jade);opacity:1}
+.name-match-link.matched{color:var(--jade)}
+.kana-course-progress{font-size:13px;color:var(--muted);line-height:1.5;margin:0 0 12px}
+.kana-learn .kana-course-progress{font-size:12px;margin-bottom:6px}
+/* Direct two-column matching: line drawing stays inside this lazy-loaded screen. */
+.kana-match-instruction,.kana-match-hint{font-size:calc(15px * var(--text-scale));line-height:1.5;color:var(--muted);margin:8px 0 12px}
+.kana-match-hint{font-size:13px;margin-top:16px}
+.kana-match-count{font-size:16px;color:var(--amber-light);margin:8px 0 16px}
+.kana-match-headings{display:flex;justify-content:space-between;padding:0 30px;margin-bottom:10px;font-size:14px;color:var(--muted)}
+.kana-match-board{--pair-0:#edb86d;--pair-1:#94c5e9;--pair-2:#bc9be2;--pair-3:#8ed0b3;--pair-4:#eba5b4;position:relative;display:flex;justify-content:space-between;isolation:isolate}
+.kana-match-column{display:flex;flex-direction:column;gap:14px;width:31%;max-width:112px;z-index:1}
+.kana-match-node{position:relative;display:flex;align-items:center;justify-content:center;gap:5px;min-height:62px;width:100%;padding:8px 4px;border:2px solid var(--line);border-radius:14px;background:var(--stage-raised);color:var(--text);font-size:calc(25px * var(--text-scale));touch-action:none;user-select:none;-webkit-user-select:none}
+.kana-match-node[data-match-side="glyph"]{font-size:calc(32px * var(--text-scale))}
+.kana-match-node.selected{border-color:var(--amber);box-shadow:0 0 0 3px #f2ae5630}
+.kana-match-node.matched{border-color:var(--match-color);color:var(--match-color);opacity:1}
+.kana-match-node svg{position:absolute;right:3px;top:3px;width:13px;height:13px}
+.kana-match-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.kana-match-lines path{fill:none;stroke:var(--amber);stroke-width:3;stroke-linecap:round}
+.kana-match-lines [hidden]{display:none}
+.kana-match-lines [data-match-preview]{stroke-dasharray:6 5}
+@media(max-height:700px){.kana-match-column{gap:10px}.kana-match-node{min-height:54px}.kana-page:has(.kana-match-board) h1{margin:4px 0 8px;font-size:21px}}
+.kana-match-node{height:64px;min-height:64px;line-height:1.15}
+@media(max-height:700px){
+ .kana-page:has(.kana-match-board){padding-top:6px}
+ .kana-page:has(.kana-match-board) .kana-course-progress{margin-bottom:6px}
+ .kana-match-instruction{font-size:14px;margin:6px 0}
+ .kana-match-count{margin:6px 0}
+ .kana-match-headings{margin-bottom:6px}
+ .kana-match-column{gap:8px}
+ .kana-match-node{height:56px;min-height:56px;padding:4px}
+}
+/* Center the introduction in the usable space below the shared header. */
+.view-kana:has(.kana-intro){display:flex;flex-direction:column}
+.kana-page.kana-intro{flex:1;width:100%;margin:0 auto;display:flex;flex-direction:column;justify-content:center;padding-top:24px;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
