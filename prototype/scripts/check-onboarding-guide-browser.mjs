@@ -4,7 +4,6 @@ import assert from 'node:assert/strict';
 const browser=await webkit.launch({headless:true});
 try {
  for(const level of [1,2,3,4,5]) {
-  const total=level<=3?3:2;
   const page=await browser.newPage({viewport:{width:level===1?320:390,height:level===1?568:844},isMobile:true,hasTouch:true});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.route('https://seodang.test/**',route=>{
@@ -13,17 +12,11 @@ try {
   });
   await page.goto('https://seodang.test/setup.html');
   await page.locator('form .primary').click();await page.locator(`input[name="level"][value="${level}"]`).check();await page.locator('form .primary').click();
-  await page.waitForSelector('.guide-dialogue');assert.equal(await page.locator('[data-action="settings"]').count(),0);
+  await page.waitForSelector('.guide-coach');assert.equal(await page.locator('[data-action="settings"]').count(),0);
   assert.equal(await page.locator('video,.guide-player').count(),0);
-  assert.equal(await page.locator('.guide-count').innerText(),`1 / ${total}`);
-  await page.evaluate(async()=>{const image=new Image();image.src='assets/mascot/seodang-cartoon-atlas-v1.png';await image.decode();});
-  await page.locator('form .primary').click();assert.equal(await page.locator('.guide-count').innerText(),`2 / ${total}`);
-  await page.locator('[data-action="previous"]').click();assert.equal(await page.locator('.guide-count').innerText(),`1 / ${total}`);
+  await page.locator('[data-guide-choice="1"]').click();
   await page.locator('[data-action="previous"]').click();assert.equal(await page.locator('[data-step="2"]').isVisible(),true);
-  await page.locator('form .primary').click();await page.waitForSelector('.guide-dialogue');
-  for(let i=1;i<total;i++)await page.locator('form .primary').click();
-  assert.equal(await page.locator('.guide-count').innerText(),`${total} / ${total}`);
-  assert.doesNotMatch(await page.locator('.guide-dialogue').innerText(),/풍월|버튼을 직접/);
+  await page.locator('form .primary').click();await page.waitForSelector('.guide-demo');
   assert.equal(await page.locator('form .primary').innerText(),'학습 홈으로');
   assert.equal(await page.evaluate(()=>localStorage.getItem('seodang.web-prototype.v1')),null);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);

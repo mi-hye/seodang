@@ -23,8 +23,8 @@ try{
    release();
    if(slow==='cancel'){await page.waitForTimeout(200);await expect(page.locator('[data-step="1"]')).toBeVisible();await page.locator('form .primary').click();await page.locator('input[value="3"]').check();await page.locator('form .primary').click();}
   }
-  await expect(page.locator('[data-step="3"]')).toBeVisible();await expect(page.locator('.guide-dialogue h2')).toContainText('사건을 따라가며');assert.equal(await page.locator('.guide-count').innerText(),'1 / 3');
-  assert.equal(await page.locator('.guide-mascot').evaluate(el=>getComputedStyle(el).width),'210px');
+  await expect(page.locator('[data-step="3"]')).toBeVisible();await expect(page.locator('.guide-coach p')).toContainText('소리를 듣고');await expect(page.locator('.guide-demo')).toBeVisible();
+  assert.equal(await page.locator('.guide-mascot').evaluate(el=>getComputedStyle(el).width),'88px');
   assert.equal(await page.evaluate(()=>localStorage.getItem('seodang.web-prototype.v1')),null);
   await page.evaluate(async()=>{const image=new Image();image.src='assets/mascot/seodang-cartoon-atlas-v1.png';await image.decode();if(!image.naturalWidth)throw Error('not decoded');});
   assert.deepEqual(errors,[]);await page.close();

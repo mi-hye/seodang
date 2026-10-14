@@ -1,0 +1,11 @@
+import {webkit,expect} from '@playwright/test';import {readFileSync} from 'node:fs';import assert from 'node:assert/strict';import {freshState} from '../src/engine.js';
+const b=await webkit.launch();try{for(const direction of ['ko-ja','ja-ko']){
+ const p=await b.newPage({viewport:{width:320,height:700}}),errors=[];p.on('pageerror',e=>errors.push(e.message));
+ await p.route('https://seodang.test/**',r=>{const f=new URL(r.request().url()).pathname.slice(1);try{return r.fulfill({body:readFileSync(f),contentType:f.endsWith('.js')?'text/javascript':f.endsWith('.css')?'text/css':f.endsWith('.html')?'text/html':'image/png'});}catch{return r.fulfill({status:404,body:''});}});
+ await p.addInitScript(s=>{if(!sessionStorage.seeded){localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));sessionStorage.seeded='1';}},{...freshState(),onboarded:true,courseDirection:direction,onboardingLevel:1,settings:{sound:false,textScale:1.2,motion:'off'}});
+ await p.goto('https://seodang.test/playable.html');
+ if(direction==='ko-ja'){await p.locator('.tabs [data-action=settings]').click();await p.locator('[data-setting=course]').selectOption('ja-ko');}
+ await p.waitForURL('**/setup.html#guide');await expect(p.locator('html')).toHaveAttribute('lang','ja');await expect(p.locator('.guide-demo')).toBeVisible();await expect(p.locator('.guide-mascot')).toBeVisible();assert.ok(!/[가-힣]/.test(await p.locator('body').innerText()));await expect(p.locator('.actions button')).toHaveText('学習ホームへ');
+ await p.screenshot({path:`/tmp/seodang-japanese-guide-${direction}.png`});await p.locator('.actions button').click();await p.waitForURL('**/playable.html#home');await expect(p.locator('.learning-map')).toBeVisible();
+ assert.equal(await p.evaluate(()=>JSON.parse(localStorage.getItem('seodang.web-prototype.v1')).koreanGuideSeenVersion),1);await p.reload();await expect(p.locator('.learning-map')).toBeVisible();await p.locator('.tabs [data-action=settings]').click();await p.locator('[data-action=guide]').click();await p.waitForURL('**/setup.html#guide');await expect(p.locator('.guide-demo')).toBeVisible();assert.deepEqual(errors,[]);await p.close();
+}console.log('Japanese mascot guide: first language switch, existing Korean users, one visual screen, persistence, settings replay passed.');}finally{await b.close();}

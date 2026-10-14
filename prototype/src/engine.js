@@ -1,3 +1,5 @@
+import {reduceKorean} from './korean-state.js';
+import {reduceBasics} from './basics-state.js';
 import {reduceReading} from './reading-state.js';
 import {reduceDialogue} from './dialogue-state.js';
 import {reduceListening} from './listening-state.js';
@@ -23,6 +25,7 @@ export const freshEpisode = () => ({
 });
 export const freshState = () => ({
   schemaVersion: 1,
+  levelLayoutVersion: 1,
   courseDirection: "ko-ja",
   onboarded: false,
   support: "beginner",
@@ -37,11 +40,13 @@ export function episodeAudioId(state) {
   return null;
 }
 export function reduce(state, action, now) {
+  if(action.type.startsWith("korean-"))return state.courseDirection==='ja-ko'?{...state,korean:reduceKorean(state,action,now)}:state;
   return recordLearning(state, reduceCore(state, action), action, now);
 }
 function reduceCore(state, action) {
   const s = structuredClone(state),
     e = s.episode;
+  if(action.type.startsWith("basic-")){s.basics=reduceBasics(s,action);return s;}
   if(action.type.startsWith("reading-")){
     const level=s.onboardingLevel;
     if([5,6,7].includes(level)){s.readings||={};s.readings[level]=reduceReading(s.readings[level],action,level);}
@@ -60,11 +65,14 @@ function reduceCore(state, action) {
     return s;
   }
   switch (action.type) {
+    case "course":
+      if(["ko-ja","ja-ko"].includes(action.value)){s.courseLevels||={};s.courseLevels[s.courseDirection]=s.onboardingLevel??0;s.courseDirection=action.value;s.onboardingLevel=s.courseLevels[action.value]??0;s.support=s.onboardingLevel<=2?"beginner":"phrase";}
+      break;
     case "ui-guide-complete":
       s.uiGuideSeenVersion=2;
       break;
     case "level":
-      if (Number.isInteger(action.value) && action.value >= 1 && action.value <= 7) {
+      if (Number.isInteger(action.value) && action.value >= 0 && action.value <= 7) {
         s.onboardingLevel = action.value;
         s.support = action.value <= 2 ? "beginner" : "phrase";
       }
@@ -125,10 +133,10 @@ function reduceCore(state, action) {
       const o = episode.objects.find((o) => o.id === e.selected);
       if (o.color !== "blue")
         e.feedback =
-          "あおい는 파란색이에요. 가방의 색을 다시 확인해 볼까요?";
+          "あおい는 파란색이에요. 파란 가방을 골라 주세요.";
       else if (o.place !== "window")
         e.feedback =
-          "색은 맞아요. 위치를 나타내는 まどの そば를 다시 확인해 볼까요?";
+          "색은 맞아요. まどの そば는 창문 옆이에요.";
       else {
         e.solved = true;
         e.step = "solved";
@@ -145,7 +153,7 @@ function reduceCore(state, action) {
       e.feedback =
         e.transfer === "passed"
           ? ""
-          : "이번에는 창문이 오른쪽에 있어요. まどの そば는 창문 옆이에요. 가까이 놓인 물건을 다시 골라 보세요.";
+          : "まどの そば는 창문 옆이에요. 오른쪽 창문 옆 물건을 골라 주세요.";
       break;
     case "setting":
       if (Object.hasOwn(s.settings, action.key))

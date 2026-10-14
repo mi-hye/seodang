@@ -12,6 +12,11 @@ for (const name of ["01_start_hanok.png"])
   await cp(`references/${name}`, `dist/references/${name}`);
 const initial = [
   "app.js",
+  "practice-state.js",
+  "i18n.js",
+  "korean-state.js",
+  "basics-state.js",
+  "learning-map.js",
   "dialogue-state.js",
   "reading-state.js",
   "build-config.js",
@@ -45,6 +50,7 @@ console.log(
       initialJS_gzip: js,
       totalJS_gzip: total,
       CSS_gzip: gzipSync(await readFile("src/style.css")).length,
+      initialCSS_gzip: (await Promise.all(["style.css","header.css","learning-map.css","library.css"].map(async name=>gzipSync(await readFile(`src/${name}`)).length))).reduce((a,b)=>a+b,0),
       build: "dist",
       note: "Same mobile/desktop entry. Panels dynamically imported. New isolated prototype; no previous bundle baseline.",
     },

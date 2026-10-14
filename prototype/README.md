@@ -1,3 +1,18 @@
+## Current learning flow
+
+The prototype supports Korean and Japanese learning with language-specific UI. Stage 0 teaches writing separately from stages 1–7. The learning map supports resume/restart, progress bars, completion screens, and development-only screen navigation.
+
+Japanese stage 0:
+- Lessons 1–5: hiragana ranges.
+- Lessons 6–7: voiced and semi-voiced sounds, with an animated introduction, writing, and one four-choice question per character.
+- Lesson 8: small っ words with illustrations.
+- Lesson 9: contracted sound → word pairs, with illustrations and no intermediate questions.
+- Lessons 8–9 repeat listening and writing once; lesson 9 practice contains words only. Both show Korean meanings.
+
+Run `npm run check` for unit tests and the production build. Focused WebKit scripts in `scripts/` verify current flows; older narrative prototype checks are not the current acceptance suite. `npm run ios:sync:dev` builds the unlocked development map and screen navigator; `npm run ios:sync` produces the normal build.
+
+The chronological implementation notes below describe earlier iterations and may differ from the current flow above.
+
 # 서당 · 사건 01 웹 프로토타입
 
 현재 UI는 **2026-10-12 Claude 디자인 협업 v2**다. [개편 내용·검증·에셋](docs/design/REDESIGN.md)을 먼저 참고한다. 연결된 iPhone의 서당 체험판에도 v2 설치를 완료했다.
@@ -98,7 +113,7 @@ Confirmed direction: use an actual story goal before teaching; hear and trace th
 
 Implemented first story: **아오이의 가방**. Hear あおい, practice あ → お → い, choose the corresponding bag name tag, and return the bag. The first story has no separate alphabet quiz between writing and finding. Labels use only the three taught letters. The bag illustration reuses `assets/word-blue-bag-v1.png`; name tags are live text, not pixels. The existing writing canvas, mnemonic illustrations, and individual character audio are reused.
 
-Provisional curriculum arrangement: 3 / 27 / 16 letters across the three chapters. The other two chapters keep their existing parcel/envelope label stories, now taught and applied in rounds of 3–4 letters. This is an implementation default, not a finalized narrative rewrite of those two chapters. Names, distractor ordering, and the redistribution of letters remain editable in `src/kana-state.js`, `src/kana-cases.js`, and `src/kana.js`.
+Provisional curriculum arrangement: 3 / 27 / 16 letters across the three chapters. The other two chapters keep their existing parcel/envelope label stories, now taught and applied in rounds of 3–4 letters. This is an implementation default, not a finalized narrative rewrite of those two chapters. Names, distractor ordering, and the redistribution of letters remain editable in `src/kana-state.js` and `src/kana.js`.
 
 Save format v5 archives v1–v4 source records in `previousCourse`, preserves learned letter IDs and earned completion records, and carries the current letter forward when the new chapter is unlocked. If its new location is locked, the new first story opens without removing previously learned letters. Completed cases can be replayed from the map.
 
@@ -264,3 +279,96 @@ Shared app initial JS gzip remains 22,671 bytes; initial stylesheet remains 8,93
 ### 2026-10-13 · 3단계 상단 표시와 플레이스홀더 간소화
 - `문장 익히기`, `문장 만들기` 라벨을 제거하고 콘텐츠 우상단에 숫자만 표시합니다. 익히기와 만들기를 연속된 6개 화면으로 세어 1/6 → 6/6으로 진행합니다. 이전처럼 두 화면에서 같은 1/3을 반복하지 않습니다.
 - 만들기 화면의 별도 안내 문단을 없애고 답 영역이 비어 있을 때만 `말을 순서대로 골라주세요`를 표시합니다. 글자를 선택하면 플레이스홀더가 사라집니다. 가로 flex 버튼 배치는 유지합니다.
+
+## Korean learning and Japanese interface
+
+Selecting Korean in onboarding or Settings → learning language saves `courseDirection: ja-ko`. Navigation, onboarding, settings, records, and reset confirmation use Japanese; Korean remains the learning material. Switching back restores the Japanese course's level and progress. Korean progress and daily history are stored separately under `state.korean`; the existing `ko-ja` saves remain valid.
+
+The initial Korean course contains ten level-1 lessons (21 vowels, 19 consonants, syllables, final consonants, vocabulary, and greetings) plus one lesson per level 2–7. Letter practice uses a traceable canvas, without claiming handwriting recognition. Level 7 presents audio with no transcript. Eighty-nine Korean WAV files are bundled, generated with the installed macOS Yuna voice; inputs, hashes, durations, and signal checks are in `assets/audio/korean/manifest.json`. Native-speaker listening review remains pending.
+
+Korean content/styles and Japanese UI translations are loaded on demand. Matching development builds: initial shared mobile/desktop JS gzip 35,042 → 39,113 bytes; initial CSS gzip 13,047 → 13,090 bytes; total JS gzip 79,935 → 94,969 bytes. The added initial code covers language selection, state validation, and map metadata; lesson content and translation tables remain optional.
+
+Validation: 52 unit tests; WebKit onboarding, all seven levels, retry/resume, separate course settings/records, Japanese reset cancellation, handwriting, and 320px large-text layout; all 89 WAVs decoded in WebKit; existing Japanese map flow; Debug iOS build.
+
+### Hangul stroke demonstrations
+
+The Korean writing lessons now show numbered, animated centerlines for all 40 taught jamo and the 12 practice syllables in lessons 1-7 and 1-8. Geometry is original; writing-order reference: https://geulssibang.com/hangul/order/. Compound vowels, double consonants, and final consonants are composed in component order. Replay/stop and reduced-motion single-stroke stepping use Japanese labels. Writing is paused during automatic demonstrations and remains unscored practice. The demonstration module and geometry stay in the optional Korean lesson graph; initial JS/CSS gzip are unchanged (39,240 / 13,090 bytes in the development build).
+
+Validated coverage and stroke counts, WebKit automatic drawing, replay/stop, user drawing/erase, reduced-motion stepping, final-consonant rendering, disposal, and narrow layout. 54 unit tests pass.
+
+
+## Alternating Korean letter learning and composition
+
+Level 1 now alternates five learning lessons and five composition lessons across 1-1–1-10: basic components, remaining basic consonants/y-vowels, tense consonants, compound vowels, and final consonants. All 40 jamo are covered; practice uses only previously taught components. Learners hear a syllable, fill a missing component, and see their choice compose into a Hangul syllable. Ambiguous compound-vowel sounds also have a written cue. Practice starts directly, retries without advancing, and hands off to the next lesson in level 1. Learning lessons retain animated stroke order and tracing.
+
+Korean progress version 2 retains old daily records and levels 2–7. Version-1 letter progress is archived in `legacyLetters`; the reorganized first-level sequence starts at 1-1, so old indices never mark different new content as completed. Audio inputs and all 119 matching bundled Yuna clips were regenerated. Japanese course data remains separate.
+
+Validation: 56 unit tests, WebKit composition handoffs/retry/resume and narrow large-text layout, stroke demonstrations, and Korean course regression. Optional composition UI stays in the lazy Korean module; initial JS gzip is 39,444 bytes in the development build (204 bytes added for metadata/migration); initial CSS stays at 13,090 bytes.
+
+## Japanese vocabulary between sound groups
+
+Lessons 1-7–1-10 now interleave 14 vocabulary items after the sounds they use; 1-6 remains the six-word introduction. Examples include ぎ → かぎ, ぽ → さんぽ, and しゃ → しゃしん. The five lessons contain 41 learn/quiz items in total. Applicable words include kanji/readings; memory tips remain limited to the existing approved associations. All 41 matching WAVs use the existing VOICEVOX Nemo 女声1 voice and verified manifest hashes.
+
+Basic progress version 2 maps old in-progress indices to the same material and clears rotated answer selections. Previously completed expanded lessons reopen at their first new word; existing daily/completion history is preserved. Lesson numbering remains 1-6–1-10.
+
+Validation: 58 unit tests, WebKit all 41 items with automatic handoffs/retry/resume, memory-tip regression, all WAVs decoded, and 320px large-text vocabulary/kanji layout. Development initial JS gzip 39,444 → 39,742 bytes; initial CSS unchanged at 13,090 bytes. Vocabulary, kanji and audio remain in the optional lesson assets. Debug iOS build succeeded; device installation was unavailable (CoreDevice 4016).
+
+## Four rounds of listening, reading, writing and speaking
+
+Every implemented Japanese and Korean lesson now keeps completion pending until its taught items have gone through four rounds of all four activities (16 encounters per item). A small stored progress record tracks round, mode, item and the pending completion action. Correct answers in the original lesson no longer unlock the next lesson before repetition finishes; the original completion/history action runs once at the end. Home resumes pending practice for the selected language and difficulty. Switching lessons/languages retains separate progress, and explicit restart clears only that lesson's pending repetition.
+
+Listening requires successful bundled playback and a correct selection. Reading checks meaning; choices and item order rotate by round. Writing uses a touch canvas with a visible guide in rounds 1–2, then recall and self-comparison in rounds 3–4. Speaking records a short local clip and requires playback; it does not claim pronunciation recognition. Microphone denial/unavailability offers explicit unrecorded spoken practice. Recordings stay ephemeral, are not uploaded, and stop on navigation/backgrounding. iOS uses an AVAudioRecorder bridge with microphone permission, metering, a 35-second limit and temporary-file deletion; the browser uses getUserMedia/MediaRecorder. Full advanced listening scripts remain hidden; repetition uses concise takeaways, with 18 additional bundled recap clips.
+
+Validation: 61 unit tests; WebKit full 96-step six-word repetition, audio-failure gating, wrong answers, actual canvas input, mocked native recorder/replay, microphone-denial fallback, resume, all lesson types' final handoff, Japanese guide and map regression. All 18 new clips decode in WebKit. Physical microphone capture still needs a device speaking check; native Debug compilation and device installation succeeded. Device launch was blocked by the iPhone lock screen.
+
+The screen, recording code, CSS and content load only on lesson entry. Matching development builds: initial JS gzip 39,742 → 41,481 bytes; initial CSS stays 13,090 bytes. Total JS is 111,253 bytes. Initial additions are the app integration and bounded save validation; lesson content and recording stay deferred.
+
+## Beginner visual memory tips
+
+Level-1 word tips now contain only a simple original SVG and one short shape/scene association. Removed kanji blocks, Korean character glosses, and extra related vocabulary. Unsupported/forced tips remain absent. The ち mnemonic and its SVG no longer use 七; they use a cheerleader silhouette. Level 3 introduces only the kanji relevant to its current sentences (私, 窓, 赤い), in a collapsed reading-supported note; answer text and recordings remain unchanged.
+
+Validation: WebKit expanded/collapsed keyboard behavior, SVG loading, no beginner kanji, level-3 ruby reading, quiz separation and 320px large text; 61 unit tests and production build. Initial JS/CSS are unchanged; optional JS decreased from 111,253 to 109,828 gzip bytes in the development build.
+
+## Resume choice and lesson progress
+
+Re-entering an unfinished lesson from home or the map asks whether to continue or start again. Dismissing the dialog changes nothing. Restart resets only that lesson and its pending four-round practice, retaining accumulated history and completed unlocks. Korean replay attempts now resume their current index instead of resetting because an earlier attempt was completed. The header progress bar includes original activities and all 16 repetition passes per item, with accessible percentage semantics. Dialog controls remain horizontal on narrow screens, and both UI languages are supported.
+
+Validation: 63 unit tests, WebKit dialog cancellation/resume/restart, pending repetition restoration, 320px large text and deferred module loading. Initial JS gzip is 41,696 bytes (+215); initial CSS remains 13,090 bytes. The session UI and progress calculations load only on lesson entry.
+
+## Visual dog guide
+
+Replaced the text-heavy multi-page guide with one optional listening example: a small mascot and one instruction, a real bundled clip from the selected course, two answer choices with retry feedback, and four skill icons marked ×4. Level 7 hides the example transcript. Demo choices do not write learning progress; the home button is always available. Playback stops on leaving the guide or backgrounding. Guide content/CSS remain deferred.
+
+Validation: 62 unit tests; WebKit Japanese guide entry/replay, both languages at levels 1/3/7, levels 1–5 onboarding navigation and safe-area CTA, delayed/failing assets, and cancellation. Initial app JS/CSS remain 41,696/13,090 gzip bytes.
+
+## App copy cleanup
+
+Reviewed onboarding, lessons, practice, hints, reviews, records, settings and errors. Shortened prompts and actions; removed repeated lesson introductions, decorative scene captions, scripted success dialogue and extra completion narration. The kana transition into four-round practice now says “다음” instead of claiming the lesson is finished. Core learning text, audio, vocabulary meanings and actionable error guidance remain intact. Korean UI keys and Japanese translations remain aligned. The unreadable-save warning no longer advertises an unavailable export action.
+
+Humanize Korean review: `_workspace/2026-10-14-002-2a8a/`; final editorial check restored the reading lesson’s “이유” objective and pre-history date distinction. Copy shortening raises the sampled change rate to 32.2% (warning), with no unresolved meaning-loss findings after final review. Validation: 62 unit tests; WebKit five learning screens at 320px/large text, both guide languages, guide navigation, resume/restart and repetition progress. No new dependencies or initial CSS.
+
+## Stage 0 and distinct guides
+
+Both directions now have stages 0–7. Stage 0 contains letters and sound combinations; stage 1 contains words, while stages 2–7 keep their numbers. Japanese stage 0 has the three hiragana lessons followed by voiced/semi-voiced sounds, small っ, and contracted sounds with word examples; stage 1 keeps labels, listening, and vocabulary. Korean stage 0 keeps all ten alternating letter/composition lessons; stage 1 adds six everyday words with six bundled Yuna clips. Stable lesson IDs and pending practice keys are retained, including legacy Korean IDs `1-1`…`1-10`; displayed numbers come from stage membership, not those storage IDs.
+
+An idempotent `levelLayoutVersion` migration maps old stage-1 selections and per-language selections to the appropriate new stage without changing lesson, history or practice data. Zero is valid throughout setup, settings, storage and language switching. Completion stays within a stage; the last lesson returns home. Each newly selected stage opens its guide once per language; settings can replay it.
+
+Guides use eight distinct prompts and activities: trace, word/meaning, short expression, sentence arrangement, dialogue response, information reading, conditions/reasons, and audio-only inference. They use the actual course material; stage 7 never renders the transcript. Guides remain deferred and do not write lesson progress. Validation: 65 tests, WebKit all 16 guides with real canvas/arrangement/choice interactions, stage maps/settings and one-time entry, all lesson completion handoffs and unchanged difficulty. Initial app JS gzip 41,621 bytes; initial CSS unchanged at 13,090 bytes.
+
+### 단계별 온보딩
+
+학습 안내는 ‘서당은 이렇게 진행돼요’로 시작하는 세 화면입니다. 선택한 단계의 학습 순서, 실제 학습 예시, 듣기·쓰기·말하기 4바퀴를 보여 줍니다. 문제를 풀지 않고 다음으로 이동할 수 있고, 이전 버튼으로 안내를 다시 볼 수 있습니다. 한국어 학습에는 일본어 안내가 표시되며 7단계 예시는 지문 없이 음성만 제공합니다.
+
+반복 연습의 읽기 선택 문제는 제거했습니다. 듣기 → 쓰기 → 말하기를 4바퀴 진행하며, 이전 읽기 화면의 저장 기록은 같은 바퀴의 쓰기 첫 문제로 이어집니다.
+
+### 개발용 학습 화면 이동
+
+개발 빌드의 학습 화면에는 `< 현재 / 전체 >` 도구가 표시됩니다. 현재 학습의 안내·문제·반복 연습을 순서대로 세며, 정답 입력 없이 앞뒤 화면으로 이동할 수 있습니다. 첫 화면과 마지막 화면에서는 해당 방향 버튼이 비활성화됩니다. 도구로 이동하는 것만으로 저장된 학습 기록을 변경하지 않으며, 일반 빌드에서는 모듈과 스타일을 불러오지 않습니다.
+
+### 히라가나 10글자 묶음
+
+히라가나 46자는 10·10·10·10·6글자의 다섯 학습으로 나눕니다. 한 학습 안에서는 5글자씩 쓰기·읽기·짝 잇기를 진행하고, 마지막 6글자는 3글자씩 다룹니다. 반복 연습은 해당 학습 글자만 사용합니다. 개발 도구 기준 첫 학습은 144화면입니다. 이전 15·15·16글자 과정은 보관하며, 글자 전부를 완료한 새 묶음에만 완료를 적용합니다. 진행 중 반복 연습은 `previousKanaPractices`에 보관하고 새 묶음에서 다시 시작합니다.
+
+반복 연습은 듣기 → 쓰기 → 말하기를 3바퀴 진행합니다. 히라가나 첫 학습은 개발 도구 기준 114화면이며, 온보딩과 진행률에도 세 바퀴를 적용합니다. 이전 네 번째 바퀴 기록은 세 번째 바퀴의 마지막 말하기로 이어집니다.
+
+말하기 연습은 녹음 없이 소리 내어 읽고 다음으로 이동합니다. 녹음·내 목소리 재생 버튼과 웹/iOS 녹음 구현, 마이크 사용 권한 설명을 제거했습니다.

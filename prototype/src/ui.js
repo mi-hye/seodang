@@ -1,3 +1,4 @@
+import {t} from './i18n.js';
 import { audioManifest } from "./media.js";
 export const esc = (s) =>
   String(s).replace(
@@ -12,6 +13,8 @@ export const phraseText = (text, phrases = text.split(/(\s+)/)) => phrases
   .map(part => /^\s+$/.test(part) ? esc(part) : `<span class="text-phrase">${esc(part)}</span>`)
   .join('<wbr>');
 const paths = {
+  locate: "M12 2v3m0 14v3M2 12h3m14 0h3M19 12a7 7 0 1 0-14 0 7 7 0 0 0 14 0M14 12a2 2 0 1 0-4 0 2 2 0 0 0 4 0",
+  people: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75",
   home: "M3 10L12 3l9 7v11h-6v-7H9v7H3Z",
   book: "M12 5v16M12 5C8 2 4 3 2 4v15c4-2 7-1 10 2 3-3 6-4 10-2V4c-3-2-7-2-10 1Z",
   leaf: "M5 20C2 8 12 2 21 3c0 10-5 17-16 17ZM5 20l10-10",
@@ -22,6 +25,8 @@ const paths = {
   close: "m6 6 12 12M6 18 18 6",
   check: "m5 12 4 4L19 6",
   sound: "M11 4 5 9H2v6h3l6 5V4Zm5 4q5 4 0 8m3-11q8 7 0 14",
+  trash: "M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7",
+  chart: "M4 20h16M5 17V11h3v6ZM10.5 17V4h3v13ZM16 17V8h3v9Z",
   note: "M5 3h15v18H5ZM2 7h6M2 12h6M2 17h6m9-10h5m-5 5h5",
   cards: "M7 3h12a2 2 0 0 1 2 2v12M5 7h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Zm2 5h6m-6 4h4",
   cluebook: "M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2ZM8 3v18M12 8h4m-4 4h4m-4 4h2",
@@ -46,7 +51,7 @@ export function audioButton(id, sound, label = "듣기", iconOnly = false) {
   const a = audioManifest[id];
   return a?.status === "device-tts" || (a?.audioFile && a.status === "ready")
     ? button(
-        iconOnly ? icon("sound") : `${icon("sound")} ${esc(label)}`,
+        iconOnly ? icon("sound") : `${esc(label)} ${icon("sound")}`,
         "audio",
         iconOnly ? "icon-button expression-listen" : "text-button",
         `aria-label="${esc(label)}" data-id="${id}" ${sound ? "" : 'disabled title="소리가 꺼져 있어요"'}`,
@@ -60,9 +65,10 @@ export function expressionCard(
   e,
   { meaning = false, sound = true, beginner = false, picture = false, compactAudio = false, showReading = false } = {},
 ) {
-  return `<article class="expression">${picture ? expressionImage(e) : ""}<span class="eyebrow">일본어 표현</span>${compactAudio ? `<div class="expression-heading"><h3 lang="ja">${phraseText(e.text)}</h3>${audioButton(`case01.${e.id}.ja`, sound, `${e.text} 다시 듣기`, true)}</div>` : `<h3 lang="ja">${phraseText(e.text)}</h3>`}${meaning ? `<p>${e.meaning}</p>` : `<details><summary>뜻 확인하기</summary><p>${e.meaning}</p></details>`}<div class="expression-parts">${meaning ? e.parts.map(([ja, ko]) => `<span><b lang="ja">${phraseText(ja)}</b> ${ko}</span>`).join("") : ""}</div>${showReading ? `<div class="expression-reading"><p lang="ja-Latn">${e.reading}</p><p>${e.help}</p></div>` : `<details><summary>${beginner ? "글자와 읽는 법 도움" : "읽는 법 보기"}</summary><p lang="ja-Latn">${e.reading}</p><p>${e.help}</p><small>익숙해지면 도움을 접고 읽어 보세요. 일반 표기: <span lang="ja">${phraseText(e.natural)}</span></small></details>`}${compactAudio ? "" : audioButton(`case01.${e.id}.ja`, sound)}</article>`;
+  return `<article class="expression">${picture ? expressionImage(e) : ""}<span class="eyebrow">일본어 표현</span><div class="expression-heading audio-text-row"><h3 lang="ja">${phraseText(e.text)}</h3>${audioButton(`case01.${e.id}.ja`, sound, `${e.text} 다시 듣기`, true)}</div>${meaning ? `<p>${e.meaning}</p>` : `<details><summary>뜻 확인하기</summary><p>${e.meaning}</p></details>`}<div class="expression-parts">${meaning ? e.parts.map(([ja, ko]) => `<span><b lang="ja">${phraseText(ja)}</b> ${ko}</span>`).join("") : ""}</div>${showReading ? `<div class="expression-reading"><p lang="ja-Latn">${e.reading}</p><p>${e.help}</p></div>` : `<details><summary>${beginner ? "글자와 읽는 법 도움" : "읽는 법 보기"}</summary><p lang="ja-Latn">${e.reading}</p><p>${e.help}</p><small>일반 표기: <span lang="ja">${phraseText(e.natural)}</span></small></details>`}</article>`;
 }
 
-export function homeCaseCard({ image, imageAlt, coverText, title, description, action, actionLabel }) {
-  return `<article class="case-card">${coverText?`<div class="case-background kana-cover" lang="ja" aria-hidden="true">${esc(coverText)}</div>`:`<img class="case-background" src="${esc(image)}" alt="${esc(imageAlt)}">`}<div class="case-shade"></div><div class="case-content"><h2>${esc(title)}</h2><p>${esc(description)}</p>${button(`${esc(actionLabel)} ${icon("arrow")}`, action)}</div></article>`;
+export function homeCaseCard({ title, action, actionLabel }) {
+  const parts=title.split(' · '),position=parts.length>1?parts.shift():null;
+  return `<section class="case-card home-start-card" aria-label="${t('바로 학습하기')}"><div class="home-card-heading">${position?`<span class="home-position">${esc(position)}</span>`:''}<h2>${esc(parts.join(' · '))}</h2></div>${button(`${esc(actionLabel)} ${icon("arrow")}`,action,'primary')}</section>`;
 }

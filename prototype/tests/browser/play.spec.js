@@ -126,8 +126,8 @@ test("new session, motion, rapid taps and reset isolation", async ({
   await btn(page, "home").click();
   await btn(page, "my").click();
   await page.evaluate(() => localStorage.setItem("production-user", "keep"));
+  page.once("dialog", dialog => dialog.accept());
   await btn(page, "reset").click();
-  await btn(page, "confirm-reset").click();
   await expect(btn(page, "start")).toBeVisible();
   expect(
     await page.evaluate(() => localStorage.getItem("production-user")),

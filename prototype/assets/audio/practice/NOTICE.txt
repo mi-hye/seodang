@@ -1,0 +1,7 @@
+Japanese recap clips: VOICEVOX Nemo 女声1, style 10005, core 0.17.0, model 0.16.4.
+Credit: VOICEVOX Nemo
+Terms: https://voicevox.hiroshiba.jp/nemo/term/
+Korean recap clips: installed macOS Yuna Korean voice.
+Original practice text and reproducible generation inputs are included in lines.json.
+Generated files, durations and hashes are recorded in manifest.json.
+Native-speaker listening review remains pending. User microphone recordings are not bundled or uploaded.

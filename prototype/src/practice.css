@@ -1,0 +1,50 @@
+.practice-page{padding-bottom:28px}.practice-page h1{font-size:calc(24px * var(--text-scale));line-height:1.5}.practice-target{font-size:calc(32px * var(--text-scale));line-height:1.8;margin:28px 0;word-break:keep-all;overflow-wrap:anywhere}.practice-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:28px}.practice-choices button{display:block;width:100%;min-width:0;min-height:100px;margin:0;padding:16px 10px;text-align:center;white-space:normal;line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}.practice-choices [aria-pressed=true]{border-color:var(--amber);background:var(--selected)}.practice-feedback{min-height:26px;line-height:1.6;color:var(--amber-light);margin:18px 0}.practice-board{position:relative;height:230px;background:var(--stage-raised);border:1px solid var(--line);border-radius:16px;margin:16px 0}.practice-board canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}.practice-guide{position:absolute;inset:16px;font-size:28px;line-height:1.8;color:var(--line);word-break:keep-all;overflow-wrap:anywhere;pointer-events:none}.practice-answer{font-size:24px;line-height:1.7;margin-top:20px;word-break:keep-all;overflow-wrap:anywhere}.practice-page>.button-pair{margin-top:20px}.practice-page .text-button{margin-top:16px}html[lang=ja] .practice-page{word-break:normal;line-break:strict}.practice-page [lang=ja]{word-break:normal;line-break:strict}
+
+.practice-choices:has(>button:last-child:nth-child(2)){flex-direction:row;flex-wrap:nowrap}.practice-choices:has(>button:last-child:nth-child(2))>button{flex:1;min-width:0}
+
+.lesson-progress{height:5px;margin:0 20px 12px;border-radius:999px;background:var(--line,rgba(255,255,255,.12));overflow:hidden;flex:none}
+.lesson-progress>span{display:block;height:100%;border-radius:inherit;background:var(--amber)}
+.lesson-resume{width:min(420px,calc(100% - 32px));margin:auto;padding:24px;border:1px solid var(--line);border-radius:24px;background:var(--stage-panel);color:var(--text,#f4eee5)}
+.lesson-resume::backdrop{background:rgba(0,0,0,.55)}
+.lesson-resume h2{margin:0 0 24px;font-size:1.2rem;text-align:center}
+.lesson-resume .button-pair{display:flex;flex-flow:row nowrap;gap:10px}
+.lesson-resume .button-pair>button{flex:1;min-width:0;padding:14px 8px}
+
+.practice-heading{display:flex;align-items:center;gap:12px}.practice-heading h1{flex:1;min-width:0;margin:0;word-break:keep-all;overflow-wrap:anywhere}.practice-heading>.icon-button{flex:none;margin:0}
+
+.practice-choices-glyphs button{font-size:calc(30px * var(--text-scale));line-height:1.4}
+
+.practice-writing-reference{display:flex;align-items:center;gap:16px;margin:20px 0 16px}.practice-writing-reference>span{flex:1;min-width:0;font-size:calc(34px * var(--text-scale));line-height:1.5;word-break:keep-all;overflow-wrap:anywhere}.practice-writing-reference>.icon-button{flex:none;margin:0}
+.practice-board{background-color:var(--paper);background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 45px,var(--paper-line) 45px,var(--paper-line) 46px);border:1px solid var(--paper-line);box-shadow:inset 0 1px 4px #30282015;overflow:hidden;user-select:none;-webkit-user-select:none}
+.practice-board canvas{cursor:crosshair}.practice-guide{color:#896e4955;line-height:46px}
+.practice-board-glyph{width:min(100%,280px);height:auto;aspect-ratio:1;margin-inline:auto;background-image:linear-gradient(to right,transparent calc(50% - .5px),var(--paper-line) calc(50% - .5px),var(--paper-line) calc(50% + .5px),transparent calc(50% + .5px)),linear-gradient(to bottom,transparent calc(50% - .5px),var(--paper-line) calc(50% - .5px),var(--paper-line) calc(50% + .5px),transparent calc(50% + .5px))}
+.practice-board-glyph .practice-guide{inset:0;display:grid;place-items:center;font-size:clamp(130px,42vw,180px);line-height:1}
+
+.practice-writing,.practice-writing *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.practice-writing canvas{-webkit-user-drag:none;touch-action:none}
+
+.practice-writing-reference-glyph{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;width:min(100%,280px);margin:20px auto 8px}
+.practice-writing-reference-glyph>span{grid-column:2;text-align:center}
+.practice-writing-reference-glyph>.icon-button{grid-column:3;justify-self:start}
+.practice-writing-reference-glyph+.practice-board-glyph{margin-top:0}
+
+.practice-complete{min-height:calc(100svh - 130px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-bottom:48px}
+.practice-complete h1{font-size:calc(26px * var(--text-scale));line-height:1.5;margin:12px 0 36px;word-break:keep-all;overflow-wrap:anywhere}
+.practice-complete>.primary{width:100%;margin:0}
+.practice-fireworks{width:240px;height:240px;position:relative;display:grid;place-items:center}
+.practice-fireworks>span{display:grid;place-items:center;width:84px;height:84px;border-radius:50%;background:var(--stage-raised);color:var(--amber)}
+.practice-fireworks svg{width:44px;height:44px}
+.practice-fireworks>i{position:absolute;left:calc(50% - 3px);top:calc(50% - 6px);width:6px;height:12px;border-radius:3px;background:var(--amber);opacity:0;animation:lesson-firework 1.6s ease-out var(--delay) both}
+.practice-fireworks>i:nth-child(3n){background:var(--text)}
+.practice-fireworks>i:nth-child(3n + 1){background:var(--muted)}
+@keyframes lesson-firework{0%{opacity:0;transform:rotate(var(--angle)) translateY(0) scale(.3)}15%{opacity:1}70%{opacity:1}100%{opacity:0;transform:rotate(var(--angle)) translateY(calc(-1 * var(--distance))) rotate(90deg) scale(.5)}}
+@media(prefers-reduced-motion:reduce){.practice-fireworks>i{animation:none}}
+html[data-motion=off] .practice-fireworks>i{animation:none}
+
+.practice-choices-words button{font-size:calc(28px * var(--text-scale));line-height:1.45}
+
+.practice-choice-meaning{display:block;margin-top:6px;color:var(--muted);font-size:calc(16px * var(--text-scale));line-height:1.35;word-break:keep-all}
+.practice-writing-meaning{margin:-10px 0 10px;color:var(--muted);font-size:calc(18px * var(--text-scale));line-height:1.4;word-break:keep-all}
+.practice-with-meanings .practice-choices{margin-top:20px}
+.practice-with-meanings .practice-choices button{padding-block:12px}
+.practice-with-meanings .practice-feedback{margin-block:10px}
+@media(max-height:700px){.practice-with-meanings .practice-board{height:200px}.practice-with-meanings>.button-pair{margin-top:12px}}

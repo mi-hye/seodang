@@ -7,7 +7,7 @@ try {
   const state=freshState();state.onboarded=true;state.onboardingLevel=level;state.settings.sound=false;state.settings.textScale=scale;
   await p.addInitScript(s=>{if(!localStorage.getItem('seodang.web-prototype.v1'))localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));},state);
   await p.goto('https://seodang.test/playable.html#home');await p.waitForSelector('.coach-tour');
-  const selectors=['[data-action=stories]','.app-header-settings','.case-card button, .home .record-case button'];
+  const selectors=['.tabs [data-action=home]','.app-header-settings','.case-card button, .home .record-case button'];
   const original=await Promise.all(selectors.map(s=>p.locator(s).first().boundingBox()));
   for(let step=0;step<3;step++) {
    await p.waitForTimeout(100);

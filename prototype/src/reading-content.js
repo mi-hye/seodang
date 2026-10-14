@@ -1,6 +1,6 @@
 // A | marks an authored phrase boundary without adding spaces to Japanese copy.
 export const readingCourses={
- 5:{title:'글을 읽고 핵심 찾기',intro:'안내문과 메시지를 읽고 필요한 정보를 찾아요. 마지막에는 글쓴이의 생각과 이유를 알아봐요.',passages:[
+ 5:{title:'글을 읽고 핵심 찾기',intro:'안내문과 메시지를 읽고 정보와 글쓴이의 생각·이유를 파악해요.',passages:[
   {title:'도서관 안내',paragraphs:[
    '図書館は|午前９時から|午後６時まで|開いています。|水曜日は|休みです。',
    '本は|一人５冊まで、|２週間|借りることが|できます。|返す日が|休みの場合は、|次の日に|返してください。',

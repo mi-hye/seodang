@@ -6,7 +6,7 @@ export const labelWords=[
  {id:'hana',text:'はな',meaning:'꽃',reading:'하나'},
  {id:'neko',text:'ねこ',meaning:'고양이',reading:'네코'},
 ];
-export const labelsUnlocked=s=>developmentMode||normalizeKana(s.kana).lessons.every(l=>l.completed);
+export const labelsUnlocked=s=>developmentMode||(s.onboardingLevel??0)>=1||normalizeKana(s.kana).lessons.every(l=>l.completed);
 export const freshLabels=()=>({version:1,started:false,phase:'intro',index:0,tiles:[],checked:false,matches:[],learned:[],completed:false,feedback:''});
 export const labelsProgress=s=>s.labels||freshLabels();
 const ids=labelWords.map(w=>w.id);
@@ -42,10 +42,10 @@ export function reduceLabels(state,action){
  }
  if(action.type==='labels-check'&&p.phase==='build'&&p.tiles.length===2){
   if(p.tiles.join(',')==='1,0')finishWord(p);
-  else {p.checked=false;p.feedback='소리를 듣고 글자 순서를 다시 확인해 봐요.';}
+  else {p.checked=false;p.feedback='소리를 듣고 글자 순서를 확인해 주세요.';}
  }
  if(action.type==='labels-match'&&p.phase==='match'&&ids.includes(action.left)&&ids.includes(action.right)&&!p.matches.includes(action.left)&&!p.matches.includes(action.right)){
-  if(action.left===action.right){p.matches.push(action.left);p.feedback='';if(p.matches.length===4){p.phase='summary';p.completed=true;}}else p.feedback='그림과 이름표를 다시 확인해 봐요.';
+  if(action.left===action.right){p.matches.push(action.left);p.feedback='';if(p.matches.length===4){p.phase='summary';p.completed=true;}}else p.feedback='그림에 맞는 이름표를 골라 주세요.';
  }
  if(action.type==='labels-next'){
   p.feedback='';

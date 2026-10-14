@@ -13,7 +13,7 @@ try{for(const [width,height,scale,full] of [[320,568,1,false],[390,844,1,true],[
  await page.goto('https://seodang.test/playable.html');
  await expect(page.locator('.home')).toContainText('히라가나 1/3');await expect(page.locator('.home')).toContainText('あ〜そ · 15자');
  if(full)await page.screenshot({path:'/tmp/seodang-thirds-home.png'});
- await page.locator('.tabs [data-action=stories]').click();
+ await page.locator('.tabs [data-action=home]').click();
  for(const text of ['あ〜そ · 15자','た〜ほ · 15자','ま〜ん · 16자'])await expect(page.locator('.learning-map')).toContainText(text);
  await expect(page.locator('.map-choice:disabled')).toHaveCount(4);
  await page.locator('.map-choice[data-id="0"]').click();
@@ -43,7 +43,7 @@ try{for(const [width,height,scale,full] of [[320,568,1,false],[390,844,1,true],[
    await click('kana-next');
    start=row.end;
    if(full&&chapter===0&&start===5){
-    await page.reload();await page.locator('.home [data-action=kana]').click();await expect(page.locator('h1')).toHaveText('か · き · く · け · こ');
+    await page.reload();await page.locator('.home-start-card [data-action=kana]').click();await expect(page.locator('h1')).toHaveText('か · き · く · け · こ');
    }
   }
   if(full){
@@ -53,10 +53,10 @@ try{for(const [width,height,scale,full] of [[320,568,1,false],[390,844,1,true],[
   }
  }
  if(full){
-  await expect(page.locator('[data-action=labels]')).toBeVisible();await click('home');await page.locator('.tabs [data-action=stories]').click();await expect(page.locator('.map-overview')).toContainText('3개 완료');
+  await expect(page.locator('[data-action=labels]')).toBeVisible();await click('home');await page.locator('.tabs [data-action=home]').click();await expect(page.locator('.map-overview')).toContainText('3개 완료');
   await page.reload();await page.locator('.tabs [data-action=my]').click();await expect(page.locator('.record-overview')).toContainText('3개');
   await expect(page.locator('.record-entry')).toHaveCount(0);
-  await page.locator('[data-action=stories]').click();await page.locator('[data-action=kana][data-id="1"]').click();await expect(page.locator('h1')).toHaveText('た · ち · つ · て · と');
+  await page.locator('.tabs [data-action=home]').click();await page.locator('[data-action=kana][data-id="1"]').click();await expect(page.locator('h1')).toHaveText('た · ち · つ · て · と');
  }
  assert.deepEqual(errors,[]);await page.close();console.log(`Mobile ${width}x${height}, text scale ${scale}: passed`);
 }}finally{await browser.close();}

@@ -66,7 +66,7 @@ export const kanaMemoryArt = {
   },
   "chi": {
     "src": "assets/kana-memory/chi-v1.svg",
-    "alt": "칠을 뜻하는 七과 굽은 꼬리"
+    "alt": "팔을 뻗고 치마를 펼친 치어리더"
   },
   "tsu": {
     "src": "assets/kana-memory/tsu-v1.svg",

@@ -1,0 +1,8 @@
+Japanese learning audio: VOICEVOX Nemo
+Voice: 女声1 / normal / style 10005
+Generated with VOICEVOX CORE 0.17.0 and Nemo n0.vvm 0.16.4.
+Commercial and noncommercial use requires credit and compliance with:
+https://voicevox.hiroshiba.jp/nemo/term/
+Preserve VOICEVOX Nemo attribution when distributing these audio files.
+Generation inputs, kana readings, hashes and signal checks: manifest.json.
+Native-speaker listening review pending.

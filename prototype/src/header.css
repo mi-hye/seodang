@@ -29,3 +29,12 @@ button, a, summary, label, input, select {
 
 /* Keep sheet scrolling from chaining into the page underneath. */
 dialog { overscroll-behavior: contain; }
+
+.app-header-title.app-header-brand{font-size:calc(27px * var(--text-scale,1));font-weight:700;letter-spacing:-.6px}
+
+/* Shared text/playback row for learning and onboarding. */
+.audio-text-row{display:flex;flex-flow:row nowrap;align-items:center;gap:12px;min-width:0;width:100%}
+.audio-text-row>:first-child{flex:1;min-width:0;overflow-wrap:anywhere}
+.audio-text-row>button{flex:none;margin:0;min-width:44px;min-height:44px}
+.audio-text-row>.icon-button{width:44px;height:44px;padding:10px}
+.audio-text-row>h1:first-child,.audio-text-row>h2:first-child,.audio-text-row>h3:first-child{margin-block:0}

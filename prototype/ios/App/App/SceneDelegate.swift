@@ -28,6 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 class SeodangBridgeViewController: CAPBridgeViewController {
     override func capacitorDidLoad() {
         bridge?.registerPluginInstance(SeodangSpeechPlugin())
+        bridge?.registerPluginInstance(SeodangUIPlugin())
     }
 }
 
@@ -146,6 +147,24 @@ class SeodangSpeechPlugin: CAPPlugin, CAPBridgedPlugin, AVSpeechSynthesizerDeleg
         DispatchQueue.main.async {
             self.synthesizer.stopSpeaking(at: .immediate)
             call.resolve()
+        }
+    }
+}
+
+// Keep destructive confirmation in the learning interface language, not the device language.
+@objc(SeodangUIPlugin)
+class SeodangUIPlugin: CAPPlugin, CAPBridgedPlugin {
+    let identifier = "SeodangUIPlugin"
+    let jsName = "SeodangUI"
+    let pluginMethods: [CAPPluginMethod] = [CAPPluginMethod(name: "confirmDelete", returnType: CAPPluginReturnPromise)]
+    @objc func confirmDelete(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            guard let controller = self.bridge?.viewController else { call.resolve(["confirmed": false]); return }
+            let japanese = call.getString("locale") == "ja"
+            let alert = UIAlertController(title: nil, message: japanese ? "本当に削除しますか？" : "정말 삭제하시겠습니까?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: japanese ? "キャンセル" : "취소", style: .cancel) { _ in call.resolve(["confirmed": false]) })
+            alert.addAction(UIAlertAction(title: japanese ? "削除" : "삭제", style: .destructive) { _ in call.resolve(["confirmed": true]) })
+            controller.present(alert, animated: true)
         }
     }
 }

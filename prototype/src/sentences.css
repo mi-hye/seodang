@@ -34,3 +34,5 @@
 
 .sentence-choices:has(>button:nth-child(2):last-child),.sentence-answer:has(>button:nth-child(2):last-child){display:flex;flex-direction:row;flex-wrap:nowrap}
 .sentence-choices:has(>button:nth-child(2):last-child)>button,.sentence-answer:has(>button:nth-child(2):last-child)>button{flex:1 1 0;min-width:0}
+
+.sentence-kanji{margin:18px 0;border-block:1px solid var(--line);padding:12px 0}.sentence-kanji summary{cursor:pointer;color:var(--muted);min-height:32px}.sentence-kanji p{display:flex;align-items:baseline;gap:18px;margin:20px 0 8px}.sentence-kanji ruby{font-size:28px;line-height:1.8}.sentence-kanji rt{font-size:12px;color:var(--muted)}.sentence-kanji span{font-size:16px}

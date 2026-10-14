@@ -1,0 +1,19 @@
+/* Library layout inherits the original shared dark palette. */
+.library-theme body,.library-theme .shell{background:var(--stage);color:var(--text)}
+.library-theme .tabs{background:var(--stage);border-color:var(--line);box-shadow:none}
+.library-theme .tab{color:var(--muted)}
+.library-theme .tab.active{color:var(--amber);background:transparent}
+.library-theme .home .case-card.home-start-card{border:1px solid var(--line);border-radius:16px;padding:16px;background:var(--stage-raised)}
+.library-theme .home-start-card h2{font-size:calc(21px * var(--text-scale));margin:0;line-height:1.4;min-width:0}
+.library-theme .home-start-card>.primary{border-radius:12px;min-height:44px;box-shadow:none}
+.library-theme .view-home>.home{gap:28px}
+.library-theme .record-overview>div{background:var(--stage-raised)}
+.library-theme .record-overview dt,.library-theme .weekday,.library-theme .record-note{color:var(--muted)}
+.library-theme .record-calendar{border-color:var(--line)}
+.library-theme .calendar-day[aria-pressed=true]{border-color:var(--amber)}
+.library-theme .calendar-day.has-activity:after{background:var(--amber)}
+
+.home-card-heading{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:10px;margin-bottom:12px}
+.home-position{display:inline-flex;flex-shrink:0;white-space:nowrap;padding:2px 9px;border-radius:6px;background:var(--stage-panel);color:var(--muted);font-size:13px;line-height:1.7}
+
+html[lang=ja] .map-title,html[lang=ja] .setting{word-break:normal;line-break:strict}

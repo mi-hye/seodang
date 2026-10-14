@@ -11,7 +11,7 @@ async function setup(browser,{width=390,height=844,scale=1,chapter=0,index=0}={}
  const s=freshState();s.onboarded=true;s.onboardingLevel=1;s.settings.sound=false;s.settings.textScale=scale;s.kana=freshKana();s.kana.active=chapter;
  s.kana.lessons.forEach((l,i)=>{if(i<chapter)Object.assign(l,{started:true,phase:'summary',completed:true,caseSolved:true});});Object.assign(s.kana.lessons[chapter],{started:true,phase:'quiz',index});
  await page.addInitScript(s=>{if(!sessionStorage.seeded){localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));sessionStorage.seeded='1';}},s);
- await page.goto('https://seodang.test/playable.html');await page.locator('.home [data-action=kana]').click();
+ await page.goto('https://seodang.test/playable.html');await page.locator('.home-start-card [data-action=kana]').click();
  return {page,errors,letters:kanaRound(kanaLessons[chapter],index).letters};
 }
 async function center(page,side,id){const r=await page.locator(selector(side,id)).boundingBox();return {x:r.x+r.width/2,y:r.y+r.height/2};}
@@ -28,7 +28,7 @@ try{for(const options of [{width:320,height:568},{},{scale:1.2},{chapter:2,index
  await drag(page,letters[0].id,letters[1].id);await expect(page.locator('.kana-course-progress,.kana-feedback,.kana-match-count,.kana-match-hint,.kana-match-instruction,.kana-match-headings')).toHaveCount(0);await expect(page.locator('[data-match-lines] path')).toHaveCount(0);await expect(page.locator('[data-action=kana-next]')).toHaveCount(0);
  const first=await center(page,'glyph',letters[0].id);await page.mouse.move(first.x,first.y);await page.mouse.down();await page.mouse.move(first.x+30,first.y+15);await page.locator('[data-matching]').dispatchEvent('pointercancel',{pointerId:1,pointerType:'mouse'});await page.mouse.up();await expect(page.locator('[data-match-lines] path')).toHaveCount(0);
  await drag(page,letters[0].id,letters[0].id);await expect(page.locator('[data-match-lines] path')).toHaveCount(1);
- await page.reload();await page.locator('.home [data-action=kana]').click();await expect(page.locator('[data-match-lines] path')).toHaveCount(1);await expect(page.locator(selector('glyph',letters[0].id))).toBeDisabled();
+ await page.reload();await page.locator('.home-start-card [data-action=kana]').click();await expect(page.locator('[data-match-lines] path')).toHaveCount(1);await expect(page.locator(selector('glyph',letters[0].id))).toBeDisabled();
  await drag(page,letters[1].id,letters[1].id,{reverse:true});await expect(page.locator('[data-match-lines] path')).toHaveCount(2);
  for(const [i,l] of letters.slice(2).entries()){
   if(i===0){await page.locator(selector('glyph',l.id)).focus();await page.keyboard.press('Enter');await page.locator(selector('reading',l.id)).focus();await page.keyboard.press('Enter');}

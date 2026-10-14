@@ -13,9 +13,9 @@ try{
  await page.goto('https://seodang.test/playable.html');await expect(page.locator('.home')).toContainText('히라가나 1/3');await expect(page.locator('.kana-cover')).toHaveText('あ い う え お');
  await page.screenshot({path:'/tmp/seodang-thirds-home.png'});
  await page.locator('.tabs [data-action=my]').click();await expect(page.locator('.record-overview')).toContainText('1개');await expect(page.locator('.record-cases')).toHaveCount(0);
- await page.locator('[data-action=stories]').click();await page.locator('[data-action=kana][data-id="0"]').click();await expect(page.locator('h1')).toHaveText('あ · い · う · え · お');
+ await page.locator('.tabs [data-action=home]').click();await page.locator('[data-action=kana][data-id="0"]').click();await expect(page.locator('h1')).toHaveText('あ · い · う · え · お');
  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('seodang.web-prototype.v1')));assert.equal(saved.kana.version,8);assert.deepEqual(saved.kana.previousCourse,state.kana);assert.deepEqual(saved.kana.learned,state.kana.learned);
  await page.locator('[data-action=kana-next]').click();await expect(page.locator('canvas')).toBeVisible();await expect.poll(()=>page.locator('.kana-memory-card img').evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);await page.screenshot({path:'/tmp/seodang-thirds-writing.png'});
- await page.locator('[data-action=home]').first().click();await page.locator('.tabs [data-action=stories]').click();await expect(page.locator('.map-choice:disabled')).toHaveCount(4);await page.screenshot({path:'/tmp/seodang-thirds-map.png'});
+ await page.locator('[data-action=home]').first().click();await page.locator('.tabs [data-action=home]').click();await expect(page.locator('.map-choice:disabled')).toHaveCount(4);await page.screenshot({path:'/tmp/seodang-thirds-map.png'});
  assert.deepEqual(errors,[]);console.log('v7 migration: original save, learned glyphs and completion preserved; expanded lessons start at 1/3 with correct locks.');
 }finally{await browser.close();}

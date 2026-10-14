@@ -1,6 +1,7 @@
+import {t,setUILanguage,loadUILanguage} from './i18n.js';
 import { load } from './storage.js';
 let onboarded = false;
-try { onboarded = load(window.localStorage).state.onboarded; } catch { /* First-run setup remains available. */ }
+try { const state=load(window.localStorage).state;onboarded=state.onboarded;await loadUILanguage(state);setUILanguage(state); } catch { /* First-run setup remains available. */ }
 const destination = onboarded ? 'playable.html#home' : 'setup.html';
 const sharedFiles = ['src/header.js', 'src/header.css', 'src/ui.js', 'src/media.js', 'src/storage.js', 'src/engine.js', 'src/kana-state.js', 'src/content.js'];
 const files = [...sharedFiles, ...(onboarded
@@ -13,6 +14,7 @@ const track = document.querySelector('.loading-track');
 const fill = document.querySelector('.loading-fill');
 const retry = document.querySelector('.retry');
 const box = document.querySelector('.loading');
+retry.textContent=t('다시 시도');track.setAttribute('aria-label',t('화면 준비'));document.querySelector('main').setAttribute('aria-label',t('서당 시작 화면'));document.querySelector('h1').textContent=t('서당');
 let controller;
 function progress(value) {
   percent.textContent = `${value}%`;
@@ -26,7 +28,7 @@ async function prepare() {
   const timeout = setTimeout(() => controller.abort(), 15000);
   retry.hidden = true;
   box.setAttribute('aria-busy', 'true');
-  label.textContent = '준비하고 있어요';
+  label.textContent = t('불러오는 중');
   progress(0);
   let completed = 0;
   const count = files.length + 1;
@@ -43,14 +45,14 @@ async function prepare() {
     ]);
     clearTimeout(timeout);
     if (signal.aborted) return;
-    label.textContent = '준비됐어요';
+    label.textContent = t('준비됐어요');
     box.setAttribute('aria-busy', 'false');
     // Let the completed bar paint once before navigating; no artificial progress timer.
     requestAnimationFrame(() => requestAnimationFrame(() => window.location.replace(destination)));
   } catch {
     controller.abort();
     clearTimeout(timeout);
-    label.textContent = '불러오지 못했어요';
+    label.textContent = t('불러오지 못했어요');
     box.setAttribute('aria-busy', 'false');
     retry.hidden = false;
   }

@@ -2009,3 +2009,11 @@ dialog :focus-visible {
   word-break: keep-all;
   overflow-wrap: break-word;
 }
+
+/* Start or resume above the learning map. */
+.view-home>.home{justify-content:flex-start;gap:28px;padding-top:12px;padding-bottom:24px}
+.home .case-card.home-start-card{min-height:0;display:block;padding:16px;background:var(--stage-raised);border:1px solid var(--line);border-radius:14px;box-shadow:none}
+.home-start-card h2{font-size:calc(18px * var(--text-scale));line-height:1.5;margin:0 0 12px}
+.home-start-card>.primary{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:46px;margin:0;padding:10px 14px;font-size:calc(16px * var(--text-scale))}
+.tabs{display:flex;flex-direction:row;flex-wrap:nowrap}
+.tabs>.tab{flex:1 1 0;min-width:0}

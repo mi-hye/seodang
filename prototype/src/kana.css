@@ -29,10 +29,6 @@
 .kana-quiz-progress + .kana-case-scene{margin-bottom:0;max-height:220px}
 .kana-feedback:empty{display:none}
 
-.kana-preview-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:24px 0}
-.kana-preview-grid span{display:grid;place-items:center;min-height:64px;border-radius:12px;background:var(--stage-raised);font-size:34px;border:2px solid transparent}
-.kana-preview-grid .is-speaking{background:var(--amber);color:var(--button-ink);border-color:var(--amber-light)}
-.kana-preview-status{min-height:28px;font-size:17px}
 .kana-target{font-size:48px;letter-spacing:.1em;background:var(--stage-raised);border-radius:12px;padding:14px}
 
 .kana-letter-nav{display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px}
@@ -130,3 +126,26 @@
 /* Center the introduction in the usable space below the shared header. */
 .view-kana:has(.kana-intro){display:flex;flex-direction:column}
 .kana-page.kana-intro{flex:1;width:100%;margin:0 auto;display:flex;flex-direction:column;justify-content:center;padding-top:24px;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+
+/* Each group takes turns bouncing; the last pair sits between the top three. */
+.kana-vowel-motion{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px 12px;width:min(100%,310px);margin:24px auto 16px}
+.kana-vowel-card{grid-column:span 2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-width:0;min-height:112px;padding:16px 4px 12px}
+.kana-vowel-card:nth-child(4){grid-column:2/span 2}.kana-vowel-card:nth-child(5){grid-column:4/span 2}
+.kana-vowel-glyph{display:block;font-size:clamp(40px,12vw,54px);line-height:1.15;color:var(--amber);transform-origin:50% 100%;animation:kana-vowel-hop 3.6s ease-in-out infinite;animation-delay:var(--letter-delay)}
+.kana-vowel-reading{font-size:calc(16px * var(--text-scale));line-height:1.3;color:var(--muted)}
+.kana-intro:has(.kana-vowel-motion) .kana-story{text-align:center}
+@keyframes kana-vowel-hop{0%,16%,100%{transform:translateY(0) scale(1)}3%{transform:translateY(2px) scale(1.06,.92)}7%{transform:translateY(-14px) scale(.97,1.05)}11%{transform:translateY(0) scale(1.07,.94)}14%{transform:translateY(-3px) scale(1)}}
+@media(max-height:700px){.kana-vowel-motion{margin-block:16px 8px;gap:12px 10px}.kana-vowel-card{min-height:96px;padding-block:12px 8px}}
+@media(prefers-reduced-motion:reduce){.kana-vowel-glyph{animation:none}}
+
+/* Center the complete intro against the screen, independently of header and dev tools. */
+.view-kana:has(.kana-intro){display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr)}
+.view-kana:has(.kana-intro)>.app-header{grid-area:1/1;position:relative;z-index:2}
+.view-kana:has(.kana-intro)>.lesson-progress{grid-area:2/1;position:relative;z-index:1}
+.kana-page.kana-intro{grid-area:1/1/4/2;min-height:100svh;padding-block:max(96px,calc(env(safe-area-inset-top,0px) + 72px));justify-content:center}
+.kana-intro-content{width:100%;min-width:0}
+.kana-intro-content .kana-vowel-motion{margin:0 auto 24px}
+.kana-intro-content .kana-story{margin:0 0 24px}
+.kana-intro-content>.primary{margin:0;width:100%}
+
+.kana-reading-row>.kana-reading{margin:0}

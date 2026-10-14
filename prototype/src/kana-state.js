@@ -38,24 +38,26 @@ export const versionSixLessons = [
  {...previousKanaLessons[2],letters:allLetters.filter(l=>!['a','o','i',...parcelIds].includes(l.id))},
 ].map(l=>({...l,title:l.letters.map(x=>x.text).join(''),rangeLabel:`${l.letters.length}글자 · 조금씩 배우기`}));
 export const versionSevenLessons=versionSixLessons.map((l,i)=>i===0?{...l,letters:[...l.letters,allLetters.find(x=>x.id==='ki')],title:'あおい・あき・あい'}:l);
-export const kanaLessons = legacyKanaLessons.map((lesson,i)=>({
- ...lesson, caseTitle:`히라가나 ${i+1}/3`, rangeLabel:`${lesson.letters[0].text}〜${lesson.letters.at(-1).text} · ${lesson.letters.length}자`,
-}));
+export const kanaLessons = Array.from({length:5},(_,i)=>{
+ const letters=allLetters.slice(i*10,(i+1)*10),split=letters.length===6?3:5;
+ return {id:i,caseTitle:`히라가나 ${letters[0].text}-${letters.at(-1).text}`,title:letters.map(l=>l.text).join(''),letters,rounds:[letters.slice(0,split),letters.slice(split)].filter(r=>r.length),rangeLabel:`${letters[0].text}〜${letters.at(-1).text} · ${letters.length}자`};
+});
 export function kanaRound(lesson,index=0){
  let start=0;
- for(const [number,group] of lesson.groups.entries()){
-  const letters=legacyKanaGroups[group].letters,end=start+letters.length;
-  if(index<end)return {start,end,letters,number:number+1,total:lesson.groups.length};
+ const rounds=lesson.rounds||lesson.groups.map(group=>legacyKanaGroups[group].letters);
+ for(const [number,letters] of rounds.entries()){
+  const end=start+letters.length;
+  if(index<end)return {start,end,letters,number:number+1,total:rounds.length};
   start=end;
  }
 }
 export const kanaLetters = allLetters;
 const freshLesson = () => ({ started: false, phase: 'intro', index: 0, answered: false, feedback: '', completed: false, caseSolved: false, matches: [] });
-export const freshKana = () => ({ version: 8, active: 0, lessons: kanaLessons.map(freshLesson), learned: [] });
-export const selectedLevel = state => state.onboardingLevel ?? (state.onboarded ? 2 : 1);
+export const freshKana = () => ({ version: 9, active: 0, lessons: kanaLessons.map(freshLesson), learned: [] });
+export const selectedLevel = state => state.onboardingLevel ?? (state.onboarded ? 2 : 0);
 export function normalizeKana(previous){
  if(!previous)return freshKana();
- if(previous.version===8){
+ if(previous.version===9){
   const k=structuredClone(previous);
   k.lessons.forEach((l,i)=>{
    if(l.matches===undefined){
@@ -68,7 +70,13 @@ export function normalizeKana(previous){
   return k;
  }
  const k=freshKana();
- // Keep the original course and learned glyphs, without crediting a new 15/16-letter lesson as completed.
+ // Archive the old arrangement and retain completion only when every glyph was completed.
+ if(previous.version===8){
+  if(previous.practiceAccess)k.practiceAccess=true;
+  const completed=new Set(legacyKanaLessons.flatMap((lesson,i)=>previous.lessons[i].completed?lesson.letters.map(l=>l.id):[]));
+  k.lessons=k.lessons.map((p,i)=>kanaLessons[i].letters.every(l=>completed.has(l.id))?{...p,started:true,phase:'summary',completed:true,caseSolved:true}:p);
+  k.active=Math.max(0,k.lessons.findIndex(l=>!l.completed));
+ }
  k.previousCourse=structuredClone(previous);
  k.learned=[...previous.learned];
  return k;
@@ -77,7 +85,7 @@ export const kanaSolvedCount = previous => normalizeKana(previous).lessons.filte
 export const kanaCompletedCount = previous => normalizeKana(previous).lessons.filter(l => l.completed).length;
 export const kanaUnlocked = (k, index) => Number.isInteger(index) && index >= 0 && index < kanaLessons.length && (developmentMode || k.lessons.slice(0, index).every(l => l.completed));
 function validLesson(l, length, version = 2) {
-  return l && typeof l.started === 'boolean' && (version === 8 ? ['intro','learn','reading','quiz','summary'] : version >= 4 ? ['preview','intro','learn','quiz','solve','summary',...(version>=7?['reading']:[])] : version === 3 ? ['intro','learn','quiz','solve','summary'] : ['learn','quiz','summary']).includes(l.phase)
+  return l && typeof l.started === 'boolean' && (version >= 8 ? ['intro','learn','reading','quiz','summary'] : version >= 4 ? ['preview','intro','learn','quiz','solve','summary',...(version>=7?['reading']:[])] : version === 3 ? ['intro','learn','quiz','solve','summary'] : ['learn','quiz','summary']).includes(l.phase)
     && Number.isInteger(l.index) && l.index >= 0 && l.index < length
     && typeof l.answered === 'boolean' && typeof l.feedback === 'string' && (l.storyRound===undefined || (Number.isInteger(l.storyRound)&&l.storyRound>=0&&l.storyRound<=2)) && (l.help===undefined || typeof l.help==='boolean')
     && typeof l.completed === 'boolean' && (l.phase !== 'summary' || l.completed)
@@ -86,16 +94,16 @@ function validLesson(l, length, version = 2) {
 export function validKana(k) {
   if (!k || !Array.isArray(k.learned) || new Set(k.learned).size !== k.learned.length) return false;
   if (k.version === undefined) return validLesson(k, 5) && k.learned.every(id => legacyKanaGroups[0].letters.some(l => l.id === id));
-  if (![2,3,4,5,6,7,8].includes(k.version)) return false;
-  const lessons = k.version === 8 ? kanaLessons : k.version === 7 ? versionSevenLessons : k.version === 6 ? versionSixLessons : k.version === 5 ? previousKanaLessons : k.version === 4 ? legacyKanaLessons : legacyKanaGroups;
+  if (![2,3,4,5,6,7,8,9].includes(k.version)) return false;
+  const lessons = k.version === 9 ? kanaLessons : k.version === 8 ? legacyKanaLessons : k.version === 7 ? versionSevenLessons : k.version === 6 ? versionSixLessons : k.version === 5 ? previousKanaLessons : k.version === 4 ? legacyKanaLessons : legacyKanaGroups;
   const unlocked = i => Number.isInteger(i) && i >= 0 && i < lessons.length && k.lessons.slice(0,i).every(l => l.completed);
   return Array.isArray(k.lessons) && k.lessons.length === lessons.length
     && k.lessons.every((l, i) => validLesson(l, lessons[i].letters.length, k.version))
     && (k.practiceAccess===undefined || typeof k.practiceAccess==='boolean')
     && Number.isInteger(k.active) && k.active>=0 && k.active<lessons.length
-    && ((k.version===8 && k.practiceAccess) || (unlocked(k.active) && k.lessons.every((l, i) => (!l.started && !l.completed) || unlocked(i))))
+    && ((k.version>=8 && k.practiceAccess) || (unlocked(k.active) && k.lessons.every((l, i) => (!l.started && !l.completed) || unlocked(i))))
     && k.learned.every(id => kanaLetters.some(l => l.id === id))
-    && (k.version!==8 || k.lessons.every((l,i)=>l.matches===undefined || (Array.isArray(l.matches)&&new Set(l.matches).size===l.matches.length&&l.matches.every(id=>kanaRound(kanaLessons[i],l.index).letters.some(x=>x.id===id))&&(l.phase!=='quiz'||l.answered===(l.matches.length===kanaRound(kanaLessons[i],l.index).letters.length)))));
+    && (k.version<8 || k.lessons.every((l,i)=>l.matches===undefined || (Array.isArray(l.matches)&&new Set(l.matches).size===l.matches.length&&l.matches.every(id=>kanaRound(lessons[i],l.index).letters.some(x=>x.id===id))&&(l.phase!=='quiz'||l.answered===(l.matches.length===kanaRound(lessons[i],l.index).letters.length)))));
 }
 export function reduceKana(previous, action) {
  const k=normalizeKana(previous);

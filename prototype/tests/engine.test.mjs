@@ -26,7 +26,7 @@ test("visible request needs no hidden clue clicks; wrong color and location retr
   assert.match(s.episode.feedback, /골라/);
   assert.deepEqual(s.episode.clues, []);
   for (const [id, match] of [
-    ["bag-door-blue", /위치/],
+    ["bag-door-blue", /창문 옆/],
     ["bag-window-red", /색/],
   ]) {
     s = act(s, "select", { id });

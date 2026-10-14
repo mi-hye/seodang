@@ -43,7 +43,7 @@ export function reduceSentence(progress, action) {
     else {
       s.attempts++;
       s.checked=s.tokens.every((n,i)=>n===i);
-      s.feedback=s.checked?'':['これは → わたしの → かばんです。 순서로 이어 보세요.','かばんは → まどの そばに → あります。 순서로 이어 보세요.','あかい かばんでは → ありません。 순서로 이어 보세요.'][s.index];
+      s.feedback=s.checked?'':['これは → わたしの → かばんです。 순서예요.','かばんは → まどの そばに → あります。 순서예요.','あかい かばんでは → ありません。 순서예요.'][s.index];
     }
   }
   if(action.type==='sentence-select' && s.phase==='solve' && ['window-red','door-blue','window-blue'].includes(action.id)) {s.selected=action.id;s.feedback='';}
@@ -52,7 +52,7 @@ export function reduceSentence(progress, action) {
     else {
       s.attempts++;
       if(s.selected==='window-blue') {s.completed=true;s.phase='summary';s.feedback='';}
-      else s.feedback=s.selected==='window-red'?'ありません은 아니라는 뜻이에요. 빨간 가방을 제외해 보세요.':'まどの そば는 창문 옆이에요. 가방의 위치를 다시 살펴보세요.';
+      else s.feedback=s.selected==='window-red'?'ありません은 아니라는 뜻이에요. 빨간 가방은 제외해요.':'まどの そば는 창문 옆이에요. 위치를 확인해 주세요.';
     }
   }
   return s;

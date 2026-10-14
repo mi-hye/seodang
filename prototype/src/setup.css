@@ -14,6 +14,8 @@
   [data-step="2"] h1 { padding-top: 24px; }
 }
 
-/* Difficulty selection starts directly below the progress indicator. */
-.step-content:has(>[data-step="2"]:not([hidden])){padding-top:0}
+/* Leave breathing room above the difficulty heading. */
+.step-content:has(>[data-step="2"]:not([hidden])){padding-top:36px}
 [data-step="2"] h1{padding-top:0}
+
+.language-question{display:flex;flex-direction:column;gap:8px}.language-question [lang=ja]{font-size:.8em;line-height:1.5;font-weight:500;word-break:normal;line-break:strict}.language-option{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}.language-option [lang=ja]{color:var(--muted)}

@@ -21,7 +21,7 @@ try {
  assert.ok(!requests.includes('src/sentences.js'));
  await click('settings');await page.locator('[data-setting="difficulty"]').selectOption('3');await page.keyboard.press('Escape');
  assert.ok((await page.locator('.home').innerText()).includes('3단계'));
- await click('stories');assert.equal(await page.locator('.map-choice:disabled').count(),2);await click('sentence');
+ await click('home');assert.equal(await page.locator('.map-choice:disabled').count(),2);await click('sentence');
  assert.ok(requests.includes('src/sentences.js'));assert.ok(requests.includes('src/sentences.css'));
  assert.equal(await page.locator('.sentence-intro h1').innerText(),'손님의 가방을 찾아요');
  assert.ok((await page.evaluate(()=>window.played)).some(src=>src.includes('level3.intro')));

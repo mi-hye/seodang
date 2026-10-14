@@ -11,34 +11,35 @@
 <body>
 <div class="setup-shell">
 <div id="setup-header"></div>
-<div class="progress" role="progressbar" aria-label="설정 진행" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1"><span></span></div>
+<div class="progress" role="progressbar" aria-label="설정 진행" data-i18n-label="설정 진행" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1"><span></span></div>
 <main><form>
 <div class="step-content">
 <section data-step="1">
-<h1 tabindex="-1">배울 언어를 골라볼까요</h1>
-<fieldset><legend class="sr-only">배울 언어</legend>
-<label class="option"><input type="radio" name="language" value="ja" checked><span class="radio" aria-hidden="true"></span><span>일본어</span></label>
-<label class="option unavailable"><input type="radio" name="language" value="ko" disabled><span class="radio" aria-hidden="true"></span><span>한국어</span><span class="availability">준비 중</span></label>
+<h1 tabindex="-1" class="language-question"><span lang="ko">배울 언어를 선택해 주세요</span><span lang="ja">学ぶ言語を選んでください</span></h1>
+<fieldset><legend class="sr-only"><span lang="ko">배울 언어</span> / <span lang="ja">学ぶ言語</span></legend>
+<label class="option"><input type="radio" name="language" value="ja" checked><span class="radio" aria-hidden="true"></span><span class="language-option"><span lang="ko">일본어</span><span lang="ja">日本語</span></span></label>
+<label class="option"><input type="radio" name="language" value="ko"><span class="radio" aria-hidden="true"></span><span class="language-option"><span lang="ko">한국어</span><span lang="ja">韓国語</span></span></label>
 </fieldset>
 </section>
 <section data-step="2" hidden>
-<h1 tabindex="-1">난이도를 선택해주세요</h1>
-<fieldset><legend class="sr-only">난이도 1부터 7</legend>
-<label class="option"><input type="radio" name="level" value="1" checked><span class="level-number">1</span><span>글씨를 읽을 줄 몰라요</span></label>
-<label class="option"><input type="radio" name="level" value="2"><span class="level-number">2</span><span>글씨는 읽지만 단어가 낯설어요</span></label>
-<label class="option"><input type="radio" name="level" value="3"><span class="level-number">3</span><span>짧은 문장을 이해할 수 있어요</span></label>
-<label class="option"><input type="radio" name="level" value="4"><span class="level-number">4</span><span>일상 대화를 할 수 있어요</span></label>
-<label class="option"><input type="radio" name="level" value="5"><span class="level-number">5</span><span>글의 핵심과 의견을 이해해요</span></label>
-<label class="option"><input type="radio" name="level" value="6"><span class="level-number">6</span><span>일본어로 읽고 생각해요</span></label>
-<label class="option"><input type="radio" name="level" value="7"><span class="level-number">7</span><span>일본어를 듣고 숨은 뜻까지 이해해요</span></label>
+<h1 tabindex="-1" data-i18n="난이도를 선택해 주세요">난이도를 선택해 주세요</h1>
+<fieldset><legend class="sr-only" data-i18n="난이도 0부터 7">난이도 0부터 7</legend>
+<label class="option"><input type="radio" name="level" value="0" checked><span class="level-number">0</span><span data-i18n="글씨를 읽을 줄 몰라요">글씨를 읽을 줄 몰라요</span></label>
+<label class="option"><input type="radio" name="level" value="1"><span class="level-number">1</span><span data-i18n="글자는 읽고 단어를 배우고 싶어요">글자는 읽고 단어를 배우고 싶어요</span></label>
+<label class="option"><input type="radio" name="level" value="2"><span class="level-number">2</span><span data-i18n="단어를 알고 짧은 표현을 배우고 싶어요">단어를 알고 짧은 표현을 배우고 싶어요</span></label>
+<label class="option"><input type="radio" name="level" value="3"><span class="level-number">3</span><span data-i18n="짧은 문장을 이해할 수 있어요">짧은 문장을 이해할 수 있어요</span></label>
+<label class="option"><input type="radio" name="level" value="4"><span class="level-number">4</span><span data-i18n="일상 대화를 할 수 있어요">일상 대화를 할 수 있어요</span></label>
+<label class="option"><input type="radio" name="level" value="5"><span class="level-number">5</span><span data-i18n="글의 핵심과 의견을 이해해요">글의 핵심과 의견을 이해해요</span></label>
+<label class="option"><input type="radio" name="level" value="6"><span class="level-number">6</span><span data-i18n="일본어로 읽고 생각해요">일본어로 읽고 생각해요</span></label>
+<label class="option"><input type="radio" name="level" value="7"><span class="level-number">7</span><span data-i18n="일본어를 듣고 숨은 뜻까지 이해해요">일본어를 듣고 숨은 뜻까지 이해해요</span></label>
 </fieldset>
 </section>
 <section data-step="3" hidden>
-<h1 tabindex="-1">서당은 이렇게 배워요</h1>
+<h1 tabindex="-1" data-i18n="서당은 이렇게 배워요">서당은 이렇게 배워요</h1>
 <div id="onboarding-guide"></div>
 </section>
 </div>
-<div class="actions"><p class="feedback" id="feedback" role="status" aria-live="polite" hidden></p><button class="primary" type="submit">다음</button></div>
+<div class="actions"><p class="feedback" id="feedback" role="status" aria-live="polite" hidden></p><button class="primary" type="submit"><span lang="ko">다음</span> / <span lang="ja">次へ</span></button></div>
 </form></main>
 </div>
 <dialog class="setup-settings" aria-labelledby="panel-title"></dialog>

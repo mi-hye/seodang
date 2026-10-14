@@ -1,3 +1,6 @@
+import {practiceRoundCount,validPractices,normalizePractice} from './practice-state.js';
+import {validKorean,normalizeKorean} from './korean-state.js';
+import {validBasics,normalizeBasics} from './basics-state.js';
 import {validReadings} from './reading-state.js';
 import {validDialogue} from './dialogue-state.js';
 import {validListening,freshListening} from './listening-state.js';
@@ -17,12 +20,15 @@ const steps = [
 ];
 export function valid(s) {
   return (
-    s?.schemaVersion === 1 &&
-    validHistory(s.history) &&
+    s?.schemaVersion === 1 && validPractices(s.practices) &&
+    (s.koreanGuideSeenVersion===undefined||s.koreanGuideSeenVersion===1) &&
+    validKorean(s.korean) &&
+    (s.courseLevels===undefined||(s.courseLevels&&typeof s.courseLevels==='object'&&!Array.isArray(s.courseLevels)&&Object.entries(s.courseLevels).every(([key,value])=>['ko-ja','ja-ko'].includes(key)&&Number.isInteger(value)&&value>=0&&value<=7))) &&
+    validHistory(s.history) && validBasics(s.basics) &&
     validReadings(s.readings) &&
-    s.courseDirection === "ko-ja" &&
+    ["ko-ja", "ja-ko"].includes(s.courseDirection) &&
     (s.uiGuideSeenVersion === undefined || [1,2,3].includes(s.uiGuideSeenVersion)) &&
-    (s.onboardingLevel === undefined || (Number.isInteger(s.onboardingLevel) && s.onboardingLevel >= 1 && s.onboardingLevel <= 7)) &&
+    (s.onboardingLevel === undefined || (Number.isInteger(s.onboardingLevel) && s.onboardingLevel >= 0 && s.onboardingLevel <= 7)) &&
     (s.kana === undefined || validKana(s.kana)) &&
     (s.dialogue === undefined || validDialogue(s.dialogue)) &&
     (s.listening === undefined || validListening(s.listening)) &&
@@ -68,24 +74,43 @@ export function load(storage) {
         state: freshState(),
         blocked: true,
         error:
-          "다른 버전이거나 읽을 수 없는 기록이 있어요. 원본을 보존하고 임시 세션으로 시작합니다. 내 학습에서 기록을 내보내거나 초기화할 수 있어요.",
+          "기록을 열 수 없어 임시로 시작했어요. 기존 기록은 보관돼요. 내 기록에서 초기화할 수 있어요.",
       };
+    if(state.kana&&state.kana.version!==9&&state.practices){
+      const old=Object.entries(state.practices).filter(([key])=>key.startsWith('ko-ja:kana:'));
+      if(old.length){state.previousKanaPractices=Object.fromEntries(old);state.practices=Object.fromEntries(Object.entries(state.practices).filter(([key])=>!key.startsWith('ko-ja:kana:')));}
+    }
     if (state.kana) state.kana = normalizeKana(state.kana);
+    if (state.korean) state.korean = normalizeKorean(state.korean);
+    if (state.basics) state.basics = normalizeBasics(state.basics);
     // Repair the previous build's cross-level handoff once, preserving level 2 progress.
-    if(state.labels?.completed && !state.listening){
+    if(state.courseDirection==='ko-ja' && state.labels?.completed && !state.listening){
       state.listening={...freshListening(),started:true};
       if([1,2].includes(state.onboardingLevel)){state.onboardingLevel=1;state.support='beginner';}
     }
     state.episode.started ??= Boolean(
       state.encountered.length || state.episode.dialogue,
     );
+    if(state.practices?.['ko-ja:basic:7']?.action.type==='basic-check')state.practices['ko-ja:basic:7'].action={type:'basic-next'};
+    migrateLevelLayout(state);
+    if(state.practices)state.practices=Object.fromEntries(Object.entries(state.practices).map(([key,p])=>[key,normalizePractice(key==='ko-ja:basic:7'&&[8,9].includes(p.count)?{...p,count:6,index:(p.count===9?[0,1,2,2,3,4,4,5,5]:[0,1,2,3,4,4,5,5])[p.index]}:p,practiceRoundCount(key))]));
+    if(state.practices?.['ko-ja:basic:7']){
+      delete state.practices['ko-ja:basic:7'];
+      if(state.basics?.lessons?.[7]&&!state.basics.lessons[7].completed)state.basics.lessons[7]={...state.basics.lessons[7],started:true,index:5,phase:'write',selected:null,retry:false};
+    }
+    if(state.practices?.['ko-ja:basic:8']){
+      delete state.practices['ko-ja:basic:8'];
+      if(state.basics?.lessons?.[8]&&!state.basics.lessons[8].completed)state.basics.lessons[8]={...state.basics.lessons[8],started:true,index:4,phase:'write',selected:null,retry:false};
+    }
+    const contracted=state.practices?.['ko-ja:basic:10'];
+    if(contracted){if(contracted.count===12){contracted.count=6;contracted.index=Math.min(5,Math.floor(contracted.index/2));}contracted.action={type:'basic-next'};}
     return { state, blocked: false, error: "" };
   } catch {
     return {
       state: freshState(),
       blocked: true,
       error:
-        "기록을 읽지 못했어요. 이번 세션은 계속할 수 있지만 새로고침하면 진행이 사라질 수 있어요.",
+        "기록을 읽지 못했어요. 계속 학습할 수 있지만 새로고침하면 진도가 사라질 수 있어요.",
     };
   }
 }
@@ -94,9 +119,18 @@ export function save(storage, state) {
     storage.setItem(STORAGE_KEY, JSON.stringify(state));
     return "";
   } catch {
-    return "기기에 저장하지 못했어요. 현재 플레이는 유지되지만 새로고침하면 진행이 사라질 수 있어요.";
+    return "기록을 저장하지 못했어요. 새로고침하면 진도가 사라질 수 있어요.";
   }
 }
 export function reset(storage) {
   storage.removeItem(STORAGE_KEY);
+}
+
+// IDs and pending practice keys stay stable; only the displayed course grouping changes.
+export function migrateLevelLayout(s){
+ if(s.levelLayoutVersion===1)return s;
+ const levelFor=direction=>direction==='ja-ko'?0:(s.basics?.active>=7?0:(s.labels?.started||s.labels?.completed||s.listening?.started||s.basics?.active===6)?1:0);
+ if(s.onboardingLevel===1)s.onboardingLevel=levelFor(s.courseDirection);
+ for(const direction of Object.keys(s.courseLevels||{}))if(s.courseLevels[direction]===1)s.courseLevels[direction]=levelFor(direction);
+ s.levelLayoutVersion=1;return s;
 }
