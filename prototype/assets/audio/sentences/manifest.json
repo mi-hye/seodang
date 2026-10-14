@@ -1,0 +1,52 @@
+{
+  "provider": "VOICEVOX Nemo",
+  "voice": "女声1",
+  "styleId": 10005,
+  "coreVersion": "0.17.0",
+  "modelVersion": "0.16.4",
+  "credit": "VOICEVOX Nemo",
+  "terms": "https://voicevox.hiroshiba.jp/nemo/term/",
+  "languageReview": "Generated short sentences recorded for review; native-speaker listening review pending",
+  "files": {
+    "level3.intro.ja": {
+      "text": "わたしの鞄を探しています。窓のそばにあります。赤い鞄ではありません。",
+      "synthesisText": "わたしの鞄を探しています。窓のそばにあります。赤い鞄ではありません。",
+      "kana": "ワタシノ'/カバンオ'/サガ_シテ'/イマ'_ス、マ'ドノ/ソ'バニ/アリマ'_ス、アカイ'/カバンデワアリマセ'ン",
+      "file": "assets/audio/sentences/level3.intro.ja.wav",
+      "duration": 5.483,
+      "peak": 18571,
+      "rms": 2596.0,
+      "sha256": "6b4af979e53d40c13c2d35b7ddbb4dc856c55ee15facde18203d10d715cbddee"
+    },
+    "level3.owner.ja": {
+      "text": "これは私の鞄です。",
+      "synthesisText": "これは私の鞄です。",
+      "kana": "コレワ'/ワタシノ'/カバンデ'_ス",
+      "file": "assets/audio/sentences/level3.owner.ja.wav",
+      "duration": 1.792,
+      "peak": 18158,
+      "rms": 2826.2,
+      "sha256": "44e9832ec928742be62b8d9220219e10ca384e17d44ccb8f4f6f9133952e4c1c"
+    },
+    "level3.location.ja": {
+      "text": "鞄は窓のそばにあります。",
+      "synthesisText": "鞄は窓のそばにあります。",
+      "kana": "カバンワ'/マ'ドノ/ソ'バニ/アリマ'_ス",
+      "file": "assets/audio/sentences/level3.location.ja.wav",
+      "duration": 2.048,
+      "peak": 18643,
+      "rms": 2884.6,
+      "sha256": "ef11ec1781d6a7a0ebb14b06ea0f95e5bdd69e300dbe460d05d85a6244a33008"
+    },
+    "level3.not-red.ja": {
+      "text": "赤い鞄ではありません。",
+      "synthesisText": "赤い鞄ではありません。",
+      "kana": "アカイ'/カバンデワアリマセ'ン",
+      "file": "assets/audio/sentences/level3.not-red.ja.wav",
+      "duration": 1.792,
+      "peak": 15801,
+      "rms": 2872.9,
+      "sha256": "ba5d65103b5d891f80a33a3997c4a0078e4f62fe4e1dfce0ce12962057eae8c6"
+    }
+  }
+}

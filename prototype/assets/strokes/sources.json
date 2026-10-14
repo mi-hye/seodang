@@ -1,0 +1,238 @@
+{
+  "project": "KanjiVG",
+  "source": "https://github.com/KanjiVG/kanjivg",
+  "commit": "70a0b7ae0c18ceb5cb358274b029cce0234a43bc",
+  "license": "CC BY-SA 3.0",
+  "files": [
+    {
+      "character": "あ",
+      "file": "03042.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03042.svg"
+    },
+    {
+      "character": "い",
+      "file": "03044.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03044.svg"
+    },
+    {
+      "character": "う",
+      "file": "03046.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03046.svg"
+    },
+    {
+      "character": "え",
+      "file": "03048.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03048.svg"
+    },
+    {
+      "character": "お",
+      "file": "0304a.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0304a.svg"
+    },
+    {
+      "character": "か",
+      "file": "0304b.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0304b.svg"
+    },
+    {
+      "character": "き",
+      "file": "0304d.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0304d.svg"
+    },
+    {
+      "character": "く",
+      "file": "0304f.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0304f.svg"
+    },
+    {
+      "character": "け",
+      "file": "03051.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03051.svg"
+    },
+    {
+      "character": "こ",
+      "file": "03053.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03053.svg"
+    },
+    {
+      "character": "さ",
+      "file": "03055.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03055.svg"
+    },
+    {
+      "character": "し",
+      "file": "03057.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03057.svg"
+    },
+    {
+      "character": "す",
+      "file": "03059.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03059.svg"
+    },
+    {
+      "character": "せ",
+      "file": "0305b.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0305b.svg"
+    },
+    {
+      "character": "そ",
+      "file": "0305d.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0305d.svg"
+    },
+    {
+      "character": "た",
+      "file": "0305f.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0305f.svg"
+    },
+    {
+      "character": "ち",
+      "file": "03061.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03061.svg"
+    },
+    {
+      "character": "つ",
+      "file": "03064.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03064.svg"
+    },
+    {
+      "character": "て",
+      "file": "03066.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03066.svg"
+    },
+    {
+      "character": "と",
+      "file": "03068.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03068.svg"
+    },
+    {
+      "character": "な",
+      "file": "0306a.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0306a.svg"
+    },
+    {
+      "character": "に",
+      "file": "0306b.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0306b.svg"
+    },
+    {
+      "character": "ぬ",
+      "file": "0306c.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0306c.svg"
+    },
+    {
+      "character": "ね",
+      "file": "0306d.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0306d.svg"
+    },
+    {
+      "character": "の",
+      "file": "0306e.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0306e.svg"
+    },
+    {
+      "character": "は",
+      "file": "0306f.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0306f.svg"
+    },
+    {
+      "character": "ひ",
+      "file": "03072.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03072.svg"
+    },
+    {
+      "character": "ふ",
+      "file": "03075.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03075.svg"
+    },
+    {
+      "character": "へ",
+      "file": "03078.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03078.svg"
+    },
+    {
+      "character": "ほ",
+      "file": "0307b.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0307b.svg"
+    },
+    {
+      "character": "ま",
+      "file": "0307e.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0307e.svg"
+    },
+    {
+      "character": "み",
+      "file": "0307f.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0307f.svg"
+    },
+    {
+      "character": "む",
+      "file": "03080.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03080.svg"
+    },
+    {
+      "character": "め",
+      "file": "03081.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03081.svg"
+    },
+    {
+      "character": "も",
+      "file": "03082.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03082.svg"
+    },
+    {
+      "character": "や",
+      "file": "03084.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03084.svg"
+    },
+    {
+      "character": "ゆ",
+      "file": "03086.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03086.svg"
+    },
+    {
+      "character": "よ",
+      "file": "03088.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03088.svg"
+    },
+    {
+      "character": "ら",
+      "file": "03089.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03089.svg"
+    },
+    {
+      "character": "り",
+      "file": "0308a.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0308a.svg"
+    },
+    {
+      "character": "る",
+      "file": "0308b.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0308b.svg"
+    },
+    {
+      "character": "れ",
+      "file": "0308c.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0308c.svg"
+    },
+    {
+      "character": "ろ",
+      "file": "0308d.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0308d.svg"
+    },
+    {
+      "character": "わ",
+      "file": "0308f.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0308f.svg"
+    },
+    {
+      "character": "を",
+      "file": "03092.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03092.svg"
+    },
+    {
+      "character": "ん",
+      "file": "03093.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/03093.svg"
+    }
+  ]
+}

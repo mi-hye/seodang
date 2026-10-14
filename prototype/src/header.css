@@ -1,0 +1,40 @@
+/* Shared palette for onboarding and learning screens. */
+:root {
+  --stage: #15121c;
+  --stage-raised: #221e29;
+  --stage-panel: #2b2531;
+  --text: #f7eee1;
+  --muted: #b9adbb;
+  --line: #514655;
+  --selected: #382c29;
+  --amber: #f2ae56;
+  --amber-light: #ffd79a;
+  --amber-hover: #ffc87d;
+  --button-ink: #302217;
+  --paper: #f6ebd7;
+  --paper-line: #d9cbb0;
+  --ink: #302820;
+}
+.app-header{display:flex;align-items:center;gap:6px;min-height:64px;padding:calc(env(safe-area-inset-top,0px) + 8px) 16px 10px;color:inherit;position:relative;z-index:2}.app-header-title{font-family:inherit;font-size:20px;font-weight:650;line-height:1.4;letter-spacing:-.4px;min-width:0;overflow-wrap:break-word}.app-header button{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:44px;min-width:44px;min-height:44px;height:44px;padding:10px;margin:0;border:0;border-radius:12px;background:transparent;color:inherit;cursor:pointer}.app-header button:disabled{opacity:.35;cursor:default}.app-header .app-header-settings{margin-left:auto}.app-header svg{width:24px;height:24px;flex-shrink:0}.app-header button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+/* The same settings content is available during onboarding, loaded only on tap. */
+.setup-settings{max-width:420px;width:calc(100% - 32px);max-height:calc(100svh - 80px);overflow:auto;border:1px solid var(--paper-line);border-radius:18px;padding:22px;color:var(--ink);background:var(--paper)}.setup-settings::backdrop{background:#0007}.setup-settings .panel-head{display:flex;align-items:center;gap:12px}.setup-settings h2{font-size:21px;margin:0;flex:1}.setup-settings button{min-height:44px;border:0;border-radius:10px;padding:10px 14px;background:var(--amber);color:var(--button-ink);font:inherit}.setup-settings .icon-button{width:44px;padding:10px;background:transparent;color:inherit}.setup-settings svg{width:24px;height:24px}.setup-settings .setting{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0;font-size:17px}.setup-settings select{max-width:58%;font:inherit;padding:8px;background:var(--paper);border:1px solid var(--paper-line);border-radius:8px}.setup-settings input{width:22px;height:22px}.setup-settings .muted{font-size:16px;line-height:1.6}.setup-settings .setting-preview{display:none}.setup-settings .primary{width:100%}
+
+.setup-settings select{color:var(--ink);color-scheme:light}.setup-settings input{accent-color:var(--button-ink)}
+
+/* Touch controls should not retain browser tap highlighting. Keyboard focus stays visible. */
+button, a, summary, label, input, select {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Keep sheet scrolling from chaining into the page underneath. */
+dialog { overscroll-behavior: contain; }
+
+.app-header-title.app-header-brand{font-size:calc(27px * var(--text-scale,1));font-weight:700;letter-spacing:-.6px}
+
+/* Shared text/playback row for learning and onboarding. */
+.audio-text-row{display:flex;flex-flow:row nowrap;align-items:center;gap:12px;min-width:0;width:100%}
+.audio-text-row>:first-child{flex:1;min-width:0;overflow-wrap:anywhere}
+.audio-text-row>button{flex:none;margin:0;min-width:44px;min-height:44px}
+.audio-text-row>.icon-button{width:44px;height:44px;padding:10px}
+.audio-text-row>h1:first-child,.audio-text-row>h2:first-child,.audio-text-row>h3:first-child{margin-block:0}

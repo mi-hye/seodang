@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#faf6ee">
+<title>서당 · 홈</title>
+<link rel="stylesheet" href="src/home.css">
+</head>
+<body>
+<div class="home-shell">
+<header><a class="back" href="index.html" aria-label="시작 화면으로 돌아가기">‹</a><span class="brand">서당</span><span class="language">일본어 첫걸음</span></header>
+<main>
+<div class="intro"><p class="eyebrow">나의 이야기</p><h1>오늘의 사건</h1></div>
+<article class="case-card" aria-labelledby="case-title">
+<div class="case-art"><img src="references/04_case_investigation.png" alt="카페 창가 테이블 위에 놓인 파란 가방" width="941" height="1672"></div>
+<div class="case-body"><div class="case-meta"><span>사건 01</span><span>약 3–5분</span></div><h2 id="case-title">카페에 남겨진 가방</h2><p class="case-copy">메모 속 일본어를 읽고<br>가방의 주인을 찾아보세요.</p><div class="tags"><span>색</span><span>위치</span><span>표현 2개</span></div><div class="case-status" id="case-status">아직 시작하지 않았어요</div><a class="primary" id="case-link" href="playable.html#case">사건 시작하기 <span aria-hidden="true">→</span></a></div>
+</article>
+<section class="learning" aria-labelledby="learning-title"><div><h2 id="learning-title">만난 표현</h2><p id="learning-copy">이야기에서 만난 표현이 여기에 남아요.</p></div><span class="count" id="expression-count">0</span><ul id="expressions" hidden></ul></section>
+<p class="storage-message" role="status" id="storage-message" hidden></p>
+</main>
+<footer><span class="home-current" aria-current="page">홈</span><span>한국어 안내 · 일본어 학습</span></footer>
+</div>
+<script type="module" src="src/home.js"></script>
+</body>
+</html>

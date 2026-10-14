@@ -1,0 +1,92 @@
+[
+  {
+    "id": "reading.5.0",
+    "text": "水曜日は休みです。",
+    "locale": "ja-JP"
+  },
+  {
+    "id": "reading.5.1",
+    "text": "時間は変えません。",
+    "locale": "ja-JP"
+  },
+  {
+    "id": "reading.5.2",
+    "text": "読む場所に合わせて選びます。",
+    "locale": "ja-JP"
+  },
+  {
+    "id": "reading.6.0",
+    "text": "本がなくても参加できます。",
+    "locale": "ja-JP"
+  },
+  {
+    "id": "reading.6.1",
+    "text": "花屋で名前を伝えます。",
+    "locale": "ja-JP"
+  },
+  {
+    "id": "reading.6.2",
+    "text": "会話が生まれる時間を大切にします。",
+    "locale": "ja-JP"
+  },
+  {
+    "id": "reading.7.0",
+    "text": "指標に判断を明け渡さない。",
+    "locale": "ja-JP"
+  },
+  {
+    "id": "reading.7.1",
+    "text": "沈黙を同意と見なさない。",
+    "locale": "ja-JP"
+  },
+  {
+    "id": "reading.7.2",
+    "text": "見た目だけでなく暮らしを守る。",
+    "locale": "ja-JP"
+  },
+  {
+    "id": "korean.5-1.0",
+    "text": "오후 5시",
+    "locale": "ko-KR"
+  },
+  {
+    "id": "korean.5-1.1",
+    "text": "만나는 장소",
+    "locale": "ko-KR"
+  },
+  {
+    "id": "korean.5-1.2",
+    "text": "운동도 할 수 있어서",
+    "locale": "ko-KR"
+  },
+  {
+    "id": "korean.6-1.0",
+    "text": "토요일부터",
+    "locale": "ko-KR"
+  },
+  {
+    "id": "korean.6-1.1",
+    "text": "자료는 미리 보고 결론은 함께 논의한다.",
+    "locale": "ko-KR"
+  },
+  {
+    "id": "korean.6-1.2",
+    "text": "신고하지 못한 불편이 남아 있을 수 있어서",
+    "locale": "ko-KR"
+  },
+  {
+    "id": "korean.7-1.0",
+    "text": "지표를 활용하되 드러나지 않는 기여도 살펴야 한다.",
+    "locale": "ko-KR"
+  },
+  {
+    "id": "korean.7-1.1",
+    "text": "의견을 반영할 여지가 없는 형식적인 소통",
+    "locale": "ko-KR"
+  },
+  {
+    "id": "korean.7-1.2",
+    "text": "매출 증가를 지원 사업만의 효과로 단정하는 것",
+    "locale": "ko-KR"
+  }
+]

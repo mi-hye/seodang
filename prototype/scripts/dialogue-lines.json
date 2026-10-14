@@ -1,0 +1,26 @@
+[
+  {
+    "id": "order-question",
+    "text": "ご注文はお決まりですか。"
+  },
+  {
+    "id": "order-reply",
+    "text": "コーヒーをひとつください。"
+  },
+  {
+    "id": "temperature-question",
+    "text": "ホットとアイス、どちらになさいますか。"
+  },
+  {
+    "id": "temperature-reply",
+    "text": "ホットでお願いします。"
+  },
+  {
+    "id": "takeaway-question",
+    "text": "店内でお召し上がりですか。"
+  },
+  {
+    "id": "takeaway-reply",
+    "text": "持ち帰りでお願いします。"
+  }
+]

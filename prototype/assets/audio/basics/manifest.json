@@ -1,0 +1,422 @@
+{
+  "provider": "VOICEVOX Nemo",
+  "voice": "女声1",
+  "styleId": 10005,
+  "coreVersion": "0.17.0",
+  "modelVersion": "0.16.4",
+  "credit": "VOICEVOX Nemo",
+  "terms": "https://voicevox.hiroshiba.jp/nemo/term/",
+  "languageReview": "Words and explicit single-mora kana generated for review; native-speaker listening review pending",
+  "files": {
+    "basic.6.0": {
+      "text": "いぬ",
+      "synthesisText": "犬",
+      "kana": "イヌ'",
+      "file": "assets/audio/basics/basic.6.0.wav",
+      "duration": 0.544,
+      "peak": 13774,
+      "rms": 3410.3,
+      "sha256": "016b932e45a6c35b1c72232e4b3b6ffc72054cb4760fc059c6fe6b355123e747"
+    },
+    "basic.6.1": {
+      "text": "いえ",
+      "synthesisText": "家",
+      "kana": "イエ'",
+      "file": "assets/audio/basics/basic.6.1.wav",
+      "duration": 0.64,
+      "peak": 13570,
+      "rms": 2712.2,
+      "sha256": "795e228d290310443a1260a916bdcebb5b0b01bb8d7ea7bbb02470f796638363"
+    },
+    "basic.6.2": {
+      "text": "やま",
+      "synthesisText": "山",
+      "kana": "ヤマ'",
+      "file": "assets/audio/basics/basic.6.2.wav",
+      "duration": 0.651,
+      "peak": 18370,
+      "rms": 2910.1,
+      "sha256": "e1ffe79f3abe8671c8a2b5d9b42d1d32efd5e0c00905180154aeab45c97dff79"
+    },
+    "basic.6.3": {
+      "text": "うみ",
+      "synthesisText": "海",
+      "kana": "ウ'ミ",
+      "file": "assets/audio/basics/basic.6.3.wav",
+      "duration": 0.597,
+      "peak": 11045,
+      "rms": 3002.1,
+      "sha256": "cc8a8074b4e381939c9f11869d5758387dc4fb85807117e01ce1e9a6196e030a"
+    },
+    "basic.6.4": {
+      "text": "そら",
+      "synthesisText": "空",
+      "kana": "ソ'ラ",
+      "file": "assets/audio/basics/basic.6.4.wav",
+      "duration": 0.661,
+      "peak": 12803,
+      "rms": 1728.5,
+      "sha256": "a3549761b63dc0ce4f81064294d13d788937ff1d6f070e088ae7de01f3a2a8b3"
+    },
+    "basic.6.5": {
+      "text": "すし",
+      "synthesisText": "寿司",
+      "kana": "スシ'",
+      "file": "assets/audio/basics/basic.6.5.wav",
+      "duration": 0.736,
+      "peak": 12061,
+      "rms": 1859.6,
+      "sha256": "fc26f3a75eb4ed2015d1aad3de9d070072c3b6394774fa3f4f5fd63174e937c7"
+    },
+    "basic.7.0": {
+      "text": "が",
+      "synthesisText": "が",
+      "kana": "ガ'",
+      "file": "assets/audio/basics/basic.7.0.wav",
+      "duration": 0.555,
+      "peak": 17237,
+      "rms": 2072.6,
+      "sha256": "f6fd52877ae9fb72a99e8fcdd3830a483ea8eb0a2e9689f82096076f428a9e11"
+    },
+    "basic.7.1": {
+      "text": "ぎ",
+      "synthesisText": "ぎ",
+      "kana": "ギ'",
+      "file": "assets/audio/basics/basic.7.1.wav",
+      "duration": 0.544,
+      "peak": 11036,
+      "rms": 1941.2,
+      "sha256": "cd6d30d9e50ccfc259ec1b65ecd3abc7a75266e139f1cb5c72be4b79aa18b163"
+    },
+    "basic.7.2": {
+      "text": "かぎ",
+      "synthesisText": "鍵",
+      "kana": "カギ'",
+      "file": "assets/audio/basics/basic.7.2.wav",
+      "duration": 0.693,
+      "peak": 16398,
+      "rms": 2458.2,
+      "sha256": "68388a11a270f64c2008ccac755cc88b51821320e33f75a174296fcd2cdf914f"
+    },
+    "basic.7.3": {
+      "text": "ざ",
+      "synthesisText": "ざ",
+      "kana": "ザ'",
+      "file": "assets/audio/basics/basic.7.3.wav",
+      "duration": 0.565,
+      "peak": 14043,
+      "rms": 1769.8,
+      "sha256": "12f609cde7c7ba66538ea47d2cb7e545d8aea19a9380259215a3f392c8cf330b"
+    },
+    "basic.7.4": {
+      "text": "ず",
+      "synthesisText": "ず",
+      "kana": "ズ'",
+      "file": "assets/audio/basics/basic.7.4.wav",
+      "duration": 0.597,
+      "peak": 12169,
+      "rms": 2299.8,
+      "sha256": "e61a84f22b90c7656231cfa5867c325fdfb5503febe3b1b5c1d33919db8c52cc"
+    },
+    "basic.7.5": {
+      "text": "みず",
+      "synthesisText": "水",
+      "kana": "ミズ'",
+      "file": "assets/audio/basics/basic.7.5.wav",
+      "duration": 0.64,
+      "peak": 14385,
+      "rms": 2697.9,
+      "sha256": "140207e7cced9b4978589e01165a062bac7d2029f6cef45615d863b497450a9d"
+    },
+    "basic.7.6": {
+      "text": "だ",
+      "synthesisText": "だ",
+      "kana": "ダ'",
+      "file": "assets/audio/basics/basic.7.6.wav",
+      "duration": 0.523,
+      "peak": 17145,
+      "rms": 2284.5,
+      "sha256": "106dd7b72b5cbc6c32539c395f833196727af404c76e330ce7f8eb0509ccb2e4"
+    },
+    "basic.7.7": {
+      "text": "ば",
+      "synthesisText": "ば",
+      "kana": "バ'",
+      "file": "assets/audio/basics/basic.7.7.wav",
+      "duration": 0.544,
+      "peak": 19000,
+      "rms": 2219.1,
+      "sha256": "98c23f017dc5776bf6caec0ee57ff5a4545e132f31d0f982f313de3e55aa82d4"
+    },
+    "basic.7.8": {
+      "text": "かばん",
+      "synthesisText": "鞄",
+      "kana": "カバン'",
+      "file": "assets/audio/basics/basic.7.8.wav",
+      "duration": 0.736,
+      "peak": 14355,
+      "rms": 2305.0,
+      "sha256": "806d969c456748cdb2cdffd067b193bea38bfb3e7c7cc655352006f16b8b1745"
+    },
+    "basic.8.0": {
+      "text": "ぱ",
+      "synthesisText": "ぱ",
+      "kana": "パ'",
+      "file": "assets/audio/basics/basic.8.0.wav",
+      "duration": 0.555,
+      "peak": 18705,
+      "rms": 1948.0,
+      "sha256": "7e4b32ff3187bdad9a52a52852fc24840550d98f89d38ae2d97f7d884277905b"
+    },
+    "basic.8.1": {
+      "text": "ぴ",
+      "synthesisText": "ぴ",
+      "kana": "ピ'",
+      "file": "assets/audio/basics/basic.8.1.wav",
+      "duration": 0.555,
+      "peak": 11832,
+      "rms": 1841.1,
+      "sha256": "bcca135483635a6b04ef8165cee45e48d7c926edae3a28d3d98777047bb6540b"
+    },
+    "basic.8.2": {
+      "text": "ぱんだ",
+      "synthesisText": "パンダ",
+      "kana": "パ'ンダ",
+      "file": "assets/audio/basics/basic.8.2.wav",
+      "duration": 0.693,
+      "peak": 12845,
+      "rms": 2409.3,
+      "sha256": "de6f98c3fbca75d84a96c822701853efd7043987130eddaa7e8bde9baa547ed7"
+    },
+    "basic.8.3": {
+      "text": "ぷ",
+      "synthesisText": "ぷ",
+      "kana": "プ'",
+      "file": "assets/audio/basics/basic.8.3.wav",
+      "duration": 0.565,
+      "peak": 8123,
+      "rms": 1441.1,
+      "sha256": "c059c9bab9099523ddab13f391824e9fb99d5cc9f13c54f32ed6e769fc253780"
+    },
+    "basic.8.4": {
+      "text": "ぷりん",
+      "synthesisText": "プリン",
+      "kana": "プ'リン",
+      "file": "assets/audio/basics/basic.8.4.wav",
+      "duration": 0.715,
+      "peak": 13843,
+      "rms": 3108.9,
+      "sha256": "eebf6cb889b95be26b2cc6269707e21e776233eb7479542e5f6b1d96282d1eec"
+    },
+    "basic.8.5": {
+      "text": "ぺ",
+      "synthesisText": "ぺ",
+      "kana": "ペ'",
+      "file": "assets/audio/basics/basic.8.5.wav",
+      "duration": 0.544,
+      "peak": 11523,
+      "rms": 1787.9,
+      "sha256": "af7155beacc69177ff7af7d8b1b793dd1a63597d51039044035883ae2f7e8dbc"
+    },
+    "basic.8.6": {
+      "text": "ぽ",
+      "synthesisText": "ぽ",
+      "kana": "ポ'",
+      "file": "assets/audio/basics/basic.8.6.wav",
+      "duration": 0.555,
+      "peak": 10887,
+      "rms": 1822.4,
+      "sha256": "796a2d1a66df530cbd417ef1af7f90cbb647f6a5433a0e135049b4b2460326db"
+    },
+    "basic.8.7": {
+      "text": "さんぽ",
+      "synthesisText": "散歩",
+      "kana": "サンポ'",
+      "file": "assets/audio/basics/basic.8.7.wav",
+      "duration": 0.779,
+      "peak": 13564,
+      "rms": 1722.9,
+      "sha256": "26082fd54389b6899dfbe8c689222e200fa988077b8b9c9cd0de02ba5bf3d99a"
+    },
+    "basic.9.0": {
+      "text": "きって",
+      "synthesisText": "切手",
+      "kana": "キッテ'",
+      "file": "assets/audio/basics/basic.9.0.wav",
+      "duration": 0.821,
+      "peak": 12757,
+      "rms": 1435.0,
+      "sha256": "fc5bb60309dc9713d7969234cf7d74e3f911e71b861b4ba487a8fbfe935695bb"
+    },
+    "basic.9.1": {
+      "text": "ねっこ",
+      "synthesisText": "根っこ",
+      "kana": "ネッコ'",
+      "file": "assets/audio/basics/basic.9.1.wav",
+      "duration": 0.757,
+      "peak": 16351,
+      "rms": 2695.3,
+      "sha256": "a4ff3993ffd6bb0f5dc22d0ecd4162696c30d2522ead26b0c3cfd99d7c990e2b"
+    },
+    "basic.9.2": {
+      "text": "きっぷ",
+      "synthesisText": "切符",
+      "kana": "キップ'",
+      "file": "assets/audio/basics/basic.9.2.wav",
+      "duration": 0.789,
+      "peak": 11192,
+      "rms": 1420.4,
+      "sha256": "f22b15ba66f9bd53ab988072e4559d2aca5e18bf9624750bfaa36851842bf51d"
+    },
+    "basic.9.3": {
+      "text": "はっぱ",
+      "synthesisText": "葉っぱ",
+      "kana": "ハッパ'",
+      "file": "assets/audio/basics/basic.9.3.wav",
+      "duration": 0.768,
+      "peak": 16123,
+      "rms": 1920.4,
+      "sha256": "48e68b90e4b45e934c8552fea6c4bb265444985489915e2a65421f19a6edeb58"
+    },
+    "basic.9.4": {
+      "text": "しっぽ",
+      "synthesisText": "尻尾",
+      "kana": "シッポ'",
+      "file": "assets/audio/basics/basic.9.4.wav",
+      "duration": 0.811,
+      "peak": 11933,
+      "rms": 1393.1,
+      "sha256": "e3f5b81bfa89d91ae7fe3d1fd1d72c6ed3777455bd5a099474aa94558b9ac5ce"
+    },
+    "basic.9.5": {
+      "text": "かっぱ",
+      "synthesisText": "河童",
+      "kana": "カッパ'",
+      "file": "assets/audio/basics/basic.9.5.wav",
+      "duration": 0.779,
+      "peak": 16792,
+      "rms": 1954.5,
+      "sha256": "e5b86932a7f0cb57a48eda94d43ff9915a62244bae755c7bdc0092252a04d1c8"
+    },
+    "basic.10.0": {
+      "text": "きゃ",
+      "synthesisText": "きゃ",
+      "kana": "キャ'",
+      "file": "assets/audio/basics/basic.10.0.wav",
+      "duration": 0.587,
+      "peak": 11649,
+      "rms": 1755.9,
+      "sha256": "21a5e28cd364c0fcb0142e2783e7ed7aec67d3d2deadf7b10ca47c283fe79aba"
+    },
+    "basic.10.1": {
+      "text": "きゃく",
+      "synthesisText": "客",
+      "kana": "キャク'",
+      "file": "assets/audio/basics/basic.10.1.wav",
+      "duration": 0.693,
+      "peak": 11923,
+      "rms": 1369.1,
+      "sha256": "c9e9b5a2754405b74f164198d4dd4ce1cd6598088ea5ea5adc0b5faa235c8dc5"
+    },
+    "basic.10.2": {
+      "text": "きゅ",
+      "synthesisText": "きゅ",
+      "kana": "キュ'",
+      "file": "assets/audio/basics/basic.10.2.wav",
+      "duration": 0.64,
+      "peak": 11117,
+      "rms": 2132.6,
+      "sha256": "09ce07e552575ba5587b464ccce410a805304b4e82563e3da59e71842320135b"
+    },
+    "basic.10.3": {
+      "text": "きゅうり",
+      "synthesisText": "きゅうり",
+      "kana": "キュ'ウリ",
+      "file": "assets/audio/basics/basic.10.3.wav",
+      "duration": 0.725,
+      "peak": 10900,
+      "rms": 2549.0,
+      "sha256": "669d4a2ef3472aa70174a5d6e1cf165b319b6011827ea17b57f4122345c79344"
+    },
+    "basic.10.4": {
+      "text": "きょ",
+      "synthesisText": "きょ",
+      "kana": "キョ'",
+      "file": "assets/audio/basics/basic.10.4.wav",
+      "duration": 0.587,
+      "peak": 15784,
+      "rms": 2295.5,
+      "sha256": "039b7c69c1de37590afdfb084d3bdb0ce605752052df0aa4c0dc5e77fe73ddf6"
+    },
+    "basic.10.5": {
+      "text": "きょう",
+      "synthesisText": "今日",
+      "kana": "キョ'オ",
+      "file": "assets/audio/basics/basic.10.5.wav",
+      "duration": 0.576,
+      "peak": 20266,
+      "rms": 2666.2,
+      "sha256": "45db18bac4ebfa58fec97e6eb69af6d450e278e17cea96b70e91eb73902f8ff7"
+    },
+    "basic.10.6": {
+      "text": "しゃ",
+      "synthesisText": "しゃ",
+      "kana": "シャ'",
+      "file": "assets/audio/basics/basic.10.6.wav",
+      "duration": 0.661,
+      "peak": 14213,
+      "rms": 1565.6,
+      "sha256": "438e970f6581593c6542b6f116222a73574aa62dce0888250e6b4ace39cddd3a"
+    },
+    "basic.10.7": {
+      "text": "しゃしん",
+      "synthesisText": "写真",
+      "kana": "シャシン'",
+      "file": "assets/audio/basics/basic.10.7.wav",
+      "duration": 0.843,
+      "peak": 14046,
+      "rms": 1909.9,
+      "sha256": "a2427a4584765b95be4e28f2cc594b18eb4e2850f02b0eb27b8588eb2a010538"
+    },
+    "basic.10.8": {
+      "text": "しゅ",
+      "synthesisText": "しゅ",
+      "kana": "シュ'",
+      "file": "assets/audio/basics/basic.10.8.wav",
+      "duration": 0.693,
+      "peak": 10879,
+      "rms": 1808.4,
+      "sha256": "a058f2ed008c1c53bd463a0f8be1120ca65c33e4f72fdf7557eee9171651a682"
+    },
+    "basic.10.9": {
+      "text": "しゅくだい",
+      "synthesisText": "宿題",
+      "kana": "_シュクダイ'",
+      "file": "assets/audio/basics/basic.10.9.wav",
+      "duration": 0.779,
+      "peak": 11519,
+      "rms": 1864.3,
+      "sha256": "a3841a3fe50dae3d72b2cf0b91e7df7b7c2669c0962027f62ea6900c9859260f"
+    },
+    "basic.10.10": {
+      "text": "しょ",
+      "synthesisText": "しょ",
+      "kana": "ショ'",
+      "file": "assets/audio/basics/basic.10.10.wav",
+      "duration": 0.651,
+      "peak": 13771,
+      "rms": 1743.9,
+      "sha256": "288d38454c2b800dec96342ec9c12439e6a222fa4cf00e9b6cb1440f75ed892a"
+    },
+    "basic.10.11": {
+      "text": "しょくぱん",
+      "synthesisText": "食パン",
+      "kana": "ショ_クパン'",
+      "file": "assets/audio/basics/basic.10.11.wav",
+      "duration": 0.864,
+      "peak": 11478,
+      "rms": 1626.7,
+      "sha256": "2f236a9fd2e4e50d5a4ef8e9eb05dfbbe5557f08a928b9a90c4e3e7b5165831d"
+    }
+  }
+}

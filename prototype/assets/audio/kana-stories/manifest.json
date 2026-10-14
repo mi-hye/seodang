@@ -1,0 +1,202 @@
+{
+  "provider": "VOICEVOX Nemo",
+  "voice": "女声1",
+  "styleId": 10005,
+  "coreVersion": "0.17.0",
+  "modelVersion": "0.16.4",
+  "credit": "VOICEVOX Nemo",
+  "terms": "https://voicevox.hiroshiba.jp/nemo/term/",
+  "languageReview": "Generated short sentences recorded for review; native-speaker listening review pending",
+  "files": {
+    "case-1-a-o-i": {
+      "text": "あおい",
+      "synthesisText": "あおい",
+      "kana": "アオ'イ",
+      "file": "assets/audio/kana-stories/case-1-a-o-i.wav",
+      "duration": 0.757,
+      "peak": 11646,
+      "rms": 2342.3,
+      "sha256": "8cc11afd5ce467578f3e5db056f18e44dc0a13d21c1d4c59cd67b0b2c1fc17b4"
+    },
+    "case-2-ku-tsu": {
+      "text": "くつ",
+      "synthesisText": "靴",
+      "kana": "_クツ'",
+      "file": "assets/audio/kana-stories/case-2-ku-tsu.wav",
+      "duration": 0.704,
+      "peak": 9893,
+      "rms": 1092.1,
+      "sha256": "a266c5bb2382319d3a0e50b509f29da61ac157747fc8f79648ff198d652479bf"
+    },
+    "case-2-ka-sa": {
+      "text": "かさ",
+      "synthesisText": "傘",
+      "kana": "カ'サ",
+      "file": "assets/audio/kana-stories/case-2-ka-sa.wav",
+      "duration": 0.704,
+      "peak": 11215,
+      "rms": 1372.2,
+      "sha256": "6ef0a51a165b9d4c8c8453feca154377755daff6f5a6a83d920e80a424ef8d5b"
+    },
+    "case-2-ha-na": {
+      "text": "はな",
+      "synthesisText": "花",
+      "kana": "ハナ'",
+      "file": "assets/audio/kana-stories/case-2-ha-na.wav",
+      "duration": 0.683,
+      "peak": 15042,
+      "rms": 2381.5,
+      "sha256": "ba0770133480d4b7311fac78472d98f092e7cc257008205197c7a396a3edef3b"
+    },
+    "case-3-u-e-ki": {
+      "text": "う、き",
+      "synthesisText": "う、き",
+      "kana": "ウ'、キ'",
+      "file": "assets/audio/kana-stories/case-3-u-e-ki.wav",
+      "duration": 1.099,
+      "peak": 8829,
+      "rms": 1047.3,
+      "sha256": "f17f0e529049f9eb6f07be57d5acfab27b37be7d25503a3962e4d8c3ef2322bc"
+    },
+    "case-3-ke-ko-shi": {
+      "text": "け、し",
+      "synthesisText": "け、し",
+      "kana": "ケ'、シ'",
+      "file": "assets/audio/kana-stories/case-3-ke-ko-shi.wav",
+      "duration": 1.259,
+      "peak": 10696,
+      "rms": 1377.0,
+      "sha256": "030b5132202c859e6b7b901bb962b8023902cc4316a83ee621659ceede811f3f"
+    },
+    "case-3-su-se-so": {
+      "text": "す、そ",
+      "synthesisText": "す、そ",
+      "kana": "ス'、ソ'",
+      "file": "assets/audio/kana-stories/case-3-su-se-so.wav",
+      "duration": 1.301,
+      "peak": 10049,
+      "rms": 874.9,
+      "sha256": "5a878fb8e9fce871746a6a891de2389047bb033f4c50fbedb1a4675c7adee2c5"
+    },
+    "case-3-ta-chi-te": {
+      "text": "た、て",
+      "synthesisText": "た、て",
+      "kana": "タ'、テ'",
+      "file": "assets/audio/kana-stories/case-3-ta-chi-te.wav",
+      "duration": 1.152,
+      "peak": 14414,
+      "rms": 1220.1,
+      "sha256": "f62a493db44cbfbaa741481f89b0724f256556287e0d1df635ff19e5e5e70495"
+    },
+    "case-3-to-ni-nu": {
+      "text": "と、ぬ",
+      "synthesisText": "と、ぬ",
+      "kana": "ト'、ヌ'",
+      "file": "assets/audio/kana-stories/case-3-to-ni-nu.wav",
+      "duration": 1.163,
+      "peak": 15986,
+      "rms": 1716.0,
+      "sha256": "6505c07744c4376793c54dc03bd9b51ea4572ec68e003a69c4be1cf5aa1f5abc"
+    },
+    "case-3-ne-no-hi": {
+      "text": "ね、ひ",
+      "synthesisText": "ね、ひ",
+      "kana": "ネ'、ヒ'",
+      "file": "assets/audio/kana-stories/case-3-ne-no-hi.wav",
+      "duration": 1.344,
+      "peak": 17424,
+      "rms": 2121.9,
+      "sha256": "564d2832b4a0f656687a61f3f8eafe8c12e32e4ed868e3d320528cdc343cf8bc"
+    },
+    "case-3-fu-he-ho": {
+      "text": "ふ、ほ",
+      "synthesisText": "ふ、ほ",
+      "kana": "フ'、ホ'",
+      "file": "assets/audio/kana-stories/case-3-fu-he-ho.wav",
+      "duration": 1.248,
+      "peak": 7285,
+      "rms": 864.6,
+      "sha256": "06c8630c9031dc4cbeed783291fc32b5916e1f7647c84ecfb33957aaea61c150"
+    },
+    "case-3-ma-mi-mu": {
+      "text": "ま、む",
+      "synthesisText": "ま、む",
+      "kana": "マ'、ム'",
+      "file": "assets/audio/kana-stories/case-3-ma-mi-mu.wav",
+      "duration": 1.205,
+      "peak": 11676,
+      "rms": 1824.0,
+      "sha256": "71d1433dffd8121670f1dac919cd7119cc40c8350c5bc3a2c4e8aafac780de31"
+    },
+    "case-3-me-mo-ya": {
+      "text": "め、や",
+      "synthesisText": "め、や",
+      "kana": "メ'、ヤ'",
+      "file": "assets/audio/kana-stories/case-3-me-mo-ya.wav",
+      "duration": 1.387,
+      "peak": 14796,
+      "rms": 1793.2,
+      "sha256": "c76df53364af3e12eb4ff9488ca5e5329ae0414a2a481bcfc2c37911ddfdd081"
+    },
+    "case-3-yu-yo-ra": {
+      "text": "ゆ、ら",
+      "synthesisText": "ゆ、ら",
+      "kana": "ユ'、ラ'",
+      "file": "assets/audio/kana-stories/case-3-yu-yo-ra.wav",
+      "duration": 1.237,
+      "peak": 11200,
+      "rms": 1432.4,
+      "sha256": "4496653efeed4017aa1c3f9549a3cda825565c7686dfb5c42423d17474368501"
+    },
+    "case-3-ri-ru-re": {
+      "text": "り、れ",
+      "synthesisText": "り、れ",
+      "kana": "リ'/レ'",
+      "file": "assets/audio/kana-stories/case-3-ri-ru-re.wav",
+      "duration": 0.619,
+      "peak": 11207,
+      "rms": 2065.4,
+      "sha256": "18d9edcd901bd36eedfa0f10a0fc85e8e43bbcb50bd73e7b189dc50e9947440c"
+    },
+    "case-3-ro-wa-wo-n": {
+      "text": "ろ、ん",
+      "synthesisText": "ろ、ん",
+      "kana": "ロ'、ン'",
+      "file": "assets/audio/kana-stories/case-3-ro-wa-wo-n.wav",
+      "duration": 0.981,
+      "peak": 22618,
+      "rms": 1995.5,
+      "sha256": "f10e6eedaa6f3f3e804addee2b513327a6c3bea9c921cca679543284a67a1c91"
+    },
+    "case-1-a-ki": {
+      "text": "あき",
+      "synthesisText": "あき",
+      "kana": "ア'キ",
+      "file": "assets/audio/kana-stories/case-1-a-ki.wav",
+      "duration": 0.672,
+      "peak": 8921,
+      "rms": 1467.9,
+      "sha256": "aa0447334fe6aa351da465eaba7b1ecda87f652ee62b28d230f418813e5e698c"
+    },
+    "case-1-a-i": {
+      "text": "あい",
+      "synthesisText": "あい",
+      "kana": "ア'イ",
+      "file": "assets/audio/kana-stories/case-1-a-i.wav",
+      "duration": 0.587,
+      "peak": 10267,
+      "rms": 1987.3,
+      "sha256": "cad2f2c76196f1c62df62bffd1468ec9e4bbdc03a49d5ac1938bf820d4204a06"
+    },
+    "case-1-ki": {
+      "text": "き",
+      "synthesisText": "き",
+      "kana": "キ'",
+      "file": "assets/audio/kana-stories/case-1-ki.wav",
+      "duration": 0.512,
+      "peak": 11364,
+      "rms": 1302.0,
+      "sha256": "9ff6ea5bdf7f0e0e5ebf656778a04c771ef1accf67e63ec1a43fd1d02484b19e"
+    }
+  }
+}

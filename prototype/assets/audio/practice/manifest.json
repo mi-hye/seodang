@@ -1,0 +1,167 @@
+{
+  "languageReview": "Native-speaker listening review pending",
+  "files": {
+    "reading.5.0": {
+      "id": "reading.5.0",
+      "text": "水曜日は休みです。",
+      "locale": "ja-JP",
+      "voice": "VOICEVOX Nemo 女声1",
+      "file": "assets/audio/practice/reading.5.0.wav",
+      "duration": 1.6533333333333333,
+      "sha256": "deab2dd21e4fb81e26dd9cf400139df00646e4d1498c2d92a5b988ea3cb5a5af"
+    },
+    "reading.5.1": {
+      "id": "reading.5.1",
+      "text": "時間は変えません。",
+      "locale": "ja-JP",
+      "voice": "VOICEVOX Nemo 女声1",
+      "file": "assets/audio/practice/reading.5.1.wav",
+      "duration": 1.344,
+      "sha256": "808ccf6c692187d7881a3808b853d8b06d9780cacf829b2610040eec77174088"
+    },
+    "reading.5.2": {
+      "id": "reading.5.2",
+      "text": "読む場所に合わせて選びます。",
+      "locale": "ja-JP",
+      "voice": "VOICEVOX Nemo 女声1",
+      "file": "assets/audio/practice/reading.5.2.wav",
+      "duration": 1.8666666666666667,
+      "sha256": "0e7cb4b5c272f83a7712a831f6c1ce4eef7e283efecb7488413576e733ae4ed1"
+    },
+    "reading.6.0": {
+      "id": "reading.6.0",
+      "text": "本がなくても参加できます。",
+      "locale": "ja-JP",
+      "voice": "VOICEVOX Nemo 女声1",
+      "file": "assets/audio/practice/reading.6.0.wav",
+      "duration": 1.9093333333333333,
+      "sha256": "f3374ae27cbe2c51899f9d67add24e18a73db28c679a827034957d78c709de97"
+    },
+    "reading.6.1": {
+      "id": "reading.6.1",
+      "text": "花屋で名前を伝えます。",
+      "locale": "ja-JP",
+      "voice": "VOICEVOX Nemo 女声1",
+      "file": "assets/audio/practice/reading.6.1.wav",
+      "duration": 1.7706666666666666,
+      "sha256": "d38f246c5084341c77886d3499174d8ab42a5f3e51ef8f30ee12fcf8da2a0d39"
+    },
+    "reading.6.2": {
+      "id": "reading.6.2",
+      "text": "会話が生まれる時間を大切にします。",
+      "locale": "ja-JP",
+      "voice": "VOICEVOX Nemo 女声1",
+      "file": "assets/audio/practice/reading.6.2.wav",
+      "duration": 2.570666666666667,
+      "sha256": "b7492967a5d72bd9619f4d9ba2acb80076603a96653768a4b0c919a3e30593b8"
+    },
+    "reading.7.0": {
+      "id": "reading.7.0",
+      "text": "指標に判断を明け渡さない。",
+      "locale": "ja-JP",
+      "voice": "VOICEVOX Nemo 女声1",
+      "file": "assets/audio/practice/reading.7.0.wav",
+      "duration": 2.037333333333333,
+      "sha256": "d4491a974518ac65cdfc813dab49bf6e55a7515c84107d69c73f09f25adb9eef"
+    },
+    "reading.7.1": {
+      "id": "reading.7.1",
+      "text": "沈黙を同意と見なさない。",
+      "locale": "ja-JP",
+      "voice": "VOICEVOX Nemo 女声1",
+      "file": "assets/audio/practice/reading.7.1.wav",
+      "duration": 1.824,
+      "sha256": "1e6c28281ad519d1422fb9cec871db9c92f91a4d48d3c1ef99b30ca27a92e01e"
+    },
+    "reading.7.2": {
+      "id": "reading.7.2",
+      "text": "見た目だけでなく暮らしを守る。",
+      "locale": "ja-JP",
+      "voice": "VOICEVOX Nemo 女声1",
+      "file": "assets/audio/practice/reading.7.2.wav",
+      "duration": 2.037333333333333,
+      "sha256": "72b76da4db9da86f8be8ab82e0b991ca889e804cf432d6fae9c43c66b581f21e"
+    },
+    "korean.5-1.0": {
+      "id": "korean.5-1.0",
+      "text": "오후 5시",
+      "locale": "ko-KR",
+      "voice": "macOS Yuna",
+      "file": "assets/audio/practice/korean.5-1.0.wav",
+      "duration": 1.1588333333333334,
+      "sha256": "394b4024b5ea5d03b925875b60105f8b5021696eb02227f591202eecde75391b"
+    },
+    "korean.5-1.1": {
+      "id": "korean.5-1.1",
+      "text": "만나는 장소",
+      "locale": "ko-KR",
+      "voice": "macOS Yuna",
+      "file": "assets/audio/practice/korean.5-1.1.wav",
+      "duration": 1.2855833333333333,
+      "sha256": "f058261f0c418f2ff9f21f380df5f561a4a08ece23982c2a4e20a7d6f13f5033"
+    },
+    "korean.5-1.2": {
+      "id": "korean.5-1.2",
+      "text": "운동도 할 수 있어서",
+      "locale": "ko-KR",
+      "voice": "macOS Yuna",
+      "file": "assets/audio/practice/korean.5-1.2.wav",
+      "duration": 1.6229583333333333,
+      "sha256": "0303e47c5304f0abf2c1a713a66c5cb01dc9e7bd5b207f5a4f606121e56fff04"
+    },
+    "korean.6-1.0": {
+      "id": "korean.6-1.0",
+      "text": "토요일부터",
+      "locale": "ko-KR",
+      "voice": "macOS Yuna",
+      "file": "assets/audio/practice/korean.6-1.0.wav",
+      "duration": 1.0275416666666666,
+      "sha256": "f1cd5947539931c8fc0d53f2c9f9b8243369758491720d3774817968e7123352"
+    },
+    "korean.6-1.1": {
+      "id": "korean.6-1.1",
+      "text": "자료는 미리 보고 결론은 함께 논의한다.",
+      "locale": "ko-KR",
+      "voice": "macOS Yuna",
+      "file": "assets/audio/practice/korean.6-1.1.wav",
+      "duration": 2.9913333333333334,
+      "sha256": "8e06d220e1cdd8734a378033d924f470fe7cf104ce17a8812145ab6ee3275779"
+    },
+    "korean.6-1.2": {
+      "id": "korean.6-1.2",
+      "text": "신고하지 못한 불편이 남아 있을 수 있어서",
+      "locale": "ko-KR",
+      "voice": "macOS Yuna",
+      "file": "assets/audio/practice/korean.6-1.2.wav",
+      "duration": 3.1662916666666665,
+      "sha256": "bf94d004c065abbb884a38a000596b91114742a8c4c0b66c4695935d08baf4cc"
+    },
+    "korean.7-1.0": {
+      "id": "korean.7-1.0",
+      "text": "지표를 활용하되 드러나지 않는 기여도 살펴야 한다.",
+      "locale": "ko-KR",
+      "voice": "macOS Yuna",
+      "file": "assets/audio/practice/korean.7-1.0.wav",
+      "duration": 3.435625,
+      "sha256": "63e8930df265fcc62fafe3ebe737053197e93daeb21c2c06acca07436003382f"
+    },
+    "korean.7-1.1": {
+      "id": "korean.7-1.1",
+      "text": "의견을 반영할 여지가 없는 형식적인 소통",
+      "locale": "ko-KR",
+      "voice": "macOS Yuna",
+      "file": "assets/audio/practice/korean.7-1.1.wav",
+      "duration": 3.1438333333333333,
+      "sha256": "c3f77b54ee5a953ace4fccc000c387552165c22e0ef4e23b184bb0f26b6f29d0"
+    },
+    "korean.7-1.2": {
+      "id": "korean.7-1.2",
+      "text": "매출 증가를 지원 사업만의 효과로 단정하는 것",
+      "locale": "ko-KR",
+      "voice": "macOS Yuna",
+      "file": "assets/audio/practice/korean.7-1.2.wav",
+      "duration": 3.4688333333333334,
+      "sha256": "9da0e94ae557cff1f366b3a5c2a798037dd17bfd0c73a92261c221db7e2d1739"
+    }
+  }
+}

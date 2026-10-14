@@ -1,0 +1,52 @@
+{
+  "provider": "VOICEVOX Nemo",
+  "voice": "女声1",
+  "styleId": 10005,
+  "coreVersion": "0.17.0",
+  "modelVersion": "0.16.4",
+  "credit": "VOICEVOX Nemo",
+  "terms": "https://voicevox.hiroshiba.jp/nemo/term/",
+  "languageReview": "Generated short sentences recorded for review; native-speaker listening review pending",
+  "files": {
+    "kasa": {
+      "text": "かさ",
+      "synthesisText": "傘",
+      "kana": "カ'サ",
+      "file": "assets/audio/labels/kasa.wav",
+      "duration": 0.704,
+      "peak": 11215,
+      "rms": 1372.2,
+      "sha256": "6ef0a51a165b9d4c8c8453feca154377755daff6f5a6a83d920e80a424ef8d5b"
+    },
+    "kutsu": {
+      "text": "くつ",
+      "synthesisText": "靴",
+      "kana": "_クツ'",
+      "file": "assets/audio/labels/kutsu.wav",
+      "duration": 0.704,
+      "peak": 9893,
+      "rms": 1092.1,
+      "sha256": "a266c5bb2382319d3a0e50b509f29da61ac157747fc8f79648ff198d652479bf"
+    },
+    "hana": {
+      "text": "はな",
+      "synthesisText": "花",
+      "kana": "ハナ'",
+      "file": "assets/audio/labels/hana.wav",
+      "duration": 0.683,
+      "peak": 15042,
+      "rms": 2381.5,
+      "sha256": "ba0770133480d4b7311fac78472d98f092e7cc257008205197c7a396a3edef3b"
+    },
+    "neko": {
+      "text": "ねこ",
+      "synthesisText": "猫",
+      "kana": "ネ'コ",
+      "file": "assets/audio/labels/neko.wav",
+      "duration": 0.661,
+      "peak": 13156,
+      "rms": 2226.8,
+      "sha256": "cbd2edb413a422b3b2e38c7b6a62f73215b0a154c7cf5897afcf53677f9c2aa5"
+    }
+  }
+}

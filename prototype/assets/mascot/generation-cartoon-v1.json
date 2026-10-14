@@ -1,0 +1,17 @@
+{
+  "generator": "Built-in image_gen",
+  "prompt": "Use case: illustration-story.\nAsset type: actual transparent 2D mascot animation sprite atlas for a Korean language learning mobile app called Seodang.\nPrimary request: Design a completely NEW appealing cartoon puppy mascot, deliberately NOT a realistic puppy, NOT photographic, NOT detailed fur, NOT a Shiba render. A simple, memorable friendly storybook character: round cream face, short floppy caramel ears, tiny oval dark-brown eyes, a small rounded black nose, simple friendly mouth, compact pear-shaped body, stubby paws, small curled tail, muted sage-green triangular neckerchief. Gentle approachable personality, gender neutral. Sophisticated clean hand-drawn 2D game art with dark warm-brown smooth outlines, flat warm colors, minimal cel shading. The design must read instantly at 120 pixels tall and feel like a little language-learning companion. No large glossy anime eyes.\nGenerate ONE production sprite sheet, EXACT 3 columns by 2 rows, 6 equal square cells on a 1536 x 1024 landscape canvas. Every 512x512 cell contains the SAME complete standing mascot, precisely matching body proportions, centered at local x256 with feet baseline y448. Character height about 350 pixels, generous minimum 55 pixel transparent margins on ALL sides. Never cross a cell boundary. Same body size, same camera, same feet position in all six cells.\nFrame order left to right, then next row: 0 neutral smiling with open eyes, both paws down; 1 same pose eyes half closed; 2 same pose eyes fully closed for a blink; 3 eyes open, its right paw lifted halfway to greet; 4 eyes open, right paw raised fully in a small friendly wave, head tilted just a little; 5 eyes open, paw lowered halfway, head returning to neutral.\nActual alpha transparent background. No scenery, no paper texture, no gradients behind the mascot, no lettering, no labels, no borders, no grid lines, no UI elements. This is a spritesheet asset, not an illustration of a sheet. Preserve character identity, body registration and exact grid alignment across all six frames.",
+  "atlas": "seodang-cartoon-atlas-v1.png",
+  "columns": 3,
+  "rows": 2,
+  "frameWidth": 512,
+  "frameHeight": 512,
+  "states": [
+    "idle",
+    "half-blink",
+    "blink",
+    "greeting-start",
+    "wave",
+    "greeting-return"
+  ]
+}

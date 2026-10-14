@@ -1,0 +1,25 @@
+import {webkit,expect} from '@playwright/test';import {readFileSync} from 'node:fs';import assert from 'node:assert/strict';import {freshState} from '../src/engine.js';import {freshBasic} from '../src/basics-state.js';import {freshListening} from '../src/listening-state.js';
+const browser=await webkit.launch();
+try{
+ const p=await browser.newPage({viewport:{width:320,height:740}}),errors=[],requests=[];p.on('pageerror',e=>errors.push(e.message));p.on('request',r=>requests.push(r.url()));
+ await p.route('https://seodang.test/**',r=>{const f=new URL(r.request().url()).pathname.slice(1);try{return r.fulfill({body:readFileSync(f),contentType:f.endsWith('.js')?'text/javascript':f.endsWith('.css')?'text/css':f.endsWith('.html')?'text/html':f.endsWith('.wav')?'audio/wav':'image/png'});}catch{return r.fulfill({status:404,body:''});}});
+ await p.addInitScript(s=>{if(!sessionStorage.seeded){localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));sessionStorage.seeded='1';}window.micDenied=false;window.audioFail=false;window.nativeCalls=[];window.Capacitor={isNativePlatform:()=>true,nativePromise:async(plugin,method)=>{window.nativeCalls.push([plugin,method]);if(plugin==='SeodangRecorder'&&method==='start'&&window.micDenied)throw Error('denied');return method==='stop'?{audio:'AAAA',duration:1,hasSignal:true}:{};}};window.Audio=class{constructor(src){this.src=src;}pause(){}play(){setTimeout(()=>window.audioFail?this.onerror?.():this.onended?.(),5);return Promise.resolve();}};},{...freshState(),onboarded:true,onboardingLevel:1,settings:{sound:false,textScale:1.2,motion:'off'},listening:{...freshListening(),completed:true,index:4},basics:{version:2,active:6,lessons:{6:{...freshBasic(),started:true,index:5,phase:'quiz',selected:2}}}});
+ await p.goto('https://seodang.test/playable.html');assert.ok(!requests.some(r=>r.endsWith('/practice.js')));await p.locator('.home-start-card button').click();await p.locator('[data-action=basic-check]').click();await expect(p.locator('.practice-page')).toBeVisible();
+ const next=p.locator('[data-practice=next]');
+ for(let round=0;round<4;round++)for(let mode=0;mode<4;mode++)for(let index=0;index<6;index++){
+  await expect(p.locator('.practice-count')).toHaveText(`${round+1}/4 · ${index+1}/6`);await expect(next).toBeDisabled();
+  if(round===1&&mode===2&&index===2){await p.reload();await p.locator('.home-start-card button').click();await expect(p.locator('.practice-count')).toHaveText('2/4 · 3/6');}
+  if(mode<2){if(round===0&&mode===0&&index===0){await p.evaluate(()=>window.audioFail=true);await p.locator('[data-practice=listen]').click();await expect(p.locator('.practice-feedback')).not.toBeEmpty();await expect(next).toBeDisabled();await p.evaluate(()=>window.audioFail=false);}
+   if(mode===0)await p.locator('[data-practice=listen]').click();const answer=(round+mode+index)%3;
+   if(round===0&&mode===0&&index===0){await p.locator(`[data-practice=choice][data-choice="${(answer+1)%3}"]`).click();await expect(next).toBeEnabled();await next.click();await expect(p.locator('.practice-feedback')).not.toBeEmpty();await expect(p.locator('.practice-count')).toHaveText('1/4 · 1/6');}
+   await p.locator(`[data-practice=choice][data-choice="${answer}"]`).click();
+  }else if(mode===2){const rect=await p.locator('canvas').boundingBox();await p.mouse.move(rect.x+25,rect.y+25);await p.mouse.down();await p.mouse.move(rect.x+75,rect.y+90,{steps:5});await p.mouse.up();await expect(next).toBeDisabled();await p.locator('[data-practice=compare]').click();if(round===0&&index===0){await p.screenshot({path:'/tmp/seodang-four-round-writing.png'});await p.locator('[data-practice=clear]').click();await expect(next).toBeDisabled();await p.mouse.move(rect.x+25,rect.y+25);await p.mouse.down();await p.mouse.move(rect.x+75,rect.y+90);await p.mouse.up();await p.locator('[data-practice=compare]').click();}}
+  else{if(round===0&&index===0)await p.evaluate(()=>window.micDenied=true);await p.locator('[data-practice=record]').click();
+   if(round===0&&index===0){await expect(p.locator('[data-practice=manual]')).toBeVisible();await p.locator('[data-practice=manual]').click();await p.locator('[data-practice=said]').click();await p.evaluate(()=>window.micDenied=false);}
+   else{await expect(p.locator('[data-practice=record]')).toHaveText('녹음 끝내기');await p.locator('[data-practice=record]').click();await expect(next).toBeDisabled();await p.locator('[data-practice=replay]').click();}
+  }
+  await expect(next).toBeEnabled();assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);await next.click();
+ }
+ await expect(p.locator('.basic-word')).toHaveText('が');const state=await p.evaluate(()=>JSON.parse(localStorage.getItem('seodang.web-prototype.v1')));assert.equal(state.basics.lessons[6].completed,true);assert.deepEqual(state.practices,{});assert.equal(state.basics.active,7);assert.deepEqual(errors,[]);
+ console.log('Four complete rounds / 96 steps: audio gate, wrong-answer retry, handwriting/clear/compare, recorder/replay, permission fallback, reload resume, narrow large text and next-lesson handoff passed.');
+}finally{await browser.close();}

@@ -1,0 +1,18 @@
+.reading-page{max-width:480px;margin:auto;padding-bottom:32px}
+.reading-page h1{font-size:calc(24px * var(--text-scale));line-height:1.6;margin:10px 0 20px}
+.reading-count{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;margin-bottom:14px}
+.reading-passage{padding:20px 16px;border-radius:16px;background:var(--stage-raised)}
+.reading-passage h1{font-size:calc(20px * var(--text-scale));margin:0 0 16px}
+.reading-passage p{font-size:calc(18px * var(--text-scale));line-height:1.95;margin:16px 0 0}
+.reading-words{font-size:calc(14px * var(--text-scale));color:var(--muted)}
+.reading-question{font-size:calc(19px * var(--text-scale));line-height:1.7;margin:26px 0 16px}
+.reading-options{display:grid;gap:12px}
+.reading-option{padding:14px;text-align:left;border:2px solid var(--line);border-radius:14px;background:var(--stage-panel);font-size:calc(17px * var(--text-scale));line-height:1.8;min-width:0}
+.reading-option.selected{border-color:var(--amber);background:var(--selected)}
+.reading-feedback{padding:14px;border-radius:12px;background:var(--stage-panel);font-size:calc(16px * var(--text-scale))}
+.reading-page>.primary{width:100%;margin-top:24px}
+.reading-intro{font-size:calc(18px * var(--text-scale));line-height:1.9}
+
+.reading-listen{padding:16px;border-radius:16px;background:var(--stage-raised)}
+.reading-listen h1{font-size:calc(22px * var(--text-scale));margin:0 0 16px}
+.reading-listen .button-pair{margin-top:0}

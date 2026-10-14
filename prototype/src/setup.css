@@ -1,0 +1,21 @@
+*{box-sizing:border-box}html{color-scheme:dark;background:var(--stage);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;-webkit-text-size-adjust:100%}body{margin:0}[hidden]{display:none!important}button,input{font:inherit}.setup-shell{max-width:440px;margin:auto;height:100svh;display:grid;grid-template-rows:auto 3px minmax(0,1fr);padding-inline:env(safe-area-inset-left) env(safe-area-inset-right)}header{display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top) + 8px) 22px 12px}.back{display:grid;place-items:center;width:44px;height:44px;margin-left:-10px;background:none;border:0;color:inherit;font:30px/1 Georgia,serif;cursor:pointer}.back.is-first{visibility:hidden}.brand{font:600 22px Georgia,"AppleMyungjo",serif}.step{margin-left:auto;font-size:16px;color:var(--muted);font-variant-numeric:tabular-nums}.progress{height:3px;background:var(--stage-panel);margin:0 24px}.progress span{display:block;height:100%;width:33.333%;background:var(--amber)}main{min-height:0;padding:0 clamp(18px,5vw,26px)}form{height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto;min-width:0}.step-content{overflow-y:auto;overscroll-behavior:contain;padding:28px 3px 16px;scrollbar-gutter:stable}h1{font-size:24px;line-height:1.45;letter-spacing:-.7px;min-height:70px;margin:0 0 18px;font-weight:650}h1:focus{outline:none}fieldset{padding:0;margin:0;border:0;display:grid;gap:12px}.option{position:relative;display:flex;align-items:center;gap:12px;min-height:66px;padding:15px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--stage-raised);cursor:pointer;touch-action:manipulation;font-size:17px;line-height:1.5}.option:has(input:checked){border-color:var(--amber);background:var(--selected)}.option:has(input:focus-visible){outline:3px solid var(--amber-light);outline-offset:2px}.option input{position:absolute;opacity:0;width:1px;height:1px}.radio{width:20px;height:20px;border:1.5px solid var(--muted);border-radius:50%;flex-shrink:0;display:grid;place-items:center}.option input:checked+.radio{border-color:var(--amber)}.option input:checked+.radio:after{content:"";width:10px;height:10px;border-radius:50%;background:var(--amber)}.level-number{display:grid;place-items:center;flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--stage-panel);font-size:16px;color:var(--text)}.option:has(input:checked) .level-number{background:var(--amber);color:var(--button-ink)}.unavailable{color:var(--muted);background:var(--stage-panel);cursor:default}.availability{margin-left:auto;font-size:16px}.actions{padding:12px 0 calc(env(safe-area-inset-bottom) + 16px);background:var(--stage)}.feedback{font-size:16px;line-height:1.6;color:var(--amber-light);margin:0 0 12px;max-height:120px;overflow:auto}.primary{width:100%;min-height:52px;border:0;border-radius:13px;background:var(--amber);color:var(--button-ink);font-size:18px;font-weight:600;cursor:pointer;touch-action:manipulation}.primary:active{background:var(--amber-hover)}button:focus-visible{outline:3px solid var(--amber-light);outline-offset:3px}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}@media(max-height:700px){.step-content{padding-top:20px}h1{min-height:60px;margin-bottom:12px}fieldset{gap:10px}.option{min-height:62px;padding-block:12px}}@media(min-width:600px){.setup-shell{border-inline:1px solid var(--line)}}
+
+.setup-shell > #setup-header { min-width: 0; }
+
+/* Place selection questions close to their choices, with breathing room above. */
+[data-step="1"] h1,
+[data-step="2"] h1 {
+  min-height: 0;
+  padding-top: 32px;
+  margin-bottom: 12px;
+}
+@media (max-height: 700px) {
+  [data-step="1"] h1,
+  [data-step="2"] h1 { padding-top: 24px; }
+}
+
+/* Leave breathing room above the difficulty heading. */
+.step-content:has(>[data-step="2"]:not([hidden])){padding-top:36px}
+[data-step="2"] h1{padding-top:0}
+
+.language-question{display:flex;flex-direction:column;gap:8px}.language-question [lang=ja]{font-size:.8em;line-height:1.5;font-weight:500;word-break:normal;line-break:strict}.language-option{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}.language-option [lang=ja]{color:var(--muted)}

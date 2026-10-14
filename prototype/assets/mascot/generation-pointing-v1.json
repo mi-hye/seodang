@@ -1,0 +1,6 @@
+{
+  "generator": "Built-in image_gen",
+  "reference": "seodang-cartoon-atlas-v1.png",
+  "asset": "seodang-pointing-v1.png",
+  "prompt": "Use case: identity-preserve. Create one transparent 2D sprite pose of the SAME new cartoon Seodang puppy in the reference atlas: round cream face, short floppy caramel ears, tiny dark brown oval eyes, green triangular neckerchief, warm brown smooth outlines and simple flat cel shading. Ignore the multiple poses/layout in the reference; output exactly ONE complete mascot. The puppy stands with stable little feet and lifts its right forepaw toward the UPPER LEFT of the image, with a clear gentle pointing/introducing gesture, eyes looking toward that upper-left point and a friendly smile. It is guiding a user to a UI button above it. Keep this a dog paw, not a human hand. Identical character design and colors. Square canvas, full body centered, ample transparent margins, no cropped ears/paws, no text, no UI, no arrows, no scenery, no background. Actual alpha transparency. Not photographic or furry 3D."
+}

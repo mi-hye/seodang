@@ -1,0 +1,207 @@
+[
+  {
+    "id": "basic.6.0",
+    "text": "いぬ",
+    "spoken": "犬"
+  },
+  {
+    "id": "basic.6.1",
+    "text": "いえ",
+    "spoken": "家"
+  },
+  {
+    "id": "basic.6.2",
+    "text": "やま",
+    "spoken": "山"
+  },
+  {
+    "id": "basic.6.3",
+    "text": "うみ",
+    "spoken": "海"
+  },
+  {
+    "id": "basic.6.4",
+    "text": "そら",
+    "spoken": "空"
+  },
+  {
+    "id": "basic.6.5",
+    "text": "すし",
+    "spoken": "寿司"
+  },
+  {
+    "id": "basic.7.0",
+    "text": "が",
+    "kana": "ガ"
+  },
+  {
+    "id": "basic.7.1",
+    "text": "ぎ",
+    "kana": "ギ"
+  },
+  {
+    "id": "basic.7.2",
+    "text": "かぎ",
+    "spoken": "鍵"
+  },
+  {
+    "id": "basic.7.3",
+    "text": "ざ",
+    "kana": "ザ"
+  },
+  {
+    "id": "basic.7.4",
+    "text": "ず",
+    "kana": "ズ"
+  },
+  {
+    "id": "basic.7.5",
+    "text": "みず",
+    "spoken": "水"
+  },
+  {
+    "id": "basic.7.6",
+    "text": "だ",
+    "kana": "ダ"
+  },
+  {
+    "id": "basic.7.7",
+    "text": "ば",
+    "kana": "バ"
+  },
+  {
+    "id": "basic.7.8",
+    "text": "かばん",
+    "spoken": "鞄"
+  },
+  {
+    "id": "basic.8.0",
+    "text": "ぱ",
+    "kana": "パ"
+  },
+  {
+    "id": "basic.8.1",
+    "text": "ぴ",
+    "kana": "ピ"
+  },
+  {
+    "id": "basic.8.2",
+    "text": "ぱんだ",
+    "spoken": "パンダ"
+  },
+  {
+    "id": "basic.8.3",
+    "text": "ぷ",
+    "kana": "プ"
+  },
+  {
+    "id": "basic.8.4",
+    "text": "ぷりん",
+    "spoken": "プリン"
+  },
+  {
+    "id": "basic.8.5",
+    "text": "ぺ",
+    "kana": "ペ"
+  },
+  {
+    "id": "basic.8.6",
+    "text": "ぽ",
+    "kana": "ポ"
+  },
+  {
+    "id": "basic.8.7",
+    "text": "さんぽ",
+    "spoken": "散歩"
+  },
+  {
+    "id": "basic.9.0",
+    "text": "きって",
+    "spoken": "切手"
+  },
+  {
+    "id": "basic.9.1",
+    "text": "ねっこ",
+    "spoken": "根っこ"
+  },
+  {
+    "id": "basic.9.2",
+    "text": "きっぷ",
+    "spoken": "切符"
+  },
+  {
+    "id": "basic.9.3",
+    "text": "はっぱ",
+    "spoken": "葉っぱ"
+  },
+  {
+    "id": "basic.9.4",
+    "text": "しっぽ",
+    "spoken": "尻尾"
+  },
+  {
+    "id": "basic.9.5",
+    "text": "かっぱ",
+    "spoken": "河童"
+  },
+  {
+    "id": "basic.10.0",
+    "text": "きゃ",
+    "kana": "キャ"
+  },
+  {
+    "id": "basic.10.1",
+    "text": "きゃく",
+    "spoken": "客"
+  },
+  {
+    "id": "basic.10.2",
+    "text": "きゅ",
+    "kana": "キュ"
+  },
+  {
+    "id": "basic.10.3",
+    "text": "きゅうり",
+    "spoken": "きゅうり"
+  },
+  {
+    "id": "basic.10.4",
+    "text": "きょ",
+    "kana": "キョ"
+  },
+  {
+    "id": "basic.10.5",
+    "text": "きょう",
+    "spoken": "今日"
+  },
+  {
+    "id": "basic.10.6",
+    "text": "しゃ",
+    "kana": "シャ"
+  },
+  {
+    "id": "basic.10.7",
+    "text": "しゃしん",
+    "spoken": "写真"
+  },
+  {
+    "id": "basic.10.8",
+    "text": "しゅ",
+    "kana": "シュ"
+  },
+  {
+    "id": "basic.10.9",
+    "text": "しゅくだい",
+    "spoken": "宿題"
+  },
+  {
+    "id": "basic.10.10",
+    "text": "しょ",
+    "kana": "ショ"
+  },
+  {
+    "id": "basic.10.11",
+    "text": "しょくぱん",
+    "spoken": "食パン"
+  }
+]

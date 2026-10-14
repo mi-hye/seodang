@@ -1,0 +1,38 @@
+/* Level 3 only: loaded with the sentence lesson, using shared UI colors. */
+.sentence-page{max-width:480px;margin:auto;padding-top:16px}
+.sentence-page h1{font-size:calc(24px * var(--text-scale));margin:10px 0 20px}
+.sentence-page>.primary,.sentence-page>.secondary{width:100%;margin-top:14px}
+.sentence-page>.text-button{display:block;margin:10px auto;min-height:44px}
+.sentence-image{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:16px;margin-bottom:20px}
+.sentence-step{font-size:calc(16px * var(--text-scale));color:var(--muted);margin:0 0 14px;text-align:right;font-variant-numeric:tabular-nums}
+.sentence-heading{display:flex;align-items:center;gap:8px}
+.sentence-heading h2{flex:1;min-width:0;font-size:calc(20px * var(--text-scale));line-height:1.65;overflow-wrap:break-word}
+.sentence-heading .icon-button{flex:none;width:44px;min-height:44px;padding:10px;color:var(--amber-light)}
+.sentence-page .sentence-meaning{font-size:calc(17px * var(--text-scale));margin:10px 0 18px}
+.sentence-parts{display:flex;flex-wrap:wrap;gap:8px}
+.sentence-parts>span{display:grid;gap:4px;padding:10px 12px;background:var(--stage-panel);border-radius:10px;font-size:calc(16px * var(--text-scale))}
+.sentence-parts b{font-weight:500}.sentence-parts span span{color:var(--muted)}
+.sentence-page .sentence-help{font-size:calc(16px * var(--text-scale));line-height:1.7}
+.sentence-bag{display:grid;place-items:center;height:180px;margin:8px 0 20px;background:var(--stage-raised);border-radius:16px}.sentence-bag svg{width:150px;height:150px}
+.sentence-answer{display:flex;flex-wrap:wrap;align-content:center;gap:8px;min-height:128px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--stage-raised);margin:20px 0}.sentence-answer>span{color:var(--muted);font-size:16px}
+.sentence-choices{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+.sentence-chip{font-size:calc(18px * var(--text-scale));min-height:48px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--stage-panel);color:var(--text);max-width:100%;overflow-wrap:break-word}
+.sentence-confirmed{padding:12px;border:1px solid var(--jade);border-radius:14px}
+.sentence-clues{display:grid;gap:16px;margin:22px 0;padding:16px;background:var(--stage-raised);border-radius:14px}
+.sentence-bags{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.sentence-bag-choice{display:flex;flex-direction:column;align-items:center;min-width:0;padding:12px 4px;border:2px solid var(--line);border-radius:12px;background:var(--stage-raised);font-size:16px;gap:8px}
+.sentence-bag-choice svg{width:100%;height:auto}.sentence-bag-choice.selected{border-color:var(--amber);background:var(--selected)}
+.sentence-feedback{padding:14px;background:var(--stage-panel);border-radius:12px;font-size:16px!important}
+.sentence-review-item{padding:18px 0;border-bottom:1px solid var(--line)}.sentence-review-item p{font-size:calc(16px * var(--text-scale));color:var(--muted)}
+.sentence-complete{display:block;color:var(--jade)}.sentence-complete svg{width:40px;height:40px}
+.sentence-intro-audio{display:flex;justify-content:flex-end}
+
+.sentence-word{display:inline-block;white-space:nowrap}
+.sentence-learn .sentence-image{max-height:200px;object-fit:contain;background:var(--stage-raised)}
+
+.sentence-actions{display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;margin-top:20px}.sentence-actions>button{width:100%;min-width:0;margin:0;min-height:52px}
+
+.sentence-choices:has(>button:nth-child(2):last-child),.sentence-answer:has(>button:nth-child(2):last-child){display:flex;flex-direction:row;flex-wrap:nowrap}
+.sentence-choices:has(>button:nth-child(2):last-child)>button,.sentence-answer:has(>button:nth-child(2):last-child)>button{flex:1 1 0;min-width:0}
+
+.sentence-kanji{margin:18px 0;border-block:1px solid var(--line);padding:12px 0}.sentence-kanji summary{cursor:pointer;color:var(--muted);min-height:32px}.sentence-kanji p{display:flex;align-items:baseline;gap:18px;margin:20px 0 8px}.sentence-kanji ruby{font-size:28px;line-height:1.8}.sentence-kanji rt{font-size:12px;color:var(--muted)}.sentence-kanji span{font-size:16px}

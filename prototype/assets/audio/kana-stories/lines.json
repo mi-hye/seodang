@@ -1,0 +1,81 @@
+[
+  {
+    "id": "case-1-a-o-i",
+    "text": "あおい"
+  },
+  {
+    "id": "case-2-ku-tsu",
+    "text": "くつ",
+    "spoken": "靴"
+  },
+  {
+    "id": "case-2-ka-sa",
+    "text": "かさ",
+    "spoken": "傘"
+  },
+  {
+    "id": "case-2-ha-na",
+    "text": "はな",
+    "spoken": "花"
+  },
+  {
+    "id": "case-3-u-e-ki",
+    "text": "う、き"
+  },
+  {
+    "id": "case-3-ke-ko-shi",
+    "text": "け、し"
+  },
+  {
+    "id": "case-3-su-se-so",
+    "text": "す、そ"
+  },
+  {
+    "id": "case-3-ta-chi-te",
+    "text": "た、て"
+  },
+  {
+    "id": "case-3-to-ni-nu",
+    "text": "と、ぬ"
+  },
+  {
+    "id": "case-3-ne-no-hi",
+    "text": "ね、ひ"
+  },
+  {
+    "id": "case-3-fu-he-ho",
+    "text": "ふ、ほ"
+  },
+  {
+    "id": "case-3-ma-mi-mu",
+    "text": "ま、む"
+  },
+  {
+    "id": "case-3-me-mo-ya",
+    "text": "め、や"
+  },
+  {
+    "id": "case-3-yu-yo-ra",
+    "text": "ゆ、ら"
+  },
+  {
+    "id": "case-3-ri-ru-re",
+    "text": "り、れ"
+  },
+  {
+    "id": "case-3-ro-wa-wo-n",
+    "text": "ろ、ん"
+  },
+  {
+    "id": "case-1-a-ki",
+    "text": "あき"
+  },
+  {
+    "id": "case-1-a-i",
+    "text": "あい"
+  },
+  {
+    "id": "case-1-ki",
+    "text": "き"
+  }
+]

@@ -1,0 +1,5 @@
+KanjiVG — Copyright (C) 2009/2010/2011 Ulrich Apel and contributors.
+https://kanjivg.tagaini.net/
+Creative Commons Attribution-ShareAlike 3.0
+https://creativecommons.org/licenses/by-sa/3.0/
+Original SVGs preserved. data.json extracts their ordered paths and stroke-number positions without changing their geometry. The extracted data and rendered stroke diagrams retain CC BY-SA 3.0. Source commit and per-file URLs: sources.json.

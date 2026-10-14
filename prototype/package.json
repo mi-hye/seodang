@@ -1,0 +1,25 @@
+{
+  "name": "seodang-playable-prototype",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs",
+    "build": "node build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check src/app.js && node --check src/panels.js && npm test && npm run build",
+    "test:browser": "playwright test",
+    "ios:sync": "npm run build && cap sync ios",
+    "ios:open": "cap open ios",
+    "ios:sync:start-test": "npm run ios:sync",
+    "build:dev": "SEODANG_DEV_MODE=1 node build.mjs",
+    "ios:sync:dev": "npm run build:dev && cap sync ios"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.3",
+    "@playwright/test": "1.64.0"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/ios": "^8.5.3"
+  }
+}

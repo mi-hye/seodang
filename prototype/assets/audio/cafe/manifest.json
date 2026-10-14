@@ -1,0 +1,42 @@
+{
+  "provider": "VOICEVOX Nemo",
+  "voice": "女声1",
+  "styleId": 10005,
+  "coreVersion": "0.17.0",
+  "modelVersion": "0.16.4",
+  "credit": "VOICEVOX Nemo",
+  "terms": "https://voicevox.hiroshiba.jp/nemo/term/",
+  "languageReview": "Generated kana readings recorded for review; native-speaker listening review pending",
+  "files": {
+    "case01.staff-intro.ja": {
+      "text": "お客様がかばんを忘れていきました。取りにいらっしゃる前に、どのかばんか確認していただけますか。",
+      "synthesisText": "お客様がかばんを忘れていきました。取りにいらっしゃる前に、どのかばんか確認していただけますか。",
+      "kana": "オキャ_クサ'マガ/カバンオ'/ワスレテ'/イキマ'_シタ、トリ'ニ/イラッシャ'ル/マ'エニ、ド'ノ/カバンカ'/カクニン'/_シテ'/イタダケマ'_スカ",
+      "file": "assets/audio/cafe/case01.staff-intro.ja.wav",
+      "duration": 6.464,
+      "peak": 15431,
+      "rms": 2516.4,
+      "sha256": "0ab99ad707cb76b8e9ed8d0b89d6760a9ce04722b90d00459056d3995b48737e"
+    },
+    "case01.blue-bag.ja": {
+      "text": "あおい かばん",
+      "synthesisText": "青い鞄。",
+      "kana": "アオ'イ/カバン'",
+      "file": "assets/audio/cafe/case01.blue-bag.ja.wav",
+      "duration": 1.003,
+      "peak": 12688,
+      "rms": 2300.4,
+      "sha256": "310320d3844f4f08a2f4c0b4ee878e0f834411d660ab9a9d5ff4ce8e2509e69f"
+    },
+    "case01.near-window.ja": {
+      "text": "まどの そば",
+      "synthesisText": "窓のそば。",
+      "kana": "マ'ドノ/ソ'バ",
+      "file": "assets/audio/cafe/case01.near-window.ja.wav",
+      "duration": 0.981,
+      "peak": 17470,
+      "rms": 2711.0,
+      "sha256": "5aae34569888632973933149535bf79da24fbff1b8b6e3609aadad0ca4fd1395"
+    }
+  }
+}

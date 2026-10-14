@@ -1,0 +1,72 @@
+{
+  "provider": "VOICEVOX Nemo",
+  "voice": "女声1",
+  "styleId": 10005,
+  "coreVersion": "0.17.0",
+  "modelVersion": "0.16.4",
+  "credit": "VOICEVOX Nemo",
+  "terms": "https://voicevox.hiroshiba.jp/nemo/term/",
+  "languageReview": "Generated short sentences recorded for review; native-speaker listening review pending",
+  "files": {
+    "order-question": {
+      "text": "ご注文はお決まりですか。",
+      "synthesisText": "ご注文はお決まりですか。",
+      "kana": "ゴチュ'ウモンワ/オキ'マリデ_スカ",
+      "file": "assets/audio/dialogue/order-question.wav",
+      "duration": 1.867,
+      "peak": 17276,
+      "rms": 2748.9,
+      "sha256": "ad8823ef9a01aec07faee08052a5a2b582df6dcd257fbaf5f317b298e3c4dff5"
+    },
+    "order-reply": {
+      "text": "コーヒーをひとつください。",
+      "synthesisText": "コーヒーをひとつください。",
+      "kana": "コオヒ'イオ/_ヒト'_ツ/クダサ'イ",
+      "file": "assets/audio/dialogue/order-reply.wav",
+      "duration": 1.728,
+      "peak": 18672,
+      "rms": 2373.2,
+      "sha256": "61b0773a1557323c6a12a49be5b9b7fbef91bc0856696761bcc29848057303ed"
+    },
+    "temperature-question": {
+      "text": "ホットとアイス、どちらになさいますか。",
+      "synthesisText": "ホットとアイス、どちらになさいますか。",
+      "kana": "ホ'ットト/ア'イス、ド'チラニ/ナサイマ'_スカ",
+      "file": "assets/audio/dialogue/temperature-question.wav",
+      "duration": 2.72,
+      "peak": 15032,
+      "rms": 2272.9,
+      "sha256": "24532e312c0d0370d6dd4e7411715ea6a17ebfc6049ac8b18dc3fa61bc6be9ce"
+    },
+    "temperature-reply": {
+      "text": "ホットでお願いします。",
+      "synthesisText": "ホットでお願いします。",
+      "kana": "ホ'ットデ/オネガイ'/シマ'_ス",
+      "file": "assets/audio/dialogue/temperature-reply.wav",
+      "duration": 1.717,
+      "peak": 17808,
+      "rms": 2796.8,
+      "sha256": "18ce53a89b210a981ef275c859d137b72ec74770e02697af8a86e8beda26764b"
+    },
+    "takeaway-question": {
+      "text": "店内でお召し上がりですか。",
+      "synthesisText": "店内でお召し上がりですか。",
+      "kana": "テ'ンナイデ/オメシアガリデ_ス'カ",
+      "file": "assets/audio/dialogue/takeaway-question.wav",
+      "duration": 1.931,
+      "peak": 17016,
+      "rms": 3001.8,
+      "sha256": "ace1eabc3ce7d18d03b6e5afaf30306b0c3ced998bb2f3ecd8f4148c551fb0a3"
+    },
+    "takeaway-reply": {
+      "text": "持ち帰りでお願いします。",
+      "synthesisText": "持ち帰りでお願いします。",
+      "kana": "モ_チカエリデ'/オネガイ'/シマ'_ス",
+      "file": "assets/audio/dialogue/takeaway-reply.wav",
+      "duration": 1.941,
+      "peak": 19195,
+      "rms": 3389.4,
+      "sha256": "1d1635315b61115b8203870217870a40903e0b85cf4595ef5c88248d0639c4c0"
+    }
+  }
+}
