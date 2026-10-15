@@ -16,6 +16,7 @@ const initial = [
   "i18n.js",
   "korean-state.js",
   "basics-state.js",
+  "katakana-lessons.js",
   "learning-map.js",
   "dialogue-state.js",
   "reading-state.js",

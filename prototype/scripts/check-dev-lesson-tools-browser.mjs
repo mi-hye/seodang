@@ -3,7 +3,7 @@ import {practiceCases} from './practice-fixtures.mjs';import {reduce} from '../s
 const cases=practiceCases();
 const {koreanLessons,freshKoreanProgress}=await import('../src/korean-state.js');
 const koreanBase=cases.find(([kind])=>kind==='korean')[1];
-for(const lesson of koreanLessons.slice(1))cases.push(['korean',{...koreanBase,onboardingLevel:lesson.level,korean:{version:2,active:lesson.id,lessons:{[lesson.id]:{...freshKoreanProgress(),started:true,phase:'quiz',index:lesson.count-1,selected:(lesson.count-1)%3}}}},{type:'korean-check'}]);
+for(const lesson of koreanLessons.filter(l=>l.level>0&&l.id!=='1-11'))cases.push(['korean',{...koreanBase,onboardingLevel:lesson.level,korean:{version:2,active:lesson.id,lessons:{[lesson.id]:{...freshKoreanProgress(),started:true,phase:'quiz',index:lesson.count-1,selected:(lesson.count-1)%3}}}},{type:'korean-check'}]);
 const browser=await webkit.launch();
 try{for(const dev of [false,true])for(const [kind,original,action] of cases){
  if(kind==='korean'&&original.onboardingLevel===0&&original.korean.active!=='1-1')original.korean.lessons[`1-${Number(original.korean.active.split('-')[1])-1}`]={...freshKoreanProgress(),completed:true};

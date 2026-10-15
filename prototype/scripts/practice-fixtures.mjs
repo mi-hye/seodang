@@ -11,5 +11,5 @@ return [
  ['sentence',{...base(),onboardingLevel:3,sentence:{...freshSentence(),started:true,phase:'solve',selected:'window-blue'}},{type:'sentence-submit'}],
  ['dialogue',{...base(),onboardingLevel:4,dialogue:{...freshDialogue(),started:true,phase:'practice',index:2,selected:0}},{type:'dialogue-check'}],
  ...[5,6,7].map(level=>['reading',{...base(),onboardingLevel:level,readings:{[level]:{...freshReading(),started:true,phase:'read',index:5,selected:readingAnswers[level][5],solved:[0,1,2,3,4]}}},{type:'reading-check'}]),
- ['korean',{...base(),courseDirection:'ja-ko',onboardingLevel:0,korean:{version:2,active:'1-1',lessons:{'1-1':{...freshKoreanProgress(),started:true,phase:'quiz',index:9,selected:0}}}},{type:'korean-check'}]
+ ['korean',{...base(),courseDirection:'ja-ko',onboardingLevel:1,korean:{version:3,active:'1-11',lessons:{'1-11':{...freshKoreanProgress(),started:true,phase:'quiz',index:5,selected:2}}}},{type:'korean-check'}]
 ];}

@@ -1,42 +1,83 @@
 {
-  "provider": "VOICEVOX Nemo",
-  "voice": "女声1",
-  "styleId": 10005,
-  "coreVersion": "0.17.0",
-  "modelVersion": "0.16.4",
-  "credit": "VOICEVOX Nemo",
-  "terms": "https://voicevox.hiroshiba.jp/nemo/term/",
-  "languageReview": "Generated kana readings recorded for review; native-speaker listening review pending",
+  "provider": "Qwen3-TTS (MLX Audio)",
+  "languageReview": "User approved Sohee and Ono_Anna samples; full native-speaker review of all recordings remains pending",
   "files": {
     "case01.staff-intro.ja": {
       "text": "お客様がかばんを忘れていきました。取りにいらっしゃる前に、どのかばんか確認していただけますか。",
       "synthesisText": "お客様がかばんを忘れていきました。取りにいらっしゃる前に、どのかばんか確認していただけますか。",
-      "kana": "オキャ_クサ'マガ/カバンオ'/ワスレテ'/イキマ'_シタ、トリ'ニ/イラッシャ'ル/マ'エニ、ド'ノ/カバンカ'/カクニン'/_シテ'/イタダケマ'_スカ",
       "file": "assets/audio/cafe/case01.staff-intro.ja.wav",
-      "duration": 6.464,
-      "peak": 15431,
-      "rms": 2516.4,
-      "sha256": "0ab99ad707cb76b8e9ed8d0b89d6760a9ce04722b90d00459056d3995b48737e"
+      "duration": 7.44,
+      "peak": 9351,
+      "rms": 1426.0,
+      "sha256": "0e2fb3a947ce347ffbd515ea48efb993ebb0d0e5df8cc8ad2d3b8ce95b5c23cd",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "お客様がかばんを忘れていきました。取りにいらっしゃる前に、どのかばんか確認していただけますか。",
+          "seed": 42,
+          "duration": 7.44
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "case01.blue-bag.ja": {
       "text": "あおい かばん",
       "synthesisText": "青い鞄。",
-      "kana": "アオ'イ/カバン'",
       "file": "assets/audio/cafe/case01.blue-bag.ja.wav",
-      "duration": 1.003,
-      "peak": 12688,
-      "rms": 2300.4,
-      "sha256": "310320d3844f4f08a2f4c0b4ee878e0f834411d660ab9a9d5ff4ce8e2509e69f"
+      "duration": 0.88,
+      "peak": 7642,
+      "rms": 1704.1,
+      "sha256": "cfa74a0ef01337f896522539058e685adc97d9f26adfed8955b64b9071062b68",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "青い鞄。",
+          "seed": 42,
+          "duration": 0.88
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "case01.near-window.ja": {
       "text": "まどの そば",
       "synthesisText": "窓のそば。",
-      "kana": "マ'ドノ/ソ'バ",
       "file": "assets/audio/cafe/case01.near-window.ja.wav",
-      "duration": 0.981,
-      "peak": 17470,
-      "rms": 2711.0,
-      "sha256": "5aae34569888632973933149535bf79da24fbff1b8b6e3609aadad0ca4fd1395"
+      "duration": 0.96,
+      "peak": 5926,
+      "rms": 1202.8,
+      "sha256": "d69efb4e9c8e72cda5f915d2e021b4ef56fc85836b57c76269e3d86e69034360",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "窓のそば。",
+          "seed": 42,
+          "duration": 0.96
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     }
-  }
+  },
+  "generatedAt": "2026-10-15",
+  "locale": "ja-JP",
+  "usageScope": "Commercial model use permitted under Apache-2.0; no separate generated-audio restriction found in published model terms. Third-party rights are not warranted.",
+  "licenseSource": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+  "rightsReviewed": true,
+  "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-8bit",
+  "modelRevision": "41d3337e8b7f2843a75841595fc14e4b9a7a4b96",
+  "license": "Apache-2.0",
+  "rightsReviewDate": "2026-10-15",
+  "voice": "Ono_Anna",
+  "voiceId": "Ono_Anna"
 }

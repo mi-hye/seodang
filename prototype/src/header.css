@@ -38,3 +38,17 @@ dialog { overscroll-behavior: contain; }
 .audio-text-row>button{flex:none;margin:0;min-width:44px;min-height:44px}
 .audio-text-row>.icon-button{width:44px;height:44px;padding:10px}
 .audio-text-row>h1:first-child,.audio-text-row>h2:first-child,.audio-text-row>h3:first-child{margin-block:0}
+
+/* Keep taps from triggering browser zoom across the learning interface. */
+html{touch-action:manipulation}
+
+/* Hide sheet scrollbars while retaining touch, wheel and keyboard scrolling. */
+dialog, dialog *{scrollbar-width:none}
+dialog::-webkit-scrollbar,dialog *::-webkit-scrollbar{display:none;width:0;height:0}
+
+/* Suppress touch/mouse focus rings, including focus moved into sheets by code. */
+html[data-input-modality=pointer] :focus,
+html[data-input-modality=pointer] :focus-visible,
+html[data-input-modality=pointer] .option:has(input:focus-visible){outline:none!important}
+
+.app-header-title.app-header-lesson{display:flex;flex:1;flex-direction:row;align-items:baseline;gap:6px;min-width:0;font-size:calc(18px * var(--text-scale,1));line-height:1.45}.header-lesson-number{flex:none;white-space:nowrap;font-variant-numeric:tabular-nums}.header-lesson-name{flex:1;min-width:0;word-break:keep-all;overflow-wrap:anywhere}html[lang=ja] .header-lesson-name{word-break:normal;line-break:strict}

@@ -1,0 +1,69 @@
+{
+  "files": {
+    "국": {
+      "text": "국",
+      "spoken": "국",
+      "locale": "ko-KR",
+      "file": "assets/audio/korean-pronunciation/ad6d.wav",
+      "duration": 0.32,
+      "peak": 10966,
+      "rms": 2166.5,
+      "sha256": "163d4548f60e18dadbd40d2c85da85e253557cbee1dcb8ceb0af089a395332c4",
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "synthesisText": "국",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "국",
+          "seed": 42,
+          "duration": 0.32,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "국",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "옷": {
+      "text": "옷",
+      "spoken": "옷",
+      "locale": "ko-KR",
+      "file": "assets/audio/korean-pronunciation/c637.wav",
+      "duration": 1.76,
+      "peak": 7724,
+      "rms": 1079.7,
+      "sha256": "e731341b3c1f6c7049a7e3b92c260368ddf87ef896cb218ca0b9ecc3af7b489e",
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "synthesisText": "옷",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "옷",
+          "seed": 42,
+          "duration": 1.76,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "옷",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    }
+  },
+  "provider": "Qwen3-TTS (MLX Audio)",
+  "generatedAt": "2026-10-15",
+  "languageReview": "User approved Sohee and Ono_Anna samples; full native-speaker review of all recordings remains pending",
+  "locale": "ko-KR",
+  "usageScope": "Commercial model use permitted under Apache-2.0; no separate generated-audio restriction found in published model terms. Third-party rights are not warranted.",
+  "licenseSource": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+  "rightsReviewed": true,
+  "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-8bit",
+  "modelRevision": "41d3337e8b7f2843a75841595fc14e4b9a7a4b96",
+  "license": "Apache-2.0",
+  "rightsReviewDate": "2026-10-15",
+  "voice": "Sohee",
+  "voiceId": "Sohee"
+}

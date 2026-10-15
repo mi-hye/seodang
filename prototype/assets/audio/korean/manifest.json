@@ -1,1383 +1,3390 @@
 {
-  "provider": "macOS Speech Synthesis",
-  "voice": "Yuna",
+  "provider": "Qwen3-TTS (MLX Audio)",
   "locale": "ko-KR",
-  "languageReview": "Generated learning material; native-speaker listening review pending",
+  "languageReview": "User approved Sohee and Ono_Anna samples; full native-speaker review of all recordings remains pending",
   "files": {
     "korean.1-1.0": {
       "id": "korean.1-1.0",
       "text": "ㅏ",
       "spoken": "아",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-1.0.wav",
-      "duration": 0.66,
-      "sha256": "8c62b8e57b5728277b6412efdced911121549327332a35e806f0d4ae9409d34b",
-      "peak": 24195,
-      "rms": 3041.2
+      "duration": 0.56,
+      "sha256": "0116aae6f63988a7536336771cdeddec33be0b156a37711c801fc35c3c1c2286",
+      "peak": 11864,
+      "rms": 2633.6,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "아",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "아",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "아",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-1.1": {
       "id": "korean.1-1.1",
       "text": "ㅓ",
       "spoken": "어",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-1.1.wav",
-      "duration": 0.518,
-      "sha256": "fc1af2e864304ef91d256df09ecbe15791660892f980065938f58e4724dee213",
-      "peak": 20524,
-      "rms": 3801.8
+      "duration": 0.64,
+      "sha256": "219e90e9ead87361872cf17a36d2f5b57eb38e4b05ac4fd3770fa23814e0843c",
+      "peak": 15348,
+      "rms": 4102.2,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "어",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "어",
+          "seed": 1042,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "어",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-1.2": {
       "id": "korean.1-1.2",
       "text": "ㅗ",
       "spoken": "오",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-1.2.wav",
-      "duration": 0.519,
-      "sha256": "5d59002609bf231a8527f9a74c5e38bc22f73196ad89bbb19d4276da198c7541",
-      "peak": 14871,
-      "rms": 3476.0
+      "duration": 1.68,
+      "sha256": "6e4198010a49e00e4b39f6575a2808db46da614152b5cf558ebde5f4113e09bb",
+      "peak": 14890,
+      "rms": 2488.5,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "오",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "오",
+          "seed": 42,
+          "duration": 1.68,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "오",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-1.3": {
       "id": "korean.1-1.3",
       "text": "ㅜ",
       "spoken": "우",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-1.3.wav",
-      "duration": 0.518,
-      "sha256": "c5d103c4cb50955202e134d89608abc88ee74dc27e56df334ec724af400fa803",
-      "peak": 12205,
-      "rms": 3585.9
+      "duration": 1.28,
+      "sha256": "a3954c83ff96933a2f8cbc9fcfbfe51ea910a10414a0831dd60c2861bfe5153f",
+      "peak": 4764,
+      "rms": 1773.3,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "우",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "우",
+          "seed": 42,
+          "duration": 1.28,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "우",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-1.4": {
       "id": "korean.1-1.4",
       "text": "ㅡ",
       "spoken": "으",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-1.4.wav",
-      "duration": 0.518,
-      "sha256": "d9828025f66ba3ab6dda39327b50e9a902f47e551bc1d50a236e07a3844331d0",
-      "peak": 17429,
-      "rms": 4122.8
+      "duration": 0.72,
+      "sha256": "5f546ec61324506abfbf36ce20b058c1db958c6c8dddcffa38df6d52d0a0dd63",
+      "peak": 11787,
+      "rms": 4592.6,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "으",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "으",
+          "seed": 42,
+          "duration": 0.72,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "으",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-1.5": {
       "id": "korean.1-1.5",
       "text": "ㅣ",
       "spoken": "이",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-1.5.wav",
-      "duration": 0.518,
-      "sha256": "09cfcc52320f3453913a6953bbb2118e5a2ee05eb19fb0fe0a83e524677faefa",
-      "peak": 12404,
-      "rms": 3791.0
+      "duration": 0.56,
+      "sha256": "8e6fcf153b394080b775c2173c53da8efa612db7f5af30136df6c7a13f65e00d",
+      "peak": 8297,
+      "rms": 2231.5,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "이",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "이",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "이",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-1.6": {
       "id": "korean.1-1.6",
       "text": "ㅇ",
       "spoken": "이응",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-1.6.wav",
-      "duration": 0.623,
-      "sha256": "43176b98dfe961aaf8db6c8d0feb41ffb82339f3203d556b3577c338fdf41b49",
-      "peak": 16021,
-      "rms": 4709.4
+      "duration": 1.04,
+      "sha256": "85c7670693ec137152c42eaf6b1526d667478a16c612b0e81fade48cca83c19b",
+      "peak": 11620,
+      "rms": 3991.4,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "이응",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "이응",
+          "seed": 42,
+          "duration": 1.04,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "이응",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-1.7": {
       "id": "korean.1-1.7",
       "text": "ㄱ",
       "spoken": "기역",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-1.7.wav",
-      "duration": 0.571,
-      "sha256": "4dd3ca81dff57355fca0d46fa0f1d1f4bc4d22eb1a594f2804f2e062885393dc",
-      "peak": 16409,
-      "rms": 3590.1
+      "duration": 0.56,
+      "sha256": "359805d1d11057d8bdd39f76872f48d41e7cf769e746bf51aeb4fefc9bd508ea",
+      "peak": 22257,
+      "rms": 3854.0,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "기역",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "기역",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "기역",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-1.8": {
       "id": "korean.1-1.8",
       "text": "ㄴ",
       "spoken": "니은",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-1.8.wav",
-      "duration": 0.611,
-      "sha256": "c791c8ed18760832e0be8ce558400a83068e30967f0ee9ba66475d8d7ccd0a69",
-      "peak": 15994,
-      "rms": 3799.2
+      "duration": 0.64,
+      "sha256": "23e8638e2b85317c7118ac46781380ff9d318a4d2b807d6ef901c1ed6581c3e9",
+      "peak": 11010,
+      "rms": 3024.4,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "니은",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "니은",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "니은",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-1.9": {
       "id": "korean.1-1.9",
       "text": "ㅁ",
       "spoken": "미음",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-1.9.wav",
-      "duration": 0.634,
-      "sha256": "998f6ed3c928f448a0132bb5a6a25a6f01023cacc225efac82f6a4b2a99ce1e8",
-      "peak": 15274,
-      "rms": 4408.3
+      "duration": 0.56,
+      "sha256": "28b3a5655312ee1a022d0951264ca107f81bb0da56bacf693ff80a2b5d4bb7b0",
+      "peak": 13023,
+      "rms": 3035.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "미음",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "미음",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "미음",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-2.0": {
       "id": "korean.1-2.0",
       "text": "아",
       "spoken": "아",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-2.0.wav",
-      "duration": 0.66,
-      "sha256": "8c62b8e57b5728277b6412efdced911121549327332a35e806f0d4ae9409d34b",
-      "peak": 24195,
-      "rms": 3041.2
+      "duration": 0.56,
+      "sha256": "0116aae6f63988a7536336771cdeddec33be0b156a37711c801fc35c3c1c2286",
+      "peak": 11864,
+      "rms": 2633.6,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "아",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "아",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "아",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-2.1": {
       "id": "korean.1-2.1",
       "text": "어",
       "spoken": "어",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-2.1.wav",
-      "duration": 0.518,
-      "sha256": "fc1af2e864304ef91d256df09ecbe15791660892f980065938f58e4724dee213",
-      "peak": 20524,
-      "rms": 3801.8
+      "duration": 0.64,
+      "sha256": "219e90e9ead87361872cf17a36d2f5b57eb38e4b05ac4fd3770fa23814e0843c",
+      "peak": 15348,
+      "rms": 4102.2,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "어",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "어",
+          "seed": 1042,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "어",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-2.2": {
       "id": "korean.1-2.2",
       "text": "오",
       "spoken": "오",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-2.2.wav",
-      "duration": 0.519,
-      "sha256": "5d59002609bf231a8527f9a74c5e38bc22f73196ad89bbb19d4276da198c7541",
-      "peak": 14871,
-      "rms": 3476.0
+      "duration": 1.68,
+      "sha256": "6e4198010a49e00e4b39f6575a2808db46da614152b5cf558ebde5f4113e09bb",
+      "peak": 14890,
+      "rms": 2488.5,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "오",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "오",
+          "seed": 42,
+          "duration": 1.68,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "오",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-2.3": {
       "id": "korean.1-2.3",
       "text": "우",
       "spoken": "우",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-2.3.wav",
-      "duration": 0.518,
-      "sha256": "c5d103c4cb50955202e134d89608abc88ee74dc27e56df334ec724af400fa803",
-      "peak": 12205,
-      "rms": 3585.9
+      "duration": 1.28,
+      "sha256": "a3954c83ff96933a2f8cbc9fcfbfe51ea910a10414a0831dd60c2861bfe5153f",
+      "peak": 4764,
+      "rms": 1773.3,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "우",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "우",
+          "seed": 42,
+          "duration": 1.28,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "우",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-2.4": {
       "id": "korean.1-2.4",
       "text": "으",
       "spoken": "으",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-2.4.wav",
-      "duration": 0.518,
-      "sha256": "d9828025f66ba3ab6dda39327b50e9a902f47e551bc1d50a236e07a3844331d0",
-      "peak": 17429,
-      "rms": 4122.8
+      "duration": 0.72,
+      "sha256": "5f546ec61324506abfbf36ce20b058c1db958c6c8dddcffa38df6d52d0a0dd63",
+      "peak": 11787,
+      "rms": 4592.6,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "으",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "으",
+          "seed": 42,
+          "duration": 0.72,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "으",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-2.5": {
       "id": "korean.1-2.5",
       "text": "이",
       "spoken": "이",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-2.5.wav",
-      "duration": 0.518,
-      "sha256": "09cfcc52320f3453913a6953bbb2118e5a2ee05eb19fb0fe0a83e524677faefa",
-      "peak": 12404,
-      "rms": 3791.0
+      "duration": 0.56,
+      "sha256": "8e6fcf153b394080b775c2173c53da8efa612db7f5af30136df6c7a13f65e00d",
+      "peak": 8297,
+      "rms": 2231.5,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "이",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "이",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "이",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-2.6": {
       "id": "korean.1-2.6",
       "text": "가",
       "spoken": "가",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-2.6.wav",
-      "duration": 0.514,
-      "sha256": "15635a471d08dc3e07f7de94bb392da38d9828242cc665e67d40196ebd94da8d",
-      "peak": 15036,
-      "rms": 2657.3
+      "duration": 0.64,
+      "sha256": "e5e5f19188e33d6c1d591a4f052a812893e0c840a61713d26b4cb17e549b6de2",
+      "peak": 13958,
+      "rms": 3217.4,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "가",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "가",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "가",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-2.7": {
       "id": "korean.1-2.7",
       "text": "나",
       "spoken": "나",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-2.7.wav",
-      "duration": 0.495,
-      "sha256": "a778438992ca7d7dd4b373b53d9243a7002af6d32a08286e5e58dd11b0cf0eb1",
-      "peak": 17130,
-      "rms": 2996.3
+      "duration": 0.88,
+      "sha256": "88345bec027efd98ecac65f99007850bd74cad1b4f6d225587fb81126a78f798",
+      "peak": 16646,
+      "rms": 4622.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "나",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "나",
+          "seed": 42,
+          "duration": 0.88,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "나",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-2.8": {
       "id": "korean.1-2.8",
       "text": "고",
       "spoken": "고",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-2.8.wav",
-      "duration": 0.495,
-      "sha256": "a7b98a2bb59402121b72748ffd812f8e95c98d013b383fc7da7c98b91e605518",
-      "peak": 14323,
-      "rms": 2616.9
+      "duration": 0.48,
+      "sha256": "99f62bde7d3c3beaac8ecdfe49d9b451619c00aa76867e81a3b323fb7a2b7018",
+      "peak": 16358,
+      "rms": 3924.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "고",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "고",
+          "seed": 2042,
+          "duration": 0.48,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "고",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-2.9": {
       "id": "korean.1-2.9",
       "text": "무",
       "spoken": "무",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-2.9.wav",
-      "duration": 0.472,
-      "sha256": "c408f1d4010915ccfc846648acc765b71094d9223ecf48d63ff1f01cc227287a",
-      "peak": 11860,
-      "rms": 3357.2
+      "duration": 0.56,
+      "sha256": "cc016642b4391163829dc500b45fece2635ea64103d02c843a177ad3e5f96de3",
+      "peak": 4737,
+      "rms": 1189.5,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "무",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "무",
+          "seed": 1042,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "무",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-3.0": {
       "id": "korean.1-3.0",
       "text": "ㄷ",
       "spoken": "디귿",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-3.0.wav",
-      "duration": 0.618,
-      "sha256": "cd4d92f15cf9e8aa2473cc09534cade67af2b358f849d5d52333bcf624762367",
-      "peak": 18294,
-      "rms": 3959.0
+      "duration": 2.32,
+      "sha256": "3e025ab42ab510ad66837d8f783f93c90606c37d8684ee898a7f6dc5020ee90f",
+      "peak": 13046,
+      "rms": 1986.5,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "디귿",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "디귿",
+          "seed": 2042,
+          "duration": 2.32,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "디귿",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-3.1": {
       "id": "korean.1-3.1",
       "text": "ㄹ",
       "spoken": "리을",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-3.1.wav",
-      "duration": 0.611,
-      "sha256": "1bfefc9db7676e45506c8e9e2ae412560d5da719276f207805061ed86490b677",
-      "peak": 15585,
-      "rms": 4293.4
+      "duration": 0.88,
+      "sha256": "8d593ecfb971bcb9eea145e0e5c0d46be0542ccbf9a12ebf9bd9b559c53cffab",
+      "peak": 14886,
+      "rms": 3882.9,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "리을",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "리을",
+          "seed": 42,
+          "duration": 0.88,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "리을",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-3.2": {
       "id": "korean.1-3.2",
       "text": "ㅂ",
       "spoken": "비읍",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-3.2.wav",
-      "duration": 0.583,
-      "sha256": "78c6a954f5dde3b2da2580f426dded01bb482e8fa8090e9d57e946a569c4c7a4",
-      "peak": 16798,
-      "rms": 4625.2
+      "duration": 0.8,
+      "sha256": "1396d8b533e5ef4d563814924677ae60fc7d19e87ee357b0c04bca8dc7f10375",
+      "peak": 17643,
+      "rms": 4786.1,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "비읍",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "비읍",
+          "seed": 1042,
+          "duration": 0.8,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "비읍",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-3.3": {
       "id": "korean.1-3.3",
       "text": "ㅅ",
       "spoken": "시옷",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-3.3.wav",
-      "duration": 0.645,
-      "sha256": "9f57145979bc0abe1cd6d2b3d2eb70c51af261c0043d0380ec73a8527e0f1ace",
-      "peak": 18439,
-      "rms": 3697.4
+      "duration": 0.56,
+      "sha256": "2261c531ac4a299f8e15c974897bd9d3eacaea40172ba201b7a6e4c0e4f8ca4a",
+      "peak": 13934,
+      "rms": 2889.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "시옷",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "시옷",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "시옷",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-3.4": {
       "id": "korean.1-3.4",
       "text": "ㅈ",
       "spoken": "지읒",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-3.4.wav",
-      "duration": 0.609,
-      "sha256": "b73e877ac3873e3af35c2710a66ffff892000511ee142ec08fbf109b7c29e410",
-      "peak": 15484,
-      "rms": 4392.2
+      "duration": 0.48,
+      "sha256": "5886b966a57fb27ba4fc03acc6f525a52152c35a24f27c033261f5f6de84c603",
+      "peak": 10391,
+      "rms": 2569.9,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "지읒",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "지읒",
+          "seed": 42,
+          "duration": 0.48,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "지읒",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-3.5": {
       "id": "korean.1-3.5",
       "text": "ㅊ",
       "spoken": "치읓",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-3.5.wav",
-      "duration": 0.65,
-      "sha256": "1d9f90ae58bdaa2ae4f80458730c8fec1bcb492bbd1ea632187c63e8918d6f99",
-      "peak": 15347,
-      "rms": 4510.6
+      "duration": 1.12,
+      "sha256": "5aafe3c862fc005b0bf68645c52180de3c4a96d1be608d0cea878535e3458018",
+      "peak": 16744,
+      "rms": 3970.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "치읓",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "치읓",
+          "seed": 42,
+          "duration": 1.12,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "치읓",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-3.6": {
       "id": "korean.1-3.6",
       "text": "ㅋ",
       "spoken": "키읔",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-3.6.wav",
-      "duration": 0.624,
-      "sha256": "a9d3d2bf6c8edb98b99cef128bda743aecf662206884dd85d6473e45ede76149",
-      "peak": 15680,
-      "rms": 4826.4
+      "duration": 2.32,
+      "sha256": "884beac5b7a7f23fddf1d8bbda888c5ca4fa7f10b5d877822984018876743692",
+      "peak": 13180,
+      "rms": 2349.9,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "키읔",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "키읔",
+          "seed": 1042,
+          "duration": 2.32,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "키읔",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-3.7": {
       "id": "korean.1-3.7",
       "text": "ㅌ",
       "spoken": "티읕",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-3.7.wav",
-      "duration": 0.623,
-      "sha256": "11edc15a844a2c7a5ba1fdde26146a84299906d6d248d2e6c9924954dbf9d15f",
-      "peak": 15819,
-      "rms": 4826.2
+      "duration": 1.04,
+      "sha256": "2b46e378a2e96e19da9e4cbdd8bf7e4b6f91d2c1e7a7d652473e086f65adf2e0",
+      "peak": 8330,
+      "rms": 2005.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "티읕",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "티읕",
+          "seed": 42,
+          "duration": 1.04,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "티읕",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-3.8": {
       "id": "korean.1-3.8",
       "text": "ㅍ",
       "spoken": "피읖",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-3.8.wav",
-      "duration": 0.622,
-      "sha256": "7da8bbf02042bca0e303ae3d16937b73973a662c16b5a34f4767f2fdfca6cd22",
-      "peak": 18201,
-      "rms": 4892.8
+      "duration": 1.76,
+      "sha256": "5a2a20471b3f0832e1224cb0976296f7c9bf8d1897cba7a16411e766d1130d27",
+      "peak": 11355,
+      "rms": 1673.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "피읖",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "피읖",
+          "seed": 42,
+          "duration": 1.76,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "피읖",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-3.9": {
       "id": "korean.1-3.9",
       "text": "ㅎ",
       "spoken": "히읗",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-3.9.wav",
-      "duration": 0.61,
-      "sha256": "ebd384d060f2f126ba89e4e88d1bbb0404273f37dfc0197174b5e1c7046ff745",
-      "peak": 15672,
-      "rms": 4435.9
+      "duration": 1.36,
+      "sha256": "1874b32878e6b1817be7a2d72af4a8c5df6bce37fa17dd864c36a859ee870097",
+      "peak": 10386,
+      "rms": 2143.9,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "히읗",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "히읗",
+          "seed": 2042,
+          "duration": 1.36,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "히읗",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-3.10": {
       "id": "korean.1-3.10",
       "text": "ㅑ",
       "spoken": "야",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-3.10.wav",
-      "duration": 0.495,
-      "sha256": "2f0cc9eaf6b0ead03be05dce914d4f8951f86ab3440bed0840904ebd924a9b00",
-      "peak": 20561,
-      "rms": 3397.0
+      "duration": 0.8,
+      "sha256": "3c5651d0542d71e75af79fc2352a095b1c6d1eed888677730fb69fdac57d7a02",
+      "peak": 20578,
+      "rms": 4429.1,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "야",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "야",
+          "seed": 42,
+          "duration": 0.8,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "야",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-3.11": {
       "id": "korean.1-3.11",
       "text": "ㅕ",
       "spoken": "여",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-3.11.wav",
-      "duration": 0.46,
-      "sha256": "ab7c2b858851e20ca3d5922a6e7eff8f6867f99f16df5e2efe94e9c85ea94be4",
-      "peak": 19250,
-      "rms": 3482.0
+      "duration": 0.56,
+      "sha256": "c3c6eb06338cf62a87e72105ebe44801bc959acdf6cc77fdd7f7b38053b80d5d",
+      "peak": 13269,
+      "rms": 3449.3,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "여",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "여",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "여",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-3.12": {
       "id": "korean.1-3.12",
       "text": "ㅛ",
       "spoken": "요",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-3.12.wav",
-      "duration": 0.518,
-      "sha256": "2b2040681a8f595be3ab1d27aa5721010fc575f5f64b1865dad98719276218c4",
-      "peak": 12533,
-      "rms": 3268.6
+      "duration": 1.04,
+      "sha256": "1f5be57ac8b2a4e4c6d33eae994ab0818519a44dcfe337a1580ce19fb5d336c9",
+      "peak": 17767,
+      "rms": 4417.0,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "요",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "요",
+          "seed": 1042,
+          "duration": 1.04,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "요",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-3.13": {
       "id": "korean.1-3.13",
       "text": "ㅠ",
       "spoken": "유",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-3.13.wav",
-      "duration": 0.495,
-      "sha256": "66cf91b5d3b45e4cbe46c28b81efb2ceffc8563e9d1a89c27028719cc7e98b5c",
-      "peak": 15361,
-      "rms": 4101.4
+      "duration": 0.56,
+      "sha256": "7354f52d1946cde8c61fc9ac6978945d395c99abe70798d9eaf4713a6d0718de",
+      "peak": 9264,
+      "rms": 2612.6,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "유",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "유",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "유",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-4.0": {
       "id": "korean.1-4.0",
       "text": "다",
       "spoken": "다",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-4.0.wav",
-      "duration": 0.513,
-      "sha256": "dc12c5f7c86bef0db7004773485058b04f5cb2a19ec3807c99ae6a7eb78ac8d9",
-      "peak": 19320,
-      "rms": 2849.2
+      "duration": 0.56,
+      "sha256": "c722d1c2567732a26d676c66507bef15473719be7fe2a348dc39c7df49c9064e",
+      "peak": 8328,
+      "rms": 1678.1,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "다",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "다",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "다",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-4.1": {
       "id": "korean.1-4.1",
       "text": "라",
       "spoken": "라",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-4.1.wav",
-      "duration": 0.507,
-      "sha256": "696260d1c7695441b7e540c8b1830cc1383b2d1122cf4b3a4995085d8f3ed1ff",
-      "peak": 16106,
-      "rms": 3130.2
+      "duration": 0.56,
+      "sha256": "38c8e9b4f9112b89885428de5efa76a42f19f717386265bb91dc9dcac794a2cd",
+      "peak": 15106,
+      "rms": 3476.9,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "라",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "라",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "라",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-4.2": {
       "id": "korean.1-4.2",
       "text": "바",
       "spoken": "바",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-4.2.wav",
-      "duration": 0.513,
-      "sha256": "58d031d5cfbc7a9021fa1d121df72eb2f7c1b864b1a710216f5b24bd47ffb0ea",
-      "peak": 15433,
-      "rms": 2680.2
+      "duration": 0.64,
+      "sha256": "920f0b1d726e5845572f68d25a94333657459584756a5d9bccf6a1619de05701",
+      "peak": 8263,
+      "rms": 1946.9,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "바",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "바",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "바",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-4.3": {
       "id": "korean.1-4.3",
       "text": "사",
       "spoken": "사",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-4.3.wav",
-      "duration": 0.564,
-      "sha256": "40cc229581c9e34082b45da400110c742144ede7ec986c0ce5a2d73fd33a4af8",
-      "peak": 13741,
-      "rms": 2587.9
+      "duration": 0.48,
+      "sha256": "7990bc3f6de04af84c4b0890e4198532880896a1f5a562d35665ad4f492aeda5",
+      "peak": 14816,
+      "rms": 2569.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "사",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "사",
+          "seed": 42,
+          "duration": 0.48,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "사",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-4.4": {
       "id": "korean.1-4.4",
       "text": "자",
       "spoken": "자",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-4.4.wav",
-      "duration": 0.538,
-      "sha256": "01603c8a3c6f48f5f5d3bb425ffd2eb93b348885586895f4aad26a63dd21d5c2",
-      "peak": 15959,
-      "rms": 2563.7
+      "duration": 0.4,
+      "sha256": "3e222215ea9c6b205694b1f66ab9c8023aa4720370507338f42c640f2512c9a9",
+      "peak": 7526,
+      "rms": 1101.3,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "자",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "자",
+          "seed": 42,
+          "duration": 0.4,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "자",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-4.5": {
       "id": "korean.1-4.5",
       "text": "차",
       "spoken": "차",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-4.5.wav",
-      "duration": 0.557,
-      "sha256": "2565064d05b8b09b53214706144a67f711d2c6933d9444a9cd3f435a9d834955",
-      "peak": 14191,
-      "rms": 2540.5
+      "duration": 0.64,
+      "sha256": "fa0a450aeb247a17b469b2469548de82c572d87c7d79a96e7ea36ede61948b28",
+      "peak": 16560,
+      "rms": 2885.0,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "차",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "차",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "차",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-4.6": {
       "id": "korean.1-4.6",
       "text": "카",
       "spoken": "카",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-4.6.wav",
-      "duration": 0.531,
-      "sha256": "668c0ba2aa45bee8107a7bf7d911da9afdee54410a80687785e5d5ce741c431e",
-      "peak": 14461,
-      "rms": 2566.9
+      "duration": 0.48,
+      "sha256": "400db474e16051ae7e092e9f74e7e544487ab01675474fb17967decdaf5a8ed7",
+      "peak": 25479,
+      "rms": 5947.3,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "카",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "카",
+          "seed": 42,
+          "duration": 0.48,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "카",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-4.7": {
       "id": "korean.1-4.7",
       "text": "타",
       "spoken": "타",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-4.7.wav",
-      "duration": 0.529,
-      "sha256": "3df3120fc29ee1423de6aaa88946b76626122c4172410dca8b5bcf9e9477c4de",
-      "peak": 13384,
-      "rms": 2342.9
+      "duration": 0.72,
+      "sha256": "b2161c76c89e68b4ac2ebc71beadcef437def8462b65b881d42ceecf11d61571",
+      "peak": 17830,
+      "rms": 4739.6,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "타",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "타",
+          "seed": 1042,
+          "duration": 0.72,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "타",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-4.8": {
       "id": "korean.1-4.8",
       "text": "파",
       "spoken": "파",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-4.8.wav",
-      "duration": 0.531,
-      "sha256": "cf0745669250628f1f7a74b5a7236e28fb5693e737784cefb713f32c4df6f2f9",
-      "peak": 14437,
-      "rms": 2649.5
+      "duration": 0.56,
+      "sha256": "e4ca3d63bd5c0fa8e34ebf70c4e8c72e73354eb9a6fb9d992423e90daf3ae90e",
+      "peak": 9306,
+      "rms": 2463.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "파",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "파",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "파",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-4.9": {
       "id": "korean.1-4.9",
       "text": "하",
       "spoken": "하",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-4.9.wav",
-      "duration": 0.528,
-      "sha256": "584f768b7bd7f44323fc4009637270637e43fe0ede1ed240a35b2d8b056a2e9e",
-      "peak": 14633,
-      "rms": 2716.5
+      "duration": 0.32,
+      "sha256": "72bb1df4a37699298a39a53406023341e1548b6ca07fa8cfc322f78358b81629",
+      "peak": 12228,
+      "rms": 2542.5,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "하",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "하",
+          "seed": 42,
+          "duration": 0.32,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "하",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-4.10": {
       "id": "korean.1-4.10",
       "text": "야",
       "spoken": "야",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-4.10.wav",
-      "duration": 0.495,
-      "sha256": "2f0cc9eaf6b0ead03be05dce914d4f8951f86ab3440bed0840904ebd924a9b00",
-      "peak": 20561,
-      "rms": 3397.0
+      "duration": 0.8,
+      "sha256": "3c5651d0542d71e75af79fc2352a095b1c6d1eed888677730fb69fdac57d7a02",
+      "peak": 20578,
+      "rms": 4429.1,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "야",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "야",
+          "seed": 42,
+          "duration": 0.8,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "야",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-4.11": {
       "id": "korean.1-4.11",
       "text": "여",
       "spoken": "여",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-4.11.wav",
-      "duration": 0.46,
-      "sha256": "ab7c2b858851e20ca3d5922a6e7eff8f6867f99f16df5e2efe94e9c85ea94be4",
-      "peak": 19250,
-      "rms": 3482.0
+      "duration": 0.56,
+      "sha256": "c3c6eb06338cf62a87e72105ebe44801bc959acdf6cc77fdd7f7b38053b80d5d",
+      "peak": 13269,
+      "rms": 3449.3,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "여",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "여",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "여",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-4.12": {
       "id": "korean.1-4.12",
       "text": "요",
       "spoken": "요",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-4.12.wav",
-      "duration": 0.518,
-      "sha256": "2b2040681a8f595be3ab1d27aa5721010fc575f5f64b1865dad98719276218c4",
-      "peak": 12533,
-      "rms": 3268.6
+      "duration": 1.04,
+      "sha256": "1f5be57ac8b2a4e4c6d33eae994ab0818519a44dcfe337a1580ce19fb5d336c9",
+      "peak": 17767,
+      "rms": 4417.0,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "요",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "요",
+          "seed": 1042,
+          "duration": 1.04,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "요",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-4.13": {
       "id": "korean.1-4.13",
       "text": "유",
       "spoken": "유",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-4.13.wav",
-      "duration": 0.495,
-      "sha256": "66cf91b5d3b45e4cbe46c28b81efb2ceffc8563e9d1a89c27028719cc7e98b5c",
-      "peak": 15361,
-      "rms": 4101.4
+      "duration": 0.56,
+      "sha256": "7354f52d1946cde8c61fc9ac6978945d395c99abe70798d9eaf4713a6d0718de",
+      "peak": 9264,
+      "rms": 2612.6,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "유",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "유",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "유",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-5.0": {
       "id": "korean.1-5.0",
       "text": "ㄲ",
       "spoken": "쌍기역",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-5.0.wav",
-      "duration": 0.89,
-      "sha256": "9a5fbd17459b8301ba70aae1402e434d30f1fa3c153e887ce9f70396d9cdc2b3",
-      "peak": 18837,
-      "rms": 4141.9
+      "duration": 0.72,
+      "sha256": "7d1ae69ec56bf3a7fbbc995d4d5ddf6cbd133cd873c154eaa51e4c0d47183def",
+      "peak": 13592,
+      "rms": 1859.6,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "쌍기역",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "쌍기역",
+          "seed": 42,
+          "duration": 0.72,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "쌍기역",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-5.1": {
       "id": "korean.1-5.1",
       "text": "ㄸ",
       "spoken": "쌍디귿",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-5.1.wav",
-      "duration": 0.913,
-      "sha256": "91cb9f5bed4cc20d83a5faa7048afca838d34d0adde0aa2af4958ddf180a231d",
-      "peak": 20068,
-      "rms": 4323.5
+      "duration": 0.88,
+      "sha256": "cdbcfebe3d2df5ed0e3bf1a1470edb1d80a50922ff928e60586c4521446b6273",
+      "peak": 15216,
+      "rms": 1655.7,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "쌍디귿",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "쌍디귿",
+          "seed": 42,
+          "duration": 0.88,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "쌍디귿",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-5.2": {
       "id": "korean.1-5.2",
       "text": "ㅃ",
       "spoken": "쌍비읍",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-5.2.wav",
-      "duration": 0.866,
-      "sha256": "2963925e3adcde9f2ca84dac8df7c4a436c1e4aa2ef016462c90f602075fa631",
-      "peak": 20001,
-      "rms": 4604.6
+      "duration": 1.04,
+      "sha256": "ae0dda80eaa15aa5e19349bf870025c89d4429ad8ba9143b3007aa08d3d1237d",
+      "peak": 23091,
+      "rms": 2281.6,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "쌍비읍",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "쌍비읍",
+          "seed": 42,
+          "duration": 1.04,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "쌍비읍",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-5.3": {
       "id": "korean.1-5.3",
       "text": "ㅆ",
       "spoken": "쌍시옷",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-5.3.wav",
-      "duration": 0.878,
-      "sha256": "54bc6fc90daaa67fbe5970dd1e20cbf9900ae3f8a5551a2d1a151404d91dd416",
-      "peak": 18689,
-      "rms": 3939.7
+      "duration": 0.64,
+      "sha256": "0a335c3c1e26cd37c8e5ca19a8860448018d7a150471d5f7265fc6a85d020661",
+      "peak": 14299,
+      "rms": 2483.3,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "쌍시옷",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "쌍시옷",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "쌍시옷",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-5.4": {
       "id": "korean.1-5.4",
       "text": "ㅉ",
       "spoken": "쌍지읒",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-5.4.wav",
-      "duration": 0.901,
-      "sha256": "563ae6a001beffc7025166e3c4c96a587fb604e4d62fd6ba3ca6314474c82776",
-      "peak": 19126,
-      "rms": 4254.2
+      "duration": 0.88,
+      "sha256": "5e373381328f1aee96a84b0e9af8b404f74810d34d7cea4a14f3f6328f5cea0a",
+      "peak": 20366,
+      "rms": 2319.3,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "쌍지읒",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "쌍지읒",
+          "seed": 42,
+          "duration": 0.88,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "쌍지읒",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-6.0": {
       "id": "korean.1-6.0",
       "text": "까",
       "spoken": "까",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-6.0.wav",
-      "duration": 0.445,
-      "sha256": "56ada234431d451e52ca3b12d239dcf10f82815c3975d2c07d85abb727b83b0d",
-      "peak": 22865,
-      "rms": 3030.8
+      "duration": 0.4,
+      "sha256": "ff30066f1b30f6b2c1d6da3d26e20382e010fceac89254be67fc6587bc3339cc",
+      "peak": 20953,
+      "rms": 5028.0,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "까",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "까",
+          "seed": 42,
+          "duration": 0.4,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "까",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-6.1": {
       "id": "korean.1-6.1",
       "text": "따",
       "spoken": "따",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-6.1.wav",
-      "duration": 0.468,
-      "sha256": "adb170c697581c5079a0e1ef8830de5ed20712d61f3744f53d697359de35e761",
-      "peak": 18715,
-      "rms": 2676.4
+      "duration": 0.4,
+      "sha256": "aa7072a96219d3821154f57c6b75b12d8018408fe92662bc09815de5bd1f02ce",
+      "peak": 12737,
+      "rms": 2595.7,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "따",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "따",
+          "seed": 42,
+          "duration": 0.4,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "따",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-6.2": {
       "id": "korean.1-6.2",
       "text": "빠",
       "spoken": "빠",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-6.2.wav",
-      "duration": 0.445,
-      "sha256": "b506d7037e202650107f6bb04829af6a78024b34d3a208a7cfb7a009203d36ba",
-      "peak": 14976,
-      "rms": 2353.2
+      "duration": 0.48,
+      "sha256": "73711353910d968fa4e828f47b5f4d2cea9b3c83d7263d92b9ffd26a2b4756cb",
+      "peak": 22850,
+      "rms": 5840.1,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "빠",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "빠",
+          "seed": 42,
+          "duration": 0.48,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "빠",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-6.3": {
       "id": "korean.1-6.3",
       "text": "싸",
       "spoken": "싸",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-6.3.wav",
-      "duration": 0.608,
-      "sha256": "a2b51eea27f230dc6f8877e3455d907f10ae25852aa56e55b21d8b5284e37692",
-      "peak": 14999,
-      "rms": 2504.2
+      "duration": 0.64,
+      "sha256": "bd12297b6dab9930eea2c833c7d022da7cf67cde7190b5d1d79d91635a3461a6",
+      "peak": 22718,
+      "rms": 4957.4,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "싸",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "싸",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "싸",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-6.4": {
       "id": "korean.1-6.4",
       "text": "짜",
       "spoken": "짜",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-6.4.wav",
-      "duration": 0.505,
-      "sha256": "64a4760f2badaa79e77c41e3521b4f29a93ab657a6e83472ea86af5df548e37f",
-      "peak": 16430,
-      "rms": 2243.2
+      "duration": 0.75,
+      "sha256": "8db40b36ca3c0c1308f544105015eb14e6d6953367739c25531fef9225e3050d",
+      "peak": 11388,
+      "rms": 2441.0,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "짜",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "짜",
+          "seed": 42,
+          "duration": 0.75,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "짜",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-7.0": {
       "id": "korean.1-7.0",
       "text": "ㅐ",
       "spoken": "애",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-7.0.wav",
-      "duration": 0.519,
-      "sha256": "6d4d93f8a2002854ff73f770b886b7cf3d9a59bc6957b81bd88ccc2c31edf83f",
-      "peak": 24514,
-      "rms": 3715.6
+      "duration": 1.12,
+      "sha256": "6935db6152afa97afccef01956953d4096312ec89168ab26954ab58557270475",
+      "peak": 7859,
+      "rms": 2367.4,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "애",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "애",
+          "seed": 42,
+          "duration": 1.12,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "애",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-7.1": {
       "id": "korean.1-7.1",
       "text": "ㅔ",
       "spoken": "에",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-7.1.wav",
-      "duration": 0.403,
-      "sha256": "d2fdec46288df7efe165e75b239fc24232af69e1fe4850fd57c3281997b71c97",
-      "peak": 25493,
-      "rms": 2980.0
+      "duration": 0.4,
+      "sha256": "91be43f8f2903d687a2f45d11a17e080f8c4d76fd5a2a94bb51218d9ccab1ae8",
+      "peak": 15511,
+      "rms": 2939.3,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "에",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "에",
+          "seed": 2042,
+          "duration": 0.4,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "에",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-7.2": {
       "id": "korean.1-7.2",
       "text": "ㅒ",
       "spoken": "얘",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-7.2.wav",
-      "duration": 0.495,
-      "sha256": "3bf77b78c5537d01c77777f3f955fb74b338536c26fb04c3d5bcdb1ef6313454",
-      "peak": 17554,
-      "rms": 3766.5
+      "duration": 0.56,
+      "sha256": "7a2a19601fa538e65bfb8a8df58335d217972e7ee0f568f5abbd90c249945fa9",
+      "peak": 15260,
+      "rms": 3249.7,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "얘",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "얘",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "얘",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-7.3": {
       "id": "korean.1-7.3",
       "text": "ㅖ",
       "spoken": "예",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-7.3.wav",
-      "duration": 0.495,
-      "sha256": "c08f427271cd43da2569a40e5db89982b929a0616c7e20d8f0922dfa38691df8",
-      "peak": 16867,
-      "rms": 3726.7
+      "duration": 0.48,
+      "sha256": "a8189cca7ed19a44bf03b354e2305b606706e8f3f3564899c472c4a792411f5c",
+      "peak": 12694,
+      "rms": 2680.1,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "예",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "예",
+          "seed": 42,
+          "duration": 0.48,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "예",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-7.4": {
       "id": "korean.1-7.4",
       "text": "ㅘ",
       "spoken": "와",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-7.4.wav",
-      "duration": 0.495,
-      "sha256": "1ea4419ea79a2608de3b0fa8f39b5c012b9fac908b6ef07089574a5efe7a3049",
-      "peak": 16111,
-      "rms": 3034.1
+      "duration": 0.96,
+      "sha256": "5b1f2fa83c26a72da2c72a4012010cc85f8abb79ecaac45ea433eb99d4c38e1c",
+      "peak": 12990,
+      "rms": 3892.0,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "와",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "와",
+          "seed": 42,
+          "duration": 0.96,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "와",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-7.5": {
       "id": "korean.1-7.5",
       "text": "ㅝ",
       "spoken": "워",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-7.5.wav",
-      "duration": 0.495,
-      "sha256": "057536d28f0cb1d4e5c558c46993cbc738fd8f7f81347af4b79f043482b9078e",
-      "peak": 18678,
-      "rms": 3517.7
+      "duration": 0.88,
+      "sha256": "305093c5ae67a937bc017dfcd427654710d57908ce0ec0b333e7e71e84ed605f",
+      "peak": 13356,
+      "rms": 3501.1,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "워",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "워",
+          "seed": 42,
+          "duration": 0.88,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "워",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-7.6": {
       "id": "korean.1-7.6",
       "text": "ㅙ",
       "spoken": "왜",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-7.6.wav",
-      "duration": 0.495,
-      "sha256": "77bee3e3dd31196ab62848957d066a4ee811b956de8dca570d0744b93d16a3b2",
-      "peak": 16946,
-      "rms": 3703.6
+      "duration": 0.64,
+      "sha256": "bea1acf057af5d553581d5af002ef6c38ad8291e07700d3aa191d84c4d00369c",
+      "peak": 4773,
+      "rms": 1585.1,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "왜",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "왜",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "왜",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-7.7": {
       "id": "korean.1-7.7",
       "text": "ㅞ",
       "spoken": "웨",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-7.7.wav",
-      "duration": 0.495,
-      "sha256": "ad71c4bf8b1d4af6a19ec08b8106502eb2b5c0515553d2a95f931246807b51b9",
-      "peak": 16686,
-      "rms": 3560.7
+      "duration": 0.64,
+      "sha256": "dc15ccf7abda368469d2c53a53b1ab53ac9fa780ab2420619f5a065d1c9eda68",
+      "peak": 6934,
+      "rms": 2194.6,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "웨",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "웨",
+          "seed": 1042,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "웨",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-7.8": {
       "id": "korean.1-7.8",
       "text": "ㅚ",
       "spoken": "외",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-7.8.wav",
-      "duration": 0.518,
-      "sha256": "4ed14b0824de7f4580b7fc90e2985257f8bb66a1b163e8cacd01da84ce4362df",
-      "peak": 14059,
-      "rms": 3570.3
+      "duration": 0.56,
+      "sha256": "811946eb0ba27f6ce59b5d535bafe6e3ea132ba6eb3f85b2b1b45ee2fe330652",
+      "peak": 7222,
+      "rms": 1618.7,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "외",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "외",
+          "seed": 1042,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "외",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-7.9": {
       "id": "korean.1-7.9",
       "text": "ㅟ",
       "spoken": "위",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-7.9.wav",
-      "duration": 0.472,
-      "sha256": "e86ebcdac236213d1fe6d4eda00dc0670ccb137fff4dcb1fd38f4b5852de9c1c",
-      "peak": 12743,
-      "rms": 3259.0
+      "duration": 1.12,
+      "sha256": "c43ffc0a4744712028d66d67fc9270513bcd2173a74830934ad146ad65eda9d6",
+      "peak": 6927,
+      "rms": 2070.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "위",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "위",
+          "seed": 42,
+          "duration": 1.12,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "위",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-7.10": {
       "id": "korean.1-7.10",
       "text": "ㅢ",
       "spoken": "의",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-7.10.wav",
-      "duration": 0.403,
-      "sha256": "d2fdec46288df7efe165e75b239fc24232af69e1fe4850fd57c3281997b71c97",
-      "peak": 25493,
-      "rms": 2980.0
+      "duration": 0.72,
+      "sha256": "109843c4413e436c7a29bd7ec97996a051b08efbfb5ba0726f66e33a416fd206",
+      "peak": 9592,
+      "rms": 2516.7,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "의",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "의",
+          "seed": 1042,
+          "duration": 0.72,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "의",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-8.0": {
       "id": "korean.1-8.0",
       "text": "애",
       "spoken": "애",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-8.0.wav",
-      "duration": 0.519,
-      "sha256": "6d4d93f8a2002854ff73f770b886b7cf3d9a59bc6957b81bd88ccc2c31edf83f",
-      "peak": 24514,
-      "rms": 3715.6
+      "duration": 1.12,
+      "sha256": "6935db6152afa97afccef01956953d4096312ec89168ab26954ab58557270475",
+      "peak": 7859,
+      "rms": 2367.4,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "애",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "애",
+          "seed": 42,
+          "duration": 1.12,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "애",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-8.1": {
       "id": "korean.1-8.1",
       "text": "에",
       "spoken": "에",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-8.1.wav",
-      "duration": 0.403,
-      "sha256": "d2fdec46288df7efe165e75b239fc24232af69e1fe4850fd57c3281997b71c97",
-      "peak": 25493,
-      "rms": 2980.0
+      "duration": 0.4,
+      "sha256": "91be43f8f2903d687a2f45d11a17e080f8c4d76fd5a2a94bb51218d9ccab1ae8",
+      "peak": 15511,
+      "rms": 2939.3,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "에",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "에",
+          "seed": 2042,
+          "duration": 0.4,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "에",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-8.2": {
       "id": "korean.1-8.2",
       "text": "얘",
       "spoken": "얘",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-8.2.wav",
-      "duration": 0.495,
-      "sha256": "3bf77b78c5537d01c77777f3f955fb74b338536c26fb04c3d5bcdb1ef6313454",
-      "peak": 17554,
-      "rms": 3766.5
+      "duration": 0.56,
+      "sha256": "7a2a19601fa538e65bfb8a8df58335d217972e7ee0f568f5abbd90c249945fa9",
+      "peak": 15260,
+      "rms": 3249.7,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "얘",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "얘",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "얘",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-8.3": {
       "id": "korean.1-8.3",
       "text": "예",
       "spoken": "예",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-8.3.wav",
-      "duration": 0.495,
-      "sha256": "c08f427271cd43da2569a40e5db89982b929a0616c7e20d8f0922dfa38691df8",
-      "peak": 16867,
-      "rms": 3726.7
+      "duration": 0.48,
+      "sha256": "a8189cca7ed19a44bf03b354e2305b606706e8f3f3564899c472c4a792411f5c",
+      "peak": 12694,
+      "rms": 2680.1,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "예",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "예",
+          "seed": 42,
+          "duration": 0.48,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "예",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-8.4": {
       "id": "korean.1-8.4",
       "text": "와",
       "spoken": "와",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-8.4.wav",
-      "duration": 0.495,
-      "sha256": "1ea4419ea79a2608de3b0fa8f39b5c012b9fac908b6ef07089574a5efe7a3049",
-      "peak": 16111,
-      "rms": 3034.1
+      "duration": 0.96,
+      "sha256": "5b1f2fa83c26a72da2c72a4012010cc85f8abb79ecaac45ea433eb99d4c38e1c",
+      "peak": 12990,
+      "rms": 3892.0,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "와",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "와",
+          "seed": 42,
+          "duration": 0.96,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "와",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-8.5": {
       "id": "korean.1-8.5",
       "text": "워",
       "spoken": "워",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-8.5.wav",
-      "duration": 0.495,
-      "sha256": "057536d28f0cb1d4e5c558c46993cbc738fd8f7f81347af4b79f043482b9078e",
-      "peak": 18678,
-      "rms": 3517.7
+      "duration": 0.88,
+      "sha256": "305093c5ae67a937bc017dfcd427654710d57908ce0ec0b333e7e71e84ed605f",
+      "peak": 13356,
+      "rms": 3501.1,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "워",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "워",
+          "seed": 42,
+          "duration": 0.88,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "워",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-8.6": {
       "id": "korean.1-8.6",
       "text": "왜",
       "spoken": "왜",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-8.6.wav",
-      "duration": 0.495,
-      "sha256": "77bee3e3dd31196ab62848957d066a4ee811b956de8dca570d0744b93d16a3b2",
-      "peak": 16946,
-      "rms": 3703.6
+      "duration": 0.64,
+      "sha256": "bea1acf057af5d553581d5af002ef6c38ad8291e07700d3aa191d84c4d00369c",
+      "peak": 4773,
+      "rms": 1585.1,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "왜",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "왜",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "왜",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-8.7": {
       "id": "korean.1-8.7",
       "text": "웨",
       "spoken": "웨",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-8.7.wav",
-      "duration": 0.495,
-      "sha256": "ad71c4bf8b1d4af6a19ec08b8106502eb2b5c0515553d2a95f931246807b51b9",
-      "peak": 16686,
-      "rms": 3560.7
+      "duration": 0.64,
+      "sha256": "dc15ccf7abda368469d2c53a53b1ab53ac9fa780ab2420619f5a065d1c9eda68",
+      "peak": 6934,
+      "rms": 2194.6,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "웨",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "웨",
+          "seed": 1042,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "웨",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-8.8": {
       "id": "korean.1-8.8",
       "text": "외",
       "spoken": "외",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-8.8.wav",
-      "duration": 0.518,
-      "sha256": "4ed14b0824de7f4580b7fc90e2985257f8bb66a1b163e8cacd01da84ce4362df",
-      "peak": 14059,
-      "rms": 3570.3
+      "duration": 0.56,
+      "sha256": "811946eb0ba27f6ce59b5d535bafe6e3ea132ba6eb3f85b2b1b45ee2fe330652",
+      "peak": 7222,
+      "rms": 1618.7,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "외",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "외",
+          "seed": 1042,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "외",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-8.9": {
       "id": "korean.1-8.9",
       "text": "위",
       "spoken": "위",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-8.9.wav",
-      "duration": 0.472,
-      "sha256": "e86ebcdac236213d1fe6d4eda00dc0670ccb137fff4dcb1fd38f4b5852de9c1c",
-      "peak": 12743,
-      "rms": 3259.0
+      "duration": 1.12,
+      "sha256": "c43ffc0a4744712028d66d67fc9270513bcd2173a74830934ad146ad65eda9d6",
+      "peak": 6927,
+      "rms": 2070.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "위",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "위",
+          "seed": 42,
+          "duration": 1.12,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "위",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-8.10": {
       "id": "korean.1-8.10",
       "text": "의",
       "spoken": "의",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-8.10.wav",
-      "duration": 0.403,
-      "sha256": "d2fdec46288df7efe165e75b239fc24232af69e1fe4850fd57c3281997b71c97",
-      "peak": 25493,
-      "rms": 2980.0
+      "duration": 0.72,
+      "sha256": "109843c4413e436c7a29bd7ec97996a051b08efbfb5ba0726f66e33a416fd206",
+      "peak": 9592,
+      "rms": 2516.7,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "의",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "의",
+          "seed": 1042,
+          "duration": 0.72,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "의",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-9.0": {
       "id": "korean.1-9.0",
       "text": "산",
       "spoken": "산",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-9.0.wav",
-      "duration": 0.587,
-      "sha256": "c9e396139c0494d0cbc2e34fc55e57650824e2ab0de44d87dfa2c59784b42e5f",
-      "peak": 13753,
-      "rms": 2701.1
+      "duration": 0.48,
+      "sha256": "6a93f254df6c31a02d0b7a9241169e86c2a9de3bec8f204fc5eaed7b427de38e",
+      "peak": 7080,
+      "rms": 1163.9,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "산",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "산",
+          "seed": 42,
+          "duration": 0.48,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "산",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-9.1": {
       "id": "korean.1-9.1",
       "text": "밤",
       "spoken": "밤",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-9.1.wav",
-      "duration": 0.56,
-      "sha256": "ffce73b0f6659eb4afafeb76cc14ea1f9d8b7ab6d10c6118ea487ddef5eb2320",
-      "peak": 17265,
-      "rms": 3244.8
+      "duration": 1.04,
+      "sha256": "280b807783d8c517a3730723939b35c12c1866abb066092ae197b6c7687f71d9",
+      "peak": 7567,
+      "rms": 1482.4,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "밤",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "밤",
+          "seed": 42,
+          "duration": 1.04,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "밤",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-9.2": {
       "id": "korean.1-9.2",
       "text": "강",
       "spoken": "강",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-9.2.wav",
-      "duration": 0.56,
-      "sha256": "fe02dfadceb07b31a51f984632f7bc8caa6a588a35cce981c93b1c2639ff9c02",
-      "peak": 15686,
-      "rms": 2891.1
+      "duration": 0.64,
+      "sha256": "020cee85bfafe0f94c24b2fa1737871cb2fbe55744a0bd0707e1512f01b9cf71",
+      "peak": 4413,
+      "rms": 981.3,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "강",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "강",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "강",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-9.3": {
       "id": "korean.1-9.3",
       "text": "문",
       "spoken": "문",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-9.3.wav",
-      "duration": 0.541,
-      "sha256": "1d72f182b61ae1f392f824d90803b0bb22967a35e9938c277366e62dc4e6b70e",
-      "peak": 13866,
-      "rms": 3657.3
+      "duration": 0.56,
+      "sha256": "636dfb566c7c58172f659c4414c833d4f2720c0bf4e79267c0ccf9433ff10038",
+      "peak": 9909,
+      "rms": 2574.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "문",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "문",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "문",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-9.4": {
       "id": "korean.1-9.4",
       "text": "물",
       "spoken": "물",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-9.4.wav",
-      "duration": 0.541,
-      "sha256": "0132647acf1d8b3d066b33d79250e0a13c99c774434916d1fbd04843c87ab24e",
-      "peak": 12696,
-      "rms": 3757.9
+      "duration": 0.64,
+      "sha256": "2008f7901a4ee677fd2692cf48b3492f348500e2b7a48b615e53684da5aa4ae3",
+      "peak": 9144,
+      "rms": 2268.7,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "물",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "물",
+          "seed": 1042,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "물",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-9.5": {
       "id": "korean.1-9.5",
       "text": "밥",
       "spoken": "밥",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-9.5.wav",
-      "duration": 0.467,
-      "sha256": "dab194eb787cb0421ddbb195dc6aaa736e0dcfafcccdef9ea520001bd6469986",
-      "peak": 18911,
-      "rms": 3222.5
+      "duration": 0.64,
+      "sha256": "9ffcda9944bc03d14cc6eb604ade29fcebf253f56e812782b39807f84f965e87",
+      "peak": 14030,
+      "rms": 4122.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "밥",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "밥",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "밥",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-10.0": {
       "id": "korean.1-10.0",
       "text": "산",
       "spoken": "산",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-10.0.wav",
-      "duration": 0.587,
-      "sha256": "c9e396139c0494d0cbc2e34fc55e57650824e2ab0de44d87dfa2c59784b42e5f",
-      "peak": 13753,
-      "rms": 2701.1
+      "duration": 0.48,
+      "sha256": "6a93f254df6c31a02d0b7a9241169e86c2a9de3bec8f204fc5eaed7b427de38e",
+      "peak": 7080,
+      "rms": 1163.9,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "산",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "산",
+          "seed": 42,
+          "duration": 0.48,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "산",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-10.1": {
       "id": "korean.1-10.1",
       "text": "밤",
       "spoken": "밤",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-10.1.wav",
-      "duration": 0.56,
-      "sha256": "ffce73b0f6659eb4afafeb76cc14ea1f9d8b7ab6d10c6118ea487ddef5eb2320",
-      "peak": 17265,
-      "rms": 3244.8
+      "duration": 1.04,
+      "sha256": "280b807783d8c517a3730723939b35c12c1866abb066092ae197b6c7687f71d9",
+      "peak": 7567,
+      "rms": 1482.4,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "밤",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "밤",
+          "seed": 42,
+          "duration": 1.04,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "밤",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-10.2": {
       "id": "korean.1-10.2",
       "text": "강",
       "spoken": "강",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-10.2.wav",
-      "duration": 0.56,
-      "sha256": "fe02dfadceb07b31a51f984632f7bc8caa6a588a35cce981c93b1c2639ff9c02",
-      "peak": 15686,
-      "rms": 2891.1
+      "duration": 0.64,
+      "sha256": "020cee85bfafe0f94c24b2fa1737871cb2fbe55744a0bd0707e1512f01b9cf71",
+      "peak": 4413,
+      "rms": 981.3,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "강",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "강",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "강",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-10.3": {
       "id": "korean.1-10.3",
       "text": "문",
       "spoken": "문",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-10.3.wav",
-      "duration": 0.541,
-      "sha256": "1d72f182b61ae1f392f824d90803b0bb22967a35e9938c277366e62dc4e6b70e",
-      "peak": 13866,
-      "rms": 3657.3
+      "duration": 0.56,
+      "sha256": "636dfb566c7c58172f659c4414c833d4f2720c0bf4e79267c0ccf9433ff10038",
+      "peak": 9909,
+      "rms": 2574.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "문",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "문",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "문",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-10.4": {
       "id": "korean.1-10.4",
       "text": "물",
       "spoken": "물",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-10.4.wav",
-      "duration": 0.541,
-      "sha256": "0132647acf1d8b3d066b33d79250e0a13c99c774434916d1fbd04843c87ab24e",
-      "peak": 12696,
-      "rms": 3757.9
+      "duration": 0.64,
+      "sha256": "2008f7901a4ee677fd2692cf48b3492f348500e2b7a48b615e53684da5aa4ae3",
+      "peak": 9144,
+      "rms": 2268.7,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "물",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "물",
+          "seed": 1042,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "물",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-10.5": {
       "id": "korean.1-10.5",
       "text": "밥",
       "spoken": "밥",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-10.5.wav",
-      "duration": 0.467,
-      "sha256": "dab194eb787cb0421ddbb195dc6aaa736e0dcfafcccdef9ea520001bd6469986",
-      "peak": 18911,
-      "rms": 3222.5
+      "duration": 0.64,
+      "sha256": "9ffcda9944bc03d14cc6eb604ade29fcebf253f56e812782b39807f84f965e87",
+      "peak": 14030,
+      "rms": 4122.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "밥",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "밥",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "밥",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.2-1.0": {
       "id": "korean.2-1.0",
       "text": "이거",
       "spoken": "이거",
-      "rate": 155,
       "file": "assets/audio/korean/korean.2-1.0.wav",
-      "duration": 0.613,
-      "sha256": "cfd579066968241ded5da6ddbc74d0388c3a8c79dfca503804668255f61afc5b",
-      "peak": 21784,
-      "rms": 4008.4
+      "duration": 0.88,
+      "sha256": "462aa7f49cb87c8855c8ca4c855f8ca11740ba84ffcc8c26cf457e4deb41cd25",
+      "peak": 14751,
+      "rms": 4046.5,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "이거",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "이거",
+          "seed": 42,
+          "duration": 0.88,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "이거",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.2-1.1": {
       "id": "korean.2-1.1",
       "text": "얼마예요?",
       "spoken": "얼마예요?",
-      "rate": 155,
       "file": "assets/audio/korean/korean.2-1.1.wav",
-      "duration": 0.81,
-      "sha256": "e35ebcef6d793a4feee20f27f923efa7e5ae5d8abd1a7550e04b8a1eb6f5544f",
-      "peak": 25622,
-      "rms": 4741.2
+      "duration": 0.8,
+      "sha256": "2d67e3dde99d2d50891f6c3db9c373092ed27be36f8e538b6d99fb536e5c3893",
+      "peak": 17054,
+      "rms": 4387.9,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "얼마예요?",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "얼마예요?",
+          "seed": 42,
+          "duration": 0.8,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "얼마예요?"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.2-1.2": {
       "id": "korean.2-1.2",
       "text": "주세요",
       "spoken": "주세요",
-      "rate": 155,
       "file": "assets/audio/korean/korean.2-1.2.wav",
-      "duration": 0.765,
-      "sha256": "dfdba89a42d8b127991ca2866cb91f42c0d5c802e010cf5547437e3ee5f7b80d",
-      "peak": 12701,
-      "rms": 3053.3
+      "duration": 0.64,
+      "sha256": "c68ee6bc42b0bda903b33204084a69b10705d8f76629cbf9a7e1bf43de785a10",
+      "peak": 13564,
+      "rms": 2259.0,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "주세요",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "주세요",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "주세요",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.2-1.3": {
       "id": "korean.2-1.3",
       "text": "두 개",
       "spoken": "두 개",
-      "rate": 155,
       "file": "assets/audio/korean/korean.2-1.3.wav",
-      "duration": 0.618,
-      "sha256": "94022e5beb95dddf4e1c807f16b302bf018253084672c68d876811b3de3c510b",
-      "peak": 18748,
-      "rms": 3499.2
+      "duration": 1.84,
+      "sha256": "930a1ea23d89d018e9108766a6750cb5912f0fb494c107a28b89fb6d2f8d97fb",
+      "peak": 5974,
+      "rms": 1186.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "두 개",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "두 개",
+          "seed": 42,
+          "duration": 1.84,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "두 개",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.2-1.4": {
       "id": "korean.2-1.4",
       "text": "봉투",
       "spoken": "봉투",
-      "rate": 155,
       "file": "assets/audio/korean/korean.2-1.4.wav",
-      "duration": 0.697,
-      "sha256": "89328e11325a295917056334ec8138b1951a2edeefb229e73d79b041a45c5df8",
-      "peak": 18499,
-      "rms": 3963.6
+      "duration": 0.64,
+      "sha256": "33d6321041866c2a7558c8684f2ca6c331a1898f8a2762a04dd8bb21baf8167b",
+      "peak": 9644,
+      "rms": 2676.3,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "봉투",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "봉투",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "봉투",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.2-1.5": {
       "id": "korean.2-1.5",
       "text": "괜찮아요",
       "spoken": "괜찮아요",
-      "rate": 155,
       "file": "assets/audio/korean/korean.2-1.5.wav",
       "duration": 0.96,
-      "sha256": "b5cc4dfd87d1458332b8abfc1d2e690e8d9046ac3516bdf70fdb957154baedc2",
-      "peak": 17005,
-      "rms": 4128.3
+      "sha256": "ca67900916cc2e2f6dbb08a02a355d5fcce8de08246a9310c4eee23ab0aff89b",
+      "peak": 15797,
+      "rms": 2665.7,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "괜찮아요",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "괜찮아요",
+          "seed": 42,
+          "duration": 0.96,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "괜찮아요"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.3-1.0": {
       "id": "korean.3-1.0",
       "text": "저는 학생이에요.",
       "spoken": "저는 학생이에요.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.3-1.0.wav",
-      "duration": 1.404,
-      "sha256": "b2a367714113f3ceefa3e02f0948833613b3bb278ed270bf0212c1b197a47fb0",
-      "peak": 18469,
-      "rms": 4342.6
+      "duration": 1.68,
+      "sha256": "3c7b0184e04a3ee5717965928a80726cd47a7c15dd8a6e7db0bec2504d523757",
+      "peak": 14993,
+      "rms": 2422.9,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "저는 학생이에요.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "저는 학생이에요.",
+          "seed": 42,
+          "duration": 1.68,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "저는 학생이에요."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.3-1.1": {
       "id": "korean.3-1.1",
       "text": "저는 일본 사람이에요.",
       "spoken": "저는 일본 사람이에요.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.3-1.1.wav",
-      "duration": 1.659,
-      "sha256": "a80a96afe45673c6057778813f7428ffe28c4778d4c4a5a63233f6a7f2e16a16",
-      "peak": 17990,
-      "rms": 4727.1
+      "duration": 2.32,
+      "sha256": "1f687df3c9e3aeb4ecf65631f9199d771d00a7d3a9d56ede5093f54c5a22ae27",
+      "peak": 13108,
+      "rms": 3036.4,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "저는 일본 사람이에요.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "저는 일본 사람이에요.",
+          "seed": 42,
+          "duration": 2.32,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "저는 일본 사람이에요."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.3-1.2": {
       "id": "korean.3-1.2",
       "text": "한국어를 공부해요.",
       "spoken": "한국어를 공부해요.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.3-1.2.wav",
-      "duration": 1.598,
-      "sha256": "b26cc32d9b063556aba05983e9ab4ce55313bdf004dea8d7cdeb66c1cf6151ab",
-      "peak": 21766,
-      "rms": 4563.9
+      "duration": 1.6,
+      "sha256": "9b2225602cf90661be6cb0f6eb186b95ad347ac43ca3562aeeb8e5e67cc11439",
+      "peak": 13744,
+      "rms": 2463.5,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "한국어를 공부해요.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "한국어를 공부해요.",
+          "seed": 42,
+          "duration": 1.6,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "한국어를 공부해요."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.3-1.3": {
       "id": "korean.3-1.3",
       "text": "도쿄에 살아요.",
       "spoken": "도쿄에 살아요.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.3-1.3.wav",
-      "duration": 1.163,
-      "sha256": "5a54fe46b9bb7e1008e52abc0e227ecbc0032cbb4a6b700fe95006a8b7709eb8",
-      "peak": 15916,
-      "rms": 4169.0
+      "duration": 1.28,
+      "sha256": "a0bc7c45a5fdf330f98e0f68e45d7fc5abde1791c6ee349a756f5478ab50c817",
+      "peak": 16541,
+      "rms": 3139.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "도쿄에 살아요.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "도쿄에 살아요.",
+          "seed": 42,
+          "duration": 1.28,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "도쿄에 살아요."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.3-1.4": {
       "id": "korean.3-1.4",
       "text": "커피를 좋아해요.",
       "spoken": "커피를 좋아해요.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.3-1.4.wav",
-      "duration": 1.399,
-      "sha256": "7e506b26af6763a9360b90165e615283be8b0319e6adcc2ac87d7a7bd2328801",
-      "peak": 16517,
-      "rms": 4274.7
+      "duration": 1.44,
+      "sha256": "7a8a13ff4f269292c5ed522f33bbfbaae2e23f6b0038d35183405b93b8dc2ed7",
+      "peak": 12151,
+      "rms": 2583.5,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "커피를 좋아해요.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "커피를 좋아해요.",
+          "seed": 42,
+          "duration": 1.44,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "커피를 좋아해요."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.3-1.5": {
       "id": "korean.3-1.5",
       "text": "내일 시간이 있어요.",
       "spoken": "내일 시간이 있어요.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.3-1.5.wav",
-      "duration": 1.449,
-      "sha256": "baaba25d1d60df7af2b46e27e0bf6549a74115423c7f5eb6b9122c0bad86f683",
-      "peak": 20712,
-      "rms": 4548.3
+      "duration": 1.2,
+      "sha256": "32935494758e3fb0b0a48c85954bc9e2cd09bbd4df921204601509aae528b6a9",
+      "peak": 22642,
+      "rms": 3776.2,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "내일 시간이 있어요.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "내일 시간이 있어요.",
+          "seed": 42,
+          "duration": 1.2,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "내일 시간이 있어요."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.4-1.0": {
       "id": "korean.4-1.0",
       "text": "아메리카노 한 잔 주세요.",
       "spoken": "아메리카노 한 잔 주세요.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.4-1.0.wav",
-      "duration": 1.902,
-      "sha256": "6ce3e08f17544b16aaa176dcde7626ccdbc3b08b20074343868ffa95116b808a",
-      "peak": 28511,
-      "rms": 4373.4
+      "duration": 1.76,
+      "sha256": "5dc69a0068869e78a92f91a5514d61d5a861dcd861ffc6d8a68543dc439a00fd",
+      "peak": 17268,
+      "rms": 3560.7,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "아메리카노 한 잔 주세요.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "아메리카노 한 잔 주세요.",
+          "seed": 42,
+          "duration": 1.76,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "아메리카노 한 잔 주세요."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.4-1.1": {
       "id": "korean.4-1.1",
       "text": "차가운 걸로 주세요.",
       "spoken": "차가운 걸로 주세요.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.4-1.1.wav",
-      "duration": 1.613,
-      "sha256": "e58b41747802098933a008dffe5b0697199c82c5b0c6c1d88f8d2588bdca28b3",
-      "peak": 18947,
-      "rms": 4268.7
+      "duration": 1.44,
+      "sha256": "e4ad3ec84760bd87780162eb197051961e425c7dd87bdbaf0977c9286db38570",
+      "peak": 19745,
+      "rms": 2769.6,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "차가운 걸로 주세요.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "차가운 걸로 주세요.",
+          "seed": 42,
+          "duration": 1.44,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "차가운 걸로 주세요."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.4-1.2": {
       "id": "korean.4-1.2",
       "text": "작은 걸로 주세요.",
       "spoken": "작은 걸로 주세요.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.4-1.2.wav",
-      "duration": 1.462,
-      "sha256": "bd2a6add33de51f184f6ab4689b186b71b225c5c47e1964767eb91cbf35ace55",
-      "peak": 17963,
-      "rms": 4086.8
+      "duration": 1.44,
+      "sha256": "79b69a31a29b7cc5a36617d29a76bb4a9e24493dc327e0af73b307403ace1c72",
+      "peak": 15422,
+      "rms": 2409.2,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "작은 걸로 주세요.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "작은 걸로 주세요.",
+          "seed": 42,
+          "duration": 1.44,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "작은 걸로 주세요."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.4-1.3": {
       "id": "korean.4-1.3",
       "text": "여기서 마실게요.",
       "spoken": "여기서 마실게요.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.4-1.3.wav",
-      "duration": 1.495,
-      "sha256": "4e8b0388a6b61e2dc5f6fa967e428662dbda149241ee0cb1b87dd54dd69a3ceb",
-      "peak": 21370,
-      "rms": 4499.9
+      "duration": 1.84,
+      "sha256": "589b99631a3e9820d1f23c5690221c84a5a7eb26e04b619bebffc30f44f5af8b",
+      "peak": 11859,
+      "rms": 2819.5,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "여기서 마실게요.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "여기서 마실게요.",
+          "seed": 42,
+          "duration": 1.84,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "여기서 마실게요."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.4-1.4": {
       "id": "korean.4-1.4",
       "text": "카드로 할게요.",
       "spoken": "카드로 할게요.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.4-1.4.wav",
-      "duration": 1.213,
-      "sha256": "9e82af76009d3dc21af7306be9a7b8aef455c511397acefe04d4a28309a6566f",
-      "peak": 20107,
-      "rms": 4142.0
+      "duration": 1.12,
+      "sha256": "b744e0ef08317c9f4bb6bc6a11e403d84dcc949feae973066d5ac55317d854c5",
+      "peak": 21738,
+      "rms": 4382.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "카드로 할게요.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "카드로 할게요.",
+          "seed": 42,
+          "duration": 1.12,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "카드로 할게요."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.4-1.5": {
       "id": "korean.4-1.5",
       "text": "영수증 주세요.",
       "spoken": "영수증 주세요.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.4-1.5.wav",
-      "duration": 1.332,
-      "sha256": "02195ad983d2ab91bb84319d20a490a2e92d77b66745b28af31970a00bd81e52",
-      "peak": 21929,
-      "rms": 3941.0
+      "duration": 1.44,
+      "sha256": "85a9b7dbb0d6520179d080bbe81b4d76fb3ca6be72d6ada339277cd82faea44d",
+      "peak": 14740,
+      "rms": 2456.4,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "영수증 주세요.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "영수증 주세요.",
+          "seed": 42,
+          "duration": 1.44,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "영수증 주세요."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.5-1.0": {
       "id": "korean.5-1.0",
       "text": "도서관은 평일에 오전 9시부터 오후 8시까지 엽니다. 토요일에는 오후 5시에 닫고, 일요일에는 쉽니다.",
       "spoken": "도서관은 평일에 오전 9시부터 오후 8시까지 엽니다. 토요일에는 오후 5시에 닫고, 일요일에는 쉽니다.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.5-1.0.wav",
-      "duration": 7.955,
-      "sha256": "7b7d56f6028a5565e2ab7f092ef88741dd39c0408ae46e0d269514b3d2c8958d",
-      "peak": 20133,
-      "rms": 4733.1
+      "duration": 8.88,
+      "sha256": "990a095ce1a61892f80aed961be201bb10d19ba05ce001ff9868be9ac5492083",
+      "peak": 20032,
+      "rms": 1899.3,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "도서관은 평일에 오전 9시부터 오후 8시까지 엽니다. 토요일에는 오후 5시에 닫고, 일요일에는 쉽니다.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "도서관은 평일에 오전 9시부터 오후 8시까지 엽니다. 토요일에는 오후 5시에 닫고, 일요일에는 쉽니다.",
+          "seed": 42,
+          "duration": 8.88,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "도서관은 평일에 오전 9시부터 오후 8시까지 엽니다. 토요일에는 오후 5시에 닫고, 일요일에는 쉽니다."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.5-1.1": {
       "id": "korean.5-1.1",
       "text": "오늘은 비가 많이 와요. 공원에서 만나지 말고 역 앞 카페에서 만나요. 시간은 원래 약속한 세 시 그대로예요.",
       "spoken": "오늘은 비가 많이 와요. 공원에서 만나지 말고 역 앞 카페에서 만나요. 시간은 원래 약속한 세 시 그대로예요.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.5-1.1.wav",
-      "duration": 7.962,
-      "sha256": "7005ec26e05f964aa7b02513dd2f7942ec54588993169efee822928d53cf380c",
-      "peak": 24508,
-      "rms": 4700.8
+      "duration": 9.52,
+      "sha256": "e648754ee24f80f17e3f31a2451bd79db03715fba92a8b0b99787bc27ae5a5d5",
+      "peak": 19364,
+      "rms": 2169.2,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "오늘은 비가 많이 와요. 공원에서 만나지 말고 역 앞 카페에서 만나요. 시간은 원래 약속한 세 시 그대로예요.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "오늘은 비가 많이 와요. 공원에서 만나지 말고 역 앞 카페에서 만나요. 시간은 원래 약속한 세 시 그대로예요.",
+          "seed": 42,
+          "duration": 9.52,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "오늘은 비가 많이 와요. 공원에서 만나지 말고 역 앞 카페에서 만나요. 시간은 원래 약속한 세 시 그대로예요."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.5-1.2": {
       "id": "korean.5-1.2",
       "text": "저는 가까운 곳에 갈 때 자전거를 타요. 버스보다 빠를 때도 있고 운동도 할 수 있어서 좋아요. 하지만 비가 오면 버스를 타요.",
       "spoken": "저는 가까운 곳에 갈 때 자전거를 타요. 버스보다 빠를 때도 있고 운동도 할 수 있어서 좋아요. 하지만 비가 오면 버스를 타요.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.5-1.2.wav",
-      "duration": 9.632,
-      "sha256": "ae77bde4e5ccea83b517492128962731d7fc22fee9b89f66de9026149ac7bb7c",
-      "peak": 22263,
-      "rms": 4360.4
+      "duration": 12.16,
+      "sha256": "e3e526e576cc200d5325d2f534d0a2fa6f39315ae10361f36e2f4b051cb1d146",
+      "peak": 21559,
+      "rms": 2472.5,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "저는 가까운 곳에 갈 때 자전거를 타요. 버스보다 빠를 때도 있고 운동도 할 수 있어서 좋아요. 하지만 비가 오면 버스를 타요.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "저는 가까운 곳에 갈 때 자전거를 타요. 버스보다 빠를 때도 있고 운동도 할 수 있어서 좋아요. 하지만 비가 오면 버스를 타요.",
+          "seed": 42,
+          "duration": 12.16,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "저는 가까운 곳에 갈 때 자전거를 타요. 버스보다 빠를 때도 있고 운동도 할 수 있어서 좋아요. 하지만 비가 오면 버스를 타요."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.6-1.0": {
       "id": "korean.6-1.0",
       "text": "이번 강좌는 선착순으로 신청을 받습니다. 다만 지난달 대기자 명단에 오른 분에게는 이번 주 금요일까지 우선 신청 기회를 드립니다. 일반 신청은 토요일부터 가능합니다.",
       "spoken": "이번 강좌는 선착순으로 신청을 받습니다. 다만 지난달 대기자 명단에 오른 분에게는 이번 주 금요일까지 우선 신청 기회를 드립니다. 일반 신청은 토요일부터 가능합니다.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.6-1.0.wav",
-      "duration": 11.863,
-      "sha256": "9fdd6f74f150c826a2b0d815ac49f1b17542d9f2334ae757c5bd8f06142f7eb9",
-      "peak": 23026,
-      "rms": 4628.1
+      "duration": 13.92,
+      "sha256": "ef50cfbfaedb66c8c1c8bfb594da689036af94fdf9481ff19ec01162fba55d45",
+      "peak": 16452,
+      "rms": 2059.6,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "이번 강좌는 선착순으로 신청을 받습니다. 다만 지난달 대기자 명단에 오른 분에게는 이번 주 금요일까지 우선 신청 기회를 드립니다. 일반 신청은 토요일부터 가능합니다.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "이번 강좌는 선착순으로 신청을 받습니다. 다만 지난달 대기자 명단에 오른 분에게는 이번 주 금요일까지 우선 신청 기회를 드립니다. 일반 신청은 토요일부터 가능합니다.",
+          "seed": 42,
+          "duration": 13.92,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "이번 강좌는 선착순으로 신청을 받습니다. 다만 지난달 대기자 명단에 오른 분에게는 이번 주 금요일까지 우선 신청 기회를 드립니다. 일반 신청은 토요일부터 가능합니다."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.6-1.1": {
       "id": "korean.6-1.1",
       "text": "회의 자료는 미리 공유하되 결론까지 정해서 보내지는 말자는 의견이 나왔다. 참석자들이 자료를 읽을 시간은 필요하지만, 논의 전에 결론을 정하면 다른 제안이 나오기 어렵다는 이유였다.",
       "spoken": "회의 자료는 미리 공유하되 결론까지 정해서 보내지는 말자는 의견이 나왔다. 참석자들이 자료를 읽을 시간은 필요하지만, 논의 전에 결론을 정하면 다른 제안이 나오기 어렵다는 이유였다.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.6-1.1.wav",
-      "duration": 13.044,
-      "sha256": "5e90a1ee43504249f9b3c129c14f4b549c8b85b2aa8b6d2b2c271e4bbd5365fa",
-      "peak": 22115,
-      "rms": 4868.4
+      "duration": 14.72,
+      "sha256": "515dabfea4b1270fbeca7acd19dbb55e89dc6e5fb5f10fb17615d070603cdbbc",
+      "peak": 16430,
+      "rms": 2172.7,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "회의 자료는 미리 공유하되 결론까지 정해서 보내지는 말자는 의견이 나왔다. 참석자들이 자료를 읽을 시간은 필요하지만, 논의 전에 결론을 정하면 다른 제안이 나오기 어렵다는 이유였다.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "회의 자료는 미리 공유하되 결론까지 정해서 보내지는 말자는 의견이 나왔다. 참석자들이 자료를 읽을 시간은 필요하지만, 논의 전에 결론을 정하면 다른 제안이 나오기 어렵다는 이유였다.",
+          "seed": 42,
+          "duration": 14.72,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "회의 자료는 미리 공유하되 결론까지 정해서 보내지는 말자는 의견이 나왔다. 참석자들이 자료를 읽을 시간은 필요하지만, 논의 전에 결론을 정하면 다른 제안이 나오기 어렵다는 이유였다."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.6-1.2": {
       "id": "korean.6-1.2",
       "text": "새 제도 시행 뒤 민원이 줄었다. 그러나 담당자는 이를 곧바로 만족도가 높아졌다는 뜻으로 해석해서는 안 된다고 말했다. 접수 절차가 복잡해져 불편을 겪어도 신고하지 않는 사람이 있을 수 있기 때문이다.",
       "spoken": "새 제도 시행 뒤 민원이 줄었다. 그러나 담당자는 이를 곧바로 만족도가 높아졌다는 뜻으로 해석해서는 안 된다고 말했다. 접수 절차가 복잡해져 불편을 겪어도 신고하지 않는 사람이 있을 수 있기 때문이다.",
-      "rate": 155,
       "file": "assets/audio/korean/korean.6-1.2.wav",
-      "duration": 14.776,
-      "sha256": "312ed3924236575d161c1a16ba824530537b6af9ead093a1dc18dbea9bc47da8",
-      "peak": 26986,
-      "rms": 4528.3
+      "duration": 18.48,
+      "sha256": "4fccf40c6681cc2ddac38d3193e84a438c2cfb06403f177da0765412df762da0",
+      "peak": 25808,
+      "rms": 2099.1,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "새 제도 시행 뒤 민원이 줄었다. 그러나 담당자는 이를 곧바로 만족도가 높아졌다는 뜻으로 해석해서는 안 된다고 말했다. 접수 절차가 복잡해져 불편을 겪어도 신고하지 않는 사람이 있을 수 있기 때문이다.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "새 제도 시행 뒤 민원이 줄었다. 그러나 담당자는 이를 곧바로 만족도가 높아졌다는 뜻으로 해석해서는 안 된다고 말했다. 접수 절차가 복잡해져 불편을 겪어도 신고하지 않는 사람이 있을 수 있기 때문이다.",
+          "seed": 42,
+          "duration": 18.48,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "새 제도 시행 뒤 민원이 줄었다. 그러나 담당자는 이를 곧바로 만족도가 높아졌다는 뜻으로 해석해서는 안 된다고 말했다. 접수 절차가 복잡해져 불편을 겪어도 신고하지 않는 사람이 있을 수 있기 때문이다."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.7-1.0": {
       "id": "korean.7-1.0",
       "text": "새 평가제도는 숫자로 성과를 보여 준다는 점에서 공정해 보인다. 그런데 측정하기 쉬운 일을 잘하는 사람과 조직에 꼭 필요한 일을 하는 사람이 늘 같은 것은 아니다. 뒤에서 동료의 실수를 막아 준 사람의 기여는 사고가 일어나지 않았다는 이유로 기록에 남지 않는다. 그렇다고 숫자를 모두 버리자는 뜻은 아니다. 지표가 설명하지 못하는 부분까지 지표의 탓이 아닌 개인의 무능으로 돌리는 순간, 평가가 오히려 조직을 망칠 수 있다는 것이다.",
       "spoken": "새 평가제도는 숫자로 성과를 보여 준다는 점에서 공정해 보인다. 그런데 측정하기 쉬운 일을 잘하는 사람과 조직에 꼭 필요한 일을 하는 사람이 늘 같은 것은 아니다. 뒤에서 동료의 실수를 막아 준 사람의 기여는 사고가 일어나지 않았다는 이유로 기록에 남지 않는다. 그렇다고 숫자를 모두 버리자는 뜻은 아니다. 지표가 설명하지 못하는 부분까지 지표의 탓이 아닌 개인의 무능으로 돌리는 순간, 평가가 오히려 조직을 망칠 수 있다는 것이다.",
-      "rate": 185,
       "file": "assets/audio/korean/korean.7-1.0.wav",
-      "duration": 28.871,
-      "sha256": "fc0b13ded747ebeb5303e659f7719b7c8e563decf3202ce45bda84a95c5834d7",
-      "peak": 21258,
-      "rms": 4705.8
+      "duration": 38.5,
+      "sha256": "5edb233962373b3d4700028bb7199331e7282f4e9ce4029a2a301bbe7637bedb",
+      "peak": 25013,
+      "rms": 2246.4,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "새 평가제도는 숫자로 성과를 보여 준다는 점에서 공정해 보인다. 그런데 측정하기 쉬운 일을 잘하는 사람과 조직에 꼭 필요한 일을 하는 사람이 늘 같은 것은 아니다. 뒤에서 동료의 실수를 막아 준 사람의 기여는 사고가 일어나지 않았다는 이유로 기록에 남지 않는다. 그렇다고 숫자를 모두 버리자는 뜻은 아니다. 지표가 설명하지 못하는 부분까지 지표의 탓이 아닌 개인의 무능으로 돌리는 순간, 평가가 오히려 조직을 망칠 수 있다는 것이다.",
+      "segmentedAtSentenceBoundaries": true,
+      "synthesisSegments": [
+        {
+          "text": "새 평가제도는 숫자로 성과를 보여 준다는 점에서 공정해 보인다. 그런데 측정하기 쉬운 일을 잘하는 사람과 조직에 꼭 필요한 일을 하는 사람이 늘 같은 것은 아니다. 뒤에서 동료의 실수를 막아 준 사람의 기여는 사고가 일어나지 않았다는 이유로 기록에 남지 않는다.",
+          "seed": 42,
+          "duration": 23.12,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "새 평가제도는 숫자로 성과를 보여 준다는 점에서 공정해 보인다. 그런데 측정하기 쉬운 일을 잘하는 사람과 조직에 꼭 필요한 일을 하는 사람이 늘 같은 것은 아니다. 뒤에서 동료의 실수를 막아 준 사람의 기여는 사고가 일어나지 않았다는 이유로 기록에 남지 않는다."
+        },
+        {
+          "text": "그렇다고 숫자를 모두 버리자는 뜻은 아니다. 지표가 설명하지 못하는 부분까지 지표의 탓이 아닌 개인의 무능으로 돌리는 순간, 평가가 오히려 조직을 망칠 수 있다는 것이다.",
+          "seed": 43,
+          "duration": 15.2,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "그렇다고 숫자를 모두 버리자는 뜻은 아니다. 지표가 설명하지 못하는 부분까지 지표의 탓이 아닌 개인의 무능으로 돌리는 순간, 평가가 오히려 조직을 망칠 수 있다는 것이다."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.7-1.1": {
       "id": "korean.7-1.1",
       "text": "주민 설명회에서 한 참석자가 말했다. 이렇게 중요한 변경 사항을 공사 시작 전날에 알려 주시다니, 의견을 듣겠다는 의지가 참 대단하시네요. 진행자는 일정이 촉박했다고 답했지만, 참석자는 자료를 공개할 시간이 없었던 건지, 의견을 반영할 시간을 남겨 두고 싶지 않았던 건지부터 설명해 달라고 했다. 그가 문제 삼은 것은 단순히 안내문이 늦게 도착했다는 사실만은 아니었다.",
       "spoken": "주민 설명회에서 한 참석자가 말했다. 이렇게 중요한 변경 사항을 공사 시작 전날에 알려 주시다니, 의견을 듣겠다는 의지가 참 대단하시네요. 진행자는 일정이 촉박했다고 답했지만, 참석자는 자료를 공개할 시간이 없었던 건지, 의견을 반영할 시간을 남겨 두고 싶지 않았던 건지부터 설명해 달라고 했다. 그가 문제 삼은 것은 단순히 안내문이 늦게 도착했다는 사실만은 아니었다.",
-      "rate": 185,
       "file": "assets/audio/korean/korean.7-1.1.wav",
-      "duration": 25.993,
-      "sha256": "89fe004c252e62e5387962f7dff0c145c2b1ecfd36f37ee6cb1990e9dfade80b",
-      "peak": 23077,
-      "rms": 4559.8
+      "duration": 31.38,
+      "sha256": "9414b8f306199f818a5dca3bb327302e10025e16820eb19f67abb48c478c8fdd",
+      "peak": 27334,
+      "rms": 3140.1,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "주민 설명회에서 한 참석자가 말했다. 이렇게 중요한 변경 사항을 공사 시작 전날에 알려 주시다니, 의견을 듣겠다는 의지가 참 대단하시네요. 진행자는 일정이 촉박했다고 답했지만, 참석자는 자료를 공개할 시간이 없었던 건지, 의견을 반영할 시간을 남겨 두고 싶지 않았던 건지부터 설명해 달라고 했다. 그가 문제 삼은 것은 단순히 안내문이 늦게 도착했다는 사실만은 아니었다.",
+      "segmentedAtSentenceBoundaries": true,
+      "synthesisSegments": [
+        {
+          "text": "주민 설명회에서 한 참석자가 말했다. 이렇게 중요한 변경 사항을 공사 시작 전날에 알려 주시다니, 의견을 듣겠다는 의지가 참 대단하시네요.",
+          "seed": 42,
+          "duration": 12.16,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "주민 설명회에서 한 참석자가 말했다. 이렇게 중요한 변경 사항을 공사 시작 전날에 알려 주시다니, 의견을 듣겠다는 의지가 참 대단하시네요."
+        },
+        {
+          "text": "진행자는 일정이 촉박했다고 답했지만, 참석자는 자료를 공개할 시간이 없었던 건지, 의견을 반영할 시간을 남겨 두고 싶지 않았던 건지부터 설명해 달라고 했다. 그가 문제 삼은 것은 단순히 안내문이 늦게 도착했다는 사실만은 아니었다.",
+          "seed": 43,
+          "duration": 19.04,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "진행자는 일정이 촉박했다고 답했지만, 참석자는 자료를 공개할 시간이 없었던 건지, 의견을 반영할 시간을 남겨 두고 싶지 않았던 건지부터 설명해 달라고 했다. 그가 문제 삼은 것은 단순히 안내문이 늦게 도착했다는 사실만은 아니었다."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.7-1.2": {
       "id": "korean.7-1.2",
       "text": "지역 서점 지원 사업의 매출이 늘었다는 보고가 나왔다. 이를 두고 사업이 성공했다고 단정하는 것은 아직 이르다. 같은 기간에 인근 대형 서점이 문을 닫았고 관광객도 크게 늘었기 때문이다. 그렇다고 지원의 효과가 없었다고 말할 근거도 없다. 필요한 것은 지원받지 않은 비슷한 지역의 변화와 비교하고, 일시적인 유입이 줄어든 뒤에도 독자가 남는지 확인하는 일이다. 성과를 서둘러 선언하는 것과 성과를 제대로 검증하는 것은 다른 일이다.",
       "spoken": "지역 서점 지원 사업의 매출이 늘었다는 보고가 나왔다. 이를 두고 사업이 성공했다고 단정하는 것은 아직 이르다. 같은 기간에 인근 대형 서점이 문을 닫았고 관광객도 크게 늘었기 때문이다. 그렇다고 지원의 효과가 없었다고 말할 근거도 없다. 필요한 것은 지원받지 않은 비슷한 지역의 변화와 비교하고, 일시적인 유입이 줄어든 뒤에도 독자가 남는지 확인하는 일이다. 성과를 서둘러 선언하는 것과 성과를 제대로 검증하는 것은 다른 일이다.",
-      "rate": 185,
       "file": "assets/audio/korean/korean.7-1.2.wav",
-      "duration": 30.605,
-      "sha256": "07301868c19ec2dabda92a35d23cff44b2ab01883249d2a74602876f9458a456",
-      "peak": 27540,
-      "rms": 4635.5
+      "duration": 36.18,
+      "sha256": "da33892d3c9afcb30c7ed3386647efc02649bd78b09d8b0e669bfa8aa2b79d22",
+      "peak": 25386,
+      "rms": 2495.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "지역 서점 지원 사업의 매출이 늘었다는 보고가 나왔다. 이를 두고 사업이 성공했다고 단정하는 것은 아직 이르다. 같은 기간에 인근 대형 서점이 문을 닫았고 관광객도 크게 늘었기 때문이다. 그렇다고 지원의 효과가 없었다고 말할 근거도 없다. 필요한 것은 지원받지 않은 비슷한 지역의 변화와 비교하고, 일시적인 유입이 줄어든 뒤에도 독자가 남는지 확인하는 일이다. 성과를 서둘러 선언하는 것과 성과를 제대로 검증하는 것은 다른 일이다.",
+      "segmentedAtSentenceBoundaries": true,
+      "synthesisSegments": [
+        {
+          "text": "지역 서점 지원 사업의 매출이 늘었다는 보고가 나왔다. 이를 두고 사업이 성공했다고 단정하는 것은 아직 이르다. 같은 기간에 인근 대형 서점이 문을 닫았고 관광객도 크게 늘었기 때문이다. 그렇다고 지원의 효과가 없었다고 말할 근거도 없다.",
+          "seed": 42,
+          "duration": 20.16,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "지역 서점 지원 사업의 매출이 늘었다는 보고가 나왔다. 이를 두고 사업이 성공했다고 단정하는 것은 아직 이르다. 같은 기간에 인근 대형 서점이 문을 닫았고 관광객도 크게 늘었기 때문이다. 그렇다고 지원의 효과가 없었다고 말할 근거도 없다."
+        },
+        {
+          "text": "필요한 것은 지원받지 않은 비슷한 지역의 변화와 비교하고, 일시적인 유입이 줄어든 뒤에도 독자가 남는지 확인하는 일이다. 성과를 서둘러 선언하는 것과 성과를 제대로 검증하는 것은 다른 일이다.",
+          "seed": 43,
+          "duration": 15.84,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "필요한 것은 지원받지 않은 비슷한 지역의 변화와 비교하고, 일시적인 유입이 줄어든 뒤에도 독자가 남는지 확인하는 일이다. 성과를 서둘러 선언하는 것과 성과를 제대로 검증하는 것은 다른 일이다."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-11.0": {
       "id": "korean.1-11.0",
       "text": "집",
       "spoken": "집",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-11.0.wav",
-      "duration": 0.501,
-      "sha256": "ef61b3090b98d8203c9d7df52c367f0f84aecad164b76e3f75009d9058a9e9cd",
-      "peak": 14731,
-      "rms": 3075.3
+      "duration": 0.72,
+      "sha256": "f801023287fff32b65b83043000f119ad11e574de88c84b91190bab7118ec679",
+      "peak": 8561,
+      "rms": 1355.4,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "집",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "집",
+          "seed": 42,
+          "duration": 0.72,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "집",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-11.1": {
       "id": "korean.1-11.1",
       "text": "물",
       "spoken": "물",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-11.1.wav",
-      "duration": 0.541,
-      "sha256": "0132647acf1d8b3d066b33d79250e0a13c99c774434916d1fbd04843c87ab24e",
-      "peak": 12696,
-      "rms": 3757.9
+      "duration": 0.64,
+      "sha256": "2008f7901a4ee677fd2692cf48b3492f348500e2b7a48b615e53684da5aa4ae3",
+      "peak": 9144,
+      "rms": 2268.7,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "물",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "물",
+          "seed": 1042,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "물",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-11.2": {
       "id": "korean.1-11.2",
       "text": "밥",
       "spoken": "밥",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-11.2.wav",
-      "duration": 0.467,
-      "sha256": "dab194eb787cb0421ddbb195dc6aaa736e0dcfafcccdef9ea520001bd6469986",
-      "peak": 18911,
-      "rms": 3222.5
+      "duration": 0.64,
+      "sha256": "9ffcda9944bc03d14cc6eb604ade29fcebf253f56e812782b39807f84f965e87",
+      "peak": 14030,
+      "rms": 4122.8,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "밥",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "밥",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "밥",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-11.3": {
       "id": "korean.1-11.3",
       "text": "책",
       "spoken": "책",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-11.3.wav",
-      "duration": 0.499,
-      "sha256": "ddb06662c149426c77ec93e4d1721ca3dae697b877a68ee3e9e86c4c29137b73",
-      "peak": 15990,
-      "rms": 2358.1
+      "duration": 2.45,
+      "sha256": "e4cc65a63e59b2ec868a398e74274eb238e6f38454a3d3ad90b73ab32f570c3e",
+      "peak": 11230,
+      "rms": 1006.7,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "책",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "책",
+          "seed": 42,
+          "duration": 2.45,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "책",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-11.4": {
       "id": "korean.1-11.4",
       "text": "개",
       "spoken": "개",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-11.4.wav",
-      "duration": 0.496,
-      "sha256": "1310af62e7c80bf6604aa086ab4b7d074bbac5fb23c94f0509a86f0fd9d2d6f6",
-      "peak": 17572,
-      "rms": 3131.3
+      "duration": 0.64,
+      "sha256": "ce8f17cef1076f1c32671de52cd23c67f51b3cf278ff42fdd7301417c82e4a2b",
+      "peak": 8939,
+      "rms": 1815.5,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "개",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "개",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "개",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.1-11.5": {
       "id": "korean.1-11.5",
       "text": "고양이",
       "spoken": "고양이",
-      "rate": 130,
       "file": "assets/audio/korean/korean.1-11.5.wav",
-      "duration": 0.785,
-      "sha256": "546e4b590665d4a1af3e817138e442487b2b2ab8449956c50208c56e492e3bb2",
-      "peak": 17911,
-      "rms": 4561.9
+      "duration": 1.12,
+      "sha256": "c99f49e3c9ba6700a6c1245ec3cd83589a14a6508006f37d519c9b664505ca8e",
+      "peak": 19923,
+      "rms": 4788.1,
+      "voice": "Sohee",
+      "voiceId": "Sohee",
+      "locale": "ko-KR",
+      "synthesisText": "고양이",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "고양이",
+          "seed": 42,
+          "duration": 1.12,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "고양이",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     }
-  }
+  },
+  "generatedAt": "2026-10-15",
+  "usageScope": "Commercial model use permitted under Apache-2.0; no separate generated-audio restriction found in published model terms. Third-party rights are not warranted.",
+  "licenseSource": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+  "rightsReviewed": true,
+  "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-8bit",
+  "modelRevision": "41d3337e8b7f2843a75841595fc14e4b9a7a4b96",
+  "license": "Apache-2.0",
+  "rightsReviewDate": "2026-10-15",
+  "voice": "Sohee",
+  "voiceId": "Sohee"
 }

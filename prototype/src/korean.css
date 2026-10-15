@@ -4,3 +4,48 @@
 
 .korean-assembly{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:28px 0;font-size:calc(30px * var(--text-scale))}.assembly-slot{min-width:42px;padding:8px;border-bottom:2px solid var(--amber);text-align:center;color:var(--amber-light)}.assembly-plus{font-size:20px;color:var(--muted)}.korean-assembly strong{font-size:calc(44px * var(--text-scale));font-weight:500}.korean-composition-choices{flex-direction:row;flex-wrap:nowrap}.korean-composition-choices .korean-choice{flex:1;min-width:0;text-align:center;font-size:calc(28px * var(--text-scale))}
 .korean-learn>.korean-cue{max-width:min(34em,100%);overflow-wrap:anywhere}
+/* Stage zero shares the compact learn/write/listen rhythm with kana lessons. */
+.view-korean:has(.korean-zero){height:100dvh;min-height:0;display:flex;flex-direction:column}
+.view-korean:has(.korean-zero)>.app-header,.view-korean:has(.korean-zero)>.lesson-progress{flex:none}
+.korean-zero{flex:1;min-height:0;display:flex;flex-direction:column;padding:16px 20px max(16px,env(safe-area-inset-bottom));gap:12px}
+.korean-zero>.button-pair{margin-top:auto;flex:none}
+.korean-zero h1{font-size:calc(20px * var(--text-scale));line-height:1.45;margin:0}
+.korean-zero-intro{margin:auto 0;display:flex;flex-direction:column;gap:20px}
+.korean-coach{display:flex;align-items:center;gap:12px}.korean-coach img{flex:none;width:48px;height:auto}.korean-coach p{margin:0;font-size:calc(15px * var(--text-scale));line-height:1.65;word-break:normal;line-break:strict}
+.korean-intro-example{text-align:center;margin:0;color:var(--muted);font-size:calc(22px * var(--text-scale));line-height:1.5}
+.korean-letter-motion{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));row-gap:20px;text-align:center;margin:12px 0 20px}
+.korean-letter-motion>span{grid-column:span 2;font-size:calc(40px * var(--text-scale));line-height:1.4;color:var(--amber);animation:korean-letter-bounce 2.8s ease-in-out var(--letter-delay) infinite}
+.korean-letter-motion.letters-4>span{grid-column:span 3}.korean-letter-motion.letters-5>span:nth-child(4){grid-column:2/span 2}.korean-letter-motion.letters-5>span:nth-child(5){grid-column:4/span 2}
+@keyframes korean-letter-bounce{0%,18%,100%{transform:translateY(0)}8%{transform:translateY(-10px)}}
+[data-motion=off] .korean-letter-motion>span{animation:none}@media(prefers-reduced-motion:reduce){.korean-letter-motion>span{animation:none}}
+.korean-zero-learn{flex:none;min-height:0;display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:12px}
+.korean-phase-learn>.button-pair{margin-top:4px}
+.korean-phase-learn:has(.korean-practice-listen){display:grid;grid-template-rows:auto 1fr auto auto 1fr;align-content:stretch}
+.korean-zero-learn.korean-practice-listen{grid-row:3;padding-top:0}
+.korean-phase-learn:has(.korean-practice-listen)>.button-pair{grid-row:4;margin-top:16px}
+.korean-zero .korean-zero-glyph{width:auto;gap:12px}.korean-zero-glyph>span{font-size:calc(64px * var(--text-scale));line-height:1.25}
+.korean-letter-reading{margin:0;color:var(--muted);font-size:calc(16px * var(--text-scale));text-align:center}
+.korean-letter-equation{display:flex;flex-flow:row nowrap;align-items:center;justify-content:center;gap:8px;font-size:calc(27px * var(--text-scale));line-height:1.4;white-space:nowrap;min-width:0}.korean-letter-equation>span{color:var(--muted);font-size:.7em}.korean-letter-equation strong{font-weight:500;color:var(--amber)}
+.korean-example-row{width:100%;gap:8px}.korean-example-row .korean-letter-equation{flex:1;min-width:0}
+.korean-zero .korean-cue{font-size:calc(14px * var(--text-scale));text-align:center;line-height:1.6;margin:0;word-break:normal;line-break:strict}
+.korean-writing,.korean-writing *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.korean-stroke-controls{display:flex;align-items:center;gap:12px;min-height:44px}.korean-stroke-controls button{margin:0;min-height:44px;padding:4px 10px}.korean-stroke-controls .korean-stroke-status{min-height:0}
+.korean-zero-question{margin:0;gap:8px}.korean-zero-question h1{flex:1;min-width:0;word-break:normal;line-break:strict}
+.korean-zero-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:8px 0 0}
+.korean-zero-choices .korean-choice{min-width:0;margin:0;padding:12px;min-height:100px;font-size:calc(32px * var(--text-scale));text-align:center}
+.korean-zero .korean-assembly{margin:10px 0;min-height:50px}.korean-zero .korean-feedback{min-height:24px;margin:0;font-size:15px}.korean-phase-quiz>.button-pair{margin-top:0}
+@media(max-height:700px){.korean-zero{gap:8px;padding-top:12px}.korean-zero-intro{gap:14px}.korean-letter-motion{row-gap:14px;margin:6px 0 12px}.korean-zero-learn{gap:8px}.korean-zero-glyph>span{font-size:calc(52px * var(--text-scale))}.korean-zero-choices .korean-choice{min-height:64px;padding:8px}}
+.korean-zero,.korean-zero-intro,.korean-zero-learn,.korean-coach{min-width:0}.korean-coach p{flex:1;min-width:0}.korean-zero .text-phrase{word-break:normal;line-break:strict}
+.korean-example-row .korean-letter-equation{font-size:calc(23px * var(--text-scale));gap:6px}
+
+.korean-zero .korean-pronunciation-link{min-height:44px;margin:0;padding:4px 12px;font-size:calc(15px * var(--text-scale))}
+
+.korean-zero-finish{padding:12px 20px max(20px,env(safe-area-inset-bottom))}.korean-zero-finish h1{font-size:calc(23px * var(--text-scale));line-height:1.4;margin:0 0 12px}.korean-zero-finish p{font-size:calc(15px * var(--text-scale));line-height:1.65;margin:12px 0;word-break:normal;line-break:strict}.korean-final-table{border-collapse:collapse;table-layout:fixed;width:100%;margin:14px 0}.korean-final-table caption{text-align:left;font-size:calc(14px * var(--text-scale));color:var(--muted);margin-bottom:8px}.korean-final-table td{border:1px solid var(--line);text-align:center;padding:6px 0;font-size:calc(23px * var(--text-scale));line-height:1.2;background:var(--stage-raised)}.korean-zero-finish .korean-final-tip{color:var(--amber-light)}.korean-zero-finish .korean-final-note{font-size:calc(13px * var(--text-scale));color:var(--muted)}.korean-zero-finish>.button-pair{margin-top:16px}
+@media(max-height:700px){.korean-zero-finish h1{font-size:calc(21px * var(--text-scale));margin-bottom:8px}.korean-zero-finish p{margin-block:8px;line-height:1.5}.korean-final-table{margin-block:10px}.korean-final-table td{padding-block:4px}.korean-zero-finish>.button-pair{margin-top:12px}}
+
+.korean-page .passage-audio{display:flex;flex-direction:column;align-items:stretch;gap:12px;width:100%;min-width:0}
+.korean-page .passage-audio>.icon-button{align-self:flex-end;flex:none;min-width:44px;min-height:44px;margin:0}
+
+.passage-player{display:flex;align-items:center;gap:16px;width:100%;min-width:0}.passage-player>.secondary{width:auto;flex:none;min-height:44px;margin:0;padding:12px 18px}.passage-speed{display:flex;flex-direction:column;flex:1;min-width:0;gap:4px;font-size:calc(14px * var(--text-scale));text-align:start}.passage-speed>span{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.passage-speed output{font-variant-numeric:tabular-nums}.passage-speed input{width:100%;min-width:0;height:44px;margin:0;accent-color:var(--amber)}
+
+.passage-player .passage-transport.button-pair{width:100px;flex:none;gap:8px;margin:0}.passage-transport .icon-button{min-width:44px;height:44px;padding:10px}.passage-transport svg{width:24px;height:24px}.passage-transport button:disabled{opacity:.4}

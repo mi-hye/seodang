@@ -1,19 +1,23 @@
-import {practiceRoundCount,normalizePractice} from './practice-state.js';
+import {japaneseLessonUI} from './curriculum.js';
+import {renderCasePractice,mountCasePractice} from './case-practice.js';
+import {practiceHasWriting,practiceRoundCount,normalizePractice,normalizeCasePractice} from './practice-state.js';
 import {icon,phraseText,esc} from './ui.js';
-import {practiceUnits,practiceDistractors,practiceKey,prepareContent,interceptCompletion} from './practice-content.js';
+import {caseTasks,practiceUnits,practiceDistractors,practiceKey,prepareContent,interceptCompletion} from './practice-content.js';
 export {practiceKey,prepareContent,interceptCompletion};
 const copy={ko:{title:'반복 연습',modes:['듣고 뜻을 골라요',null,'직접 써봐요'],listen:'듣기',next:'다음',check:'확인',retry:'다시 확인해 주세요.',clear:'지우기',audioError:'소리를 재생하지 못했어요. 다시 눌러 주세요.'},ja:{title:'繰り返し練習',modes:['聞いて意味を選ぶ',null,'書いてみよう'],listen:'聞く',next:'次へ',check:'確認',retry:'もう一度確かめてください。',clear:'消す',audioError:'再生できませんでした。もう一度お試しください。'}};
-const japanese=s=>s.courseDirection==='ja-ko'||Number(s.onboardingLevel)>=6;
-export function practiceState(s,kind){return normalizePractice(s.practices?.[practiceKey(s,kind)],practiceRoundCount(practiceKey(s,kind)));}
+const japanese=s=>japaneseLessonUI(s);
+export function practiceState(s,kind){return normalizePractice(normalizeCasePractice(s.practices?.[practiceKey(s,kind)],practiceKey(s,kind)),practiceRoundCount(practiceKey(s,kind)),practiceHasWriting(practiceKey(s,kind)));}
 function model(s,kind){const p=practiceState(s,kind),units=practiceUnits(s,kind),unit=units[(p.index+p.round)%units.length],text='text',values=[...new Set([...units.map(x=>x[text]),...practiceDistractors(s,kind)].filter(x=>x&&x!==unit[text]))],options=values.slice(p.round%Math.max(1,values.length)).concat(values).filter((x,i,a)=>a.indexOf(x)===i).slice(0,3),answer=(p.index+p.round+p.mode)%(options.length+1);options.splice(answer,0,unit[text]);return {p,unit,options,answer,c:copy[japanese(s)?'ja':'ko'],language:s.courseDirection==='ja-ko'?'ko':'ja'};}
 export function renderPractice(s,kind,top){
+ const tasks=caseTasks(s,kind);if(tasks){const p=practiceState(s,kind);return renderCasePractice(s,tasks[p.index],p,top);}
  const {p,unit,options,c,language}=model(s,kind),audio=`<button type="button" class="icon-button" data-practice="listen" aria-label="${c.listen}">${icon('sound')}</button>`;
  const showMeanings=kind==='basic'&&[9,10].includes(s.basics.active),meanings=showMeanings?new Map(practiceUnits(s,kind).map(item=>[item.text,item.meaning])):null;
  const select=p.mode===0?`<div class="practice-choices${kind==='basic'&&[9,10].includes(s.basics.active)?' practice-choices-words':options.every(x=>x.length<=3)?' practice-choices-glyphs':''}">${options.map((x,i)=>`<button class="secondary" type="button" data-practice="choice" data-choice="${i}" aria-pressed="false">${showMeanings?`<span class="practice-choice-text" lang="ja">${phraseText(x)}</span><small class="practice-choice-meaning" lang="ko">${esc(meanings.get(x)||'')}</small>`:phraseText(x)}</button>`).join('')}</div>`:'';
  const nextButton=`<button class="primary" type="button" data-practice="next" disabled>${p.mode===0?c.check:c.next}</button>`;
- return `${top(c.title)}<main class="page practice-page${p.mode===2?' practice-writing':''}${showMeanings?' practice-with-meanings':''}" lang="${japanese(s)?'ja':'ko'}"><div class="practice-heading"><h1>${c.modes[p.mode]}</h1>${p.mode===0?audio:''}</div>${p.mode===0?'':`<div class="practice-writing-reference${unit.text.length===1?' practice-writing-reference-glyph':''}"><span lang="${language}">${phraseText(unit.text)}</span>${audio}</div>${showMeanings?`<p class="practice-writing-meaning" lang="ko">${esc(unit.meaning)}</p>`:''}<div class="practice-board${unit.text.length===1?' practice-board-glyph':''}">${p.round<2?`<span class="practice-guide" lang="${language}">${phraseText(unit.text)}</span>`:''}<canvas aria-label="${c.modes[2]}" data-practice-canvas></canvas></div>`}${select}<p class="practice-feedback" role="status"></p>${p.mode===2?`<div class="button-pair"><button class="secondary" type="button" data-practice="clear">${c.clear}</button>${nextButton}</div>`:nextButton}</main>`;
+ return `${top(c.title)}<main class="page practice-page${p.mode===2?' practice-writing':''}${showMeanings?' practice-with-meanings':''}${kind==='basic'&&s.basics.active>=11?' practice-katakana':''}" lang="${japanese(s)?'ja':'ko'}"><div class="practice-heading"><h1>${c.modes[p.mode]}</h1>${p.mode===0?audio:''}</div>${p.mode===0?'':`<div class="practice-writing-reference${unit.text.length===1?' practice-writing-reference-glyph':''}"><span lang="${language}">${phraseText(unit.text)}</span>${audio}</div>${showMeanings?`<p class="practice-writing-meaning" lang="ko">${esc(unit.meaning)}</p>`:''}<div class="practice-board${unit.text.length===1?' practice-board-glyph':''}">${p.round<2?`<span class="practice-guide" lang="${language}">${phraseText(unit.text)}</span>`:''}<canvas aria-label="${c.modes[2]}" data-practice-canvas></canvas></div>`}${select}<p class="practice-feedback" role="status"></p>${p.mode===2?`<div class="button-pair"><button class="secondary" type="button" data-practice="clear">${c.clear}</button>${nextButton}</div>`:nextButton}</main>`;
 }
 export function mountPractice(root,s,kind,{play,stop,advance}){
+ const tasks=caseTasks(s,kind);if(tasks)return mountCasePractice(root,s,tasks[practiceState(s,kind).index],{advance,stop});
  const {p,unit,answer,c}=model(s,kind),next=root.querySelector('[data-practice=next]'),feedback=root.querySelector('.practice-feedback');
  let alive=true,heard=p.mode!==0,selected=null,ready=false,busy=false,request=0;
  const status=text=>{if(alive)feedback.textContent=text;};

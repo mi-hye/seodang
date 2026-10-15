@@ -1,0 +1,20 @@
+import {webkit,expect} from '@playwright/test';import {readFileSync} from 'node:fs';import assert from 'node:assert/strict';import {freshState} from '../src/engine.js';import {katakanaLessons} from '../src/katakana-lessons.js';import {basicLessons} from '../src/basics-state.js';import {basicContent} from '../src/basics.js';import {katakanaCoaches,katakanaGroupCoaches} from '../src/katakana-content.js';
+const browser=await webkit.launch();try{for(const lesson of katakanaLessons)for(const width of [320,390]){
+ const id=lesson.id;
+ const page=await browser.newPage({viewport:{width,height:width===320?667:844}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.route('https://seodang.test/**',r=>{const file=new URL(r.request().url()).pathname.slice(1);if(file==='src/build-config.js')return r.fulfill({body:'export const developmentMode=true;',contentType:'text/javascript'});try{return r.fulfill({body:readFileSync(file),contentType:file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':file.endsWith('.html')?'text/html':'image/png'});}catch{return r.fulfill({status:404,body:''});}});
+ await page.addInitScript(s=>localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s)),{...freshState(),onboarded:true,onboardingLevel:0,settings:{sound:false,motion:'off',textScale:1.2}});
+
+ await page.goto('https://seodang.test/playable.html');await page.locator('.map-choice').nth(5+basicLessons.filter(l=>l.id!==6).findIndex(l=>l.id===id)).click();
+ await page.addStyleTag({content:'.app-header{padding-top:55px!important}'});
+ const assertFits=async()=>{assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`${id} horizontal`);assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight),`${id} vertical`);};
+ const limit=[11,26].includes(id)?lesson.count:1;
+ for(let index=0;index<limit;index++){
+  if(index%lesson.groupSize===0){await expect(page.locator('.basic-letter-glyph')).toHaveText(basicContent[id].slice(index,index+lesson.groupSize).map(([text])=>text));await assertFits();const coach=katakanaGroupCoaches[id]?.[index]??(index===0?katakanaCoaches[id]:undefined);if(coach)await expect(page.locator('.basic-coach p')).toHaveText(coach);else await expect(page.locator('.basic-coach')).toHaveCount(0);if(index===0){if([11,22,26].includes(id))await page.screenshot({path:`/tmp/seodang-katakana-intro-${id}-${width}.png`});}await page.waitForTimeout(460);await page.locator('[data-action=basic-next]').click();}
+  const glyph=basicContent[id][index][0];await expect(page.locator('.basic-word')).toHaveText(glyph);await assertFits();await page.waitForTimeout(460);await page.locator('[data-action=basic-next]').click();await expect(page.locator('.practice-writing-reference>span')).toHaveText(glyph);await assertFits();if(index===0&&[11,22,26].includes(id))await page.screenshot({path:`/tmp/seodang-katakana-writing-${id}-${width}.png`});
+  const r=await page.locator('canvas').boundingBox();await page.mouse.move(r.x+30,r.y+30);await page.mouse.down();await page.mouse.move(r.x+100,r.y+100,{steps:5});await page.mouse.up();await page.locator('[data-practice=next]').click();
+  const choices=page.locator('.basic-choice');await expect(choices).toHaveCount(4);assert.equal(new Set(await choices.allTextContents()).size,4);await assertFits();await choices.nth(index%4).click();await page.waitForTimeout(460);await page.locator('[data-action=basic-check]').click();
+ }
+ if(limit===lesson.count){await expect(page.locator('.practice-complete')).toBeVisible();const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('seodang.web-prototype.v1')));assert.equal(saved.basics.lessons[id].completed,true);assert.equal(saved.practices?.[`ko-ja:basic:${id}`],undefined);}
+ assert.deepEqual(errors,[]);await page.close();
+}console.log('All katakana lessons: intro, writing, choices, small-screen layout; first/last complete without repetition.');}finally{await browser.close();}

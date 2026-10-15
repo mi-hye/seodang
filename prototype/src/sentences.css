@@ -36,3 +36,14 @@
 .sentence-choices:has(>button:nth-child(2):last-child)>button,.sentence-answer:has(>button:nth-child(2):last-child)>button{flex:1 1 0;min-width:0}
 
 .sentence-kanji{margin:18px 0;border-block:1px solid var(--line);padding:12px 0}.sentence-kanji summary{cursor:pointer;color:var(--muted);min-height:32px}.sentence-kanji p{display:flex;align-items:baseline;gap:18px;margin:20px 0 8px}.sentence-kanji ruby{font-size:28px;line-height:1.8}.sentence-kanji rt{font-size:12px;color:var(--muted)}.sentence-kanji span{font-size:16px}
+
+/* Leave room for contextual words without shrinking text or touch targets. */
+.sentence-learn .sentence-image{height:110px;max-height:110px;margin-bottom:8px}
+.sentence-learn .sentence-bag{height:110px;margin:0 0 8px}
+.sentence-learn .sentence-bag svg{height:100px;width:100px}
+.sentence-learn .sentence-step{margin-bottom:6px}
+.sentence-learn .sentence-heading h2{margin:4px 0}
+.sentence-learn .sentence-meaning{margin:6px 0}
+.sentence-learn .case-words{margin:10px 0}
+.sentence-learn .sentence-help{margin:6px 0}
+.sentence-learn .sentence-kanji{margin:8px 0;padding:6px 0}

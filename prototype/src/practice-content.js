@@ -1,3 +1,6 @@
+import {isCasePractice} from './practice-state.js';
+import {koreanStageZero} from './korean-state.js';
+import {basicSinglePass} from './basics-state.js';
 const loaded={};
 const koreanSyllableMeaning=Object.fromEntries([
  ['아','ア'],['어','オ（口を広めに）'],['오','オ（唇を丸めて）'],['우','ウ（唇を丸めて）'],['으','ウ（唇を横に）'],['이','イ'],['가','カ／ガ'],['나','ナ'],['고','コ／ゴ'],['무','ム'],
@@ -10,9 +13,12 @@ export async function prepareContent(kind){
  if(loaded[kind])return;
  const paths={basic:'./basics.js',korean:'./korean-content.js',kana:'./kana-audio.js',labels:'./labels-state.js',listening:'./labels-state.js',play:'./content.js',sentence:'./sentence-content.js',dialogue:'./dialogue-content.js',reading:'./practice-reading.js'};
  loaded[kind]=await import(paths[kind]);
+ if(['sentence','dialogue','reading','korean'].includes(kind))loaded.caseExercises ||= await import('./case-exercises.js');
+ if(kind==='reading'){const source=await import('./reading-content.js'),{advancedCourse}=await import('./reading-advanced.js');loaded.readingSource={readingCourses:{...source.readingCourses,7:advancedCourse}};}
  if(kind==='kana')loaded.kanaState=await import('./kana-state.js');
 }
 export function practiceKey(s,kind){const id=kind==='basic'?s.basics?.active:kind==='korean'?s.korean?.active:kind==='kana'?s.kana?.active:kind==='reading'?s.onboardingLevel:0;return `${s.courseDirection}:${kind}:${id}`;}
+export const caseTasks=(s,kind)=>isCasePractice(practiceKey(s,kind))?loaded.caseExercises?.caseExercises(s,kind,kind==='reading'?loaded.readingSource:loaded[kind]):null;
 export function practiceUnits(s,kind){
  const mod=loaded[kind];if(!mod)return[];
  if(kind==='basic')return mod.basicContent[s.basics.active].map(([text,meaning],index)=>({text,meaning,audio:mod.basicAudio({basics:{active:s.basics.active,lessons:{[s.basics.active]:{index}}}})})).filter(unit=>s.basics.active!==10||unit.text.length>2);
@@ -37,11 +43,11 @@ export function completionAttempt(before,after,kind,action){
  return false;
 }
 export function interceptCompletion(before,after,kind,action){
- if(kind==='basic'&&[7,8].includes(before.basics?.active))return after;
+ if(kind==='basic'&&basicSinglePass(before.basics?.active)||kind==='korean'&&koreanStageZero(before.korean?.active))return after;
  if(!completionAttempt(before,after,kind,action))return after;
  const key=practiceKey(before,kind),count=practiceUnits(before,kind).length;
  if(!count)throw Error('Missing practice content');
- return {...before,practices:{...before.practices,[key]:before.practices?.[key]||{version:1,round:0,mode:0,index:0,count,action:Object.fromEntries(Object.entries(action).filter(([,v])=>v!==undefined))}}};
+ return {...before,practices:{...before.practices,[key]:before.practices?.[key]||{version:1,...(isCasePractice(key)?{caseVersion:1}:{}),round:0,mode:0,index:0,count,action:Object.fromEntries(Object.entries(action).filter(([,v])=>v!==undefined))}}};
 }
 
 // Extra distractors for short lessons keep the listening grid at four distinct choices.

@@ -23,3 +23,16 @@ test('selecting another lesson does not inherit or clear the active lesson',()=>
  const target=entryState(s,'basic','7');assert.equal(shouldOfferResume(target,'basic'),false);assert.equal(target.basics.active,7);assert.deepEqual(target.basics.lessons[6],s.basics.lessons[6]);
  const reset=restartLesson(entryState(s,'basic','6'),'basic');assert.equal(lessonProgress(reset,'basic').index,0);assert.equal(s.basics.lessons[6].index,5);
 });
+
+test('opening a case introduction alone never prompts to resume, actual learning still does',()=>{
+ const base=practiceCases()[0][1];
+ for(const kind of ['sentence','dialogue','reading','korean','play']){
+  let s={...base,practices:{},onboardingLevel:5,courseDirection:kind==='korean'?'ja-ko':'ko-ja'};
+  if(kind==='korean')s={...s,korean:{version:4,active:'3-1',lessons:{}}};
+  s=restartLesson(s,kind);
+  s=reduce(s,{type:kind==='play'?'start':`${kind}-start`,...(kind==='korean'?{id:'3-1'}:{})});
+  assert.equal(shouldOfferResume(s,kind),false,kind);
+  s=reduce(s,{type:kind==='play'?'next':`${kind}-next`});
+  assert.equal(shouldOfferResume(s,kind),true,kind);
+ }
+});

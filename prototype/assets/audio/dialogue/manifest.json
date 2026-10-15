@@ -1,72 +1,153 @@
 {
-  "provider": "VOICEVOX Nemo",
-  "voice": "女声1",
-  "styleId": 10005,
-  "coreVersion": "0.17.0",
-  "modelVersion": "0.16.4",
-  "credit": "VOICEVOX Nemo",
-  "terms": "https://voicevox.hiroshiba.jp/nemo/term/",
-  "languageReview": "Generated short sentences recorded for review; native-speaker listening review pending",
+  "provider": "Qwen3-TTS (MLX Audio)",
+  "languageReview": "User approved Sohee and Ono_Anna samples; full native-speaker review of all recordings remains pending",
   "files": {
     "order-question": {
       "text": "ご注文はお決まりですか。",
       "synthesisText": "ご注文はお決まりですか。",
-      "kana": "ゴチュ'ウモンワ/オキ'マリデ_スカ",
       "file": "assets/audio/dialogue/order-question.wav",
-      "duration": 1.867,
-      "peak": 17276,
-      "rms": 2748.9,
-      "sha256": "ad8823ef9a01aec07faee08052a5a2b582df6dcd257fbaf5f317b298e3c4dff5"
+      "duration": 2.08,
+      "peak": 6767,
+      "rms": 1471.7,
+      "sha256": "ae254bc83cc2ba6add08f0c95a5b6fb14aa87c32559cdb20b7ad692f3340e068",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ご注文はお決まりですか。",
+          "seed": 42,
+          "duration": 2.08
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "order-reply": {
       "text": "コーヒーをひとつください。",
       "synthesisText": "コーヒーをひとつください。",
-      "kana": "コオヒ'イオ/_ヒト'_ツ/クダサ'イ",
       "file": "assets/audio/dialogue/order-reply.wav",
-      "duration": 1.728,
-      "peak": 18672,
-      "rms": 2373.2,
-      "sha256": "61b0773a1557323c6a12a49be5b9b7fbef91bc0856696761bcc29848057303ed"
+      "duration": 1.68,
+      "peak": 14771,
+      "rms": 3171.0,
+      "sha256": "027c92f5835c1348dd32ac5a1c1c395dbea10defd37c62e9a2f3ea505a8235af",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "コーヒーをひとつください。",
+          "seed": 42,
+          "duration": 1.68
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "temperature-question": {
       "text": "ホットとアイス、どちらになさいますか。",
       "synthesisText": "ホットとアイス、どちらになさいますか。",
-      "kana": "ホ'ットト/ア'イス、ド'チラニ/ナサイマ'_スカ",
       "file": "assets/audio/dialogue/temperature-question.wav",
-      "duration": 2.72,
-      "peak": 15032,
-      "rms": 2272.9,
-      "sha256": "24532e312c0d0370d6dd4e7411715ea6a17ebfc6049ac8b18dc3fa61bc6be9ce"
+      "duration": 3.36,
+      "peak": 6557,
+      "rms": 1046.8,
+      "sha256": "0abceb19dacfef3452133559b50da586d8c0d2bbc93736220370cb1511fc8273",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ホットとアイス、どちらになさいますか。",
+          "seed": 42,
+          "duration": 3.36,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "temperature-reply": {
       "text": "ホットでお願いします。",
       "synthesisText": "ホットでお願いします。",
-      "kana": "ホ'ットデ/オネガイ'/シマ'_ス",
       "file": "assets/audio/dialogue/temperature-reply.wav",
-      "duration": 1.717,
-      "peak": 17808,
-      "rms": 2796.8,
-      "sha256": "18ce53a89b210a981ef275c859d137b72ec74770e02697af8a86e8beda26764b"
+      "duration": 1.76,
+      "peak": 5163,
+      "rms": 1042.1,
+      "sha256": "a9421b1aae142fe98e7ac7c1d2eea4f2b387dd25f61d9d7a2ced3e3903d30d6d",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ホットでお願いします。",
+          "seed": 42,
+          "duration": 1.76,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "takeaway-question": {
       "text": "店内でお召し上がりですか。",
       "synthesisText": "店内でお召し上がりですか。",
-      "kana": "テ'ンナイデ/オメシアガリデ_ス'カ",
       "file": "assets/audio/dialogue/takeaway-question.wav",
-      "duration": 1.931,
-      "peak": 17016,
-      "rms": 3001.8,
-      "sha256": "ace1eabc3ce7d18d03b6e5afaf30306b0c3ced998bb2f3ecd8f4148c551fb0a3"
+      "duration": 1.92,
+      "peak": 6836,
+      "rms": 1236.3,
+      "sha256": "02b328a9255d89af0a4c56c088c3525040efb992bcda0b7fd9a8d99be14e1e05",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "店内でお召し上がりですか。",
+          "seed": 42,
+          "duration": 1.92,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "takeaway-reply": {
       "text": "持ち帰りでお願いします。",
       "synthesisText": "持ち帰りでお願いします。",
-      "kana": "モ_チカエリデ'/オネガイ'/シマ'_ス",
       "file": "assets/audio/dialogue/takeaway-reply.wav",
-      "duration": 1.941,
-      "peak": 19195,
-      "rms": 3389.4,
-      "sha256": "1d1635315b61115b8203870217870a40903e0b85cf4595ef5c88248d0639c4c0"
+      "duration": 1.84,
+      "peak": 15111,
+      "rms": 2255.8,
+      "sha256": "8a653e445d02338e52e05e02faf1297b109d303717921f9bfcade14715901589",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "持ち帰りでお願いします。",
+          "seed": 42,
+          "duration": 1.84,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     }
-  }
+  },
+  "generatedAt": "2026-10-15",
+  "locale": "ja-JP",
+  "usageScope": "Commercial model use permitted under Apache-2.0; no separate generated-audio restriction found in published model terms. Third-party rights are not warranted.",
+  "licenseSource": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+  "rightsReviewed": true,
+  "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-8bit",
+  "modelRevision": "41d3337e8b7f2843a75841595fc14e4b9a7a4b96",
+  "license": "Apache-2.0",
+  "rightsReviewDate": "2026-10-15",
+  "voice": "Ono_Anna",
+  "voiceId": "Ono_Anna"
 }

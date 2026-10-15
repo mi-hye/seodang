@@ -1,3 +1,4 @@
+import {canonicalLevel} from './curriculum.js';
 import {reduceKorean} from './korean-state.js';
 import {reduceBasics} from './basics-state.js';
 import {reduceReading} from './reading-state.js';
@@ -25,11 +26,11 @@ export const freshEpisode = () => ({
 });
 export const freshState = () => ({
   schemaVersion: 1,
-  levelLayoutVersion: 1,
+  levelLayoutVersion: 3,
   courseDirection: "ko-ja",
   onboarded: false,
   support: "beginner",
-  settings: { sound: true, motion: "system", textScale: 1 },
+  settings: { sound: true, motion: "system", textScale: 1, audioRate: 1 },
   episode: freshEpisode(),
   encountered: [],
 });
@@ -59,21 +60,21 @@ function reduceCore(state, action) {
   if (action.type.startsWith("labels-")) {
     s.labels = reduceLabels(s, action);
     if(state.labels?.phase==='match' && s.labels.phase==='summary'){
-      s.onboardingLevel=1;s.support='beginner';
+      s.onboardingLevel=2;s.support='beginner';
       s.listening=reduceListening(s,{type:'listening-start'});
     }
     return s;
   }
   switch (action.type) {
     case "course":
-      if(["ko-ja","ja-ko"].includes(action.value)){s.courseLevels||={};s.courseLevels[s.courseDirection]=s.onboardingLevel??0;s.courseDirection=action.value;s.onboardingLevel=s.courseLevels[action.value]??0;s.support=s.onboardingLevel<=2?"beginner":"phrase";}
+      if(["ko-ja","ja-ko"].includes(action.value)){s.courseLevels||={};s.courseLevels[s.courseDirection]=s.onboardingLevel??0;s.courseDirection=action.value;s.onboardingLevel=canonicalLevel(s.courseLevels[action.value]??0);s.support=s.onboardingLevel<=2?"beginner":"phrase";}
       break;
     case "ui-guide-complete":
       s.uiGuideSeenVersion=2;
       break;
     case "level":
       if (Number.isInteger(action.value) && action.value >= 0 && action.value <= 7) {
-        s.onboardingLevel = action.value;
+        s.onboardingLevel = canonicalLevel(action.value);
         s.support = action.value <= 2 ? "beginner" : "phrase";
       }
       break;
@@ -156,7 +157,8 @@ function reduceCore(state, action) {
           : "まどの そば는 창문 옆이에요. 오른쪽 창문 옆 물건을 골라 주세요.";
       break;
     case "setting":
-      if (Object.hasOwn(s.settings, action.key))
+      if (action.key === "audioRate" && Number.isFinite(action.value)) s.settings.audioRate = Math.round(Math.max(0.5,Math.min(2,action.value))*10)/10;
+      else if (Object.hasOwn(s.settings, action.key))
         s.settings[action.key] = action.value;
       break;
     case "restart":

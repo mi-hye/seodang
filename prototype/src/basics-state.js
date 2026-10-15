@@ -1,12 +1,16 @@
-import {normalizeKana} from './kana-state.js';
+import {katakanaLessons} from './katakana-lessons.js';
 import {developmentMode} from './build-config.js';
-export const basicLevel=id=>Number(id)===6?1:0;
-export const basicLessons=[{id:6,title:'새 단어 읽기',count:6},{id:7,title:'탁음',count:6},{id:8,title:'반탁음',count:5},{id:9,title:'작은 っ 단어',count:6},{id:10,title:'きゃ・しゅ와 단어',count:12}];
-export const freshBasic=(id)=>({started:false,index:0,phase:[7,8,9,10].includes(id)?'intro':'learn',selected:null,retry:false,completed:false});
+export const basicLevel=id=>Number(id)===6?2:0;
+export const basicLessons=[{id:6,title:'새 단어 읽기',count:6},{id:7,title:'탁음',count:6},{id:8,title:'반탁음',count:5},{id:9,title:'작은 っ 단어',count:6},{id:10,title:'きゃ・しゅ와 단어',count:12},{id:27,title:'탁음 ぐ・じ',count:6,groupSize:3},{id:28,title:'탁음 ぢ・び',count:8,groupSize:4},{id:29,title:'요음 ちゃ・にゃ・ひゃ',count:9,groupSize:3},{id:30,title:'요음 みゃ・りゃ・ぎゃ',count:9,groupSize:3},{id:31,title:'요음 じゃ・びゃ・ぴゃ',count:9,groupSize:3},...katakanaLessons];
+export const followingBasic=id=>{const lessons=basicLessons.filter(l=>basicLevel(l.id)===basicLevel(id)),index=lessons.findIndex(l=>l.id===id);return index<0?undefined:lessons[index+1]?.id;};
+export const basicSinglePass=id=>[7,8].includes(id)||id>=11;
+export const basicHasIntro=id=>id>=7;
+export function basicGroup(id,index=0){const lesson=basicLessons.find(l=>l.id===id),size=lesson.groupSize||lesson.count,start=Math.floor(index/size)*size;return {start,end:Math.min(start+size,lesson.count),size};}
+export const freshBasic=(id)=>({started:false,index:0,phase:basicHasIntro(id)?'intro':'learn',selected:null,retry:false,completed:false});
 export const basicProgress=(s,id)=>s.basics?.lessons?.[id]||freshBasic(id);
-export const basicUnlocked=(s,id)=>basicLessons.some(l=>l.id===id)&&(developmentMode||(id===6?Boolean(s.listening?.completed):id===7?normalizeKana(s.kana).lessons.every(l=>l.completed):basicProgress(s,id-1).completed));
-export const nextBasic=s=>{const active=s.basics?.active;if(active&&basicLevel(active)===(s.onboardingLevel??0)&&basicUnlocked(s,active)&&!basicProgress(s,active).completed)return active;return basicLessons.find(l=>basicLevel(l.id)===(s.onboardingLevel??0)&&basicUnlocked(s,l.id)&&!basicProgress(s,l.id).completed)?.id||(s.onboardingLevel===1?6:10);};
-export function validBasics(b){return b===undefined||Boolean(b&&[1,2,3,4,5,6,7].includes(b.version)&&basicLessons.some(l=>l.id===b.active)&&b.lessons&&typeof b.lessons==='object'&&!Array.isArray(b.lessons)&&Object.entries(b.lessons).every(([id,p])=>{const l=basicLessons.find(l=>l.id===Number(id));return l&&p&&['started','retry','completed'].every(k=>typeof p[k]==='boolean')&&Number.isInteger(p.index)&&p.index>=0&&p.index<(b.version===1?oldBasicIndices[l.id].length:b.version===2&&l.id===7?9:b.version===3&&l.id===7?8:b.version<=5&&l.id===8?8:l.count)&&['intro','learn','write','quiz','done'].includes(p.phase)&&(p.selected===null||((l.id===7&&b.version>=5||l.id===8&&b.version>=6)?[0,1,2,3]:[0,1,2]).includes(p.selected))&&(p.phase!=='done'||p.completed);}));}
+export const basicUnlocked=(s,id)=>basicLessons.some(l=>l.id===id)&&(basicLevel(id)===0||developmentMode||Boolean(s.listening?.completed));
+export const nextBasic=s=>{const active=s.basics?.active;if(active&&basicLevel(active)===(s.onboardingLevel??0)&&basicUnlocked(s,active)&&!basicProgress(s,active).completed)return active;return basicLessons.find(l=>basicLevel(l.id)===(s.onboardingLevel??0)&&basicUnlocked(s,l.id)&&!basicProgress(s,l.id).completed)?.id||(s.onboardingLevel===2?6:basicLessons.at(-1).id);};
+export function validBasics(b){return b===undefined||Boolean(b&&[1,2,3,4,5,6,7].includes(b.version)&&basicLessons.some(l=>l.id===b.active)&&b.lessons&&typeof b.lessons==='object'&&!Array.isArray(b.lessons)&&Object.entries(b.lessons).every(([id,p])=>{const l=basicLessons.find(l=>l.id===Number(id));return l&&p&&['started','retry','completed'].every(k=>typeof p[k]==='boolean')&&Number.isInteger(p.index)&&p.index>=0&&p.index<(b.version===1?(oldBasicIndices[l.id]?.length||0):b.version===2&&l.id===7?9:b.version===3&&l.id===7?8:b.version<=5&&l.id===8?8:l.count)&&['intro','learn','write','quiz','done'].includes(p.phase)&&(p.selected===null||((l.id===7&&b.version>=5||l.id===8&&b.version>=6||l.id>=11&&b.version>=7)?[0,1,2,3]:[0,1,2]).includes(p.selected))&&(p.phase!=='done'||p.completed);}));}
 const oldBasicIndices={6:[0,1,2,3,4,5],7:[0,1,3,4,6,7],8:[0,1,3,5,6],9:[0,2,3,5],10:[0,2,4,6,8,10]};
 function normalizeLegacyBasics(b){
  if(!b)return b;
@@ -40,12 +44,12 @@ export function reduceBasics(s,a){
  const p=b.lessons[id];if(!p?.started)return b;
  if(a.type==='basic-next'&&p.phase==='intro'){p.phase='learn';return b;}
  if(a.type==='basic-next'&&id===10&&p.phase==='learn'){if(p.index+1<l.count)p.index++;else{p.phase='done';p.completed=true;}return b;}
- if(a.type==='basic-next'&&['learn','write'].includes(p.phase)){p.phase=[7,8].includes(id)&&p.phase==='learn'?'write':'quiz';p.selected=null;p.retry=false;}
- if(a.type==='basic-previous'){if(p.phase==='quiz')p.phase=[7,8].includes(id)?'write':'learn';else if(p.phase==='write')p.phase='learn';else if(p.index>0){p.index--;p.phase='learn';}else if(p.phase==='learn'&&[7,8,9,10].includes(id))p.phase='intro';p.selected=null;p.retry=false;}
- if(a.type==='basic-select'&&p.phase==='quiz'&&([7,8].includes(id)?['0','1','2','3']:['0','1','2']).includes(String(a.id))){p.selected=Number(a.id);p.retry=false;}
+ if(a.type==='basic-next'&&['learn','write'].includes(p.phase)){p.phase=basicSinglePass(id)&&p.phase==='learn'?'write':'quiz';p.selected=null;p.retry=false;}
+ if(a.type==='basic-previous'){if(p.phase==='quiz')p.phase=basicSinglePass(id)?'write':'learn';else if(p.phase==='write')p.phase='learn';else if(id>=11&&p.phase==='learn'&&p.index===basicGroup(id,p.index).start)p.phase='intro';else if(p.index>0){p.index--;p.phase='learn';}else if(p.phase==='learn'&&basicHasIntro(id))p.phase='intro';p.selected=null;p.retry=false;}
+ if(a.type==='basic-select'&&p.phase==='quiz'&&(basicSinglePass(id)?['0','1','2','3']:['0','1','2']).includes(String(a.id))){p.selected=Number(a.id);p.retry=false;}
  if(a.type==='basic-check'&&p.phase==='quiz'&&p.selected!==null){
   // Choices rotate deterministically; the target occupies index % 3.
-  if(p.selected===p.index%([7,8].includes(id)?4:3)){p.selected=null;p.retry=false;if(p.index+1<l.count){p.index++;p.phase='learn';}else{p.phase='done';p.completed=true;}}
+  if(p.selected===p.index%(basicSinglePass(id)?4:3)){p.selected=null;p.retry=false;if(p.index+1<l.count){p.index++;p.phase=id>=11&&p.index===basicGroup(id,p.index).start?'intro':'learn';}else{p.phase='done';p.completed=true;}}
   else p.retry=true;
  }
  return b;

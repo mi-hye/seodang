@@ -5,3 +5,8 @@ test-results/
 # Local copy-review runs and UI previews
 _workspace/
 output/
+
+# Local voice comparisons and Python caches
+audio-review/
+__pycache__/
+*.pyc

@@ -1,7 +1,8 @@
 import {t,setUILanguage,loadUILanguage,translateSetup} from './i18n.js';
 import { showSheet, closeSheet } from "./sheet.js";
 import { selectedLevel } from "./kana-state.js";
-import { renderHeader } from "./header.js";
+import { renderHeader, installFocusModality } from "./header.js";
+installFocusModality();
 import { load, save } from './storage.js';
 import { reduce, freshState } from './engine.js';
 const form = document.querySelector('form');
@@ -83,8 +84,9 @@ async function showGuide() {
 }
 
 let languageRequest=0,languagePending=false;
-async function updateLanguage(){const request=++languageRequest,direction={courseDirection:form.elements.language.value==='ko'?'ja-ko':'ko-ja'};languagePending=true;nextButton.disabled=true;try{await loadUILanguage(direction);if(request!==languageRequest)return;setUILanguage(direction);translateSetup();updateHeader();updateNextLabel();}catch{message('読み込めませんでした。言語を選び直してください。');}finally{if(request===languageRequest){languagePending=false;nextButton.disabled=false;}}}
+async function updateLanguage(){const request=++languageRequest,direction={courseDirection:form.elements.language.value==='ko'?'ja-ko':'ko-ja',onboardingLevel:Number(form.elements.level.value)};languagePending=true;nextButton.disabled=true;try{await loadUILanguage(direction);if(request!==languageRequest)return;setUILanguage(direction);translateSetup();updateHeader();updateNextLabel();}catch{message('読み込めませんでした。言語を選び直してください。');}finally{if(request===languageRequest){languagePending=false;nextButton.disabled=false;}}}
 form.elements.language.forEach(input=>input.addEventListener('change',updateLanguage));
+form.elements.level.forEach(input=>input.addEventListener('change',updateLanguage));
 const languageReady=updateLanguage();
 window.addEventListener('pagehide', () => { guideRequest++;guidePending=false;form.removeAttribute('aria-busy');nextButton.disabled=false;disposeGuide?.(); });
 window.addEventListener('pageshow',event=>{if(event.persisted)showStep(step);});

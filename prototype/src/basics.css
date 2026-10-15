@@ -85,3 +85,14 @@
 .basic-word-lesson:has(.basic-word-picture) .basic-cue{margin-top:12px}
 .basic-word-lesson:has(.basic-word-picture) .basic-learn>p{margin-block:4px}
 @media(max-height:700px){.basic-word-picture{width:100px;margin-bottom:8px}.basic-word-lesson:has(.basic-word-picture)>.button-pair{padding-top:12px}}
+
+.basic-letter-four>.basic-letter-card{grid-column:span 3}
+.basic-word-lesson .basic-word{max-width:100%;text-align:center}
+
+.basic-letter-pair>.basic-letter-card:first-child{grid-column:2/span 2}.basic-letter-pair>.basic-letter-card:last-child{grid-column:4/span 2}
+.basic-letter-words .basic-letter-glyph{font-size:clamp(24px,7vw,30px)}
+.view-basic:has(.basic-katakana-intro){height:100dvh;min-height:0;display:flex;flex-direction:column}
+.view-basic:has(.basic-katakana-intro)>.app-header{flex:none}
+.basic-page.basic-katakana-intro{flex:1;min-height:0;padding-top:12px;padding-bottom:max(16px,env(safe-area-inset-bottom,0px))}
+.basic-katakana-intro .basic-coach p{font-size:calc(15px * var(--text-scale));line-height:1.5}
+.basic-katakana-intro .basic-letter-motion{margin-bottom:16px}

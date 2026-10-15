@@ -1,422 +1,999 @@
 {
-  "provider": "VOICEVOX Nemo",
-  "voice": "女声1",
-  "styleId": 10005,
-  "coreVersion": "0.17.0",
-  "modelVersion": "0.16.4",
-  "credit": "VOICEVOX Nemo",
-  "terms": "https://voicevox.hiroshiba.jp/nemo/term/",
-  "languageReview": "Words and explicit single-mora kana generated for review; native-speaker listening review pending",
+  "provider": "Qwen3-TTS (MLX Audio)",
+  "languageReview": "User approved Sohee and Ono_Anna samples; full native-speaker review of all recordings remains pending",
   "files": {
     "basic.6.0": {
       "text": "いぬ",
       "synthesisText": "犬",
-      "kana": "イヌ'",
       "file": "assets/audio/basics/basic.6.0.wav",
-      "duration": 0.544,
-      "peak": 13774,
-      "rms": 3410.3,
-      "sha256": "016b932e45a6c35b1c72232e4b3b6ffc72054cb4760fc059c6fe6b355123e747"
+      "duration": 0.48,
+      "peak": 4029,
+      "rms": 1491.2,
+      "sha256": "1619073835fbb83ffc2f43534e12ad0ea2b5ada442d859610c4bcad9145ba040",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "犬",
+          "seed": 42,
+          "duration": 0.48,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.6.1": {
       "text": "いえ",
       "synthesisText": "家",
-      "kana": "イエ'",
       "file": "assets/audio/basics/basic.6.1.wav",
-      "duration": 0.64,
-      "peak": 13570,
-      "rms": 2712.2,
-      "sha256": "795e228d290310443a1260a916bdcebb5b0b01bb8d7ea7bbb02470f796638363"
+      "duration": 0.8,
+      "peak": 3554,
+      "rms": 686.2,
+      "sha256": "4de3ed575899e993132cf21a82892eb8ab6c8723370655153c8ebfd0e025a156",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "家",
+          "seed": 3042,
+          "duration": 0.8,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.6.2": {
       "text": "やま",
       "synthesisText": "山",
-      "kana": "ヤマ'",
       "file": "assets/audio/basics/basic.6.2.wav",
-      "duration": 0.651,
-      "peak": 18370,
-      "rms": 2910.1,
-      "sha256": "e1ffe79f3abe8671c8a2b5d9b42d1d32efd5e0c00905180154aeab45c97dff79"
+      "duration": 1.6,
+      "peak": 5293,
+      "rms": 1175.5,
+      "sha256": "fc16b715605c25bf10ef8339f67ceb3872843ad71d81108cf67332cfe3f7b09d",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "山",
+          "seed": 42,
+          "duration": 1.6,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.6.3": {
       "text": "うみ",
       "synthesisText": "海",
-      "kana": "ウ'ミ",
       "file": "assets/audio/basics/basic.6.3.wav",
-      "duration": 0.597,
-      "peak": 11045,
-      "rms": 3002.1,
-      "sha256": "cc8a8074b4e381939c9f11869d5758387dc4fb85807117e01ce1e9a6196e030a"
+      "duration": 0.8,
+      "peak": 3587,
+      "rms": 924.3,
+      "sha256": "f287ecddee2f7e3c4865a5208290a17240fec375ee96a67f4e98c78e08889c49",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "海",
+          "seed": 1042,
+          "duration": 0.8,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.6.4": {
       "text": "そら",
       "synthesisText": "空",
-      "kana": "ソ'ラ",
       "file": "assets/audio/basics/basic.6.4.wav",
-      "duration": 0.661,
-      "peak": 12803,
-      "rms": 1728.5,
-      "sha256": "a3549761b63dc0ce4f81064294d13d788937ff1d6f070e088ae7de01f3a2a8b3"
+      "duration": 0.64,
+      "peak": 6553,
+      "rms": 1055.5,
+      "sha256": "51bd84a1a9c035bc77b3c81812cb192e25852efcd8add22e9e2a8402dd371884",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "空",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.6.5": {
       "text": "すし",
       "synthesisText": "寿司",
-      "kana": "スシ'",
       "file": "assets/audio/basics/basic.6.5.wav",
-      "duration": 0.736,
-      "peak": 12061,
-      "rms": 1859.6,
-      "sha256": "fc26f3a75eb4ed2015d1aad3de9d070072c3b6394774fa3f4f5fd63174e937c7"
+      "duration": 0.96,
+      "peak": 5248,
+      "rms": 1394.4,
+      "sha256": "c423f70e53b0151b4cdb15a8648aa30a3b85b469ba451790a28d0d2b62783891",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "寿司",
+          "seed": 42,
+          "duration": 0.96,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.7.0": {
       "text": "が",
       "synthesisText": "が",
-      "kana": "ガ'",
       "file": "assets/audio/basics/basic.7.0.wav",
-      "duration": 0.555,
-      "peak": 17237,
-      "rms": 2072.6,
-      "sha256": "f6fd52877ae9fb72a99e8fcdd3830a483ea8eb0a2e9689f82096076f428a9e11"
+      "duration": 0.64,
+      "peak": 4316,
+      "rms": 874.0,
+      "sha256": "6083896c8e679f7bd88c1e1f31dbe8a380207c22069933e6d3528613109932c1",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "が",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.7.1": {
       "text": "ぎ",
       "synthesisText": "ぎ",
-      "kana": "ギ'",
       "file": "assets/audio/basics/basic.7.1.wav",
-      "duration": 0.544,
-      "peak": 11036,
-      "rms": 1941.2,
-      "sha256": "cd6d30d9e50ccfc259ec1b65ecd3abc7a75266e139f1cb5c72be4b79aa18b163"
+      "duration": 1.04,
+      "peak": 5557,
+      "rms": 1256.1,
+      "sha256": "3118050454fceffa304d8b805c7f1a77b4f7073dea889738debbdec8e3b55d70",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ぎ",
+          "seed": 1042,
+          "duration": 1.04,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.7.2": {
       "text": "かぎ",
       "synthesisText": "鍵",
-      "kana": "カギ'",
       "file": "assets/audio/basics/basic.7.2.wav",
-      "duration": 0.693,
-      "peak": 16398,
-      "rms": 2458.2,
-      "sha256": "68388a11a270f64c2008ccac755cc88b51821320e33f75a174296fcd2cdf914f"
+      "duration": 0.88,
+      "peak": 3410,
+      "rms": 855.4,
+      "sha256": "be9d2539b428b898f6901e7edc6db086d3778cd1265044fdf1687dbf4bef26a6",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "鍵",
+          "seed": 42,
+          "duration": 0.88,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.7.3": {
       "text": "ざ",
       "synthesisText": "ざ",
-      "kana": "ザ'",
       "file": "assets/audio/basics/basic.7.3.wav",
-      "duration": 0.565,
-      "peak": 14043,
-      "rms": 1769.8,
-      "sha256": "12f609cde7c7ba66538ea47d2cb7e545d8aea19a9380259215a3f392c8cf330b"
+      "duration": 1.44,
+      "peak": 2853,
+      "rms": 468.4,
+      "sha256": "f8856ddb57e5da561dab525cfc7e7ec40d6df8f78450f84555cf19d6f8c364cd",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ざ",
+          "seed": 42,
+          "duration": 1.44,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.7.4": {
       "text": "ず",
       "synthesisText": "ず",
-      "kana": "ズ'",
       "file": "assets/audio/basics/basic.7.4.wav",
-      "duration": 0.597,
-      "peak": 12169,
-      "rms": 2299.8,
-      "sha256": "e61a84f22b90c7656231cfa5867c325fdfb5503febe3b1b5c1d33919db8c52cc"
+      "duration": 0.8,
+      "peak": 3614,
+      "rms": 980.9,
+      "sha256": "d436066ecfd9cb068e79a9d6164428d77ae554303d9322d44f0c321694cedb2b",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ず",
+          "seed": 3042,
+          "duration": 0.8,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.7.5": {
       "text": "みず",
       "synthesisText": "水",
-      "kana": "ミズ'",
       "file": "assets/audio/basics/basic.7.5.wav",
-      "duration": 0.64,
-      "peak": 14385,
-      "rms": 2697.9,
-      "sha256": "140207e7cced9b4978589e01165a062bac7d2029f6cef45615d863b497450a9d"
+      "duration": 1.52,
+      "peak": 4928,
+      "rms": 1510.8,
+      "sha256": "063b56c71ccc268d1f40bb8185c7fe14e86ca006c3dfc8e41febf7ccdd1d2ea2",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "水",
+          "seed": 42,
+          "duration": 1.52,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.7.6": {
       "text": "だ",
       "synthesisText": "だ",
-      "kana": "ダ'",
       "file": "assets/audio/basics/basic.7.6.wav",
-      "duration": 0.523,
-      "peak": 17145,
-      "rms": 2284.5,
-      "sha256": "106dd7b72b5cbc6c32539c395f833196727af404c76e330ce7f8eb0509ccb2e4"
+      "duration": 0.48,
+      "peak": 5485,
+      "rms": 1014.8,
+      "sha256": "3eb3dcf4682005ee6f776d911f14d76630423301e85689aa6318b746b17651fc",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "だ",
+          "seed": 1042,
+          "duration": 0.48,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.7.7": {
       "text": "ば",
       "synthesisText": "ば",
-      "kana": "バ'",
       "file": "assets/audio/basics/basic.7.7.wav",
-      "duration": 0.544,
-      "peak": 19000,
-      "rms": 2219.1,
-      "sha256": "98c23f017dc5776bf6caec0ee57ff5a4545e132f31d0f982f313de3e55aa82d4"
+      "duration": 2.2,
+      "peak": 6132,
+      "rms": 571.3,
+      "sha256": "995ff43e25ef027384630b1c6829265233b3514516ed8f0b00facf100efcdb91",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ば",
+          "seed": 1042,
+          "duration": 2.2,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.7.8": {
       "text": "かばん",
       "synthesisText": "鞄",
-      "kana": "カバン'",
       "file": "assets/audio/basics/basic.7.8.wav",
-      "duration": 0.736,
-      "peak": 14355,
-      "rms": 2305.0,
-      "sha256": "806d969c456748cdb2cdffd067b193bea38bfb3e7c7cc655352006f16b8b1745"
+      "duration": 0.56,
+      "peak": 2745,
+      "rms": 504.3,
+      "sha256": "6d1205b4c4bdcdd01bd27346de46a5daf5a701551575992fb4fca6885f5e7e7a",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "鞄",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.8.0": {
       "text": "ぱ",
       "synthesisText": "ぱ",
-      "kana": "パ'",
       "file": "assets/audio/basics/basic.8.0.wav",
-      "duration": 0.555,
-      "peak": 18705,
-      "rms": 1948.0,
-      "sha256": "7e4b32ff3187bdad9a52a52852fc24840550d98f89d38ae2d97f7d884277905b"
+      "duration": 0.32,
+      "peak": 5873,
+      "rms": 1093.0,
+      "sha256": "4b575d5880ee8430a138a99ece23aa654ddb77d20a5bbc0ddd8e6d953957330d",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ぱ",
+          "seed": 1042,
+          "duration": 0.32,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.8.1": {
       "text": "ぴ",
       "synthesisText": "ぴ",
-      "kana": "ピ'",
       "file": "assets/audio/basics/basic.8.1.wav",
-      "duration": 0.555,
-      "peak": 11832,
-      "rms": 1841.1,
-      "sha256": "bcca135483635a6b04ef8165cee45e48d7c926edae3a28d3d98777047bb6540b"
+      "duration": 1.12,
+      "peak": 5643,
+      "rms": 855.3,
+      "sha256": "8333781764d4c11b070c38cf4e6017d7b2df9f2ab2ed8f66f21f34008ec0eb57",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ぴ",
+          "seed": 42,
+          "duration": 1.12,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.8.2": {
       "text": "ぱんだ",
       "synthesisText": "パンダ",
-      "kana": "パ'ンダ",
       "file": "assets/audio/basics/basic.8.2.wav",
-      "duration": 0.693,
-      "peak": 12845,
-      "rms": 2409.3,
-      "sha256": "de6f98c3fbca75d84a96c822701853efd7043987130eddaa7e8bde9baa547ed7"
+      "duration": 0.96,
+      "peak": 19635,
+      "rms": 3332.7,
+      "sha256": "da7722c2457e483d2cef475fa6f160610d6e4acf5ec66eddcfea77356f0f9c87",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "パンダ",
+          "seed": 2042,
+          "duration": 0.96,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.8.3": {
       "text": "ぷ",
       "synthesisText": "ぷ",
-      "kana": "プ'",
       "file": "assets/audio/basics/basic.8.3.wav",
-      "duration": 0.565,
-      "peak": 8123,
-      "rms": 1441.1,
-      "sha256": "c059c9bab9099523ddab13f391824e9fb99d5cc9f13c54f32ed6e769fc253780"
+      "duration": 1.04,
+      "peak": 6196,
+      "rms": 924.5,
+      "sha256": "cf7d1977909e0ae4e46e068634668ac798a6d91b296f0ba2a079a7b307f53a64",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ぷ",
+          "seed": 42,
+          "duration": 1.04,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.8.4": {
       "text": "ぷりん",
       "synthesisText": "プリン",
-      "kana": "プ'リン",
       "file": "assets/audio/basics/basic.8.4.wav",
-      "duration": 0.715,
-      "peak": 13843,
-      "rms": 3108.9,
-      "sha256": "eebf6cb889b95be26b2cc6269707e21e776233eb7479542e5f6b1d96282d1eec"
+      "duration": 1.84,
+      "peak": 9784,
+      "rms": 1983.7,
+      "sha256": "02f34ba573341906c0a19bea49c983a846f8a25adf54c4cddaf954c8faa3c8dc",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "プリン",
+          "seed": 42,
+          "duration": 1.84,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.8.5": {
       "text": "ぺ",
       "synthesisText": "ぺ",
-      "kana": "ペ'",
       "file": "assets/audio/basics/basic.8.5.wav",
-      "duration": 0.544,
-      "peak": 11523,
-      "rms": 1787.9,
-      "sha256": "af7155beacc69177ff7af7d8b1b793dd1a63597d51039044035883ae2f7e8dbc"
+      "duration": 1.44,
+      "peak": 2233,
+      "rms": 237.2,
+      "sha256": "f9fe13ecc94f693cda0c86736265e2619d1eafc5a4a02e432ae892c79ca1065d",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ぺ",
+          "seed": 42,
+          "duration": 1.44,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.8.6": {
       "text": "ぽ",
       "synthesisText": "ぽ",
-      "kana": "ポ'",
       "file": "assets/audio/basics/basic.8.6.wav",
-      "duration": 0.555,
-      "peak": 10887,
-      "rms": 1822.4,
-      "sha256": "796a2d1a66df530cbd417ef1af7f90cbb647f6a5433a0e135049b4b2460326db"
+      "duration": 1.28,
+      "peak": 7589,
+      "rms": 2251.6,
+      "sha256": "073689c5a6bd29e2507639cb6b01b097aead555e3995f7c2ff7fe9d9a1f283de",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ぽ",
+          "seed": 1042,
+          "duration": 1.28,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.8.7": {
       "text": "さんぽ",
       "synthesisText": "散歩",
-      "kana": "サンポ'",
       "file": "assets/audio/basics/basic.8.7.wav",
-      "duration": 0.779,
-      "peak": 13564,
-      "rms": 1722.9,
-      "sha256": "26082fd54389b6899dfbe8c689222e200fa988077b8b9c9cd0de02ba5bf3d99a"
+      "duration": 0.96,
+      "peak": 3321,
+      "rms": 762.5,
+      "sha256": "6cedabf3d6ea02506da73614f13671c0be97b800f84896085205a3b878ca4eb2",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "散歩",
+          "seed": 42,
+          "duration": 0.96,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.9.0": {
       "text": "きって",
       "synthesisText": "切手",
-      "kana": "キッテ'",
       "file": "assets/audio/basics/basic.9.0.wav",
-      "duration": 0.821,
-      "peak": 12757,
-      "rms": 1435.0,
-      "sha256": "fc5bb60309dc9713d7969234cf7d74e3f911e71b861b4ba487a8fbfe935695bb"
+      "duration": 0.88,
+      "peak": 8191,
+      "rms": 1240.5,
+      "sha256": "f923c3bb31f1efb5245ba17d00d2c8da3e225aa874c00b40967cf382b8826570",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "切手",
+          "seed": 42,
+          "duration": 0.88,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.9.1": {
       "text": "ねっこ",
       "synthesisText": "根っこ",
-      "kana": "ネッコ'",
       "file": "assets/audio/basics/basic.9.1.wav",
-      "duration": 0.757,
-      "peak": 16351,
-      "rms": 2695.3,
-      "sha256": "a4ff3993ffd6bb0f5dc22d0ecd4162696c30d2522ead26b0c3cfd99d7c990e2b"
+      "duration": 0.96,
+      "peak": 5961,
+      "rms": 1107.2,
+      "sha256": "17782d7a37d7becac8a2e9dd65911943a8ca8299762ed469d5797eb96c8d3e01",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "根っこ",
+          "seed": 42,
+          "duration": 0.96,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.9.2": {
       "text": "きっぷ",
       "synthesisText": "切符",
-      "kana": "キップ'",
       "file": "assets/audio/basics/basic.9.2.wav",
-      "duration": 0.789,
-      "peak": 11192,
-      "rms": 1420.4,
-      "sha256": "f22b15ba66f9bd53ab988072e4559d2aca5e18bf9624750bfaa36851842bf51d"
+      "duration": 1.04,
+      "peak": 4854,
+      "rms": 1230.0,
+      "sha256": "57204407cd7c207eec9332c2eb062456d06a1f65d8d66ef8b92a8d118f2b7f16",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "切符",
+          "seed": 42,
+          "duration": 1.04,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.9.3": {
       "text": "はっぱ",
       "synthesisText": "葉っぱ",
-      "kana": "ハッパ'",
       "file": "assets/audio/basics/basic.9.3.wav",
-      "duration": 0.768,
-      "peak": 16123,
-      "rms": 1920.4,
-      "sha256": "48e68b90e4b45e934c8552fea6c4bb265444985489915e2a65421f19a6edeb58"
+      "duration": 2.64,
+      "peak": 5696,
+      "rms": 685.9,
+      "sha256": "c530d4cbbe2c4be7e2a63a50ddcde1a5a9310cc77fe03ce7a19ace8244518145",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "葉っぱ",
+          "seed": 1042,
+          "duration": 2.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.9.4": {
       "text": "しっぽ",
       "synthesisText": "尻尾",
-      "kana": "シッポ'",
       "file": "assets/audio/basics/basic.9.4.wav",
-      "duration": 0.811,
-      "peak": 11933,
-      "rms": 1393.1,
-      "sha256": "e3f5b81bfa89d91ae7fe3d1fd1d72c6ed3777455bd5a099474aa94558b9ac5ce"
+      "duration": 0.96,
+      "peak": 3193,
+      "rms": 610.1,
+      "sha256": "1b958eed18a49e0fc74edd24e3353ac0d13a31ad7032a402e0f54ba4ba6db592",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "尻尾",
+          "seed": 42,
+          "duration": 0.96,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.9.5": {
       "text": "かっぱ",
       "synthesisText": "河童",
-      "kana": "カッパ'",
       "file": "assets/audio/basics/basic.9.5.wav",
-      "duration": 0.779,
-      "peak": 16792,
-      "rms": 1954.5,
-      "sha256": "e5b86932a7f0cb57a48eda94d43ff9915a62244bae755c7bdc0092252a04d1c8"
+      "duration": 1.04,
+      "peak": 4869,
+      "rms": 1344.3,
+      "sha256": "c528937832120501abb1dbe5e9313dbfffc017fa705eed6faee0664e7a72f09a",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "河童",
+          "seed": 42,
+          "duration": 1.04,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.10.0": {
       "text": "きゃ",
       "synthesisText": "きゃ",
-      "kana": "キャ'",
       "file": "assets/audio/basics/basic.10.0.wav",
-      "duration": 0.587,
-      "peak": 11649,
-      "rms": 1755.9,
-      "sha256": "21a5e28cd364c0fcb0142e2783e7ed7aec67d3d2deadf7b10ca47c283fe79aba"
+      "duration": 0.48,
+      "peak": 2360,
+      "rms": 379.6,
+      "sha256": "84b4bf475dc389e6e2a291ba873075b151e67c2b8571e3a4ccf7456fdb066399",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "きゃ",
+          "seed": 42,
+          "duration": 0.48,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.10.1": {
       "text": "きゃく",
       "synthesisText": "客",
-      "kana": "キャク'",
       "file": "assets/audio/basics/basic.10.1.wav",
-      "duration": 0.693,
-      "peak": 11923,
-      "rms": 1369.1,
-      "sha256": "c9e9b5a2754405b74f164198d4dd4ce1cd6598088ea5ea5adc0b5faa235c8dc5"
+      "duration": 0.8,
+      "peak": 5243,
+      "rms": 1113.1,
+      "sha256": "9070c5db82e784773ce3b060ddf9f1366a403551d6ef1f27abb12a8b48a9cbcc",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "客",
+          "seed": 1042,
+          "duration": 0.8,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.10.2": {
       "text": "きゅ",
       "synthesisText": "きゅ",
-      "kana": "キュ'",
       "file": "assets/audio/basics/basic.10.2.wav",
-      "duration": 0.64,
-      "peak": 11117,
-      "rms": 2132.6,
-      "sha256": "09ce07e552575ba5587b464ccce410a805304b4e82563e3da59e71842320135b"
+      "duration": 0.4,
+      "peak": 3990,
+      "rms": 1222.4,
+      "sha256": "fd1d4f5e90bdcc965adc5786b27b926295deee1d73983f133c0a56ad23aa7ff9",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "きゅ",
+          "seed": 2042,
+          "duration": 0.4,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.10.3": {
       "text": "きゅうり",
       "synthesisText": "きゅうり",
-      "kana": "キュ'ウリ",
       "file": "assets/audio/basics/basic.10.3.wav",
-      "duration": 0.725,
-      "peak": 10900,
-      "rms": 2549.0,
-      "sha256": "669d4a2ef3472aa70174a5d6e1cf165b319b6011827ea17b57f4122345c79344"
+      "duration": 0.72,
+      "peak": 7891,
+      "rms": 2266.8,
+      "sha256": "08aea963aa4cc9319f571f5fc862ffde4693a480dff19d49d3b5fdbc9247706e",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "きゅうり",
+          "seed": 42,
+          "duration": 0.72
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.10.4": {
       "text": "きょ",
       "synthesisText": "きょ",
-      "kana": "キョ'",
       "file": "assets/audio/basics/basic.10.4.wav",
-      "duration": 0.587,
-      "peak": 15784,
-      "rms": 2295.5,
-      "sha256": "039b7c69c1de37590afdfb084d3bdb0ce605752052df0aa4c0dc5e77fe73ddf6"
+      "duration": 0.4,
+      "peak": 4007,
+      "rms": 990.1,
+      "sha256": "a20a376fb4770c314f4c98ac601b1a2dc5e174428fe29ec0955fa0f378a4eccb",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "きょ",
+          "seed": 42,
+          "duration": 0.4,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.10.5": {
       "text": "きょう",
       "synthesisText": "今日",
-      "kana": "キョ'オ",
       "file": "assets/audio/basics/basic.10.5.wav",
-      "duration": 0.576,
-      "peak": 20266,
-      "rms": 2666.2,
-      "sha256": "45db18bac4ebfa58fec97e6eb69af6d450e278e17cea96b70e91eb73902f8ff7"
+      "duration": 0.4,
+      "peak": 4482,
+      "rms": 1086.0,
+      "sha256": "8a7f0e1aa09add37aec9f962661ddec6d0562adfb4f82ed887fc80350264c098",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "今日",
+          "seed": 42,
+          "duration": 0.4,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.10.6": {
       "text": "しゃ",
       "synthesisText": "しゃ",
-      "kana": "シャ'",
       "file": "assets/audio/basics/basic.10.6.wav",
-      "duration": 0.661,
-      "peak": 14213,
-      "rms": 1565.6,
-      "sha256": "438e970f6581593c6542b6f116222a73574aa62dce0888250e6b4ace39cddd3a"
+      "duration": 0.96,
+      "peak": 9419,
+      "rms": 1862.7,
+      "sha256": "a8a858cd32352281f92f4c475d00a43baefecad7336d48bcf31935b3e107e25e",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "しゃ",
+          "seed": 42,
+          "duration": 0.96,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.10.7": {
       "text": "しゃしん",
       "synthesisText": "写真",
-      "kana": "シャシン'",
       "file": "assets/audio/basics/basic.10.7.wav",
-      "duration": 0.843,
-      "peak": 14046,
-      "rms": 1909.9,
-      "sha256": "a2427a4584765b95be4e28f2cc594b18eb4e2850f02b0eb27b8588eb2a010538"
+      "duration": 0.8,
+      "peak": 3315,
+      "rms": 945.3,
+      "sha256": "c5d542fd4cfa84992321ccc6c42deaabbcfa6036d182bb4818a836443082869c",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "写真",
+          "seed": 42,
+          "duration": 0.8,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.10.8": {
       "text": "しゅ",
       "synthesisText": "しゅ",
-      "kana": "シュ'",
       "file": "assets/audio/basics/basic.10.8.wav",
-      "duration": 0.693,
-      "peak": 10879,
-      "rms": 1808.4,
-      "sha256": "a058f2ed008c1c53bd463a0f8be1120ca65c33e4f72fdf7557eee9171651a682"
+      "duration": 0.48,
+      "peak": 1227,
+      "rms": 195.0,
+      "sha256": "d8d376ca923f4c20a0b0c69e9cf9f7d5a591649748f3627269acecaf58735b46",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "しゅ",
+          "seed": 42,
+          "duration": 0.48,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.10.9": {
       "text": "しゅくだい",
       "synthesisText": "宿題",
-      "kana": "_シュクダイ'",
       "file": "assets/audio/basics/basic.10.9.wav",
-      "duration": 0.779,
-      "peak": 11519,
-      "rms": 1864.3,
-      "sha256": "a3841a3fe50dae3d72b2cf0b91e7df7b7c2669c0962027f62ea6900c9859260f"
+      "duration": 0.88,
+      "peak": 2541,
+      "rms": 539.8,
+      "sha256": "7f72237a4ca87fd15db36efcda8389f53af66276e1a0a9ee5ca3f3ad60c7f725",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "宿題",
+          "seed": 42,
+          "duration": 0.88,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.10.10": {
       "text": "しょ",
       "synthesisText": "しょ",
-      "kana": "ショ'",
       "file": "assets/audio/basics/basic.10.10.wav",
-      "duration": 0.651,
-      "peak": 13771,
-      "rms": 1743.9,
-      "sha256": "288d38454c2b800dec96342ec9c12439e6a222fa4cf00e9b6cb1440f75ed892a"
+      "duration": 0.4,
+      "peak": 1576,
+      "rms": 210.8,
+      "sha256": "4c09db813ce355f6150536dde416f1ef996a79e1bbb08f344d84b7ad85731788",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "しょ",
+          "seed": 42,
+          "duration": 0.4,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "basic.10.11": {
       "text": "しょくぱん",
       "synthesisText": "食パン",
-      "kana": "ショ_クパン'",
       "file": "assets/audio/basics/basic.10.11.wav",
-      "duration": 0.864,
-      "peak": 11478,
-      "rms": 1626.7,
-      "sha256": "2f236a9fd2e4e50d5a4ef8e9eb05dfbbe5557f08a928b9a90c4e3e7b5165831d"
+      "duration": 1.2,
+      "peak": 6237,
+      "rms": 1300.3,
+      "sha256": "fe80956c7838ee3b956c93ee1cb87d6497f6a4d6c2552c3d9dee9f9ffcc80c24",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "食パン",
+          "seed": 1042,
+          "duration": 1.2,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     }
-  }
+  },
+  "generatedAt": "2026-10-15",
+  "locale": "ja-JP",
+  "usageScope": "Commercial model use permitted under Apache-2.0; no separate generated-audio restriction found in published model terms. Third-party rights are not warranted.",
+  "licenseSource": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+  "rightsReviewed": true,
+  "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-8bit",
+  "modelRevision": "41d3337e8b7f2843a75841595fc14e4b9a7a4b96",
+  "license": "Apache-2.0",
+  "rightsReviewDate": "2026-10-15",
+  "voice": "Ono_Anna",
+  "voiceId": "Ono_Anna"
 }

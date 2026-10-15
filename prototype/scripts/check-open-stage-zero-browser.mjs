@@ -1,0 +1,10 @@
+import {webkit,expect} from '@playwright/test';import {readFileSync} from 'node:fs';import assert from 'node:assert/strict';import {freshState} from '../src/engine.js';
+const browser=await webkit.launch();try{for(const [direction,index,kind,count] of [['ko-ja',4,'kana',30],['ko-ja',29,'basic',30],['ja-ko',9,'korean',10]]){
+ const page=await browser.newPage({viewport:{width:390,height:844}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.route('https://seodang.test/**',r=>{const file=new URL(r.request().url()).pathname.slice(1);if(file==='src/build-config.js')return r.fulfill({body:'export const developmentMode=false;',contentType:'text/javascript'});try{return r.fulfill({body:readFileSync(file),contentType:file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':file.endsWith('.html')?'text/html':'image/png'});}catch{return r.fulfill({status:404,body:''});}});
+ await page.addInitScript(s=>{if(!localStorage.getItem('seodang.web-prototype.v1'))localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));},{...freshState(),onboarded:true,koreanGuideSeenVersion:1,onboardingLevel:0,courseDirection:direction,settings:{sound:false,motion:'off',textScale:1.2}});
+
+ await page.goto('https://seodang.test/playable.html');await expect(page.locator('.map-choice')).toHaveCount(count);await expect(page.locator('.map-choice:disabled,.map-stop.is-locked')).toHaveCount(0);
+ await page.locator('.map-choice').nth(index).click();await expect(page.locator(`.view-${kind}`)).toBeVisible();await expect(page.locator('.dev-lesson-tools')).toHaveCount(0);
+ await page.reload();await page.locator('.map-choice').nth(index).click();await expect(page.locator('.lesson-resume')).toBeVisible();await page.locator('[data-choice=resume]').click();await expect(page.locator(`.view-${kind}`)).toBeVisible();assert.deepEqual(errors,[]);await page.close();
+}console.log('Production stage zero: all Japanese/Korean lessons open, later lessons start and resume, dev tools absent.');}finally{await browser.close();}

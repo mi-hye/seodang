@@ -79,3 +79,7 @@
 .guide-wave{height:100px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--amber)}
 .guide-wave i{width:6px;background:currentColor;border-radius:9px}
 @media(max-height:700px){.guide-walkthrough{gap:18px}.guide-walkthrough .guide-mascot{width:88px;height:88px}.guide-flow li{padding:10px 0}.guide-cycle>div{padding:20px 8px}}
+
+.guide-letter-advice{display:flex;flex-direction:column;gap:18px;text-align:center;font-size:calc(16px * var(--text-scale,1));line-height:1.65;word-break:keep-all;overflow-wrap:break-word}.guide-letter-advice p{margin:0}.guide-letter-advice strong{font-weight:750;color:var(--text)}
+
+.guide-hangul-example{display:flex;flex-direction:column;gap:24px;text-align:center;font-size:32px;color:var(--muted)}.guide-hangul-example b{color:var(--amber);font-weight:500}

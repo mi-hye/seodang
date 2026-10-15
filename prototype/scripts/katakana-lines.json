@@ -1,0 +1,704 @@
+[
+  {
+    "id": "katakana.11.0",
+    "text": "ア",
+    "kana": "ア"
+  },
+  {
+    "id": "katakana.11.1",
+    "text": "イ",
+    "kana": "イ"
+  },
+  {
+    "id": "katakana.11.2",
+    "text": "ウ",
+    "kana": "ウ"
+  },
+  {
+    "id": "katakana.11.3",
+    "text": "エ",
+    "kana": "エ"
+  },
+  {
+    "id": "katakana.11.4",
+    "text": "オ",
+    "kana": "オ"
+  },
+  {
+    "id": "katakana.11.5",
+    "text": "カ",
+    "kana": "カ"
+  },
+  {
+    "id": "katakana.11.6",
+    "text": "キ",
+    "kana": "キ"
+  },
+  {
+    "id": "katakana.11.7",
+    "text": "ク",
+    "kana": "ク"
+  },
+  {
+    "id": "katakana.11.8",
+    "text": "ケ",
+    "kana": "ケ"
+  },
+  {
+    "id": "katakana.11.9",
+    "text": "コ",
+    "kana": "コ"
+  },
+  {
+    "id": "katakana.12.0",
+    "text": "サ",
+    "kana": "サ"
+  },
+  {
+    "id": "katakana.12.1",
+    "text": "シ",
+    "kana": "シ"
+  },
+  {
+    "id": "katakana.12.2",
+    "text": "ス",
+    "kana": "ス"
+  },
+  {
+    "id": "katakana.12.3",
+    "text": "セ",
+    "kana": "セ"
+  },
+  {
+    "id": "katakana.12.4",
+    "text": "ソ",
+    "kana": "ソ"
+  },
+  {
+    "id": "katakana.12.5",
+    "text": "タ",
+    "kana": "タ"
+  },
+  {
+    "id": "katakana.12.6",
+    "text": "チ",
+    "kana": "チ"
+  },
+  {
+    "id": "katakana.12.7",
+    "text": "ツ",
+    "kana": "ツ"
+  },
+  {
+    "id": "katakana.12.8",
+    "text": "テ",
+    "kana": "テ"
+  },
+  {
+    "id": "katakana.12.9",
+    "text": "ト",
+    "kana": "ト"
+  },
+  {
+    "id": "katakana.13.0",
+    "text": "ナ",
+    "kana": "ナ"
+  },
+  {
+    "id": "katakana.13.1",
+    "text": "ニ",
+    "kana": "ニ"
+  },
+  {
+    "id": "katakana.13.2",
+    "text": "ヌ",
+    "kana": "ヌ"
+  },
+  {
+    "id": "katakana.13.3",
+    "text": "ネ",
+    "kana": "ネ"
+  },
+  {
+    "id": "katakana.13.4",
+    "text": "ノ",
+    "kana": "ノ"
+  },
+  {
+    "id": "katakana.13.5",
+    "text": "ハ",
+    "kana": "ハ"
+  },
+  {
+    "id": "katakana.13.6",
+    "text": "ヒ",
+    "kana": "ヒ"
+  },
+  {
+    "id": "katakana.13.7",
+    "text": "フ",
+    "kana": "フ"
+  },
+  {
+    "id": "katakana.13.8",
+    "text": "ヘ",
+    "kana": "ヘ"
+  },
+  {
+    "id": "katakana.13.9",
+    "text": "ホ",
+    "kana": "ホ"
+  },
+  {
+    "id": "katakana.14.0",
+    "text": "マ",
+    "kana": "マ"
+  },
+  {
+    "id": "katakana.14.1",
+    "text": "ミ",
+    "kana": "ミ"
+  },
+  {
+    "id": "katakana.14.2",
+    "text": "ム",
+    "kana": "ム"
+  },
+  {
+    "id": "katakana.14.3",
+    "text": "メ",
+    "kana": "メ"
+  },
+  {
+    "id": "katakana.14.4",
+    "text": "モ",
+    "kana": "モ"
+  },
+  {
+    "id": "katakana.14.5",
+    "text": "ヤ",
+    "kana": "ヤ"
+  },
+  {
+    "id": "katakana.14.6",
+    "text": "ユ",
+    "kana": "ユ"
+  },
+  {
+    "id": "katakana.14.7",
+    "text": "ヨ",
+    "kana": "ヨ"
+  },
+  {
+    "id": "katakana.14.8",
+    "text": "ラ",
+    "kana": "ラ"
+  },
+  {
+    "id": "katakana.14.9",
+    "text": "リ",
+    "kana": "リ"
+  },
+  {
+    "id": "katakana.15.0",
+    "text": "ル",
+    "kana": "ル"
+  },
+  {
+    "id": "katakana.15.1",
+    "text": "レ",
+    "kana": "レ"
+  },
+  {
+    "id": "katakana.15.2",
+    "text": "ロ",
+    "kana": "ロ"
+  },
+  {
+    "id": "katakana.15.3",
+    "text": "ワ",
+    "kana": "ワ"
+  },
+  {
+    "id": "katakana.15.4",
+    "text": "ヲ",
+    "kana": "ヲ"
+  },
+  {
+    "id": "katakana.15.5",
+    "text": "ン",
+    "kana": "ン"
+  },
+  {
+    "id": "katakana.16.0",
+    "text": "ガ",
+    "kana": "ガ"
+  },
+  {
+    "id": "katakana.16.1",
+    "text": "ギ",
+    "kana": "ギ"
+  },
+  {
+    "id": "katakana.16.2",
+    "text": "グ",
+    "kana": "グ"
+  },
+  {
+    "id": "katakana.16.3",
+    "text": "ゲ",
+    "kana": "ゲ"
+  },
+  {
+    "id": "katakana.16.4",
+    "text": "ゴ",
+    "kana": "ゴ"
+  },
+  {
+    "id": "katakana.16.5",
+    "text": "ザ",
+    "kana": "ザ"
+  },
+  {
+    "id": "katakana.16.6",
+    "text": "ジ",
+    "kana": "ジ"
+  },
+  {
+    "id": "katakana.16.7",
+    "text": "ズ",
+    "kana": "ズ"
+  },
+  {
+    "id": "katakana.16.8",
+    "text": "ゼ",
+    "kana": "ゼ"
+  },
+  {
+    "id": "katakana.16.9",
+    "text": "ゾ",
+    "kana": "ゾ"
+  },
+  {
+    "id": "katakana.17.0",
+    "text": "ダ",
+    "kana": "ダ"
+  },
+  {
+    "id": "katakana.17.1",
+    "text": "ヂ",
+    "kana": "ヂ"
+  },
+  {
+    "id": "katakana.17.2",
+    "text": "ヅ",
+    "kana": "ヅ"
+  },
+  {
+    "id": "katakana.17.3",
+    "text": "デ",
+    "kana": "デ"
+  },
+  {
+    "id": "katakana.17.4",
+    "text": "ド",
+    "kana": "ド"
+  },
+  {
+    "id": "katakana.17.5",
+    "text": "バ",
+    "kana": "バ"
+  },
+  {
+    "id": "katakana.17.6",
+    "text": "ビ",
+    "kana": "ビ"
+  },
+  {
+    "id": "katakana.17.7",
+    "text": "ブ",
+    "kana": "ブ"
+  },
+  {
+    "id": "katakana.17.8",
+    "text": "ベ",
+    "kana": "ベ"
+  },
+  {
+    "id": "katakana.17.9",
+    "text": "ボ",
+    "kana": "ボ"
+  },
+  {
+    "id": "katakana.18.0",
+    "text": "パ",
+    "kana": "パ"
+  },
+  {
+    "id": "katakana.18.1",
+    "text": "ピ",
+    "kana": "ピ"
+  },
+  {
+    "id": "katakana.18.2",
+    "text": "プ",
+    "kana": "プ"
+  },
+  {
+    "id": "katakana.18.3",
+    "text": "ペ",
+    "kana": "ペ"
+  },
+  {
+    "id": "katakana.18.4",
+    "text": "ポ",
+    "kana": "ポ"
+  },
+  {
+    "id": "katakana.19.0",
+    "text": "キャ",
+    "kana": "キャ"
+  },
+  {
+    "id": "katakana.19.1",
+    "text": "キュ",
+    "kana": "キュ"
+  },
+  {
+    "id": "katakana.19.2",
+    "text": "キョ",
+    "kana": "キョ"
+  },
+  {
+    "id": "katakana.19.3",
+    "text": "シャ",
+    "kana": "シャ"
+  },
+  {
+    "id": "katakana.19.4",
+    "text": "シュ",
+    "kana": "シュ"
+  },
+  {
+    "id": "katakana.19.5",
+    "text": "ショ",
+    "kana": "ショ"
+  },
+  {
+    "id": "katakana.19.6",
+    "text": "チャ",
+    "kana": "チャ"
+  },
+  {
+    "id": "katakana.19.7",
+    "text": "チュ",
+    "kana": "チュ"
+  },
+  {
+    "id": "katakana.19.8",
+    "text": "チョ",
+    "kana": "チョ"
+  },
+  {
+    "id": "katakana.20.0",
+    "text": "ニャ",
+    "kana": "ニャ"
+  },
+  {
+    "id": "katakana.20.1",
+    "text": "ニュ",
+    "kana": "ニュ"
+  },
+  {
+    "id": "katakana.20.2",
+    "text": "ニョ",
+    "kana": "ニョ"
+  },
+  {
+    "id": "katakana.20.3",
+    "text": "ヒャ",
+    "kana": "ヒャ"
+  },
+  {
+    "id": "katakana.20.4",
+    "text": "ヒュ",
+    "kana": "ヒュ"
+  },
+  {
+    "id": "katakana.20.5",
+    "text": "ヒョ",
+    "kana": "ヒョ"
+  },
+  {
+    "id": "katakana.20.6",
+    "text": "ミャ",
+    "kana": "ミャ"
+  },
+  {
+    "id": "katakana.20.7",
+    "text": "ミュ",
+    "kana": "ミュ"
+  },
+  {
+    "id": "katakana.20.8",
+    "text": "ミョ",
+    "kana": "ミョ"
+  },
+  {
+    "id": "katakana.20.9",
+    "text": "リャ",
+    "kana": "リャ"
+  },
+  {
+    "id": "katakana.20.10",
+    "text": "リュ",
+    "kana": "リュ"
+  },
+  {
+    "id": "katakana.20.11",
+    "text": "リョ",
+    "kana": "リョ"
+  },
+  {
+    "id": "katakana.21.0",
+    "text": "ギャ",
+    "kana": "ギャ"
+  },
+  {
+    "id": "katakana.21.1",
+    "text": "ギュ",
+    "kana": "ギュ"
+  },
+  {
+    "id": "katakana.21.2",
+    "text": "ギョ",
+    "kana": "ギョ"
+  },
+  {
+    "id": "katakana.21.3",
+    "text": "ジャ",
+    "kana": "ジャ"
+  },
+  {
+    "id": "katakana.21.4",
+    "text": "ジュ",
+    "kana": "ジュ"
+  },
+  {
+    "id": "katakana.21.5",
+    "text": "ジョ",
+    "kana": "ジョ"
+  },
+  {
+    "id": "katakana.21.6",
+    "text": "ビャ",
+    "kana": "ビャ"
+  },
+  {
+    "id": "katakana.21.7",
+    "text": "ビュ",
+    "kana": "ビュ"
+  },
+  {
+    "id": "katakana.21.8",
+    "text": "ビョ",
+    "kana": "ビョ"
+  },
+  {
+    "id": "katakana.21.9",
+    "text": "ピャ",
+    "kana": "ピャ"
+  },
+  {
+    "id": "katakana.21.10",
+    "text": "ピュ",
+    "kana": "ピュ"
+  },
+  {
+    "id": "katakana.21.11",
+    "text": "ピョ",
+    "kana": "ピョ"
+  },
+  {
+    "id": "katakana.22.0",
+    "text": "カップ"
+  },
+  {
+    "id": "katakana.22.1",
+    "text": "バッグ"
+  },
+  {
+    "id": "katakana.22.2",
+    "text": "ベッド"
+  },
+  {
+    "id": "katakana.22.3",
+    "text": "チケット"
+  },
+  {
+    "id": "katakana.22.4",
+    "text": "コーヒー"
+  },
+  {
+    "id": "katakana.22.5",
+    "text": "ケーキ"
+  },
+  {
+    "id": "katakana.22.6",
+    "text": "タクシー"
+  },
+  {
+    "id": "katakana.22.7",
+    "text": "スーパー"
+  },
+  {
+    "id": "katakana.23.0",
+    "text": "ウィ",
+    "kana": "ウィ"
+  },
+  {
+    "id": "katakana.23.1",
+    "text": "ウェ",
+    "kana": "ウェ"
+  },
+  {
+    "id": "katakana.23.2",
+    "text": "ウォ",
+    "kana": "ウォ"
+  },
+  {
+    "id": "katakana.23.3",
+    "text": "ファ",
+    "kana": "ファ"
+  },
+  {
+    "id": "katakana.23.4",
+    "text": "フィ",
+    "kana": "フィ"
+  },
+  {
+    "id": "katakana.23.5",
+    "text": "フェ",
+    "kana": "フェ"
+  },
+  {
+    "id": "katakana.23.6",
+    "text": "フォ",
+    "kana": "フォ"
+  },
+  {
+    "id": "katakana.24.0",
+    "text": "ティ",
+    "kana": "ティ"
+  },
+  {
+    "id": "katakana.24.1",
+    "text": "ディ",
+    "kana": "ディ"
+  },
+  {
+    "id": "katakana.24.2",
+    "text": "トゥ",
+    "kana": "トゥ"
+  },
+  {
+    "id": "katakana.24.3",
+    "text": "ドゥ",
+    "kana": "ドゥ"
+  },
+  {
+    "id": "katakana.24.4",
+    "text": "シェ",
+    "kana": "シェ"
+  },
+  {
+    "id": "katakana.24.5",
+    "text": "ジェ",
+    "kana": "ジェ"
+  },
+  {
+    "id": "katakana.24.6",
+    "text": "チェ",
+    "kana": "チェ"
+  },
+  {
+    "id": "katakana.24.7",
+    "text": "スィ",
+    "kana": "スィ"
+  },
+  {
+    "id": "katakana.24.8",
+    "text": "ズィ",
+    "kana": "ズィ"
+  },
+  {
+    "id": "katakana.25.0",
+    "text": "ツァ",
+    "kana": "ツァ"
+  },
+  {
+    "id": "katakana.25.1",
+    "text": "ツィ",
+    "kana": "ツィ"
+  },
+  {
+    "id": "katakana.25.2",
+    "text": "ツェ",
+    "kana": "ツェ"
+  },
+  {
+    "id": "katakana.25.3",
+    "text": "ツォ",
+    "kana": "ツォ"
+  },
+  {
+    "id": "katakana.25.4",
+    "text": "ヴァ",
+    "kana": "ヴァ"
+  },
+  {
+    "id": "katakana.25.5",
+    "text": "ヴィ",
+    "kana": "ヴィ"
+  },
+  {
+    "id": "katakana.25.6",
+    "text": "ヴ",
+    "kana": "ヴ"
+  },
+  {
+    "id": "katakana.25.7",
+    "text": "ヴェ",
+    "kana": "ヴェ"
+  },
+  {
+    "id": "katakana.25.8",
+    "text": "ヴォ",
+    "kana": "ヴォ"
+  },
+  {
+    "id": "katakana.26.0",
+    "text": "クァ",
+    "kana": "クァ"
+  },
+  {
+    "id": "katakana.26.1",
+    "text": "クィ",
+    "kana": "クィ"
+  },
+  {
+    "id": "katakana.26.2",
+    "text": "クェ",
+    "kana": "クェ"
+  },
+  {
+    "id": "katakana.26.3",
+    "text": "クォ",
+    "kana": "クォ"
+  },
+  {
+    "id": "katakana.26.4",
+    "text": "グァ",
+    "kana": "グァ"
+  }
+]

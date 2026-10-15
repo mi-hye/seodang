@@ -3,7 +3,7 @@ import { esc } from './ui.js';
 // relative coordinates and stroke-level undo. Drafts are session-only, not scores.
 const drafts = new Map();
 export function writingMarkup(letter) {
-  return `<div class="kana-writing" data-writing-letter="${esc(letter.id)}" data-writing-text="${esc(letter.text)}"><div class="writing-board"><span class="writing-guide" lang="ja" aria-hidden="true">${esc(letter.text)}</span><div class="stroke-layer"></div><span class="stroke-status" role="status"></span><canvas aria-label="${esc(letter.text)} 글자 쓰기 연습장">${esc(letter.text)} 글자 쓰기 연습장</canvas></div><div class="writing-tools"><button type="button" data-writing="strokes" disabled>획순 보기</button><button type="button" data-writing="undo">한 획 지우기</button><button type="button" data-writing="clear">모두 지우기</button></div></div>`;
+  return `<div class="kana-writing" data-writing-letter="${esc(letter.id)}" data-writing-text="${esc(letter.text)}"${letter.strokeSource?` data-stroke-source="${esc(letter.strokeSource)}"`:""}><div class="writing-board"><span class="writing-guide" lang="ja" aria-hidden="true">${esc(letter.text)}</span><div class="stroke-layer"></div><span class="stroke-status" role="status"></span><canvas aria-label="${esc(letter.text)} 글자 쓰기 연습장">${esc(letter.text)} 글자 쓰기 연습장</canvas></div><div class="writing-tools"><button type="button" data-writing="strokes" disabled>획순 보기</button><button type="button" data-writing="undo">한 획 지우기</button><button type="button" data-writing="clear">모두 지우기</button></div></div>`;
 }
 export function relativePoint(event, rect) {
   const clamp = n => Math.max(0, Math.min(1,n));
