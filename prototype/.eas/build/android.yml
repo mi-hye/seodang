@@ -1,0 +1,20 @@
+build:
+  name: Build Seodang Capacitor Android
+  steps:
+    - eas/checkout
+    - eas/install_node_modules
+    - run:
+        name: Check and bundle the offline app
+        command: npm run check && npx cap sync android
+    - run:
+        name: Use Java 21 for Capacitor 8
+        command: |
+          if [ ! -d /usr/lib/jvm/java-21-openjdk-amd64 ]; then
+            sudo apt-get update
+            sudo apt-get install -y openjdk-21-jdk-headless
+          fi
+          set-env JAVA_HOME /usr/lib/jvm/java-21-openjdk-amd64
+    - eas/configure_android_version
+    - eas/inject_android_credentials
+    - eas/run_gradle
+    - eas/find_and_upload_build_artifacts

@@ -1,0 +1,30 @@
+build:
+  name: Build Seodang Capacitor iOS
+  steps:
+    - eas/checkout
+    - eas/install_node_modules
+    - run:
+        name: Check and bundle the offline app
+        command: npm run check && npx cap sync ios
+    - eas/configure_ios_version
+    - eas/configure_ios_credentials
+    - eas/generate_gymfile_from_template:
+        inputs:
+          credentials: ${ eas.job.secrets.buildCredentials }
+          template: |
+            project("App/App.xcodeproj")
+            scheme("<%- SCHEME %>")
+            configuration("<%- BUILD_CONFIGURATION %>")
+            clean(true)
+            export_options({
+              method: "<%- EXPORT_METHOD %>",
+              provisioningProfiles: {<% _.forEach(PROFILES, function(profile) { %>
+                "<%- profile.BUNDLE_ID %>" => "<%- profile.UUID %>",<% }); %>
+              }
+            })
+            export_xcargs "OTHER_CODE_SIGN_FLAGS=\"--keychain <%- KEYCHAIN_PATH %>\""
+            disable_xcpretty(true)
+            buildlog_path("<%- LOGS_DIRECTORY %>")
+            output_directory("<%- OUTPUT_DIRECTORY %>")
+    - eas/run_fastlane
+    - eas/find_and_upload_build_artifacts
