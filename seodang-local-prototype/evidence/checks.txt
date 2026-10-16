@@ -1,0 +1,42 @@
+
+> seodang-local-prototype@0.0.0 typecheck
+> tsc -b --pretty false
+
+
+> seodang-local-prototype@0.0.0 lint
+> eslint .
+
+
+> seodang-local-prototype@0.0.0 test
+> vitest run
+
+
+ RUN  v5.0.4 /Users/kangmihye/Desktop/study/seodang/seodang-local-prototype
+
+
+ Test Files  2 passed (2)
+      Tests  31 passed (31)
+   Start at  17:02:53
+   Duration  122ms (transform 66%, import 20%, tests 9%, worker 6%)
+
+
+> seodang-local-prototype@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 28 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                           0.65 kB │ gzip:  0.43 kB
+dist/assets/index-BwKlCRvB.css           11.07 kB │ gzip:  3.44 kB
+dist/assets/AuxiliaryPanel-BSsTBqXd.js    2.69 kB │ gzip:  1.25 kB
+dist/assets/index-CkXbo3Zc.js           245.15 kB │ gzip: 77.51 kB
+
+✓ built in 93ms
+
+> seodang-local-prototype@0.0.0 format:check
+> prettier --check src index.html vite.config.ts eslint.config.js README.md
+
+Checking formatting...
+All matched files use Prettier code style!
