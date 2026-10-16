@@ -14,29 +14,44 @@ function updateHeader() {
   if(step===1)headerRoot.querySelector('.app-header-title').innerHTML='<span lang="ko">언어 선택</span> / <span lang="ja">言語選択</span>';
   document.querySelector('.progress').setAttribute('aria-label',step===1?'설정 진행 / 設定の進み具合':t('설정 진행'));
 }
-function updateNextLabel(){if(step===1)nextButton.innerHTML='<span lang="ko">다음</span> / <span lang="ja">次へ</span>';else nextButton.textContent=t(step===3&&guideLast?'학습 홈으로':'다음');}
+function updateNextLabel(){if(step===1)nextButton.innerHTML='<span lang="ko">다음</span> / <span lang="ja">次へ</span>';else nextButton.textContent=(step===3&&guideLast?(form.elements.language.value==='ko'?'はじめる':'시작하기'):t('다음'));}
 
 let storage, record, step = 1, disposeGuide, guideRequest = 0;
-let guideStyles, guideAssets, guidePending=false,guideLast=false;
+let guideStyles, guideAssets, guidePending=false,guideLast=false,guideIndex=0,guideTotal=4;
 try { storage = window.localStorage; record = load(storage); }
 catch { record = { blocked: true, error: '기기 저장소를 사용할 수 없어요. 저장 권한을 확인해 주세요.' }; }
 if (record.state) {
+  document.documentElement.classList.toggle('setup-reduced-motion',record.state.settings.motion==='off');
   form.elements.level.value = String(selectedLevel(record.state));
   form.elements.language.value = record.state.courseDirection==='ja-ko'?'ko':'ja';
+}
+function updateProgress() {
+  const current=step===3?3+guideIndex:step;
+  const progress=document.querySelector('.progress');
+  progress.setAttribute('aria-valuenow',current);
+  progress.setAttribute('aria-valuemax',2+guideTotal);
+  progress.firstElementChild.style.width=`${current/(2+guideTotal)*100}%`;
+}
+function focusStep() {
+  document.querySelector('.step-content').scrollTop=0;
+  const heading=document.querySelector(step===3?'#onboarding-guide h2':`[data-step="${step}"] h1`);
+  heading?.focus({preventScroll:true});
+}
+function syncPending() {
+  const pending=guidePending||languagePending;
+  nextButton.disabled=pending;
+  if(pending)form.setAttribute('aria-busy','true');else form.removeAttribute('aria-busy');
 }
 function message(text) { feedback.textContent = t(text); feedback.hidden = !text; }
 function activateStep(next) {
   step = next;
   updateHeader();
   for (const section of document.querySelectorAll('[data-step]')) section.hidden = Number(section.dataset.step) !== step;
-  const progress = document.querySelector('.progress');
-  progress.setAttribute('aria-valuenow', step);
-  progress.firstElementChild.style.width = `${step / 3 * 100}%`;
+  updateProgress();
   updateNextLabel();
-  nextButton.disabled = false;
+  syncPending();
   message('');
-  document.querySelector('.step-content').scrollTop = 0;
-  document.querySelector(`[data-step="${step}"] h1`).focus({ preventScroll: true });
+  focusStep();
 }
 function showStep(next) {
   if(next===3){void showGuide();return;}
@@ -58,38 +73,43 @@ function loadGuideAssets(){
   })().catch(error=>{guideAssets=null;throw error;});
   return guideAssets;
 }
-async function showGuide() {
+async function showGuide(initialIndex=0) {
   if(guidePending)return;
   const request=++guideRequest;
-  guidePending=true;nextButton.disabled=true;form.setAttribute('aria-busy','true');message('');
+  guidePending=true;syncPending();message('');
   try {
-    const {mountGuide,prepareGuide}=await loadGuideAssets();
+    const {mountGuide}=await loadGuideAssets();
     const level=Number(form.elements.level.value),courseDirection=form.elements.language.value==='ko'?'ja-ko':'ko-ja';
-    const units=await prepareGuide(level,courseDirection);
     if(request!==guideRequest)return;
     disposeGuide?.();
     const root=document.querySelector('#onboarding-guide');
     // Mount while hidden, then reveal the fully styled, decoded first frame.
-    disposeGuide=mountGuide(root,level,{units,
+    disposeGuide=mountGuide(root,level,{initialIndex,
       reducedMotion:record.state?.settings.motion==='off',
-      courseDirection:form.elements.language.value==='ko'?'ja-ko':'ko-ja',
-      onChange:({last})=>{guideLast=last;nextButton.textContent=t(last?'학습 홈으로':'다음');nextButton.disabled=false;document.querySelector('.step-content').scrollTop=0;},
+      courseDirection,
+      onChange:({index,last,total})=>{
+        guideIndex=index;guideLast=last;guideTotal=total;
+        if(step===3){updateNextLabel();updateProgress();focusStep();}
+      },
     });
     activateStep(3);
   } catch {
     if(request===guideRequest){nextButton.disabled=false;message('안내를 불러오지 못했어요. 다음을 눌러 다시 시도해 주세요.');}
   } finally {
-    if(request===guideRequest){guidePending=false;form.removeAttribute('aria-busy');}
+    if(request===guideRequest){guidePending=false;syncPending();}
   }
 }
 
 let languageRequest=0,languagePending=false;
-async function updateLanguage(){const request=++languageRequest,direction={courseDirection:form.elements.language.value==='ko'?'ja-ko':'ko-ja',onboardingLevel:Number(form.elements.level.value)};languagePending=true;nextButton.disabled=true;try{await loadUILanguage(direction);if(request!==languageRequest)return;setUILanguage(direction);translateSetup();updateHeader();updateNextLabel();}catch{message('読み込めませんでした。言語を選び直してください。');}finally{if(request===languageRequest){languagePending=false;nextButton.disabled=false;}}}
+async function updateLanguage(){
+  // A changed choice invalidates any guide still being prepared.
+  guideRequest++;guidePending=false;
+  const request=++languageRequest,direction={courseDirection:form.elements.language.value==='ko'?'ja-ko':'ko-ja',onboardingLevel:0};languagePending=true;syncPending();try{await loadUILanguage(direction);if(request!==languageRequest)return;setUILanguage(direction);translateSetup();updateHeader();updateNextLabel();}catch{message('読み込めませんでした。言語を選び直してください。');}finally{if(request===languageRequest){languagePending=false;syncPending();}}}
 form.elements.language.forEach(input=>input.addEventListener('change',updateLanguage));
 form.elements.level.forEach(input=>input.addEventListener('change',updateLanguage));
 const languageReady=updateLanguage();
 window.addEventListener('pagehide', () => { guideRequest++;guidePending=false;form.removeAttribute('aria-busy');nextButton.disabled=false;disposeGuide?.(); });
-window.addEventListener('pageshow',event=>{if(event.persisted)showStep(step);});
+window.addEventListener('pageshow',event=>{if(event.persisted){if(step===3)void showGuide(guideIndex);else showStep(step);}});
 const settingsDialog = document.querySelector('.setup-settings');
 headerRoot.addEventListener('click', async event => {
   const action = event.target.closest('[data-action]')?.dataset.action;
@@ -137,7 +157,7 @@ form.addEventListener('submit', event => {
   const level = Number(form.elements.level.value);
   if (!Number.isInteger(level) || level < 0 || level > 7) { message('난이도를 선택해 주세요.'); return; }
   if (step === 2) { showStep(3); return; }
-  if (step === 3 && (nextButton.disabled || disposeGuide?.next())) return;
+  if (step === 3 && (nextButton.disabled || !disposeGuide || disposeGuide.next() || !guideLast)) return;
   // Finish the guide before saving setup and returning to the learning home.
   const directed=reduce(record.state,{type:'course',value:form.elements.language.value==='ko'?'ja-ko':'ko-ja'});
   const next = reduce(directed, { type: 'onboard', value: level <= 2 ? 'beginner' : 'phrase' });
