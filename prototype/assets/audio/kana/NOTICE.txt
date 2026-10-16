@@ -1,10 +1,9 @@
-Kana learning audio: VOICEVOX Nemo
-Voice: 女声1 (normal, style 10005)
-Generated with VOICEVOX CORE 0.17.0 and Nemo model n0.vvm 0.16.4.
-Generated audio may be used commercially or noncommercially with attribution,
-subject to the VOICEVOX Nemo terms:
-https://voicevox.hiroshiba.jp/nemo/term/
-Do not remove the VOICEVOX Nemo credit when distributing these audio files.
-The voice model and generation runtime are not included in this app.
-Generation settings, explicit kana input, file hashes and checks: manifest.json.
-Pronunciation inputs and signal integrity checked; native-speaker listening review pending.
+AI-generated learning audio: Qwen3-TTS CustomVoice.
+Korean: Sohee. Japanese: Ono_Anna.
+Generated locally using MLX Audio; no cloned reference recording.
+Source model: https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice
+Converted model: https://huggingface.co/mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-8bit
+Model license: Apache License 2.0. See ../LICENSE-Qwen3-TTS.txt.
+The model license permits commercial use; no separate output distribution restriction was found in the published model terms. It does not warrant third-party rights or non-infringement.
+Input text, model revision, voice, settings and hashes: manifest.json.
+Full native-speaker listening review remains pending.

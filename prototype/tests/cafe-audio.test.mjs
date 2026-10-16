@@ -23,13 +23,13 @@ test('all current cafe dialogue and expression audio is bundled and avoids devic
 });
 
 
-test('all shipped learning voices use the selected current voice, Nemo female 1',()=>{
+test('all shipped learning voices use the selected current voice, Ono_Anna',()=>{
  for(const group of ['kana','cafe']) {
   const metadata=JSON.parse(readFileSync(new URL(`../assets/audio/${group}/manifest.json`,import.meta.url)));
-  assert.equal(metadata.styleId,10005);assert.equal(metadata.voice,'女声1');
+  assert.equal(metadata.voiceId,'Ono_Anna');assert.equal(metadata.voice,'Ono_Anna');
  }
  for(const entry of Object.values(audioManifest)) {
-  assert.equal(entry.status,'ready');assert.equal(entry.voiceStyleId,10005);
+  assert.equal(entry.status,'ready');assert.equal(entry.voiceId,'Ono_Anna');
  }
  assert.equal(audioManifest['guide.intro.ko'],undefined);
 });

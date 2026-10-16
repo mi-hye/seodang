@@ -13,6 +13,7 @@ export const phraseText = (text, phrases = text.split(/(\s+)/)) => phrases
   .map(part => /^\s+$/.test(part) ? esc(part) : `<span class="text-phrase">${esc(part)}</span>`)
   .join('<wbr>');
 const paths = {
+  letters: "M4 20 10 4l6 16M6 15h8M16 5h6M19 2v6",
   locate: "M12 2v3m0 14v3M2 12h3m14 0h3M19 12a7 7 0 1 0-14 0 7 7 0 0 0 14 0M14 12a2 2 0 1 0-4 0 2 2 0 0 0 4 0",
   people: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75",
   home: "M3 10L12 3l9 7v11h-6v-7H9v7H3Z",
@@ -68,7 +69,7 @@ export function expressionCard(
   return `<article class="expression">${picture ? expressionImage(e) : ""}<span class="eyebrow">일본어 표현</span><div class="expression-heading audio-text-row"><h3 lang="ja">${phraseText(e.text)}</h3>${audioButton(`case01.${e.id}.ja`, sound, `${e.text} 다시 듣기`, true)}</div>${meaning ? `<p>${e.meaning}</p>` : `<details><summary>뜻 확인하기</summary><p>${e.meaning}</p></details>`}<div class="expression-parts">${meaning ? e.parts.map(([ja, ko]) => `<span><b lang="ja">${phraseText(ja)}</b> ${ko}</span>`).join("") : ""}</div>${showReading ? `<div class="expression-reading"><p lang="ja-Latn">${e.reading}</p><p>${e.help}</p></div>` : `<details><summary>${beginner ? "글자와 읽는 법 도움" : "읽는 법 보기"}</summary><p lang="ja-Latn">${e.reading}</p><p>${e.help}</p><small>일반 표기: <span lang="ja">${phraseText(e.natural)}</span></small></details>`}</article>`;
 }
 
-export function homeCaseCard({ title, action, actionLabel }) {
-  const parts=title.split(' · '),position=parts.length>1?parts.shift():null;
-  return `<section class="case-card home-start-card" aria-label="${t('바로 학습하기')}"><div class="home-card-heading">${position?`<span class="home-position">${esc(position)}</span>`:''}<h2>${esc(parts.join(' · '))}</h2></div>${button(`${esc(actionLabel)} ${icon("arrow")}`,action,'primary')}</section>`;
+export function homeCaseCard({ title, action, actionLabel, id }) {
+  const parts=title.split(' · '),position=parts.length>1?parts.shift():null,numbered=parts.join(' · ').match(/^(\d+)\.\s+(.+)$/u),label=[position,numbered?.[1]].filter(Boolean).join(' · ');
+  return `<section class="case-card home-start-card" aria-label="${t('바로 학습하기')}"><div class="home-card-heading">${label?`<span class="home-position">${esc(label)}</span>`:''}<h2>${esc(numbered?numbered[2]:parts.join(' · '))}</h2></div>${button(`${esc(actionLabel)} ${icon("arrow")}`,action,'primary',id===undefined?'':`data-id="${esc(id)}"`)}</section>`;
 }

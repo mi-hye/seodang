@@ -1,167 +1,464 @@
 {
-  "languageReview": "Native-speaker listening review pending",
+  "languageReview": "User approved Sohee and Ono_Anna samples; full native-speaker review of all recordings remains pending",
   "files": {
     "reading.5.0": {
       "id": "reading.5.0",
       "text": "水曜日は休みです。",
       "locale": "ja-JP",
-      "voice": "VOICEVOX Nemo 女声1",
+      "voice": "Ono_Anna",
       "file": "assets/audio/practice/reading.5.0.wav",
-      "duration": 1.6533333333333333,
-      "sha256": "deab2dd21e4fb81e26dd9cf400139df00646e4d1498c2d92a5b988ea3cb5a5af"
+      "duration": 6.72,
+      "sha256": "632e4da61e8a459a80f5fc1dbecaf4ca673ffe117542db19963141261491c3e1",
+      "peak": 9437,
+      "rms": 1139.8,
+      "voiceId": "Ono_Anna",
+      "synthesisText": "水曜日は休みです。",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "水曜日は休みです。",
+          "seed": 42,
+          "duration": 6.72,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "水曜日は休みです。"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "reading.5.1": {
       "id": "reading.5.1",
       "text": "時間は変えません。",
       "locale": "ja-JP",
-      "voice": "VOICEVOX Nemo 女声1",
+      "voice": "Ono_Anna",
       "file": "assets/audio/practice/reading.5.1.wav",
-      "duration": 1.344,
-      "sha256": "808ccf6c692187d7881a3808b853d8b06d9780cacf829b2610040eec77174088"
+      "duration": 1.44,
+      "sha256": "193c160bd9a02e6f55a1b289d1cc1c4babd606be5e9779bc30823b286e582a34",
+      "peak": 9625,
+      "rms": 1664.5,
+      "voiceId": "Ono_Anna",
+      "synthesisText": "時間は変えません。",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "時間は変えません。",
+          "seed": 42,
+          "duration": 1.44,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "時間は変えません。"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "reading.5.2": {
       "id": "reading.5.2",
       "text": "読む場所に合わせて選びます。",
       "locale": "ja-JP",
-      "voice": "VOICEVOX Nemo 女声1",
+      "voice": "Ono_Anna",
       "file": "assets/audio/practice/reading.5.2.wav",
-      "duration": 1.8666666666666667,
-      "sha256": "0e7cb4b5c272f83a7712a831f6c1ce4eef7e283efecb7488413576e733ae4ed1"
+      "duration": 2.08,
+      "sha256": "802cf51ff30750a1277f2331781e760b0fde10692533324a87f79fa8b0753d2c",
+      "peak": 2801,
+      "rms": 673.1,
+      "voiceId": "Ono_Anna",
+      "synthesisText": "読む場所に合わせて選びます。",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "読む場所に合わせて選びます。",
+          "seed": 42,
+          "duration": 2.08,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "読む場所に合わせて選びます。"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "reading.6.0": {
       "id": "reading.6.0",
       "text": "本がなくても参加できます。",
       "locale": "ja-JP",
-      "voice": "VOICEVOX Nemo 女声1",
+      "voice": "Ono_Anna",
       "file": "assets/audio/practice/reading.6.0.wav",
-      "duration": 1.9093333333333333,
-      "sha256": "f3374ae27cbe2c51899f9d67add24e18a73db28c679a827034957d78c709de97"
+      "duration": 2.08,
+      "sha256": "2bce52c58d5698a0e8f68e8158181af021ab0606cd74bb8619ea47ee9e4b402e",
+      "peak": 9864,
+      "rms": 1585.9,
+      "voiceId": "Ono_Anna",
+      "synthesisText": "本がなくても参加できます。",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "本がなくても参加できます。",
+          "seed": 42,
+          "duration": 2.08,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "本がなくても参加できます。"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "reading.6.1": {
       "id": "reading.6.1",
       "text": "花屋で名前を伝えます。",
       "locale": "ja-JP",
-      "voice": "VOICEVOX Nemo 女声1",
+      "voice": "Ono_Anna",
       "file": "assets/audio/practice/reading.6.1.wav",
-      "duration": 1.7706666666666666,
-      "sha256": "d38f246c5084341c77886d3499174d8ab42a5f3e51ef8f30ee12fcf8da2a0d39"
+      "duration": 1.68,
+      "sha256": "304537798781add0fba940f3bbac3de21863dfe3a132025cded8ffbd7eca699a",
+      "peak": 6594,
+      "rms": 1356.4,
+      "voiceId": "Ono_Anna",
+      "synthesisText": "花屋で名前を伝えます。",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "花屋で名前を伝えます。",
+          "seed": 42,
+          "duration": 1.68,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "花屋で名前を伝えます。"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "reading.6.2": {
       "id": "reading.6.2",
       "text": "会話が生まれる時間を大切にします。",
       "locale": "ja-JP",
-      "voice": "VOICEVOX Nemo 女声1",
+      "voice": "Ono_Anna",
       "file": "assets/audio/practice/reading.6.2.wav",
-      "duration": 2.570666666666667,
-      "sha256": "b7492967a5d72bd9619f4d9ba2acb80076603a96653768a4b0c919a3e30593b8"
+      "duration": 2.72,
+      "sha256": "251360ac3ab9bfcadf02ad50b1b929b2e3e831a1ab1aff4dedaef4d10b5b8735",
+      "peak": 11011,
+      "rms": 1647.8,
+      "voiceId": "Ono_Anna",
+      "synthesisText": "会話が生まれる時間を大切にします。",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "会話が生まれる時間を大切にします。",
+          "seed": 42,
+          "duration": 2.72,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "会話が生まれる時間を大切にします。"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "reading.7.0": {
       "id": "reading.7.0",
       "text": "指標に判断を明け渡さない。",
       "locale": "ja-JP",
-      "voice": "VOICEVOX Nemo 女声1",
+      "voice": "Ono_Anna",
       "file": "assets/audio/practice/reading.7.0.wav",
-      "duration": 2.037333333333333,
-      "sha256": "d4491a974518ac65cdfc813dab49bf6e55a7515c84107d69c73f09f25adb9eef"
+      "duration": 2.16,
+      "sha256": "b9acdbcd9d7021bbb7a65eb1f14cbddc2b866383c32ca6e7986c70d189083f95",
+      "peak": 4575,
+      "rms": 842.1,
+      "voiceId": "Ono_Anna",
+      "synthesisText": "指標に判断を明け渡さない。",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "指標に判断を明け渡さない。",
+          "seed": 42,
+          "duration": 2.16,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "指標に判断を明け渡さない。"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "reading.7.1": {
       "id": "reading.7.1",
       "text": "沈黙を同意と見なさない。",
       "locale": "ja-JP",
-      "voice": "VOICEVOX Nemo 女声1",
+      "voice": "Ono_Anna",
       "file": "assets/audio/practice/reading.7.1.wav",
-      "duration": 1.824,
-      "sha256": "1e6c28281ad519d1422fb9cec871db9c92f91a4d48d3c1ef99b30ca27a92e01e"
+      "duration": 2.32,
+      "sha256": "eee2eb5cf2b8b447e7c89e2f3cbc607bc8540abd6f9d9575591aea80b859b327",
+      "peak": 7321,
+      "rms": 1725.6,
+      "voiceId": "Ono_Anna",
+      "synthesisText": "沈黙を同意と見なさない。",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "沈黙を同意と見なさない。",
+          "seed": 42,
+          "duration": 2.32,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "沈黙を同意と見なさない。"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "reading.7.2": {
       "id": "reading.7.2",
       "text": "見た目だけでなく暮らしを守る。",
       "locale": "ja-JP",
-      "voice": "VOICEVOX Nemo 女声1",
+      "voice": "Ono_Anna",
       "file": "assets/audio/practice/reading.7.2.wav",
-      "duration": 2.037333333333333,
-      "sha256": "72b76da4db9da86f8be8ab82e0b991ca889e804cf432d6fae9c43c66b581f21e"
+      "duration": 2.64,
+      "sha256": "e1b124698cc814877d1a136b3a3a3b8afbb34d3bfb589f5dac12d789f8e690a3",
+      "peak": 11046,
+      "rms": 1595.3,
+      "voiceId": "Ono_Anna",
+      "synthesisText": "見た目だけでなく暮らしを守る。",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "見た目だけでなく暮らしを守る。",
+          "seed": 42,
+          "duration": 2.64,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "見た目だけでなく暮らしを守る。"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.5-1.0": {
       "id": "korean.5-1.0",
       "text": "오후 5시",
       "locale": "ko-KR",
-      "voice": "macOS Yuna",
+      "voice": "Sohee",
       "file": "assets/audio/practice/korean.5-1.0.wav",
-      "duration": 1.1588333333333334,
-      "sha256": "394b4024b5ea5d03b925875b60105f8b5021696eb02227f591202eecde75391b"
+      "duration": 1.52,
+      "sha256": "b575a528c34702a1837ad8a972540cfbe81f4d4276d7d86d9784020d3211449e",
+      "peak": 13705,
+      "rms": 1913.0,
+      "voiceId": "Sohee",
+      "synthesisText": "오후 5시",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "오후 5시",
+          "seed": 42,
+          "duration": 1.52,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "오후 5시"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.5-1.1": {
       "id": "korean.5-1.1",
       "text": "만나는 장소",
       "locale": "ko-KR",
-      "voice": "macOS Yuna",
+      "voice": "Sohee",
       "file": "assets/audio/practice/korean.5-1.1.wav",
-      "duration": 1.2855833333333333,
-      "sha256": "f058261f0c418f2ff9f21f380df5f561a4a08ece23982c2a4e20a7d6f13f5033"
+      "duration": 1.04,
+      "sha256": "8a6951f8a89814e08e19b596478dcbbf81868a39a15e2c6323a01663223234f1",
+      "peak": 6681,
+      "rms": 1857.3,
+      "voiceId": "Sohee",
+      "synthesisText": "만나는 장소",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "만나는 장소",
+          "seed": 42,
+          "duration": 1.04,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "만나는 장소"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.5-1.2": {
       "id": "korean.5-1.2",
       "text": "운동도 할 수 있어서",
       "locale": "ko-KR",
-      "voice": "macOS Yuna",
+      "voice": "Sohee",
       "file": "assets/audio/practice/korean.5-1.2.wav",
-      "duration": 1.6229583333333333,
-      "sha256": "0303e47c5304f0abf2c1a713a66c5cb01dc9e7bd5b207f5a4f606121e56fff04"
+      "duration": 1.6,
+      "sha256": "bd1f9d2b582389a530cd6b8727475649cd32f1c8219fb45b3ef1c952f0b90ee6",
+      "peak": 20579,
+      "rms": 3787.0,
+      "voiceId": "Sohee",
+      "synthesisText": "운동도 할 수 있어서",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "운동도 할 수 있어서",
+          "seed": 42,
+          "duration": 1.6,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "운동도 할 수 있어서"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.6-1.0": {
       "id": "korean.6-1.0",
       "text": "토요일부터",
       "locale": "ko-KR",
-      "voice": "macOS Yuna",
+      "voice": "Sohee",
       "file": "assets/audio/practice/korean.6-1.0.wav",
-      "duration": 1.0275416666666666,
-      "sha256": "f1cd5947539931c8fc0d53f2c9f9b8243369758491720d3774817968e7123352"
+      "duration": 1.28,
+      "sha256": "a3e1b8c2dc8c923fa44f12cfda8c447a80fcf225f9d7bca64af0d69c21065f9b",
+      "peak": 10494,
+      "rms": 2474.1,
+      "voiceId": "Sohee",
+      "synthesisText": "토요일부터",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "토요일부터",
+          "seed": 42,
+          "duration": 1.28,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "토요일부터"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.6-1.1": {
       "id": "korean.6-1.1",
       "text": "자료는 미리 보고 결론은 함께 논의한다.",
       "locale": "ko-KR",
-      "voice": "macOS Yuna",
+      "voice": "Sohee",
       "file": "assets/audio/practice/korean.6-1.1.wav",
-      "duration": 2.9913333333333334,
-      "sha256": "8e06d220e1cdd8734a378033d924f470fe7cf104ce17a8812145ab6ee3275779"
+      "duration": 3.76,
+      "sha256": "b2fa84f7c0138063db89cf3de6399b760db1b1b75c6651b95075d2b849cc2838",
+      "peak": 14263,
+      "rms": 2128.7,
+      "voiceId": "Sohee",
+      "synthesisText": "자료는 미리 보고 결론은 함께 논의한다.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "자료는 미리 보고 결론은 함께 논의한다.",
+          "seed": 42,
+          "duration": 3.76,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "자료는 미리 보고 결론은 함께 논의한다."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.6-1.2": {
       "id": "korean.6-1.2",
       "text": "신고하지 못한 불편이 남아 있을 수 있어서",
       "locale": "ko-KR",
-      "voice": "macOS Yuna",
+      "voice": "Sohee",
       "file": "assets/audio/practice/korean.6-1.2.wav",
-      "duration": 3.1662916666666665,
-      "sha256": "bf94d004c065abbb884a38a000596b91114742a8c4c0b66c4695935d08baf4cc"
+      "duration": 3.6,
+      "sha256": "f12536c3c022bf343ee87b7a780a90718f809d01b013d5946867fedea7a1df5f",
+      "peak": 20182,
+      "rms": 2767.4,
+      "voiceId": "Sohee",
+      "synthesisText": "신고하지 못한 불편이 남아 있을 수 있어서",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "신고하지 못한 불편이 남아 있을 수 있어서",
+          "seed": 42,
+          "duration": 3.6,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "신고하지 못한 불편이 남아 있을 수 있어서"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.7-1.0": {
       "id": "korean.7-1.0",
       "text": "지표를 활용하되 드러나지 않는 기여도 살펴야 한다.",
       "locale": "ko-KR",
-      "voice": "macOS Yuna",
+      "voice": "Sohee",
       "file": "assets/audio/practice/korean.7-1.0.wav",
-      "duration": 3.435625,
-      "sha256": "63e8930df265fcc62fafe3ebe737053197e93daeb21c2c06acca07436003382f"
+      "duration": 3.36,
+      "sha256": "b2c0555a2be37234ffbf13056cddacb1561e3737bb82b7e29c7a4d0d2c4eaab3",
+      "peak": 14920,
+      "rms": 2788.0,
+      "voiceId": "Sohee",
+      "synthesisText": "지표를 활용하되 드러나지 않는 기여도 살펴야 한다.",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "지표를 활용하되 드러나지 않는 기여도 살펴야 한다.",
+          "seed": 42,
+          "duration": 3.36,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "지표를 활용하되 드러나지 않는 기여도 살펴야 한다."
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.7-1.1": {
       "id": "korean.7-1.1",
       "text": "의견을 반영할 여지가 없는 형식적인 소통",
       "locale": "ko-KR",
-      "voice": "macOS Yuna",
+      "voice": "Sohee",
       "file": "assets/audio/practice/korean.7-1.1.wav",
-      "duration": 3.1438333333333333,
-      "sha256": "c3f77b54ee5a953ace4fccc000c387552165c22e0ef4e23b184bb0f26b6f29d0"
+      "duration": 4.08,
+      "sha256": "e95fdb77041109d4b017cf04ea57d6d65930129f5d8c115b9fae6ac5623ffa79",
+      "peak": 16674,
+      "rms": 2377.1,
+      "voiceId": "Sohee",
+      "synthesisText": "의견을 반영할 여지가 없는 형식적인 소통",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "의견을 반영할 여지가 없는 형식적인 소통",
+          "seed": 42,
+          "duration": 4.08,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "의견을 반영할 여지가 없는 형식적인 소통"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "korean.7-1.2": {
       "id": "korean.7-1.2",
       "text": "매출 증가를 지원 사업만의 효과로 단정하는 것",
       "locale": "ko-KR",
-      "voice": "macOS Yuna",
+      "voice": "Sohee",
       "file": "assets/audio/practice/korean.7-1.2.wav",
-      "duration": 3.4688333333333334,
-      "sha256": "9da0e94ae557cff1f366b3a5c2a798037dd17bfd0c73a92261c221db7e2d1739"
+      "duration": 3.28,
+      "sha256": "51dab410bc16074d84e3785e1cfe31941b89404c41eb51d7fca16ac60d6b71f6",
+      "peak": 15147,
+      "rms": 3017.9,
+      "voiceId": "Sohee",
+      "synthesisText": "매출 증가를 지원 사업만의 효과로 단정하는 것",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "매출 증가를 지원 사업만의 효과로 단정하는 것",
+          "seed": 42,
+          "duration": 3.28,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "매출 증가를 지원 사업만의 효과로 단정하는 것"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     }
-  }
+  },
+  "provider": "Qwen3-TTS (MLX Audio)",
+  "generatedAt": "2026-10-15",
+  "usageScope": "Commercial model use permitted under Apache-2.0; no separate generated-audio restriction found in published model terms. Third-party rights are not warranted.",
+  "licenseSource": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+  "rightsReviewed": true,
+  "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-8bit",
+  "modelRevision": "41d3337e8b7f2843a75841595fc14e4b9a7a4b96",
+  "license": "Apache-2.0",
+  "rightsReviewDate": "2026-10-15"
 }

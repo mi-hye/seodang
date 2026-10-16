@@ -1,5 +1,5 @@
-// Original spoken essays. Scripts are audio inputs, never rendered in the listening screen.
-export const advancedCourse={title:'行間を聴く',intro:'音声を|聞き、|発言の|含意と|論理を|捉えてください。',passages:[
+// Original learning essays, presented as advanced reading with matching optional audio.
+export const advancedCourse={title:'専門記事・論説を読む',intro:'学習用の論説です。|筆者の主張、|反論、|暗黙の前提を|区別して|読みましょう。',passages:[
  {title:'評価という装置',paragraphs:[
   '業務の効率化について、少し考えてみたいと思います。相談窓口に、一件当たりの対応時間という指標を導入したとします。導入後、平均時間は短くなり、報告書には改善と記される。ところが、相談者が同じ問題で何度も訪れるようになったとしたら、何が改善したのでしょうか。一度で済んでいた相談を三度に分ければ、一件当たりの数字は立派になる。もちろん、だから指標は無意味だ、と言いたいのではありません。数字なしでは見落とす変化もある。ただ、その数字が何を一件として数え、何を窓口の外へ追い出したのかは、数字そのものには書かれていないのです。',
   'ここで、満足度も測ればよいという反論が出るでしょう。それは有用です。しかし、評価項目を増やすだけで、評価からこぼれる経験がなくなるわけではない。そもそも、納得できずに足が遠のいた人は、窓口のアンケートには答えません。見えている不満だけを減らして、見えなくなった不満を解決したことにしてしまう。そんな逆転さえ起こり得ます。',
@@ -55,4 +55,6 @@ export const advancedCourse={title:'行間を聴く',intro:'音声を|聞き、|
   ],hint:'対象に|合わせて|制度を|工夫するのか、|制度が|扱える範囲に|対象の|意味を|縮めるのか。|因果の|向きに|注目してください。'},
  ]},
 ]};
-export const advancedAudio=advancedCourse.passages.map((p,i)=>({id:`level7.${i+1}`,text:p.paragraphs.join(''),locale:'ja-JP',status:'ready',audioFile:`assets/audio/advanced/level7-${i+1}.wav`,voiceStyleId:10005,productionMethod:'VOICEVOX Nemo'}));
+const glossaries=['指標 지표 · 裁量 재량 · 異議 이의','了承 양해 · 留保 유보 · 議事録 회의록','継承 계승 · 連続性 연속성 · 政策 정책'];
+advancedCourse.passages.forEach((p,i)=>p.words=glossaries[i]);
+export const advancedAudio=advancedCourse.passages.map((p,i)=>({id:`level7.${i+1}`,text:p.paragraphs.join(''),locale:'ja-JP',status:'ready',audioFile:`assets/audio/advanced/level7-${i+1}.wav`,voiceId:'Ono_Anna',productionMethod:'Qwen3-TTS (MLX Audio)'}));

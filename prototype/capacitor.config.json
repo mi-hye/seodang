@@ -6,6 +6,6 @@
     "backgroundColor": "#15121c",
     "contentInset": "never",
     "preferredContentMode": "mobile",
-    "zoomEnabled": true
+    "zoomEnabled": false
   }
 }

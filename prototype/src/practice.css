@@ -48,3 +48,69 @@ html[data-motion=off] .practice-fireworks>i{animation:none}
 .practice-with-meanings .practice-choices button{padding-block:12px}
 .practice-with-meanings .practice-feedback{margin-block:10px}
 @media(max-height:700px){.practice-with-meanings .practice-board{height:200px}.practice-with-meanings>.button-pair{margin-top:12px}}
+
+.practice-katakana .practice-writing-reference{margin-block:12px 8px}
+.practice-katakana .practice-board{height:min(200px,30dvh);margin-block:8px}
+.practice-katakana .practice-board-glyph{width:min(100%,250px,35dvh);height:auto}
+.practice-katakana .practice-feedback{margin-block:8px;min-height:22px}
+.practice-katakana>.button-pair{margin-top:12px}
+
+/* Keep the lesson and its controls together in the space below the native header. */
+#app .shell.lesson-centered-shell{display:flex;flex-direction:column;min-height:100dvh;height:auto}
+#app .lesson-centered-shell>.app-header,#app .lesson-centered-shell>.lesson-progress{flex:none}
+#app main.lesson-centered{display:flex;flex-direction:column;flex:1;min-height:0;height:auto;width:100%;margin:0;align-items:stretch;justify-content:flex-start;padding:12px 20px max(20px,env(safe-area-inset-bottom))}
+#app main.lesson-centered::before,#app main.lesson-centered::after{content:"";display:block;flex:1 0 0}
+#app main.lesson-centered>*{flex-shrink:0}
+#app main.lesson-centered>.basic-learn,#app main.lesson-centered>.korean-zero-learn{flex:none;padding-top:0}
+#app main.lesson-centered>.basic-learn{padding-bottom:12px}
+#app main.lesson-centered>.korean-zero-intro{margin-block:0}
+#app main.lesson-centered>.button-pair,#app main.lesson-centered>.kana-letter-nav{margin-top:12px;margin-bottom:0}
+#app main.lesson-centered>.korean-count{margin-bottom:12px}
+#app main.lesson-centered .korean-learn{margin-top:0;margin-bottom:16px}
+#app main.lesson-centered>.practice-feedback:empty{min-height:0;margin:4px 0}
+#app main.lesson-centered.korean-zero-finish>p{margin-block:4px}
+#app main.lesson-centered.korean-zero-finish>.korean-final-table{margin-block:4px}
+
+/* Vocabulary belongs to the scene's sentences, with compact mobile rows. */
+.case-words{margin:16px 0;text-align:left;width:100%;word-break:keep-all}
+.case-words h2{font-size:14px;margin:0 0 8px;color:var(--muted)}
+.case-words dl{margin:0;display:grid;gap:6px}
+.case-words dl>div{display:flex;align-items:baseline;gap:12px;justify-content:space-between}
+.case-words dt{font-weight:650;min-width:0;overflow-wrap:anywhere}
+.case-words dd{margin:0;text-align:right;min-width:0;overflow-wrap:anywhere}
+.case-intro ul{padding-left:20px;text-align:left;line-height:1.65}
+.case-intro p{line-height:1.65}
+.korean-case-passage .audio-text-row h1{font-size:20px;line-height:1.65;text-align:left;word-break:keep-all}
+
+/* Case lessons start directly below the header; only letters remain centered. */
+#app .shell.lesson-top-shell{display:flex;flex-direction:column;min-height:100dvh;height:auto}
+#app .lesson-top-shell>.app-header,#app .lesson-top-shell>.lesson-progress{flex:none}
+#app main.lesson-top{margin:0;width:100%;padding-top:8px;justify-content:flex-start}
+#app main.lesson-top.lesson-centered::before,#app main.lesson-top.lesson-centered::after{display:none}
+#app main.lesson-top>:first-child{margin-top:0}
+
+.case-practice h1{font-size:calc(23px * var(--text-scale));margin:6px 0 12px}
+.case-practice h2{font-size:calc(18px * var(--text-scale));line-height:1.6;margin:14px 0 10px;white-space:pre-line}
+.case-task-count{font-size:14px;text-align:right;color:var(--muted)}
+.case-task-scene{line-height:1.65;white-space:pre-line;margin:10px 0}
+.case-task-passage{padding:12px;background:var(--stage-raised);border-radius:12px;line-height:1.7}
+.case-task-passage p{margin:0 0 8px}.case-task-passage p:last-child{margin-bottom:0}
+.case-task-options{display:grid;gap:8px}.case-task-options button{text-align:left;line-height:1.6;padding:12px;min-height:48px;white-space:normal;margin:0}
+.case-task-options [aria-pressed=true]{border-color:var(--amber);background:var(--selected)}
+.case-task-answer{min-height:64px;padding:12px;border:1px solid var(--line);border-radius:12px;line-height:1.7;margin:10px 0;white-space:normal}
+.case-task-tokens{display:flex;flex-wrap:wrap;gap:8px}.case-task-tokens button{min-width:44px;min-height:44px;margin:0;padding:10px}
+.case-practice .practice-feedback{margin:12px 0;min-height:26px}
+.case-task-options{grid-template-columns:minmax(0,1fr)}
+.case-task-options button{min-width:0;overflow-wrap:anywhere}
+.case-practice,.case-task-passage,.case-task-tokens{min-width:0}
+.case-task-options button{display:block}
+.case-task-tokens button{display:block;width:auto;max-width:100%;white-space:normal}
+.case-task-options button:disabled{opacity:1}
+
+/* Completion owns its alignment instead of inheriting lesson stretching. */
+#app .shell.lesson-complete-shell{display:flex;flex-direction:column;min-height:100dvh;height:auto}
+#app .lesson-complete-shell>.app-header,#app .lesson-complete-shell>.lesson-progress{flex:none}
+#app .lesson-complete-shell>main.practice-complete{flex:1;min-height:0;width:100%;margin:0;padding:16px 20px max(24px,env(safe-area-inset-bottom));align-items:center;justify-content:center}
+#app .lesson-complete-shell .practice-fireworks{flex:none;width:min(240px,100%);height:clamp(140px,24dvh,200px)}
+#app .lesson-complete-shell .practice-complete h1{width:100%;margin:12px 0 24px;text-align:center}
+#app .lesson-complete-shell .practice-complete>.primary{flex:none}

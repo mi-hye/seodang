@@ -1,0 +1,9 @@
+AI-generated learning audio: Qwen3-TTS CustomVoice.
+Korean: Sohee. Japanese: Ono_Anna.
+Generated locally using MLX Audio; no cloned reference recording.
+Source model: https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice
+Converted model: https://huggingface.co/mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-8bit
+Model license: Apache License 2.0. See ../LICENSE-Qwen3-TTS.txt.
+The model license permits commercial use; no separate output distribution restriction was found in the published model terms. It does not warrant third-party rights or non-infringement.
+Input text, model revision, voice, settings and hashes: manifest.json.
+Full native-speaker listening review remains pending.

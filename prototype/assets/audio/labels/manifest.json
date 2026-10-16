@@ -1,52 +1,117 @@
 {
-  "provider": "VOICEVOX Nemo",
-  "voice": "女声1",
-  "styleId": 10005,
-  "coreVersion": "0.17.0",
-  "modelVersion": "0.16.4",
-  "credit": "VOICEVOX Nemo",
-  "terms": "https://voicevox.hiroshiba.jp/nemo/term/",
-  "languageReview": "Generated short sentences recorded for review; native-speaker listening review pending",
+  "provider": "Qwen3-TTS (MLX Audio)",
+  "languageReview": "User approved Sohee and Ono_Anna samples; full native-speaker review of all recordings remains pending",
   "files": {
     "kasa": {
       "text": "かさ",
       "synthesisText": "傘",
-      "kana": "カ'サ",
       "file": "assets/audio/labels/kasa.wav",
-      "duration": 0.704,
-      "peak": 11215,
-      "rms": 1372.2,
-      "sha256": "6ef0a51a165b9d4c8c8453feca154377755daff6f5a6a83d920e80a424ef8d5b"
+      "duration": 0.56,
+      "peak": 13828,
+      "rms": 2767.3,
+      "sha256": "cc34181f8b4e299f7962f394669a07a3a7d44b0b52892b8b9f7387bf55b4e69f",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "傘",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "傘",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "kutsu": {
       "text": "くつ",
       "synthesisText": "靴",
-      "kana": "_クツ'",
       "file": "assets/audio/labels/kutsu.wav",
-      "duration": 0.704,
-      "peak": 9893,
-      "rms": 1092.1,
-      "sha256": "a266c5bb2382319d3a0e50b509f29da61ac157747fc8f79648ff198d652479bf"
+      "duration": 0.64,
+      "peak": 16379,
+      "rms": 2936.5,
+      "sha256": "1b6837284c8ccf22ab43c917ac08659ee4e8713f501920df020b262a2d9d2054",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "靴",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "靴",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "hana": {
       "text": "はな",
       "synthesisText": "花",
-      "kana": "ハナ'",
       "file": "assets/audio/labels/hana.wav",
-      "duration": 0.683,
-      "peak": 15042,
-      "rms": 2381.5,
-      "sha256": "ba0770133480d4b7311fac78472d98f092e7cc257008205197c7a396a3edef3b"
+      "duration": 0.64,
+      "peak": 6484,
+      "rms": 1683.5,
+      "sha256": "f106e972383c116162d897710b00900043577e1f9619436fe52b06f23af9b3f6",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "花",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "花",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     },
     "neko": {
       "text": "ねこ",
       "synthesisText": "猫",
-      "kana": "ネ'コ",
       "file": "assets/audio/labels/neko.wav",
-      "duration": 0.661,
-      "peak": 13156,
-      "rms": 2226.8,
-      "sha256": "cbd2edb413a422b3b2e38c7b6a62f73215b0a154c7cf5897afcf53677f9c2aa5"
+      "duration": 1.04,
+      "peak": 5866,
+      "rms": 1133.3,
+      "sha256": "63a11226b8b4297a37a56410399873520f4e3451d12a6584f7b544d17b2ba559",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "猫",
+          "seed": 42,
+          "duration": 1.04,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "猫",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
     }
-  }
+  },
+  "generatedAt": "2026-10-15",
+  "locale": "ja-JP",
+  "usageScope": "Commercial model use permitted under Apache-2.0; no separate generated-audio restriction found in published model terms. Third-party rights are not warranted.",
+  "licenseSource": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+  "rightsReviewed": true,
+  "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-8bit",
+  "modelRevision": "41d3337e8b7f2843a75841595fc14e4b9a7a4b96",
+  "license": "Apache-2.0",
+  "rightsReviewDate": "2026-10-15",
+  "voice": "Ono_Anna",
+  "voiceId": "Ono_Anna"
 }

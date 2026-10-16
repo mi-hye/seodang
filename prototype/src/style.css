@@ -31,12 +31,6 @@ button {
   color: inherit;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition:
-    background 0.16s,
-    transform 0.1s;
-}
-button:active:not(:disabled) {
-  transform: scale(0.98);
 }
 button:disabled {
   opacity: 0.5;
@@ -143,11 +137,6 @@ svg {
   background: transparent;
   color: #eadfd1;
 }
-@media (hover: hover) and (pointer: fine) {
-  .icon-button:hover:not(:disabled) {
-    background: #ffffff0c;
-  }
-}
 .page {
   padding: 21px 22px calc(105px + env(safe-area-inset-bottom, 0px));
 }
@@ -180,11 +169,6 @@ svg {
   background: var(--amber);
   color: var(--button-ink);
   box-shadow: 0 2px 0 #0002;
-}
-@media (hover: hover) and (pointer: fine) {
-  .primary:hover:not(:disabled) {
-    background: var(--amber-hover);
-  }
 }
 .secondary {
   background: #ffffff07;

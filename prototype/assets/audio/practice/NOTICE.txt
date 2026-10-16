@@ -1,7 +1,9 @@
-Japanese recap clips: VOICEVOX Nemo 女声1, style 10005, core 0.17.0, model 0.16.4.
-Credit: VOICEVOX Nemo
-Terms: https://voicevox.hiroshiba.jp/nemo/term/
-Korean recap clips: installed macOS Yuna Korean voice.
-Original practice text and reproducible generation inputs are included in lines.json.
-Generated files, durations and hashes are recorded in manifest.json.
-Native-speaker listening review remains pending. User microphone recordings are not bundled or uploaded.
+AI-generated learning audio: Qwen3-TTS CustomVoice.
+Korean: Sohee. Japanese: Ono_Anna.
+Generated locally using MLX Audio; no cloned reference recording.
+Source model: https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice
+Converted model: https://huggingface.co/mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-8bit
+Model license: Apache License 2.0. See ../LICENSE-Qwen3-TTS.txt.
+The model license permits commercial use; no separate output distribution restriction was found in the published model terms. It does not warrant third-party rights or non-infringement.
+Input text, model revision, voice, settings and hashes: manifest.json.
+Full native-speaker listening review remains pending.

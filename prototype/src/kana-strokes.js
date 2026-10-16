@@ -1,6 +1,6 @@
 // KanjiVG © Ulrich Apel and contributors, CC BY-SA 3.0.
 // Geometry is extracted unchanged; attribution and original SVGs: assets/strokes/.
-let data;
+const datasets=new Map();
 const demonstrated=new Set();
 export async function mountStrokes(box,{onReady=()=>{},autoPlay=true}={}){
  let disposed=false,frame=0,running=false,step=-1,paths=[],numbers=[];
@@ -31,8 +31,9 @@ export async function mountStrokes(box,{onReady=()=>{},autoPlay=true}={}){
  // Expose cancellation synchronously, even while the optional local asset loads.
  onReady(dispose);
  try{
-  data ||= fetch('assets/strokes/data.json').then(r=>{if(!r.ok)throw Error('stroke data unavailable');return r.json();}).catch(e=>{data=null;throw e;});
-  const entry=(await data)[box.dataset.writingText];if(disposed)return;
+  const url=box.dataset.strokeSource||'assets/strokes/data.json';
+  if(!datasets.has(url))datasets.set(url,fetch(url).then(r=>{if(!r.ok)throw Error('stroke data unavailable');return r.json();}).catch(e=>{datasets.delete(url);throw e;}));
+  const entry=(await datasets.get(url))[box.dataset.writingText];if(disposed)return;
   if(!entry)throw Error('missing glyph');
   const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 109 109');svg.setAttribute('aria-hidden','true');
   const group=document.createElementNS(ns,'g');group.setAttribute('class','stroke-paths');svg.append(group);

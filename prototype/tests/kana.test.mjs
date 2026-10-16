@@ -61,13 +61,13 @@ test('previous stays within its row and reading help returns to matching without
  for(let i=0;i<5;i++)s=reduce(s,{type:'kana-next'});
  assert.equal(progress(s).phase,'quiz');assert.equal(progress(s).index,0);assert.equal(kanaSolvedCount(s.kana),0);
 });
-test('locks, replay, difficulty changes and another lesson progress are preserved',()=>{
- let s=reduce(freshState(),{type:'kana-start'});assert.deepEqual(reduce(s,{type:'kana-start',lesson:2}),s);
- assert.equal((renderLearningMap({...s,onboardingLevel:0}).match(/class="map-choice" disabled/g)||[]).length,8);
+test('open access, replay, difficulty changes and another lesson progress are preserved',()=>{
+ let s=reduce(freshState(),{type:'kana-start'});assert.equal(reduce(s,{type:'kana-start',lesson:2}).kana.active,2);
+ assert.equal((renderLearningMap({...s,onboardingLevel:0}).match(/class="map-choice" disabled/g)||[]).length,0);
  s=finishLesson(s);s=reduce(s,{type:'kana-start',lesson:1});s=reduce(s,{type:'kana-next'});const second=structuredClone(progress(s));
  s=reduce(s,{type:'kana-start',lesson:0});assert.equal(progress(s).phase,'intro');assert.equal(kanaSolvedCount(s.kana),1);
  s=reduce(s,{type:'kana-start',lesson:1});assert.deepEqual(progress(s),second);
- const kana=structuredClone(s.kana);for(const value of [1,2,5,1]){s=reduce(s,{type:'level',value});assert.deepEqual(s.kana,kana);assert.equal(selectedLevel(s),value);assert.ok(valid(s));}
+ const kana=structuredClone(s.kana);for(const value of [1,2,5,1]){s=reduce(s,{type:'level',value});assert.deepEqual(s.kana,kana);assert.equal(selectedLevel(s),value===1?2:value);assert.ok(valid(s));}
  s=reduce(s,{type:'kana-restart'});assert.equal(progress(s).index,0);assert.equal(progress(s).phase,'intro');assert.deepEqual(completedCases(s),['kana-v9-0']);
 });
 test('v4-v7 archives and completions survive without marking expanded lessons complete',()=>{

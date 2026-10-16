@@ -1,28 +1,29 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {freshState,reduce} from '../src/engine.js';
-import {basicLessons,basicProgress,basicUnlocked,validBasics,freshBasic} from '../src/basics-state.js';
+import {basicLessons,basicProgress,basicUnlocked,validBasics,freshBasic,basicSinglePass,basicHasIntro} from '../src/basics-state.js';
 import {basicContent} from '../src/basics.js';
 import {freshKana} from '../src/kana-state.js';
 import {freshListening} from '../src/listening-state.js';
 import {load,valid} from '../src/storage.js';
 test('1-6 to 1-10 gate, resume, retry and complete independently without advancing difficulty',()=>{
  let s={...freshState(),onboarded:true,onboardingLevel:1};
- assert.equal(basicUnlocked(s,6),false);assert.equal(reduce(s,{type:'basic-start',id:10}).basics,undefined);
+ assert.equal(basicUnlocked(s,6),false);assert.equal(reduce(s,{type:'basic-start',id:10}).basics.active,10);
  s.listening={...freshListening(),completed:true,index:4};s.kana=freshKana();s.kana.lessons.forEach(l=>{l.completed=true;l.caseSolved=true;});const old=structuredClone(s.episode);
  for(const l of basicLessons){
   assert.equal(basicUnlocked(s,l.id),true);assert.equal(basicContent[l.id].length,l.count);
-  s=reduce(s,{type:'basic-start',id:l.id});if([7,8,9,10].includes(l.id)){assert.equal(basicProgress(s,l.id).phase,'intro');s=reduce(s,{type:'basic-next'});}
+  s=reduce(s,{type:'basic-start',id:l.id});if(basicHasIntro(l.id)){assert.equal(basicProgress(s,l.id).phase,'intro');s=reduce(s,{type:'basic-next'});}
   for(let i=0;i<l.count;i++){
+   if(basicProgress(s,l.id).phase==='intro')s=reduce(s,{type:'basic-next'});
    const [target,,distractors]=basicContent[l.id][i];assert.equal(new Set([target,...distractors]).size,3);
-   s=reduce(s,{type:'basic-next'});if(l.id===10){assert.equal(basicProgress(s,l.id).phase,i===l.count-1?'done':'learn');continue;}if([7,8].includes(l.id)){assert.equal(basicProgress(s,l.id).phase,'write');assert.equal(load({getItem:()=>JSON.stringify(s)}).state.basics.lessons[l.id].phase,'write');s=reduce(s,{type:'basic-next'});assert.equal(basicProgress(s,l.id).phase,'quiz');assert.ok(valid(s));}s=reduce(s,{type:'basic-select',id:String((i+1)%([7,8].includes(l.id)?4:3))});s=reduce(s,{type:'basic-check'});assert.equal(basicProgress(s,l.id).index,i);assert.equal(basicProgress(s,l.id).retry,true);
-   s=reduce(s,{type:'basic-select',id:String(i%([7,8].includes(l.id)?4:3))});s=reduce(s,{type:'basic-check'});assert.ok(valid(s));
+   s=reduce(s,{type:'basic-next'});if(l.id===10){assert.equal(basicProgress(s,l.id).phase,i===l.count-1?'done':'learn');continue;}if(basicSinglePass(l.id)){assert.equal(basicProgress(s,l.id).phase,'write');assert.equal(load({getItem:()=>JSON.stringify(s)}).state.basics.lessons[l.id].phase,'write');s=reduce(s,{type:'basic-next'});assert.equal(basicProgress(s,l.id).phase,'quiz');assert.ok(valid(s));}s=reduce(s,{type:'basic-select',id:String((i+1)%(basicSinglePass(l.id)?4:3))});s=reduce(s,{type:'basic-check'});assert.equal(basicProgress(s,l.id).index,i);assert.equal(basicProgress(s,l.id).retry,true);
+   s=reduce(s,{type:'basic-select',id:String(i%(basicSinglePass(l.id)?4:3))});s=reduce(s,{type:'basic-check'});assert.ok(valid(s));
    const restored=load({getItem:()=>JSON.stringify(s)});assert.equal(restored.blocked,false);s=restored.state;
   }
   assert.equal(basicProgress(s,l.id).completed,true);
  }
- assert.equal(s.onboardingLevel,1);assert.deepEqual(s.episode,old);assert.equal(s.history.completed.filter(x=>x.startsWith('basic-')).length,5);
+ assert.equal(s.onboardingLevel,1);assert.deepEqual(s.episode,old);assert.equal(s.history.completed.filter(x=>x.startsWith('basic-')).length,basicLessons.length);
  s=reduce(s,{type:'basic-start',id:6});assert.equal(s.basics.lessons[6].index,0);assert.equal(s.basics.lessons[6].completed,true);assert.equal(s.history.completed.filter(x=>x==='basic-6').length,1);
- assert.equal(validBasics({...s.basics,active:11}),false);assert.equal(validBasics({...s.basics,lessons:{6:{...s.basics.lessons[6],index:99}}}),false);
+ assert.equal(validBasics({...s.basics,active:99}),false);assert.equal(validBasics({...s.basics,lessons:{6:{...s.basics.lessons[6],index:99}}}),false);
 });
 
 test('old basic saves keep the same material and reopen completed lessons at new vocabulary',()=>{

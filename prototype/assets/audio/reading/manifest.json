@@ -1,0 +1,168 @@
+{
+  "files": {
+    "reading.5.0": {
+      "text": "図書館は午前９時から午後６時まで開いています。水曜日は休みです。本は一人５冊まで、２週間借りることができます。返す日が休みの場合は、次の日に返してください。",
+      "locale": "ja-JP",
+      "file": "assets/audio/reading/reading.5.0.wav",
+      "duration": 14.24,
+      "peak": 7363,
+      "rms": 1046.6,
+      "sha256": "2a148d743471ca5e8f00a9d20c141f7bdbe0e2abf7b8afd6365bcb89a1de775a",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "synthesisText": "図書館は午前９時から午後６時まで開いています。水曜日は休みです。本は一人５冊まで、２週間借りることができます。返す日が休みの場合は、次の日に返してください。",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "図書館は午前９時から午後６時まで開いています。水曜日は休みです。本は一人５冊まで、２週間借りることができます。返す日が休みの場合は、次の日に返してください。",
+          "seed": 42,
+          "duration": 14.24,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "図書館は午前９時から午後６時まで開いています。水曜日は休みです。本は一人５冊まで、２週間借りることができます。返す日が休みの場合は、次の日に返してください。"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "reading.5.1": {
+      "text": "明日は駅の前で午後２時に会う予定でしたが、雨が降りそうです。待ち合わせは駅の中のカフェにしましょう。時間は変えません。映画は３時に始まるので、２時半にはカフェを出ましょう。",
+      "locale": "ja-JP",
+      "file": "assets/audio/reading/reading.5.1.wav",
+      "duration": 13.92,
+      "peak": 6118,
+      "rms": 901.7,
+      "sha256": "4516898d1e933e6c06a9aed8a0b29435d83c40c3c0a317b4d3ed384b8ebc03c2",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "synthesisText": "明日は駅の前で午後２時に会う予定でしたが、雨が降りそうです。待ち合わせは駅の中のカフェにしましょう。時間は変えません。映画は３時に始まるので、２時半にはカフェを出ましょう。",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "明日は駅の前で午後２時に会う予定でしたが、雨が降りそうです。待ち合わせは駅の中のカフェにしましょう。時間は変えません。映画は３時に始まるので、２時半にはカフェを出ましょう。",
+          "seed": 42,
+          "duration": 13.92,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "明日は駅の前で午後２時に会う予定でしたが、雨が降りそうです。待ち合わせは駅の中のカフェにしましょう。時間は変えません。映画は３時に始まるので、２時半にはカフェを出ましょう。"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "reading.5.2": {
+      "text": "電子書籍は軽くて、何冊も持ち歩けるので便利です。私も電車では電子書籍を読みます。でも、家でゆっくり読むときは紙の本を選びます。好きなページにすぐ戻れて、読んだ場所を覚えやすいからです。どちらか一つに決めず、読む場所に合わせて選びたいです。",
+      "locale": "ja-JP",
+      "file": "assets/audio/reading/reading.5.2.wav",
+      "duration": 20.56,
+      "peak": 6660,
+      "rms": 1023.9,
+      "sha256": "8c54e3eaa416760944dc8e5bd4f6ba4d132fed9f116937d3609615c79f31ba6a",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "synthesisText": "電子書籍は軽くて、何冊も持ち歩けるので便利です。私も電車では電子書籍を読みます。でも、家でゆっくり読むときは紙の本を選びます。好きなページにすぐ戻れて、読んだ場所を覚えやすいからです。どちらか一つに決めず、読む場所に合わせて選びたいです。",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "電子書籍は軽くて、何冊も持ち歩けるので便利です。私も電車では電子書籍を読みます。でも、家でゆっくり読むときは紙の本を選びます。好きなページにすぐ戻れて、読んだ場所を覚えやすいからです。どちらか一つに決めず、読む場所に合わせて選びたいです。",
+          "seed": 42,
+          "duration": 20.56,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "電子書籍は軽くて、何冊も持ち歩けるので便利です。私も電車では電子書籍を読みます。でも、家でゆっくり読むときは紙の本を選びます。好きなページにすぐ戻れて、読んだ場所を覚えやすいからです。どちらか一つに決めず、読む場所に合わせて選びたいです。"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "reading.6.0": {
+      "text": "土曜日、公園で本の交換会を開きます。読まなくなった本を３冊まで持ってきてください。本を持っていない人も参加できます。晴れた場合は午前10時から公園で、雨の場合は午後１時から駅前の市民センターで行います。参加費は無料ですが、飲み物は各自で用意してください。",
+      "locale": "ja-JP",
+      "file": "assets/audio/reading/reading.6.0.wav",
+      "duration": 22.96,
+      "peak": 6778,
+      "rms": 967.9,
+      "sha256": "cdd195c9c7b993e3df2292cfdffd382285a3e71a5d3caa0764a5941421d3a02b",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "synthesisText": "土曜日、公園で本の交換会を開きます。読まなくなった本を３冊まで持ってきてください。本を持っていない人も参加できます。晴れた場合は午前10時から公園で、雨の場合は午後１時から駅前の市民センターで行います。参加費は無料ですが、飲み物は各自で用意してください。",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "土曜日、公園で本の交換会を開きます。読まなくなった本を３冊まで持ってきてください。本を持っていない人も参加できます。晴れた場合は午前10時から公園で、雨の場合は午後１時から駅前の市民センターで行います。参加費は無料ですが、飲み物は各自で用意してください。",
+          "seed": 42,
+          "duration": 22.96,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "土曜日、公園で本の交換会を開きます。読まなくなった本を３冊まで持ってきてください。本を持っていない人も参加できます。晴れた場合は午前10時から公園で、雨の場合は午後１時から駅前の市民センターで行います。参加費は無料ですが、飲み物は各自で用意してください。"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "reading.6.1": {
+      "text": "田中さんへ。注文していたコーヒー豆が届きました。今日は店の冷蔵庫の修理があるため、午後４時に閉店します。４時までに来られない場合は、隣の花屋に預けておきます。花屋は午後７時まで開いています。代金はもういただいているので、名前を伝えるだけで受け取れます。",
+      "locale": "ja-JP",
+      "file": "assets/audio/reading/reading.6.1.wav",
+      "duration": 22.24,
+      "peak": 12698,
+      "rms": 1843.4,
+      "sha256": "406be1006eef9191bc16b2d839d3dc8a4f9e3c11991f397cffebd10d7bedc328",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "synthesisText": "田中さんへ。注文していたコーヒー豆が届きました。今日は店の冷蔵庫の修理があるため、午後４時に閉店します。４時までに来られない場合は、隣の花屋に預けておきます。花屋は午後７時まで開いています。代金はもういただいているので、名前を伝えるだけで受け取れます。",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "田中さんへ。注文していたコーヒー豆が届きました。今日は店の冷蔵庫の修理があるため、午後４時に閉店します。４時までに来られない場合は、隣の花屋に預けておきます。花屋は午後７時まで開いています。代金はもういただいているので、名前を伝えるだけで受け取れます。",
+          "seed": 42,
+          "duration": 22.24,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "田中さんへ。注文していたコーヒー豆が届きました。今日は店の冷蔵庫の修理があるため、午後４時に閉店します。４時までに来られない場合は、隣の花屋に預けておきます。花屋は午後７時まで開いています。代金はもういただいているので、名前を伝えるだけで受け取れます。"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "reading.6.2": {
+      "text": "買い物はインターネットで済ませることが増えました。重いものを家まで届けてもらえて、時間も節約できます。一方で、私は週末になると近所の店へ出かけます。店の人に使い方を教えてもらったり、知らなかった商品に出会ったりするのが楽しいからです。便利さだけで選ぶなら、店へ行く必要はないかもしれません。それでも、買い物を通して会話が生まれる時間を、私は大切にしたいと思います。",
+      "locale": "ja-JP",
+      "file": "assets/audio/reading/reading.6.2.wav",
+      "duration": 32.02,
+      "peak": 15045,
+      "rms": 1814.6,
+      "sha256": "59f9964256dcf6f573cefe8e9f86d8f3ba3e1e74d622fc72ec03df4a6eec6820",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "synthesisText": "買い物はインターネットで済ませることが増えました。重いものを家まで届けてもらえて、時間も節約できます。一方で、私は週末になると近所の店へ出かけます。店の人に使い方を教えてもらったり、知らなかった商品に出会ったりするのが楽しいからです。便利さだけで選ぶなら、店へ行く必要はないかもしれません。それでも、買い物を通して会話が生まれる時間を、私は大切にしたいと思います。",
+      "segmentedAtSentenceBoundaries": true,
+      "synthesisSegments": [
+        {
+          "text": "買い物はインターネットで済ませることが増えました。重いものを家まで届けてもらえて、時間も節約できます。一方で、私は週末になると近所の店へ出かけます。店の人に使い方を教えてもらったり、知らなかった商品に出会ったりするのが楽しいからです。便利さだけで選ぶなら、店へ行く必要はないかもしれません。",
+          "seed": 42,
+          "duration": 25.44,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "買い物はインターネットで済ませることが増えました。重いものを家まで届けてもらえて、時間も節約できます。一方で、私は週末になると近所の店へ出かけます。店の人に使い方を教えてもらったり、知らなかった商品に出会ったりするのが楽しいからです。便利さだけで選ぶなら、店へ行く必要はないかもしれません。"
+        },
+        {
+          "text": "それでも、買い物を通して会話が生まれる時間を、私は大切にしたいと思います。",
+          "seed": 43,
+          "duration": 6.4,
+          "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+          "synthesisText": "それでも、買い物を通して会話が生まれる時間を、私は大切にしたいと思います。"
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    }
+  },
+  "provider": "Qwen3-TTS (MLX Audio)",
+  "generatedAt": "2026-10-15",
+  "languageReview": "User approved Sohee and Ono_Anna samples; full native-speaker review of all recordings remains pending",
+  "locale": "ja-JP",
+  "usageScope": "Commercial model use permitted under Apache-2.0; no separate generated-audio restriction found in published model terms. Third-party rights are not warranted.",
+  "licenseSource": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+  "rightsReviewed": true,
+  "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-8bit",
+  "modelRevision": "41d3337e8b7f2843a75841595fc14e4b9a7a4b96",
+  "license": "Apache-2.0",
+  "rightsReviewDate": "2026-10-15",
+  "voice": "Ono_Anna",
+  "voiceId": "Ono_Anna"
+}

@@ -1,0 +1,18 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {freshState,reduce} from '../src/engine.js';import {load} from '../src/storage.js';import {freshReading} from '../src/reading-state.js';
+import {courseLevels,displayLevel,courseGroup} from '../src/curriculum.js';import {koreanLessons,nextKorean,followingKorean} from '../src/korean-state.js';
+import {renderLearningMap} from '../src/learning-map.js';import {renderPanel} from '../src/panels.js';import {entryState,shouldOfferResume} from '../src/lesson-session.js';
+import {advancedCourse} from '../src/reading-advanced.js';import {renderReading,prepareReading,currentReadingAudio} from '../src/reading.js';
+test('both earlier reading levels share one visible level, with a separate expert level',()=>{
+ assert.deepEqual(courseLevels,[0,2,4,5,7]);assert.deepEqual(courseLevels.map(displayLevel),[1,2,3,4,5]);assert.equal(displayLevel(6),4);assert.equal(courseGroup(6),5);assert.equal(displayLevel(7),5);
+ for(const level of [5,6]){const s={...freshState(),onboarded:true,onboardingLevel:level};const map=renderLearningMap(s);assert.match(map,/data-action="reading" data-id="5"/);assert.match(map,/data-action="reading" data-id="6"/);assert.doesNotMatch(map,/data-id="7"/);const ko=renderLearningMap({...s,courseDirection:'ja-ko'});assert.match(ko,/data-id="5-1"/);assert.match(ko,/data-id="6-1"/);assert.doesNotMatch(ko,/data-id="7-1"/);assert.equal(nextKorean({...s,courseDirection:'ja-ko'}).level,5);const settings=renderPanel('settings',s,'learning');assert.match(settings,/<option value="5" selected>/);assert.doesNotMatch(settings,/<option value="6"/);assert.match(settings,/<option value="7"/);}
+ assert.equal(followingKorean('5-1').id,'6-1');assert.equal(followingKorean('6-1'),undefined);assert.equal(koreanLessons.find(l=>l.id==='7-1').retired,undefined);
+ for(const direction of ['ko-ja','ja-ko']){const map=renderLearningMap({...freshState(),courseDirection:direction,onboardingLevel:7});assert.match(map,direction==='ko-ja'?/data-id="7"/:/data-id="7-1"/);assert.doesNotMatch(map,/data-id="6(?:-1)?"/);}
+});
+test('merged reading entries resume their own records without resetting either lesson',()=>{
+ const old={...freshState(),onboarded:true,onboardingLevel:6,courseLevels:{'ko-ja':6,'ja-ko':6},readings:{5:{...freshReading(),started:true,index:2,phase:'read',solved:[0,1]},6:{...freshReading(),started:true,index:4,phase:'learn',solved:[0,1,2,3]}}};const restored=load({getItem:()=>JSON.stringify(old)});assert.equal(restored.blocked,false);assert.deepEqual(restored.state.readings,old.readings);assert.equal(displayLevel(restored.state.onboardingLevel),4);
+ const target=entryState({...old,onboardingLevel:5},'reading','6');assert.equal(target.onboardingLevel,6);assert.ok(shouldOfferResume(target,'reading'));assert.deepEqual(reduce(target,{type:'reading-start'}).readings,old.readings);
+});
+test('expert level provides full long articles, glossary, four-way reasoning and optional matching audio',async()=>{
+ await prepareReading(7);for(let i=0;i<3;i++){const passage=advancedCourse.passages[i];assert.ok(passage.paragraphs.join('').length>550);assert.ok(passage.words);assert.ok(passage.questions.every(q=>q.choices.length===4));const s={...freshState(),onboardingLevel:7,readings:{7:{...freshReading(),started:true,index:i*2,phase:'learn'}}};const html=renderReading(s);assert.match(html,/reading-passage/);assert.match(html,/case-words/);assert.match(html,/reading-audio/);assert.ok(currentReadingAudio(s).text===passage.paragraphs.join(''));}
+});

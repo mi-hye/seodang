@@ -1,0 +1,1075 @@
+{
+  "provider": "Qwen3-TTS (MLX Audio)",
+  "note": "Hiragana shares the same spoken sounds as the referenced katakana recordings; files are reused without duplication.",
+  "files": {
+    "hiragana-extra.27.0": {
+      "text": "ぐ",
+      "synthesisText": "グ",
+      "file": "assets/audio/katakana/katakana.16.2.wav",
+      "duration": 2.56,
+      "peak": 6765,
+      "rms": 1111.7,
+      "sha256": "4dee1a685fec9f89cdf432c75d61a0b46282bda71ffcfe41b3f04a751ff25cf9",
+      "sourceRecording": "assets/audio/katakana/katakana.16.2.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "グ",
+          "seed": 42,
+          "duration": 2.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.27.1": {
+      "text": "げ",
+      "synthesisText": "ゲ",
+      "file": "assets/audio/katakana/katakana.16.3.wav",
+      "duration": 0.64,
+      "peak": 8871,
+      "rms": 1910.7,
+      "sha256": "5eddd077507ee08fe9000fa376d0125cc1a7b1eab7ae702b2f85d42dc13d16b1",
+      "sourceRecording": "assets/audio/katakana/katakana.16.3.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ゲ",
+          "seed": 2042,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.27.2": {
+      "text": "ご",
+      "synthesisText": "ゴ",
+      "file": "assets/audio/katakana/katakana.16.4.wav",
+      "duration": 1.44,
+      "peak": 4823,
+      "rms": 474.1,
+      "sha256": "caf81828e2c37bdcf310a30db4d9c8b6ffcbef3971566bbaf39a65cdf3aa2e7d",
+      "sourceRecording": "assets/audio/katakana/katakana.16.4.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ゴ",
+          "seed": 42,
+          "duration": 1.44,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.27.3": {
+      "text": "じ",
+      "synthesisText": "ジ",
+      "file": "assets/audio/katakana/katakana.16.6.wav",
+      "duration": 0.32,
+      "peak": 2774,
+      "rms": 495.3,
+      "sha256": "1537e085c851fd03e7ab3bcf80b8ecb3389670d1447a666e1f4ae1e6816fbf4b",
+      "sourceRecording": "assets/audio/katakana/katakana.16.6.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ジ",
+          "seed": 42,
+          "duration": 0.32,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.27.4": {
+      "text": "ぜ",
+      "synthesisText": "ゼ",
+      "file": "assets/audio/katakana/katakana.16.8.wav",
+      "duration": 2.64,
+      "peak": 3633,
+      "rms": 527.9,
+      "sha256": "587536830aab4dbc5f8f02519a65d9de73c5054426b2e85e0bf97a93e3d7d587",
+      "sourceRecording": "assets/audio/katakana/katakana.16.8.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ゼ",
+          "seed": 1042,
+          "duration": 2.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.27.5": {
+      "text": "ぞ",
+      "synthesisText": "ゾ",
+      "file": "assets/audio/katakana/katakana.16.9.wav",
+      "duration": 1.76,
+      "peak": 9164,
+      "rms": 2324.0,
+      "sha256": "4c7ddc142acc6e20857249a00ee4f0343b2e2b4cc774cb78a881581492019282",
+      "sourceRecording": "assets/audio/katakana/katakana.16.9.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ゾ",
+          "seed": 42,
+          "duration": 1.76,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.28.0": {
+      "text": "ぢ",
+      "synthesisText": "ヂ",
+      "file": "assets/audio/katakana/katakana.17.1.wav",
+      "duration": 1.12,
+      "peak": 3595,
+      "rms": 1260.9,
+      "sha256": "61c89bf2ffee30b25c372c46eb32ed1cce29438ac8e3a5e2d60106539d57592c",
+      "sourceRecording": "assets/audio/katakana/katakana.17.1.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ヂ",
+          "seed": 42,
+          "duration": 1.12,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.28.1": {
+      "text": "づ",
+      "synthesisText": "ヅ",
+      "file": "assets/audio/katakana/katakana.17.2.wav",
+      "duration": 0.64,
+      "peak": 2030,
+      "rms": 529.2,
+      "sha256": "4386a78d03f1ebe7edeeea8f932cfcf2d8c23a517ccf01bec4fbb93f803b673f",
+      "sourceRecording": "assets/audio/katakana/katakana.17.2.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ヅ",
+          "seed": 3042,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.28.2": {
+      "text": "で",
+      "synthesisText": "デ",
+      "file": "assets/audio/katakana/katakana.17.3.wav",
+      "duration": 0.96,
+      "peak": 4760,
+      "rms": 1029.8,
+      "sha256": "371a20a5f8c73fe0b631e42b5c71a23922be2f13a85e5644a976571e8b4f5cfd",
+      "sourceRecording": "assets/audio/katakana/katakana.17.3.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "デ",
+          "seed": 42,
+          "duration": 0.96,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.28.3": {
+      "text": "ど",
+      "synthesisText": "ド",
+      "file": "assets/audio/katakana/katakana.17.4.wav",
+      "duration": 2.8,
+      "peak": 7123,
+      "rms": 1230.8,
+      "sha256": "6e1e1961063f0846e8ecd53d081a0cbf91beec5f81d25502ec9f276fb8ab86d4",
+      "sourceRecording": "assets/audio/katakana/katakana.17.4.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ド",
+          "seed": 5042,
+          "duration": 2.8,
+          "instruction": null,
+          "synthesisText": "ど",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.28.4": {
+      "text": "び",
+      "synthesisText": "ビ",
+      "file": "assets/audio/katakana/katakana.17.6.wav",
+      "duration": 0.64,
+      "peak": 3417,
+      "rms": 996.5,
+      "sha256": "8fd49bbb3bf8d7b3d87b7231a719e97f0e861bbac8dc133dd0b97494e0f0fc2b",
+      "sourceRecording": "assets/audio/katakana/katakana.17.6.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ビ",
+          "seed": 4042,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ビ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.28.5": {
+      "text": "ぶ",
+      "synthesisText": "ブ",
+      "file": "assets/audio/katakana/katakana.17.7.wav",
+      "duration": 1.12,
+      "peak": 7652,
+      "rms": 2064.8,
+      "sha256": "30a0b7a9ed9a79fb37b15ba010175a3b4cb6b30e9c74088366cb9b21ddb89ea2",
+      "sourceRecording": "assets/audio/katakana/katakana.17.7.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ブ",
+          "seed": 1042,
+          "duration": 1.12,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ブ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.28.6": {
+      "text": "べ",
+      "synthesisText": "ベ",
+      "file": "assets/audio/katakana/katakana.17.8.wav",
+      "duration": 1.68,
+      "peak": 16909,
+      "rms": 1878.9,
+      "sha256": "296ca86c679a263ac52c91ff5ee76b0e2fc7b4943b14a997862588241893562e",
+      "sourceRecording": "assets/audio/katakana/katakana.17.8.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ベ",
+          "seed": 4042,
+          "duration": 1.68,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ベ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.28.7": {
+      "text": "ぼ",
+      "synthesisText": "ボ",
+      "file": "assets/audio/katakana/katakana.17.9.wav",
+      "duration": 0.48,
+      "peak": 5508,
+      "rms": 1317.4,
+      "sha256": "52575d9e86fd3ff278a4fde3b0b5ed91a103b2802d376b971f127fa762dce4f2",
+      "sourceRecording": "assets/audio/katakana/katakana.17.9.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ボ",
+          "seed": 1042,
+          "duration": 0.48,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ボ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.29.0": {
+      "text": "ちゃ",
+      "synthesisText": "チャ",
+      "file": "assets/audio/katakana/katakana.19.6.wav",
+      "duration": 0.72,
+      "peak": 3495,
+      "rms": 845.4,
+      "sha256": "ca06c9cfa5c76f1c5bcb6c44309212807b04b44a0744ce4404c14b71bb6a0dde",
+      "sourceRecording": "assets/audio/katakana/katakana.19.6.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "チャ",
+          "seed": 1042,
+          "duration": 0.72,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "チャ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.29.1": {
+      "text": "ちゅ",
+      "synthesisText": "チュ",
+      "file": "assets/audio/katakana/katakana.19.7.wav",
+      "duration": 1.68,
+      "peak": 2563,
+      "rms": 692.9,
+      "sha256": "2e08cbefbaeff68b6bacd8c53e59edc09bfd5f738648ce63d3b72e04756ca097",
+      "sourceRecording": "assets/audio/katakana/katakana.19.7.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "チュ",
+          "seed": 42,
+          "duration": 1.68,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "チュ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.29.2": {
+      "text": "ちょ",
+      "synthesisText": "チョ",
+      "file": "assets/audio/katakana/katakana.19.8.wav",
+      "duration": 0.32,
+      "peak": 7325,
+      "rms": 1105.7,
+      "sha256": "f48c42581ee6b8a1d89f9b2b9c1ff83d494274f13e126bdfbf822fe8f9f90ec7",
+      "sourceRecording": "assets/audio/katakana/katakana.19.8.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "チョ",
+          "seed": 2042,
+          "duration": 0.32,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "チョ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.29.3": {
+      "text": "にゃ",
+      "synthesisText": "ニャ",
+      "file": "assets/audio/katakana/katakana.20.0.wav",
+      "duration": 0.8,
+      "peak": 4943,
+      "rms": 1295.7,
+      "sha256": "3728861b484d878851130546ab0b74ffb75e5943c435574a702f4cdb66ba6f33",
+      "sourceRecording": "assets/audio/katakana/katakana.20.0.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ニャ",
+          "seed": 42,
+          "duration": 0.8,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ニャ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.29.4": {
+      "text": "にゅ",
+      "synthesisText": "ニュ",
+      "file": "assets/audio/katakana/katakana.20.1.wav",
+      "duration": 0.64,
+      "peak": 4107,
+      "rms": 1549.9,
+      "sha256": "02109af090e0458b04d0584d3b886059436dba41183a0d20eb85bd00cac1f3f7",
+      "sourceRecording": "assets/audio/katakana/katakana.20.1.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ニュ",
+          "seed": 42,
+          "duration": 0.64,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ニュ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.29.5": {
+      "text": "にょ",
+      "synthesisText": "ニョ",
+      "file": "assets/audio/katakana/katakana.20.2.wav",
+      "duration": 1.36,
+      "peak": 7226,
+      "rms": 1559.3,
+      "sha256": "250367c1d29c5469a6f7868ab2a114f0e3a18d8f0e2d2367df2af5c868cef745",
+      "sourceRecording": "assets/audio/katakana/katakana.20.2.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ニョ",
+          "seed": 1042,
+          "duration": 1.36,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ニョ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.29.6": {
+      "text": "ひゃ",
+      "synthesisText": "ヒャ",
+      "file": "assets/audio/katakana/katakana.20.3.wav",
+      "duration": 1.2,
+      "peak": 2454,
+      "rms": 292.8,
+      "sha256": "aaa4a3cdf614092e748e9e552923d0bd9760c052bfdf2e577be470d074c45ab4",
+      "sourceRecording": "assets/audio/katakana/katakana.20.3.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ヒャ",
+          "seed": 4042,
+          "duration": 1.2,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ヒャ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.29.7": {
+      "text": "ひゅ",
+      "synthesisText": "ヒュ",
+      "file": "assets/audio/katakana/katakana.20.4.wav",
+      "duration": 1.12,
+      "peak": 4200,
+      "rms": 1002.8,
+      "sha256": "0d320eea62b2d3ec2a3315006f99864b6b5998faaeafe81ac496bb8b865db991",
+      "sourceRecording": "assets/audio/katakana/katakana.20.4.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ヒュ",
+          "seed": 3042,
+          "duration": 1.12,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ヒュ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.29.8": {
+      "text": "ひょ",
+      "synthesisText": "ヒョ",
+      "file": "assets/audio/katakana/katakana.20.5.wav",
+      "duration": 0.4,
+      "peak": 4798,
+      "rms": 1005.5,
+      "sha256": "430f4cc485647345040fd567ac7f8f6381363c70780a343abbbfd72f1c55a225",
+      "sourceRecording": "assets/audio/katakana/katakana.20.5.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ヒョ",
+          "seed": 1042,
+          "duration": 0.4,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ヒョ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.30.0": {
+      "text": "みゃ",
+      "synthesisText": "ミャ",
+      "file": "assets/audio/katakana/katakana.20.6.wav",
+      "duration": 0.88,
+      "peak": 5438,
+      "rms": 1267.5,
+      "sha256": "7c0b01f7d9065733a08334aa82038d66cbfb9eda833c8ba796609680f7207c7f",
+      "sourceRecording": "assets/audio/katakana/katakana.20.6.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ミャ",
+          "seed": 2042,
+          "duration": 0.88,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ミャ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.30.1": {
+      "text": "みゅ",
+      "synthesisText": "ミュ",
+      "file": "assets/audio/katakana/katakana.20.7.wav",
+      "duration": 1.12,
+      "peak": 6810,
+      "rms": 2167.1,
+      "sha256": "bd6c31bb779a873e521d4835ed26aa6e305a5b9bc0e329804e892ec883b9a83a",
+      "sourceRecording": "assets/audio/katakana/katakana.20.7.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ミュ",
+          "seed": 42,
+          "duration": 1.12,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ミュ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.30.2": {
+      "text": "みょ",
+      "synthesisText": "ミョ",
+      "file": "assets/audio/katakana/katakana.20.8.wav",
+      "duration": 0.8,
+      "peak": 3995,
+      "rms": 1102.2,
+      "sha256": "f93de32543d97492ef09288b71233a8224f6dc200dfe77cf33c6be52be9a11bb",
+      "sourceRecording": "assets/audio/katakana/katakana.20.8.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ミョ",
+          "seed": 1042,
+          "duration": 0.8,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ミョ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.30.3": {
+      "text": "りゃ",
+      "synthesisText": "リャ",
+      "file": "assets/audio/katakana/katakana.20.9.wav",
+      "duration": 0.56,
+      "peak": 9918,
+      "rms": 1735.5,
+      "sha256": "21c87994fff197e2585ddc83936496a02f9fe99375c6a1c98c1eb0c54349d950",
+      "sourceRecording": "assets/audio/katakana/katakana.20.9.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "リャ",
+          "seed": 42,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "リャ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.30.4": {
+      "text": "りゅ",
+      "synthesisText": "リュ",
+      "file": "assets/audio/katakana/katakana.20.10.wav",
+      "duration": 0.96,
+      "peak": 8444,
+      "rms": 2388.7,
+      "sha256": "dc2b939cbfcebb47ce25773c6fb89963de61b2e016c69ab12eb63bdeebe4bb43",
+      "sourceRecording": "assets/audio/katakana/katakana.20.10.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "リュ",
+          "seed": 1042,
+          "duration": 0.96,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "リュ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.30.5": {
+      "text": "りょ",
+      "synthesisText": "リョ",
+      "file": "assets/audio/katakana/katakana.20.11.wav",
+      "duration": 0.72,
+      "peak": 5257,
+      "rms": 1072.0,
+      "sha256": "da5e3eefd5d7941d794f698dfdb73c8695ce7d91d629eeb40aa847cf2d34b16f",
+      "sourceRecording": "assets/audio/katakana/katakana.20.11.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "リョ",
+          "seed": 42,
+          "duration": 0.72,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "リョ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.30.6": {
+      "text": "ぎゃ",
+      "synthesisText": "ギャ",
+      "file": "assets/audio/katakana/katakana.21.0.wav",
+      "duration": 0.72,
+      "peak": 3732,
+      "rms": 772.4,
+      "sha256": "1660e1a91a068dba061fb89dddd3d0cdc45ccf93ea820b405aee739a19730917",
+      "sourceRecording": "assets/audio/katakana/katakana.21.0.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ギャ",
+          "seed": 42,
+          "duration": 0.72,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ギャ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.30.7": {
+      "text": "ぎゅ",
+      "synthesisText": "ギュ",
+      "file": "assets/audio/katakana/katakana.21.1.wav",
+      "duration": 2.88,
+      "peak": 6361,
+      "rms": 730.6,
+      "sha256": "565f4eee319c3468af1c9de5f2bd542ae679dc480d3143509b0f7980653853c5",
+      "sourceRecording": "assets/audio/katakana/katakana.21.1.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ギュ",
+          "seed": 1042,
+          "duration": 2.88,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ギュ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.30.8": {
+      "text": "ぎょ",
+      "synthesisText": "ギョ",
+      "file": "assets/audio/katakana/katakana.21.2.wav",
+      "duration": 0.72,
+      "peak": 5871,
+      "rms": 1152.1,
+      "sha256": "32d6898d02f2f333cffb46f4d58a74480db5efd441a5f60d3de6f5159f1adcb7",
+      "sourceRecording": "assets/audio/katakana/katakana.21.2.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ギョ",
+          "seed": 42,
+          "duration": 0.72,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ギョ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.31.0": {
+      "text": "じゃ",
+      "synthesisText": "ジャ",
+      "file": "assets/audio/katakana/katakana.21.3.wav",
+      "duration": 0.72,
+      "peak": 2024,
+      "rms": 499.4,
+      "sha256": "3f00c02696dcb71a41d2691ddd05ec58f9fa88af2e17de1afdbe1a7b5185592a",
+      "sourceRecording": "assets/audio/katakana/katakana.21.3.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ジャ",
+          "seed": 42,
+          "duration": 0.72,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ジャ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.31.1": {
+      "text": "じゅ",
+      "synthesisText": "ジュ",
+      "file": "assets/audio/katakana/katakana.21.4.wav",
+      "duration": 1.36,
+      "peak": 4045,
+      "rms": 1189.0,
+      "sha256": "6dd07b8d9c97bcd7eff8330dc681ac5858437d45df27434d94e8436e017a7ba8",
+      "sourceRecording": "assets/audio/katakana/katakana.21.4.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ジュ",
+          "seed": 42,
+          "duration": 1.36,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ジュ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.31.2": {
+      "text": "じょ",
+      "synthesisText": "ジョ",
+      "file": "assets/audio/katakana/katakana.21.5.wav",
+      "duration": 0.56,
+      "peak": 6225,
+      "rms": 1156.5,
+      "sha256": "70c9ec769005d3d1d90c2d42368a907a45c3711224f15f2a0d6a514f8cd01482",
+      "sourceRecording": "assets/audio/katakana/katakana.21.5.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ジョ",
+          "seed": 1042,
+          "duration": 0.56,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ジョ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.31.3": {
+      "text": "びゃ",
+      "synthesisText": "ビャ",
+      "file": "assets/audio/katakana/katakana.21.6.wav",
+      "duration": 1.12,
+      "peak": 7408,
+      "rms": 1930.1,
+      "sha256": "5c5f87ed6fe2591dab694d3697c765a9f2d6396ec8f03a57acf986b0bfc7c1ae",
+      "sourceRecording": "assets/audio/katakana/katakana.21.6.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ビャ",
+          "seed": 42,
+          "duration": 1.12,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ビャ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.31.4": {
+      "text": "びゅ",
+      "synthesisText": "ビュ",
+      "file": "assets/audio/katakana/katakana.21.7.wav",
+      "duration": 1.36,
+      "peak": 4896,
+      "rms": 1920.3,
+      "sha256": "14e7bc7edb30b78606b9b98dc002968069cd347a2b1c23e280e3f8655894e10f",
+      "sourceRecording": "assets/audio/katakana/katakana.21.7.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ビュ",
+          "seed": 1042,
+          "duration": 1.36,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ビュ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.31.5": {
+      "text": "びょ",
+      "synthesisText": "ビョ",
+      "file": "assets/audio/katakana/katakana.21.8.wav",
+      "duration": 0.8,
+      "peak": 9006,
+      "rms": 1829.8,
+      "sha256": "914dd4468a8fa487d0b2c82eb8341430ac51dc562945f86279a004ea5edeede8",
+      "sourceRecording": "assets/audio/katakana/katakana.21.8.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ビョ",
+          "seed": 1042,
+          "duration": 0.8,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ビョ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.31.6": {
+      "text": "ぴゃ",
+      "synthesisText": "ピャ",
+      "file": "assets/audio/katakana/katakana.21.9.wav",
+      "duration": 0.32,
+      "peak": 6274,
+      "rms": 1104.0,
+      "sha256": "4cb773b1fe87b191f299abe9be0a55d90f463ace6fccb81703bde677961fd5de",
+      "sourceRecording": "assets/audio/katakana/katakana.21.9.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ピャ",
+          "seed": 42,
+          "duration": 0.32,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ピャ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.31.7": {
+      "text": "ぴゅ",
+      "synthesisText": "ピュ",
+      "file": "assets/audio/katakana/katakana.21.10.wav",
+      "duration": 0.88,
+      "peak": 5320,
+      "rms": 1280.8,
+      "sha256": "fab89616daab00a4e37a41002ddffb4e866a7c53fde1e6f5a813c757ed3ac300",
+      "sourceRecording": "assets/audio/katakana/katakana.21.10.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ピュ",
+          "seed": 42,
+          "duration": 0.88,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ピュ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    },
+    "hiragana-extra.31.8": {
+      "text": "ぴょ",
+      "synthesisText": "ピョ",
+      "file": "assets/audio/katakana/katakana.21.11.wav",
+      "duration": 0.32,
+      "peak": 4526,
+      "rms": 805.5,
+      "sha256": "4040194aec5163abc4e3e64e6b3a9211ca7a757d5eb06f417d78e60706247999",
+      "sourceRecording": "assets/audio/katakana/katakana.21.11.wav",
+      "voice": "Ono_Anna",
+      "voiceId": "Ono_Anna",
+      "locale": "ja-JP",
+      "segmentedAtSentenceBoundaries": false,
+      "synthesisSegments": [
+        {
+          "text": "ピョ",
+          "seed": 42,
+          "duration": 0.32,
+          "instruction": "Pronounce only the provided text once, clearly and naturally. Do not add any words.",
+          "synthesisText": "ピョ",
+          "edgeSilenceTrimmed": true
+        }
+      ],
+      "instruction": "Speak calmly and naturally, with clear pronunciation, at a normal conversational pace.",
+      "temperature": 0.7
+    }
+  },
+  "generatedAt": "2026-10-15",
+  "languageReview": "User approved Sohee and Ono_Anna samples; full native-speaker review of all recordings remains pending",
+  "locale": "ja-JP",
+  "usageScope": "Commercial model use permitted under Apache-2.0; no separate generated-audio restriction found in published model terms. Third-party rights are not warranted.",
+  "licenseSource": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+  "rightsReviewed": true,
+  "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-8bit",
+  "modelRevision": "41d3337e8b7f2843a75841595fc14e4b9a7a4b96",
+  "license": "Apache-2.0",
+  "rightsReviewDate": "2026-10-15",
+  "voice": "Ono_Anna",
+  "voiceId": "Ono_Anna"
+}

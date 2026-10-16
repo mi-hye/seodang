@@ -32,7 +32,7 @@ test('word building, saved progress, matching and completion',()=>{
 test('all four picture labels have bundled audio matching the shipped manifest',async()=>{
  const {readFileSync}=await import('node:fs'),{createHash}=await import('node:crypto');
  const manifest=JSON.parse(readFileSync(new URL('../assets/audio/labels/manifest.json',import.meta.url)));
- for(const w of labelWords){const a=manifest.files[w.id],buffer=readFileSync(new URL('../'+a.file,import.meta.url));assert.equal(a.text,w.text);assert.equal(createHash('sha256').update(buffer).digest('hex'),a.sha256);assert.equal(buffer.toString('ascii',0,4),'RIFF');assert.ok(a.duration>.5);}
+ for(const w of labelWords){const a=manifest.files[w.id],buffer=readFileSync(new URL('../'+a.file,import.meta.url));assert.equal(a.text,w.text);assert.equal(createHash('sha256').update(buffer).digest('hex'),a.sha256);assert.equal(buffer.toString('ascii',0,4),'RIFF');assert.ok(a.duration>.25&&a.rms>50);}
 });
 
 test('previous correct-answer saves advance with one confirmation; repeated checks do not skip words',()=>{
@@ -45,8 +45,8 @@ test('previous correct-answer saves advance with one confirmation; repeated chec
 test('last label match moves to the next lesson atomically and resumes previous complete-match saves',()=>{
  for(const action of [{type:'labels-match',left:'neko',right:'neko'},{type:'labels-start'}]){
   let s=unlocked();s=reduce(s,{type:'labels-start'});s.labels.phase='match';s.labels.matches=action.type==='labels-start'?labelWords.map(w=>w.id):['kasa','kutsu','hana'];
-  s=reduce(s,action);assert.equal(s.labels.completed,true);assert.equal(s.onboardingLevel,1);assert.equal(s.episode.started,false);assert.equal(s.listening.started,true);assert.equal(s.episode.step,'intro');assert.ok(valid(s));assert.ok(s.history.completed.includes('labels'));
-  const saved=load({getItem:()=>JSON.stringify(s)});assert.equal(saved.blocked,false);assert.equal(saved.state.onboardingLevel,1);
-  const legacy=load({getItem:()=>JSON.stringify({...s,listening:undefined,onboardingLevel:2})});assert.equal(legacy.blocked,false);assert.equal(legacy.state.onboardingLevel,1);
+  s=reduce(s,action);assert.equal(s.labels.completed,true);assert.equal(s.onboardingLevel,2);assert.equal(s.episode.started,false);assert.equal(s.listening.started,true);assert.equal(s.episode.step,'intro');assert.ok(valid(s));assert.ok(s.history.completed.includes('labels'));
+  const saved=load({getItem:()=>JSON.stringify(s)});assert.equal(saved.blocked,false);assert.equal(saved.state.onboardingLevel,2);
+  const legacy=load({getItem:()=>JSON.stringify({...s,listening:undefined,onboardingLevel:2})});assert.equal(legacy.blocked,false);assert.equal(legacy.state.onboardingLevel,2);
  }
 });

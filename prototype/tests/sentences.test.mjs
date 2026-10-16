@@ -43,16 +43,16 @@ test('old records, mid-sentence restore, previous and difficulty switches retain
  assert.equal(validSentence({...s.sentence,tokens:[20]}),false);assert.equal(valid({...s,sentence:{...s.sentence,index:8}}),false);
 });
 
-test('all new speech uses bundled Nemo female 1 WAVs with matching source and hash',()=>{
+test('all new speech uses bundled Ono_Anna WAVs with matching source and hash',()=>{
  const meta=JSON.parse(readFileSync(new URL('../assets/audio/sentences/manifest.json',import.meta.url)));
- assert.equal(meta.styleId,10005);
+ assert.equal(meta.voiceId,'Ono_Anna');
  for(const entry of Object.values(sentenceAudio)) {
    const info=meta.files[entry.id];assert.equal(entry.text,info.text);assert.equal(entry.status,'ready');
    const file=readFileSync(new URL('../'+entry.audioFile,import.meta.url));assert.equal(file.toString('ascii',0,4),'RIFF');assert.equal(createHash('sha256').update(file).digest('hex'),info.sha256);assert.ok(info.duration>1);
  }
 });
 
-test('level 3 map offers the implemented case and locks only future cases',()=>{
- const s=freshState();s.onboardingLevel=3;const html=renderLearningMap(s);
- assert.ok(html.includes('가방 주인을 찾아요'));assert.equal((html.match(/data-action="sentence"/g)||[]).length,1);assert.equal((html.match(/ disabled/g)||[]).length,2);
+test('first case map offers only implemented cases',()=>{
+ const s=freshState();s.onboardingLevel=2;const html=renderLearningMap(s);
+ assert.ok(html.includes('카페에 남겨진 가방'));assert.equal((html.match(/data-action="sentence"/g)||[]).length,1);assert.equal((html.match(/ disabled/g)||[]).length,0);
 });
