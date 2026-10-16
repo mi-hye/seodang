@@ -1,109 +1,19 @@
-# Store Privacy Answers Draft
+# Store privacy — 1.1.2
 
-Last updated: 2026-08-25
+2026-10-16. Applies to the Capacitor application in prototype/.
 
-This draft helps fill App Store Connect App Privacy and Google Play Data safety
-forms. Re-check this file before submission if analytics, crash reporting,
-accounts, ads, payments, or any new SDK is added.
+Opt-in only, schema/consent v2. No login, ads, IAP, account identifiers, answer text, recordings, screen capture, location or advertising ID. HTTPS PostHog US processor. Random installation ID persists across sessions; do not describe as fully anonymous. No cross-app tracking.
 
-## Current App Behavior Assumption
+Apple: Device ID, Product Interaction, Other Diagnostic Data; Analytics purpose. Conservatively mark linked to user/device because an installation identifier associates activity across sessions; not used for tracking. No crash logs are collected. Audio failure outcomes are Other Diagnostic Data.
 
-- No user account or login
-- Optional Google AdMob rewarded ads
-- No analytics SDK
-- No crash reporting SDK
-- Apple / Google monthly subscription managed through RevenueCat
-- No server upload of individual practice history
-- Local storage for settings, favorites, progress, reminders, and onboarding
-- Supabase requests for public kanji content
-- Local notifications for study reminders
+Google: Device or other IDs, App interactions, Diagnostics. Collected optionally, not ephemeral, Analytics purpose, encrypted in transit. PostHog processes on behalf of the operator (service-provider exception to sharing). No account creation. Deletion requests available via privacy policy contact using installation ID, obtained before opt-out.
 
-## Apple App Privacy Draft
+Public policy and deletion instructions: https://mi-hye.github.io/seodang/privacy-policy.html
 
-Privacy Policy URL:
+PostHog free plan verified in billing UI. Its 1-year event query window is NOT automatic deletion. Policy explicitly states records may remain until deletion request/service end; do not promise a TTL that is not implemented.
 
-- Required. Use the hosted version of `docs/privacy-policy.html`.
-
-Data Collection:
-
-- Do not submit the previous `Data Not Collected` draft. Re-answer the form
-  using the current RevenueCat and Google Mobile Ads SDK data disclosures.
-
-Reasoning:
-
-- App language, theme, onboarding state, favorites, progress, and reminder
-  settings are stored locally on the user's device.
-- The app fetches public learning content from Supabase.
-- The app does not require login and does not upload user practice history.
-- The app does not use tracking, ads, analytics, or crash reporting SDKs.
-
-Important review note:
-
-- If Supabase logs IP address or request metadata as part of infrastructure
-  operation, confirm whether this needs disclosure for the final release. The
-  app itself does not currently use that data to identify users, track users, or
-  build user profiles.
-
-Tracking:
-
-- Confirm AdMob personalization and consent settings before submission. If ad
-  data is linked across third-party apps or websites, answer `Yes` where the
-  store definition requires it.
-
-Data linked to the user:
-
-- Current draft: `No`
-
-Data not linked to the user:
-
-- Current draft: `No app-declared user data`
-
-## Google Play Data Safety Draft
-
-Does your app collect or share any required user data types?
-
-- Re-evaluate device identifiers, app interactions, diagnostics, purchase
-  history, and approximate location against the current SDK disclosures.
-
-Does your app share user data with third parties?
-
-- `Yes` may apply for Google Mobile Ads advertising processing. Complete the
-  final answer from the production AdMob configuration and consent choices.
-
-Security practices:
-
-- Data is encrypted in transit: `Yes`
-- Users can request data deletion: likely `Not applicable` for account data,
-  because the current app does not create accounts or store user data on an app
-  server.
-- User data collection is optional: `Not applicable`, based on the current
-  draft of no declared user data collection.
-
-Notes:
-
-- Supabase content requests happen over HTTPS.
-- Local app data can be removed by clearing app storage or uninstalling the app.
-- Notification permission is requested only when study reminders are used.
-
-## If Features Change
-
-Update this document and store forms if the app adds:
-
-- Login or user profiles
-- Cloud-synced practice history
-- Analytics
-- Crash reporting
-- Ads
-- In-app purchases
-- User-generated content
-- Contact forms or support chat
-- Any SDK that collects device identifiers or diagnostics
-
-## References
-
-- Apple App Privacy:
-  https://developer.apple.com/help/app-store-connect/reference/app-privacy/
-- Apple App Privacy Details:
-  https://developer.apple.com/app-store/app-privacy-details/
-- Google Play Data safety:
-  https://support.google.com/googleplay/android-developer/answer/10787469
+References:
+- https://developer.apple.com/app-store/app-privacy-details/
+- https://support.google.com/googleplay/android-developer/answer/10787469
+- https://posthog.com/docs/data/events-retention
+- https://posthog.com/docs/privacy/data-storage#data-deletion
