@@ -37,7 +37,7 @@ not mapped onto unrelated new lessons. Existing prototype saves continue to use
 `seodang.web-prototype.v1`, but a separately installed `.prototype` app has a different
 container and is not the store app.
 
-The replacement currently has no ads, subscriptions, accounts, or analytics SDK.
+The replacement has no ads, subscriptions, or accounts. Version 1.1.2 adds explicit opt-in learning analytics sent to PostHog US without an autocapture SDK.
 Store listing screenshots and privacy disclosures should reflect the new app.
 EAS iOS submission uploads to App Store Connect; review submission and public
 release are separate steps. Check each console for the final review/release state.

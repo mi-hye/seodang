@@ -1,142 +1,63 @@
-# Seodang Privacy Policy Draft
+# 서당 개인정보처리방침
 
-Last updated: 2026-08-25
+시행일: 2026년 10월 16일 · 분석 기능은 1.1.2부터 적용합니다.
 
-This draft is for App Store / Play Store preparation. Review the hosting URL
-and actual release behavior before publishing.
+서당 운영자 강미혜는 일본어·한국어 학습 앱을 운영합니다. 1.1.2에는 회원가입, 광고, 구독, 앱 내 결제가 없습니다. 이전 버전에서 구매한 구독의 해지는 Apple 또는 Google의 구독 관리에서 처리합니다.
 
-## Service
+## 기기에 저장하는 정보
 
-Seodang is a kanji learning app. The app lets users browse kanji categories,
-view kanji details, practice writing, save favorites, track recent practice, and
-configure study reminders.
+학습 언어, 난이도, 학습 진도, 설정과 다운로드한 음성은 기기에 저장합니다. 앱의 초기화 기능이나 운영체제의 앱 데이터 삭제 기능으로 지울 수 있습니다. 학습 콘텐츠와 음성을 내려받는 서버는 요청 처리에 필요한 IP 주소 등 통신 정보를 처리할 수 있습니다.
 
-## Data We Store On Your Device
+## 선택하는 학습 통계
 
-Seodang stores the following data locally on the user's device:
+학습 통계 공유에 동의한 경우에만 앱 실행, 수업 시작·진행·완료·나가기, 단계·문항 위치, 정답·오답 여부, 화면을 보며 조작한 시간, 음성 재생 시작·완료·실패·취소와 발생 시각을 전송합니다. 임의로 생성한 설치·세션·수업 시도·음성 재생 시도 식별자, 수업 식별자, 학습 언어, 난이도, 앱 버전과 운영체제 종류도 포함됩니다. 수업의 어려운 부분과 음성 오류를 찾고 학습 경험을 개선하는 데 사용합니다.
 
-- App language and theme settings
-- First-run onboarding progress
-- Favorite kanji
-- Practice progress, scores, attempts, and recent practice history
-- Category progress reset state
-- Study reminder settings, including title, time, repeat option, message, and enabled state
+이름, 이메일, 답안 내용, 음성 녹음, 화면 녹화, 광고 식별자는 수집하지 않습니다. 광고 추적, 위치 추정, 개인 프로필 생성도 사용하지 않습니다. 설치 식별자로 같은 설치의 활동을 연결할 수 있으므로 완전히 익명인 데이터는 아닙니다.
 
-This local data is stored with AsyncStorage and is used only to provide app
-features. It is not sold.
+## 처리 위탁과 미국으로의 전송
 
-## Data We Fetch From Supabase
+수탁자는 PostHog, Inc.이며 학습 통계를 미국의 PostHog Cloud에 보관·분석합니다. 위에 적은 통계 항목을 동의 후 앱 사용 중 HTTPS로 전송합니다. 전송 주소는 https://us.i.posthog.com 입니다. 네트워크 연결 과정에서 제공자가 IP 주소를 처리할 수 있지만 앱은 이벤트의 IP 기록과 위치 추정을 비활성화합니다. 데이터를 판매하거나 광고 목적으로 다른 앱의 데이터와 결합하지 않습니다. PostHog의 개인정보 안내는 https://posthog.com/privacy 에서 확인할 수 있습니다.
 
-Seodang fetches public kanji learning data from Supabase, including:
+## 보관과 삭제
 
-- Kanji metadata
-- Category groups and categories
-- Kanji-category mappings
-- Stroke order data
-- Example sentences when available
+기기의 전송 대기 기록은 최대 200건·7일 동안 보관합니다. 서버는 현재 PostHog 무료 요금제를 사용하며 이벤트 조회 범위는 1년입니다. 조회 기간이 지났다고 자동 삭제되는 것은 아닙니다. 서버 기록은 삭제 요청 처리 또는 분석 서비스 종료에 따른 삭제 전까지 남을 수 있습니다. 서버 보관 조건이 바뀌면 이 방침을 갱신합니다.
 
-These requests are made so the app can display learning content. Seodang does
-not currently require user login and does not upload individual user practice
-history to Supabase.
+설정의 ‘학습 통계 공유’에서 ‘참여 안 함’을 선택하면 새 수집을 중단하고 기기의 대기 기록과 식별자를 삭제합니다. 이미 전송한 기록은 자동으로 삭제되지 않습니다. 서버 기록 삭제를 원하면 참여를 끄기 전에 통계 안내의 식별자를 복사해 satge13@gmail.com 으로 보내 주세요. 해당 식별자의 기록을 확인하여 삭제를 처리합니다. 식별자를 잃으면 이름이나 이메일로 기록을 찾을 수 없습니다. 재설치 또는 재동의 시 새 식별자가 생성됩니다.
 
-## Notifications
+## 선택과 문의
 
-If the user enables study reminders, Seodang asks for notification permission
-and schedules local notifications on the device.
+통계 공유와 미국 전송을 거부하거나 동의를 철회해도 모든 수업을 이용할 수 있습니다. 개인정보 열람·정정·삭제·처리 중지 및 보호자 문의는 운영자 강미혜, satge13@gmail.com 으로 보내 주세요. 문의 시 보내 주신 이메일과 내용은 문의 처리에 사용합니다.
 
-Notification settings are stored locally. The app does not send reminder
-messages to a remote server.
+이 방침의 이전 버전은 https://mi-hye.github.io/seodang/privacy-policy-legacy.html 에서 확인할 수 있습니다.
 
-## Subscriptions and Rewarded Ads
+---
 
-The optional Today’s Reading subscription is processed by Apple App Store or
-Google Play in-app purchase systems. RevenueCat processes an anonymous app user
-identifier, product and entitlement information, subscription status, and
-purchase history to provide and restore subscription access. Seodang does not
-receive the user's full payment-card details.
+# 書堂（ソダン）プライバシーポリシー
 
-Free users may choose to watch a Google AdMob rewarded ad to unlock one reading
-level for the day. Google and its advertising partners may process device and
-advertising identifiers, IP address, approximate location derived from network
-information, diagnostics, and ad interactions to deliver ads, measure
-performance, and prevent fraud. Where required, the app presents Google's
-consent flow before requesting an ad.
+施行日：2026年10月16日。学習統計機能は1.1.2から適用します。
 
-## Data Sharing
+運営者は강미혜です。日本語・韓国語の学習アプリです。1.1.2にはアカウント登録、広告、サブスクリプション、アプリ内課金はありません。旧バージョンの契約の解約はAppleまたはGoogleの契約管理で行ってください。
 
-Seodang does not sell user data.
+## 端末に保存する情報
 
-The app uses Supabase as a backend content provider. Network requests to
-Supabase may include standard technical information such as IP address, request
-metadata, and device/browser network information processed by Supabase as part
-of providing the service.
+学習言語、難易度、進捗、設定、ダウンロードした音声を端末に保存します。アプリの初期化やOSのデータ削除機能で削除できます。教材・音声の配信サーバーは通信に必要なIPアドレスなどを処理する場合があります。
 
-## Third-Party Services
+## 任意の学習統計
 
-Seodang uses the following third-party services and libraries:
+同意後に限り、アプリ起動、授業の開始・進行・完了・退出、段階・問題の位置、正誤、画面を見ながら操作した時間、音声再生の開始・完了・失敗・取消と時刻を送信します。ランダムなインストール・セッション・授業試行・音声再生試行ID、授業ID、学習言語、難易度、アプリバージョン、OSの種類も含みます。授業の難しい箇所や音声の不具合を把握し、学習体験の改善に使います。
 
-- Supabase, for public kanji data and Edge Functions
-- Expo / React Native, for app runtime, builds, and notifications
-- RevenueCat, for subscription entitlement and purchase-status management
-- Google AdMob, for optional rewarded ads
+名前、メール、解答内容、録音、画面録画、広告IDは収集しません。広告追跡、位置推定、個人プロフィールの作成もしません。同じインストールの活動はIDで結び付くため、完全に匿名のデータではありません。
 
-Open-source data source and license notices are available in the app Settings
-screen and in `docs/third-party-notices.md`.
+## 委託先と米国への送信
 
-Before release, confirm whether any additional analytics, crash reporting, or
-authentication SDKs have been added. If so, update this policy and the store
-privacy forms.
+PostHog, Inc.に統計の保管・分析を委託し、米国のPostHog Cloudに保存します。同意後の利用中に上記項目をHTTPSで https://us.i.posthog.com へ送信します。通信時には提供者がIPアドレスを処理する場合がありますが、イベントのIP記録・位置推定は無効です。販売や他アプリのデータとの広告目的の結合は行いません。提供者の案内：https://posthog.com/privacy
 
-## Children's Privacy
+## 保管と削除
 
-Seodang is an educational app, but it does not currently create accounts or ask
-users to provide personal information. If the app is later targeted to children
-or collects children's personal information, this policy and store settings must
-be updated before release.
+未送信記録は端末に最大200件・7日間保存します。現在のPostHog無料プランのイベント参照期間は1年ですが、期間経過による自動削除を意味しません。送信済みの記録は削除依頼への対応または分析サービス終了に伴う削除まで残る場合があります。条件が変わった場合は本方針を更新します。
 
-## Data Retention
+設定の学習統計共有で参加しないを選ぶと、新しい収集を停止し、端末の未送信記録とIDを削除します。送信済み記録は自動削除されません。削除を希望する場合は停止する前に統計案内のIDを控え、satge13@gmail.com へご連絡ください。該当IDの記録を確認して削除に対応します。IDが分からない場合は名前やメールから記録を探せません。再インストールや再同意では新しいIDを使います。
 
-Local app data remains on the user's device until the user changes settings,
-removes saved items, clears app data, or uninstalls the app.
+## 選択と問い合わせ
 
-Remote kanji content is public learning content managed by the app operator.
-
-## User Choices
-
-Users can:
-
-- Change app language and theme in Settings
-- Add or remove favorite kanji
-- Reset category progress
-- Enable, edit, or delete study reminders
-- Disable notifications in device settings
-- Delete local app data by uninstalling the app or clearing app storage
-
-## Contact
-
-For privacy questions or support requests, contact:
-
-Email: satge13@gmail.com
-
-## Store Submission Notes
-
-Apple App Store:
-
-- App Store Connect requires a publicly accessible Privacy Policy URL.
-- Apple App Review Guidelines also require the privacy policy to be accessible
-  within the app.
-
-Google Play:
-
-- The Play Console Data safety form must match this privacy policy and the app's
-  actual behavior.
-- If additional SDKs are added, update both the policy and Data safety answers.
-
-References:
-
-- Apple App Store Connect app privacy help:
-  https://developer.apple.com/help/app-store-connect/manage-app-information/manage-app-privacy/
-- Apple App Review Guidelines:
-  https://developer.apple.com/app-store/review/guidelines/
-- Google Play Data safety:
-  https://support.google.com/googleplay/android-developer/answer/10787469
+統計共有・米国への送信を拒否したり、同意を撤回したりしても全授業を利用できます。開示・訂正・削除・利用停止や保護者からの問い合わせは、運営者강미혜、satge13@gmail.com へご連絡ください。問い合わせ時のメールアドレスと内容は対応に使います。旧版：https://mi-hye.github.io/seodang/privacy-policy-legacy.html
