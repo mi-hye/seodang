@@ -1,0 +1,166 @@
+.dog-button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  box-shadow: none;
+}
+.dog {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.dog * {
+  transform-box: fill-box;
+}
+.dog .head {
+  transform-origin: 50% 85%;
+}
+.dog .body {
+  transform-origin: 50% 100%;
+  animation: breathe 3.6s ease-in-out infinite;
+}
+.dog .eyes {
+  transform-origin: center;
+  animation: blink 5.2s infinite;
+}
+.dog .tail {
+  transform-origin: 12% 85%;
+  animation: wag 2.7s ease-in-out infinite;
+}
+.dog.talking .mouth {
+  transform-origin: center;
+  animation: talk 0.18s alternate 5;
+}
+.dog.talking .head {
+  animation: nod 0.3s alternate 3;
+}
+.dog.happy .dog-whole {
+  animation: hop 0.65s ease-out;
+}
+.dog.happy .tail {
+  animation: wag 0.15s alternate 6;
+}
+.dog.thinking .head {
+  transform: rotate(-10deg);
+  animation: think 0.35s ease-out;
+}
+.dog.surprised .ear {
+  transform-origin: 50% 70%;
+  animation: perk 0.65s;
+}
+.dog.surprised .head {
+  animation: nod 0.3s alternate 2;
+}
+@keyframes breathe {
+  50% {
+    transform: scale(1.015, 1.025);
+  }
+}
+@keyframes blink {
+  0%,
+  43%,
+  47%,
+  100% {
+    transform: scaleY(1);
+  }
+  45% {
+    transform: scaleY(0.08);
+  }
+}
+@keyframes wag {
+  50% {
+    transform: rotate(13deg);
+  }
+}
+@keyframes talk {
+  to {
+    transform: scaleY(1.8);
+  }
+}
+@keyframes nod {
+  to {
+    transform: rotate(3deg);
+  }
+}
+@keyframes hop {
+  40% {
+    transform: translateY(-12px) rotate(-3deg);
+  }
+  70% {
+    transform: translateY(0);
+  }
+}
+@keyframes think {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(-10deg);
+  }
+}
+@keyframes perk {
+  40% {
+    transform: translateY(-7px) rotate(7deg);
+  }
+}
+.reduce .dog * {
+  animation: none !important;
+}
+.reduce .dog.thinking .head {
+  transform: rotate(-5deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .dog * {
+    animation: none !important;
+  }
+}
+/* Original app's 24px sprite, with independent CSS-only reaction layers. */
+.pixel-dog {
+  image-rendering: pixelated;
+}
+.pixel-dog .tail {
+  transform-box: view-box;
+  transform-origin: 15px 20px;
+}
+.pixel-dog .head {
+  transform-box: view-box;
+  transform-origin: 10px 14px;
+}
+.pixel-dog .body {
+  animation: pixel-breathe 3.6s ease-in-out infinite;
+}
+.pixel-dog.happy .eyes {
+  animation: none;
+  transform: scaleY(0.4);
+}
+.pixel-dog.surprised .head {
+  animation: pixel-perk 0.4s alternate 2;
+}
+.pixel-dog.talking .mouth {
+  animation: talk 0.18s alternate 5;
+}
+@keyframes pixel-breathe {
+  50% {
+    transform: translateY(-0.2px);
+  }
+}
+@keyframes pixel-perk {
+  to {
+    transform: translateY(-0.5px);
+  }
+}
+
+.pixel-dog.happy .dog-whole {
+  animation: pixel-hop 0.65s ease-out;
+}
+@keyframes pixel-hop {
+  40% {
+    transform: translateY(-1.5px) rotate(-3deg);
+  }
+  70% {
+    transform: translateY(0);
+  }
+}

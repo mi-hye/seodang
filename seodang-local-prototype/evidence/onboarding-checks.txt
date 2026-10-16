@@ -1,0 +1,16 @@
+2026-10-15 — actual app mascot + onboarding verification
+Node 22.18.0; npm 10.9.3
+npm run typecheck: PASS
+npm run lint: PASS
+npm run test: PASS, 3 files, 37 tests (including 6 onboarding tests)
+npm run build: PASS
+npm run format:check: PASS
+Browser: Codex in-app browser, viewport simulation (not physical device)
+320x740: no horizontal overflow; buttons at least 44px; Enter on book.
+390x844: introduction, discovery, wrong answer/retry, correct answer, finish.
+Finish: starts case intro; reload: onboarding not shown again.
+Settings replay + skip: preserves existing progress.
+Previously complete localhost save: skip returns to case complete, 2 clues retained.
+Console: no error/warn entries in inspected existing-save tab.
+Physical iPhone/Android test: pending user confirmation.
+Source asset: original getDogSprite(1,false), local generated JSON, parent app unchanged.

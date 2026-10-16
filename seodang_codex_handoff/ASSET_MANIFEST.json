@@ -1,0 +1,79 @@
+{
+  "document_version": "1.0",
+  "created_at": "2026-10-12",
+  "note": "Original static PNG references, copied without editing. No final mascot, separated backgrounds, audio, fonts, application code, or private credentials are included.",
+  "assets": [
+    {
+      "path": "references/01_start_hanok.png",
+      "original_filename": "노을빛_한옥_골목_서당의_시작.png",
+      "size_px": [
+        941,
+        1672
+      ],
+      "bytes": 2186834,
+      "sha256": "f238bbc6fa62d31bc319731ed718628e8a12c4da6026f51b1f8e074371fe6530",
+      "role": "선택된 시작 화면의 분위기·최소 문구 기준. 서당개와 애니메이션은 아직 반영되지 않음.",
+      "status": "static_design_reference_not_production_asset"
+    },
+    {
+      "path": "references/02_overall_ui_board.png",
+      "original_filename": "따뜻한_언어_학습_앱_서당_ui_보드.png",
+      "size_px": [
+        1448,
+        1086
+      ],
+      "bytes": 2206318,
+      "sha256": "33c7c5a2b6262de98dd36e79b5fd8edbbeee73efa17ad68f64b4b3b0d780a2a3",
+      "role": "한옥 시작 화면과 홈·이야기 목록·플레이·학습 정보 화면을 합친 전체 방향 참고. 서당개 도입 이전 시안.",
+      "status": "static_design_reference_not_production_asset"
+    },
+    {
+      "path": "references/03_case_dialogue.png",
+      "original_filename": "카페_미스터리와_일본어_학습_ui.png",
+      "size_px": [
+        941,
+        1672
+      ],
+      "bytes": 1802601,
+      "sha256": "04cc8d6bcc25ac493e22bc28486b76206c5d57f8bdf6bca2e609bc603148e104",
+      "role": "사건 01의 대화·표현 학습 화면 참고. 화면 안 대사·수치·버튼은 최종 명세가 아님.",
+      "status": "static_design_reference_not_production_asset"
+    },
+    {
+      "path": "references/04_case_investigation.png",
+      "original_filename": "카페에_남겨진_가방_단서_찾기.png",
+      "size_px": [
+        941,
+        1672
+      ],
+      "bytes": 1935140,
+      "sha256": "c657622d893c6e801be550a26608c9945f59dceb7561401f93e77aa4b558aba4",
+      "role": "사건 01의 터치 조사와 단서 표시 방식 참고. 정답 배치·단서는 인계서 본문을 따름.",
+      "status": "static_design_reference_not_production_asset"
+    },
+    {
+      "path": "references/05_case_notebook.png",
+      "original_filename": "카페_미스터리_단서_노트_ui.png",
+      "size_px": [
+        941,
+        1672
+      ],
+      "bytes": 1801228,
+      "sha256": "b29730dab8df072113d3e8a7e7353d99df32f29767b188c9a7f0592616defdea",
+      "role": "사건 01의 단서 노트·표현·단계별 도움 구조 참고. 작은 글자와 과한 장식은 줄일 것.",
+      "status": "static_design_reference_not_production_asset"
+    },
+    {
+      "path": "references/06_case_result.png",
+      "original_filename": "카페_사건_해결_결과_화면.png",
+      "size_px": [
+        941,
+        1672
+      ],
+      "bytes": 1968160,
+      "sha256": "e1cf5dd8af1d36e165d6a626fbdbc2fd13af36876da08b93139b15204cc7b2c1",
+      "role": "사건 01의 해결·표현 확인 화면 참고. 과한 칭찬과 긴 설명은 단순화할 것.",
+      "status": "static_design_reference_not_production_asset"
+    }
+  ]
+}
