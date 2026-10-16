@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">서당</string>
+    <string name="title_activity_main">서당</string>
+    <string name="package_name">com.mihye.seodang</string>
+    <string name="custom_url_scheme">com.mihye.seodang</string>
+</resources>

@@ -1,0 +1,33 @@
+{
+  "cli": {
+    "version": ">= 16.24.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "production": {
+      "autoIncrement": true,
+      "environment": "production",
+      "node": "22.16.0",
+      "ios": {
+        "config": "ios.yml",
+        "scheme": "App"
+      },
+      "android": {
+        "config": "android.yml",
+        "gradleCommand": ":app:bundleRelease"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "android": {
+        "applicationId": "com.mihye.seodang",
+        "track": "production",
+        "releaseStatus": "completed"
+      },
+      "ios": {
+        "ascAppId": "6780309771"
+      }
+    }
+  }
+}
