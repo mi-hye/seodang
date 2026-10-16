@@ -50,7 +50,7 @@ test('real Japanese and Korean snapshots track visible levels and independent le
  s=reduce(s,{type:'course',value:'ja-ko'});s.onboardingLevel=7;s=reduce(s,{type:'korean-start',id:'7-1'});p=learningSnapshot(s,'korean');assert.equal(p.lesson_id,'ja-ko:korean:7-1');assert.equal(p.level,5);
 });
 test('practice interception does not complete until final practice step; replay can complete again',()=>{
- const events=[];const t=createLearningTracker({capture:(e,p)=>events.push([e,p])},()=> '00000000-0000-4000-8000-000000000001');
+ const events=[];const t=createLearningTracker({capture:(e,p)=>events.push([e,p])},()=> '00000000-0000-4000-8000-000000000001',()=>0);
  const start={lesson_id:'ko-ja:sentence:3',position:'intro',done:false};t.enter(start);
  const quiz={...start,position:'practice'};t.transition(start,quiz);assert.equal(events.filter(e=>e[0]==='lesson_completed').length,0);
  const done={...start,position:'summary',done:true};t.transition(quiz,done);t.transition(quiz,done);assert.equal(events.filter(e=>e[0]==='lesson_completed').length,1);
@@ -58,11 +58,55 @@ test('practice interception does not complete until final practice step; replay 
  t.enter(start);t.transition(start,done);assert.equal(events.filter(e=>e[0]==='lesson_completed').length,2);
 });
 test('selection/no-op and opening/restarting a lesson do not count as learning',()=>{
- const events=[];const t=createLearningTracker({capture:e=>events.push(e)},()=> '00000000-0000-4000-8000-000000000001');const s={lesson_id:'ja-ko:korean:3-1',position:'learn',done:false};t.enter(s);t.transition(s,{...s});t.transition(s,{...s,position:'intro'},'korean-start');assert.deepEqual(events,['lesson_started']);
+ const events=[];const t=createLearningTracker({capture:e=>events.push(e)},()=> '00000000-0000-4000-8000-000000000001',()=>0);const s={lesson_id:'ja-ko:korean:3-1',position:'learn',done:false};t.enter(s);t.transition(s,{...s});t.transition(s,{...s,position:'intro'},'korean-start');assert.deepEqual(events,['lesson_started']);
 });
 test('reconfirming consent preserves offline records and identity',()=>{
  const f=fixture();f.a.setConsent(true);f.a.capture('learning_progress');const id=f.a.installationId;assert.equal(f.a.setConsent(true),true);assert.equal(f.a.pending,2);assert.equal(f.a.installationId,id);
 });
 test('malformed persisted queue entries cannot crash collection',async()=>{
- const f=fixture();f.storage.setItem(ANALYTICS_KEY,JSON.stringify({consent:true,queue:[null,{},'invalid']}));const a=createAnalytics(f.options);assert.equal(a.capture('app_opened'),true);await a.flush();assert.equal(a.pending,0);
+ const f=fixture();f.storage.setItem(ANALYTICS_KEY,JSON.stringify({consent:true,consent_version:2,queue:[null,{},'invalid']}));const a=createAnalytics(f.options);assert.equal(a.capture('app_opened'),true);await a.flush();assert.equal(a.pending,0);
+});
+
+test('expanded collection requires renewed version 2 consent',async()=>{
+ const f=fixture(async()=>assert.fail('old consent must not send'));
+ f.storage.setItem(ANALYTICS_KEY,JSON.stringify({consent:true,consent_version:1,queue:[]}));
+ const a=createAnalytics(f.options);assert.equal(a.consent,null);assert.equal(a.capture('app_opened'),false);await a.flush();
+});
+test('foreground duration excludes background and idle beyond 60 seconds, resumes on interaction',()=>{
+ let time=0;const events=[];const t=createLearningTracker({capture:(e,p)=>events.push([e,p])},()=> '00000000-0000-4000-8000-000000000001',()=>time);
+ t.enter({lesson_id:'ko-ja:basic:6',position:'learn',done:false});time=10000;t.visibility(false);time=900000;t.visibility(true);time+=5000;t.activity();time+=300000;t.tick();
+ assert.equal(events.filter(e=>e[0]==='step_time').reduce((n,e)=>n+e[1].active_ms,0),75000);
+ time+=100000;t.tick();assert.equal(events.filter(e=>e[0]==='step_time').length,3);
+});
+test('real reducer repeated wrong answers, correct answers and empty selections are distinct',()=>{
+ const events=[];const t=createLearningTracker({capture:(e,p)=>events.push([e,p])},()=> '00000000-0000-4000-8000-000000000001',()=>0);
+ let s=reduce({...freshState(),listening:{completed:true}},{type:'basic-start',id:6});t.enter(learningSnapshot(s,'basic'));
+ const act=a=>{const before=learningSnapshot(s,'basic');s=reduce(s,a);t.transition(before,learningSnapshot(s,'basic'),a.type);};
+ act({type:'basic-next'});act({type:'basic-next'});act({type:'basic-check'});
+ act({type:'basic-select',id:1});act({type:'basic-check'});act({type:'basic-check'});act({type:'basic-select',id:0});act({type:'basic-check'});
+ assert.deepEqual(events.filter(e=>e[0]==='answer_checked').map(e=>e[1].correct),[false,false,true]);
+});
+test('final checked answer uses reducer result before practice interception; completion waits for practice',async()=>{
+ const {prepareContent,interceptCompletion}=await import('../src/practice-content.js');await prepareContent('sentence');
+ const events=[];const t=createLearningTracker({capture:(e,p)=>events.push([e,p])},()=> '00000000-0000-4000-8000-000000000001',()=>0);
+ let s=reduce(freshState(),{type:'sentence-start',id:3});s.sentenceLessons[3]={...s.sentenceLessons[3],phase:'arrange',index:5,selected:'2'};
+ const before=learningSnapshot(s,'sentence');t.enter(before);const action={type:'sentence-check'},judged=reduce(s,action),after=interceptCompletion(s,judged,'sentence',action);
+ t.transition(before,learningSnapshot(after,'sentence'),action.type,learningSnapshot(judged,'sentence'));
+ assert.equal(events.find(e=>e[0]==='answer_checked')[1].correct,true);assert.equal(events.some(e=>e[0]==='lesson_completed'),false);
+ assert.equal(learningSnapshot({...after,practices:{...after.practices,'ko-ja:sentence:3':{...after.practices['ko-ja:sentence:3'],index:2}}},'sentence').item_index,2);
+});
+test('audio context stays with initiating attempt; navigation records explicit exit',()=>{
+ const events=[];let id=0;const t=createLearningTracker({capture:(e,p)=>events.push([e,p])},()=>String(++id),()=>0);
+ t.enter({lesson_id:'ko-ja:basic:6',position:'learn'});const report=t.audio('file');report('started');t.enter({lesson_id:'ko-ja:basic:7',position:'intro'});report('failed');
+ assert.equal(events.find(e=>e[0]==='audio_playback'&&e[1].audio_result==='failed')[1].lesson_id,'ko-ja:basic:6');
+ assert.equal(events.find(e=>e[0]==='lesson_exited')[1].exit_reason,'navigation');
+});
+test('new properties remain numeric/enum only; internal state never leaves queue',()=>{
+ const f=fixture();f.a.setConsent(true);f.a.capture('answer_checked',{item_index:3,correct:false,_selected:true,_retry:true,position:'secret',round_index:0,mode_index:2,audio_result:'secret',active_ms:999999});
+ const p=JSON.parse(f.map.get(ANALYTICS_KEY)).queue.at(-1).properties;assert.equal(p.item_index,3);assert.equal(p.correct,false);for(const k of ['_selected','_retry','position','audio_result','active_ms'])assert.equal(p[k],undefined);
+});
+test('restart followed by navigation starts exactly one fresh attempt',()=>{
+ const events=[];let id=0;const t=createLearningTracker({capture:(e,p)=>events.push([e,p])},()=>String(++id),()=>0);
+ const s={lesson_id:'ko-ja:play:0',position:'learn',done:false};t.enter(s);const reset={...s,position:'intro'};t.transition(s,reset,'restart');t.enter(reset);
+ assert.equal(events.filter(e=>e[0]==='lesson_started').length,2);assert.deepEqual(events.filter(e=>e[0]==='lesson_exited').map(e=>e[1].exit_reason),['restart']);
 });

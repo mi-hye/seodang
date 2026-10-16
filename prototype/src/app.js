@@ -1,6 +1,7 @@
 import {analytics,openAnalytics} from './analytics.js';
 import {learningSnapshot,createLearningTracker} from './analytics-learning.js';
 const learningTracker=createLearningTracker(analytics);
+learningTracker.visibility(!document.hidden);
 import {japaneseLessonUI,koreanImmersion,courseGroup,displayLevel,retiredPractice} from './curriculum.js';
 import {lessonTitle} from './lesson-title.js';
 import {developmentMode} from './build-config.js';
@@ -58,6 +59,12 @@ let view = enteringCase ? (selectedLevel(state) >= 5 ? "reading" : selectedLevel
   lastAdvance = -Infinity,
   toast = "";
 const player = new AudioPlayer();
+player.onPlayback=source=>learningTracker.audio(source);
+document.addEventListener('visibilitychange',()=>learningTracker.visibility(!document.hidden));
+window.addEventListener('pagehide',()=>learningTracker.visibility(false));
+window.addEventListener('pageshow',()=>learningTracker.visibility(!document.hidden));
+for(const event of ['pointerdown','keydown'])document.addEventListener(event,()=>learningTracker.activity(),{capture:true,passive:true});
+setInterval(()=>learningTracker.tick(),15000);
 function updatePassagePlayback(){for(const el of app.querySelectorAll('[data-passage-pause]')){const paused=player.state==='paused';el.disabled=player.state==='idle';el.innerHTML=icon(paused?'play':'pause');el.setAttribute('aria-label',paused?el.dataset.resumeLabel:el.dataset.pauseLabel);}}
 player.onStateChange=updatePassagePlayback;
 const progress = () =>
@@ -83,7 +90,7 @@ function commit(action) {
   const analyticsBefore=learningSnapshot(state,view);
   const next=reduce(state,action);
   state=practiceModule&&practiceKinds.includes(view)?practiceModule.interceptCompletion(state,next,view,action):next;
-  learningTracker.transition(analyticsBefore,learningSnapshot(state,view),action.type);
+  learningTracker.transition(analyticsBefore,learningSnapshot(state,view),action.type,learningSnapshot(next,view));
   if (!blocked) storageError = save(storage, state);
 }
 function navigate(next) {
@@ -361,7 +368,7 @@ function render(scroll = false) {
   if(lessonSession&&practiceKinds.includes(view))lessonSession.centerLesson(app,state,view,Boolean(completedKind));
   void mountMapCharacter();
   updatePassagePlayback();
-  if(pendingPractice())disposePractice=practiceModule.mountPractice(app,state,view,{play:(entry,onError)=>player.play(entry,true,onError),stop:()=>player.stop(),advance:finishPracticeStep});
+  if(pendingPractice())disposePractice=practiceModule.mountPractice(app,state,view,{play:(entry,onError)=>player.play(entry,true,onError),stop:()=>player.stop(),onAnswer:correct=>learningTracker.answer(correct),advance:finishPracticeStep});
   if(!completedKind&&!pendingPractice()&&view==='basic'&&basicProgress(state,state.basics.active).phase==='write')disposePractice=practiceModule.mountPractice(app,basicModule.basicWritingState(state),'basic',{play:(entry,onError)=>player.play(entry,true,onError),stop:()=>player.stop(),advance:()=>{player.stop();commit({type:'basic-next'});if(basicProgress(state,state.basics.active).phase==='done')completedKind='basic';render(true);if(!completedKind&&!pendingPractice())speakBasic();}});
   if(!completedKind&&!pendingPractice()&&view === "korean")disposeKoreanWriting=koreanModule.mountKoreanWriting(app);
   if (!completedKind&&!pendingPractice()&&view === "kana") {

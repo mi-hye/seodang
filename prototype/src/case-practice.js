@@ -9,7 +9,7 @@ export function renderCasePractice(s,task,p,top){
  const order=task.type==='order',ids=order?task.tokens.map((_,i)=>i).reverse():[];
  return `${top(c.title)}<main class="page practice-page case-practice" lang="${locale(s)}"><div class="case-task-count">${p.index+1} / ${p.count}</div><h1>${c[task.type]}</h1><p class="case-task-scene">${text(task.scene)}</p>${task.passage?`<article class="case-task-passage" lang="${language}">${task.passage.split('\n').map(line=>`<p>${text(line)}</p>`).join('')}</article>`:''}<h2>${text(task.prompt)}</h2>${order?renderTokenBuilder({tokens:task.tokens,order:ids,lang:language,empty:c.empty,answerClass:'case-task-answer',choicesClass:'case-task-tokens',answerAttributes:'data-case-answer',choiceAttributes:i=>`data-case-token="${i}"`}):`<div class="case-task-options">${task.options.map((option,i)=>`<button type="button" class="secondary" data-case-choice="${i}" lang="${/[가-힣]/.test(option)?'ko':'ja'}" aria-pressed="false">${text(option)}</button>`).join('')}</div>`}<p class="practice-feedback" role="status"></p>${order?`<div class="button-pair">${button(c.undo,'case-undo','secondary','data-case-undo disabled')}${button(c.check,'case-confirm','primary','data-case-confirm disabled')}</div>`:button(c.check,'case-confirm','primary','data-case-confirm disabled')}</main>`;
 }
-export function mountCasePractice(root,s,task,{advance,stop}){
+export function mountCasePractice(root,s,task,{advance,stop,onAnswer=()=>{}}){
  const c=copy[locale(s)],confirm=root.querySelector('[data-case-confirm]'),feedback=root.querySelector('.practice-feedback'),undo=root.querySelector('[data-case-undo]');let selected=null,tokens=[],checked=false,busy=false,alive=true;
  const update=()=>{confirm.disabled=busy||(task.type==='order'?tokens.length!==task.tokens.length:selected===null);if(undo)undo.disabled=checked||tokens.length===0;if(task.type==='order'){root.querySelector('[data-case-answer]').innerHTML=renderTokenSelection({tokens:task.tokens,selected:tokens,locked:checked,lang:s.courseDirection==='ja-ko'?'ko':'ja',empty:c.empty});for(const b of root.querySelectorAll('[data-case-token]'))b.disabled=checked||tokens.includes(Number(b.dataset.caseToken));}};
  const handle=async e=>{
@@ -20,6 +20,7 @@ export function mountCasePractice(root,s,task,{advance,stop}){
   if(b.hasAttribute('data-case-confirm')){
    if(checked){busy=true;update();await advance();return;}
    const correct=task.type==='order'?tokens.every((id,i)=>id===i):selected===task.answer;
+   onAnswer(correct);
    feedback.textContent=`${correct?c.correct:c.retry} ${task.hint}`;
    if(correct){checked=true;confirm.textContent=c.next;for(const x of root.querySelectorAll('[data-case-choice]'))x.disabled=true;}update();
   }

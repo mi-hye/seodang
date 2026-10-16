@@ -53,7 +53,7 @@ const deviceSpeech = {
       const voice = speechSynthesis.getVoices().find(v => v.lang.replace('_', '-') === entry.locale);
       if (voice) utterance.voice = voice;
       utterance.onend = resolve;
-      utterance.onerror = event => ['canceled', 'interrupted'].includes(event.error) ? resolve() : reject(event);
+      utterance.onerror = event => ['canceled', 'interrupted'].includes(event.error) ? resolve({cancelled:true}) : reject(event);
       speechSynthesis.speak(utterance);
     });
   },
@@ -72,6 +72,7 @@ export class AudioPlayer {
   }
   changeState(state) { this.state=state;this.onStateChange?.(state); }
   stop() {
+    this.endPlayback?.('cancelled');this.endPlayback=null;
     this.generation++;
     if(this.current){this.current.pause();this.current.currentTime=0;}
     this.finishCurrent?.();
@@ -101,6 +102,14 @@ export class AudioPlayer {
       if(failed||this.generation!==generation)return;
     }
   }
+  beginPlayback(source) {
+    let report;try{report=this.onPlayback?.(source);}catch{}
+    let ended=false;
+    const emit=result=>{try{report?.(result);}catch{}};
+    emit('started');
+    const end=result=>{if(ended)return;ended=true;emit(result);if(this.endPlayback===end)this.endPlayback=null;};
+    this.endPlayback=end;return end;
+  }
   async play(entry, enabled, onError, { rate = entry?.playbackRate ?? 1 } = {}) {
     const stopped = this.stop();
     const token = this.generation;
@@ -108,18 +117,21 @@ export class AudioPlayer {
       if (!enabled || !entry.text) return;
       await stopped;
       if (token !== this.generation) return;
+      const end=this.beginPlayback('device');
       try {
         const readiness = await this.speech.prepare?.(entry);
         if (token !== this.generation) return;
         if (readiness?.proceed === false) { await this.stop(); return; }
-        await this.speech.speak(entry);
+        const result=await this.speech.speak(entry);
+        if(token===this.generation)end(result?.cancelled?'cancelled':'completed');
       }
-      catch { if (token === this.generation) onError("기기 음성을 재생하지 못했어요. 휴대폰의 음성 설정을 확인해 주세요."); }
+      catch { if (token === this.generation) {end('failed');onError("기기 음성을 재생하지 못했어요. 휴대폰의 음성 설정을 확인해 주세요.");} }
       return;
     }
     if (!enabled || !entry?.audioFile || entry.status !== "ready") return;
     await stopped;
     if (token !== this.generation) return;
+    const end=this.beginPlayback('file');
     let sound;
     try {
       let source=entry.audioFile;
@@ -131,7 +143,7 @@ export class AudioPlayer {
       }
       sound = this.factory(source);
     }
-    catch { if(token===this.generation){this.release?.();this.release=null;onError("음성을 내려받지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.");} return; }
+    catch { if(token===this.generation){this.release?.();this.release=null;end('failed');onError("음성을 내려받지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.");} return; }
     sound.playbackRate = normalizeAudioRate(rate);
     sound.preservesPitch = true;
     if ("webkitPreservesPitch" in sound) sound.webkitPreservesPitch = true;
@@ -149,14 +161,15 @@ export class AudioPlayer {
         resolve();
       };
       const fail = () => {
+        if(settled)return;
         if (token === this.generation) {
-          sound.pause();
+          sound.pause();end('failed');
           onError("음성을 재생하지 못했어요. 다시 눌러 주세요.");
         }
         finish();
       };
       this.finishCurrent = finish;
-      sound.onended = finish;
+      sound.onended = ()=>{end('completed');finish();};
       sound.onerror = fail;
       try { Promise.resolve(sound.play()).catch(fail); }
       catch { fail(); }

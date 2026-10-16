@@ -1,0 +1,8 @@
+{
+  "updated_at_kst": "2026-10-16",
+  "releases": [
+    {"version":"1.1.1","ios_build":36,"android_build":20,"status":"in_review_per_owner_handoff","analytics_schema":null,"production_available_at":null,"evidence":"https://github.com/mi-hye/seodang/pull/32","note":"Owner handoff: this submitted version has no analytics; store status not independently checked here."},
+    {"version":null,"status":"unreleased_pr","analytics_schema":2,"consent_version":2,"production_available_at":null,"evidence":"https://github.com/mi-hye/seodang/pull/32","note":"Do not infer a release from PR merge, build success, or app.json version. Record verified store release/build and first production receipt separately."}
+  ],
+  "proposals": [{"id":"2026-10-16-collection-readiness","proposal":"Verify consent, native receipt and release disclosures before rollout","status":"proposed","execution_evidence":null}]
+}

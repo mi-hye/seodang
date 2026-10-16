@@ -16,8 +16,8 @@ export function renderPractice(s,kind,top){
  const nextButton=`<button class="primary" type="button" data-practice="next" disabled>${p.mode===0?c.check:c.next}</button>`;
  return `${top(c.title)}<main class="page practice-page${p.mode===2?' practice-writing':''}${showMeanings?' practice-with-meanings':''}${kind==='basic'&&s.basics.active>=11?' practice-katakana':''}" lang="${japanese(s)?'ja':'ko'}"><div class="practice-heading"><h1>${c.modes[p.mode]}</h1>${p.mode===0?audio:''}</div>${p.mode===0?'':`<div class="practice-writing-reference${unit.text.length===1?' practice-writing-reference-glyph':''}"><span lang="${language}">${phraseText(unit.text)}</span>${audio}</div>${showMeanings?`<p class="practice-writing-meaning" lang="ko">${esc(unit.meaning)}</p>`:''}<div class="practice-board${unit.text.length===1?' practice-board-glyph':''}">${p.round<2?`<span class="practice-guide" lang="${language}">${phraseText(unit.text)}</span>`:''}<canvas aria-label="${c.modes[2]}" data-practice-canvas></canvas></div>`}${select}<p class="practice-feedback" role="status"></p>${p.mode===2?`<div class="button-pair"><button class="secondary" type="button" data-practice="clear">${c.clear}</button>${nextButton}</div>`:nextButton}</main>`;
 }
-export function mountPractice(root,s,kind,{play,stop,advance}){
- const tasks=caseTasks(s,kind);if(tasks)return mountCasePractice(root,s,tasks[practiceState(s,kind).index],{advance,stop});
+export function mountPractice(root,s,kind,{play,stop,advance,onAnswer=()=>{}}){
+ const tasks=caseTasks(s,kind);if(tasks)return mountCasePractice(root,s,tasks[practiceState(s,kind).index],{advance,stop,onAnswer});
  const {p,unit,answer,c}=model(s,kind),next=root.querySelector('[data-practice=next]'),feedback=root.querySelector('.practice-feedback');
  let alive=true,heard=p.mode!==0,selected=null,ready=false,busy=false,request=0;
  const status=text=>{if(alive)feedback.textContent=text;};
@@ -36,7 +36,7 @@ export function mountPractice(root,s,kind,{play,stop,advance}){
  const handler=async event=>{const target=event.target.closest('[data-practice]');if(!target||target.disabled||!alive)return;const action=target.dataset.practice;
   if(action==='listen')void listen();
   if(action==='choice'){selected=Number(target.dataset.choice);for(const b of root.querySelectorAll('[data-practice=choice]'))b.setAttribute('aria-pressed',String(b===target));status('');sync();}
-  if(action==='next'&&!next.disabled){if(p.mode===0&&selected!==answer){status(c.retry);return;}next.disabled=true;await advance();}
+  if(action==='next'&&!next.disabled){if(p.mode===0)onAnswer(selected===answer);if(p.mode===0&&selected!==answer){status(c.retry);return;}next.disabled=true;await advance();}
   if(action==='clear'){lines=[];paint();ready=false;sync();}
 
  };
