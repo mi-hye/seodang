@@ -1,8 +1,40 @@
 {
   "updated_at_kst": "2026-10-16",
   "releases": [
-    {"version":"1.1.1","ios_build":36,"android_build":20,"status":"in_review_per_owner_handoff","analytics_schema":null,"production_available_at":null,"evidence":"https://github.com/mi-hye/seodang/pull/32","note":"Owner handoff: this submitted version has no analytics; store status not independently checked here."},
-    {"version":null,"status":"unreleased_pr","analytics_schema":2,"consent_version":2,"production_available_at":null,"evidence":"https://github.com/mi-hye/seodang/pull/32","note":"Do not infer a release from PR merge, build success, or app.json version. Record verified store release/build and first production receipt separately."}
+    {
+      "version": "1.1.1",
+      "ios_build": 36,
+      "android_build": 20,
+      "status": "superseded_by_1.1.2",
+      "analytics_schema": null,
+      "production_available_at": null,
+      "evidence": "https://github.com/mi-hye/seodang/pull/32",
+      "note": "Owner handoff: this submitted version has no analytics; store status not independently checked here."
+    },
+    {
+      "version": "1.1.2",
+      "status": "submitted_for_review",
+      "analytics_schema": 2,
+      "consent_version": 2,
+      "production_available_at": null,
+      "evidence": "https://github.com/mi-hye/seodang/pull/34",
+      "note": "Observed in store consoles: Apple 1.1.2 (37) waiting for review; Google 1.1.2 and updated Data safety received, automatic checks running. Not yet a verified public release. Privacy policy and store disclosure updated. Physical iOS/Android analytics receipt not verified in this submission task; automated consent tests cover Chromium/WebKit.",
+      "ios_build": 37,
+      "android_build": 21,
+      "ios_review_status": "WAITING_FOR_REVIEW",
+      "ios_submitted_at": "2026-10-16T19:04:00+09:00",
+      "ios_review_submission_id": "1c983a36-bbe3-46ab-9b30-84f526f16aa0",
+      "android_review_status": "submitted_automatic_checks",
+      "ios_eas_build_id": "da557ca8-a383-4b6b-b3e6-5e78760e66a8",
+      "android_eas_build_id": "4c1bf923-ce2e-4961-8a2e-7ad49495cf80"
+    }
   ],
-  "proposals": [{"id":"2026-10-16-collection-readiness","proposal":"Verify consent, native receipt and release disclosures before rollout","status":"proposed","execution_evidence":null}]
+  "proposals": [
+    {
+      "id": "2026-10-16-collection-readiness",
+      "proposal": "Verify consent, native receipt and release disclosures before rollout",
+      "status": "proposed",
+      "execution_evidence": null
+    }
+  ]
 }
