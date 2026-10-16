@@ -6,7 +6,9 @@ build:
     - run:
         name: Check and bundle the offline app
         command: npm run check && npx cap sync ios
-    - eas/configure_ios_version
+    - run:
+        name: Configure the Capacitor build number
+        command: node scripts/configure-store-ios-version.mjs "${ eas.job.version.buildNumber }"
     - eas/configure_ios_credentials
     - eas/generate_gymfile_from_template:
         inputs:
