@@ -7,7 +7,7 @@ for(const [id,glyphs] of Object.entries(letters)){
  hiraganaExtraContent[id]=group.map((glyph,index)=>{
   const [sourceId,items]=Object.entries(katakanaContent).find(([,items])=>items.some(([text])=>text===glyph));
   const sourceIndex=items.findIndex(([text])=>text===glyph),text=hira(glyph);
-  hiraganaExtraAudio[`${id}.${index}`]={id:`hiragana-extra.${id}.${index}`,text,locale:'ja-JP',audioFile:`assets/audio/katakana/katakana.${sourceId}.${sourceIndex}.wav`,status:'ready',productionMethod:'Qwen3-TTS (MLX Audio)',voiceId:'Ono_Anna'};
+  hiraganaExtraAudio[`${id}.${index}`]={id:`hiragana-extra.${id}.${index}`,text,locale:'ja-JP',audioFile:`assets/audio/katakana/katakana.${sourceId}.${sourceIndex}.wav`,status:'ready',productionMethod:'Selected offline TTS',voiceId:'VOICEVOX Nemo 男声1'};
   return [text,items[sourceIndex][1],group.filter(g=>g!==glyph).slice(0,2).map(hira)];
  });
 }

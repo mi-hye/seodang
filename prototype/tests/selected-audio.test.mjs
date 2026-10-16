@@ -14,7 +14,7 @@ test('every shipped WAV is covered by a verified selected-voice manifest',()=>{
   assert.equal(manifest.provider,'Qwen3-TTS (MLX Audio)');
   assert.ok(manifest.modelRevision);
   for(const entry of Object.values(manifest.files)){
-   assert.equal(entry.voiceId,entry.locale==='ko-KR'?'Sohee':'Ono_Anna');
+   assert.ok((entry.locale==='ko-KR'?['Sohee','Supertonic 3 M1']:['Ono_Anna','VOICEVOX Nemo 男声1']).includes(entry.voiceId));
    const raw=readFileSync(new URL(entry.file,root));
    assert.equal(createHash('sha256').update(raw).digest('hex'),entry.sha256,entry.file);
    assert.ok(entry.rms>50&&entry.peak<32768&&entry.duration>.15,entry.file);

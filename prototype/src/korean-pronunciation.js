@@ -5,7 +5,7 @@ import {esc,icon} from './ui.js';
 import {showSheet,closeSheet} from './sheet.js';
 let styles,active;
 function loadStyles(){return styles ||= new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href='src/korean-pronunciation.css';link.onload=resolve;link.onerror=()=>{link.remove();styles=null;reject(Error('Pronunciation styles unavailable'));};document.head.append(link);});}
-export function pronunciationAudio(text){for(const [id,items] of Object.entries(koreanContent)){const index=items.findIndex(item=>item.text===text&&(item.spoken||item.text)===text);if(index>=0)return {id:`korean.${id}.${index}`,text,locale:'ko-KR',status:'ready',audioFile:`assets/audio/korean/korean.${id}.${index}.wav`};}return {id:`pronunciation.${text}`,text,locale:'ko-KR',status:'ready',voiceId:'Sohee',audioFile:`assets/audio/korean-pronunciation/${text.codePointAt(0).toString(16)}.wav`};}
+export function pronunciationAudio(text){for(const [id,items] of Object.entries(koreanContent)){const index=items.findIndex(item=>item.text===text&&(item.spoken||item.text)===text);if(index>=0)return {id:`korean.${id}.${index}`,text,locale:'ko-KR',status:'ready',audioFile:`assets/audio/korean/korean.${id}.${index}.wav`};}return {id:`pronunciation.${text}`,text,locale:'ko-KR',status:'ready',voiceId:'Supertonic 3 M1',audioFile:`assets/audio/korean-pronunciation/${text.codePointAt(0).toString(16)}.wav`};}
 const control=(label,action,value,selected)=>`<button type="button" data-pronunciation="${action}" data-value="${esc(value)}" aria-pressed="${selected}">${label}</button>`;
 export async function openPronunciation(text,{play,stop,trigger=document.activeElement}={}){
  const parts=pronunciationParts(text);if(!parts.length||active)return;

@@ -1,3 +1,4 @@
+import {extraKoreanCases} from './level-two-content.js';
 // Korean is the learning material; Japanese is instructional copy.
 const cards=(rows)=>rows.map(([text,meaning,others,cue,spoken])=>({text,meaning,others,cue,spoken:spoken||text}));
 export const koreanContent={
@@ -58,3 +59,5 @@ koreanContent['1-11']=cards([
  ['집','家',['물','책']],['물','水',['집','밥']],['밥','ご飯',['개','물']],
  ['책','本',['고양이','집']],['개','犬',['책','고양이']],['고양이','猫',['개','밥']]
 ]);
+
+for(const [id,lesson] of Object.entries(extraKoreanCases))koreanContent[id]=lesson.items;

@@ -32,7 +32,7 @@ async function layerBytes(includeVariants){
  })().catch(error=>{delete layerBytePromises[includeVariants];throw error;});
 }
 export function mountOnboardingCharacter(host,{state='idle',pose='standing',reducedMotion=false}={}){
- let disposed=false,instance,observer,transition;const decoded=[],assets={},images={};
+ let disposed=false,instance,observer,transition,readyFrame;const decoded=[],assets={},images={};
  let activePose=pose;
  const machine=()=>activePose==='sitting'?'Sitting':activePose==='happy'?'Happy':state==='greeting'?'Welcome':state==='talking'?'Speaking':'Rest';
  const doc=host.ownerDocument,media=window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -50,7 +50,21 @@ export function mountOnboardingCharacter(host,{state='idle',pose='standing',redu
    assetLoader:asset=>{const image=images[`${activePose}:${asset.name}`];if(!image)return false;assets[asset.name]=asset;asset.setRenderImage(image);return true;},
    onLoad:()=>{
     if(disposed)return;
-    instance.resizeDrawingSurfaceToCanvas();host.dataset.pose=activePose;host.dataset.renderer='rive';host.dataset.riveAnimation=still()?'Idle':activeMachine;
+    instance.resizeDrawingSurfaceToCanvas();host.dataset.pose=activePose;host.dataset.riveAnimation=still()?'Idle':activeMachine;
+    // Load completes before Rive's deferred renderer has painted its first frame.
+    // Keep the original pose visible until the canvas actually contains pixels.
+    const probe=doc.createElement('canvas');probe.width=probe.height=32;
+    const context=probe.getContext('2d',{willReadFrequently:true});
+    const reveal=()=>{
+     if(disposed||!instance)return;
+     if(canvas.width&&canvas.height){
+      context.clearRect(0,0,32,32);context.drawImage(canvas,0,0,32,32);
+      const pixels=context.getImageData(0,0,32,32).data;
+      if(pixels.some((value,index)=>index%4===3&&value>0)){host.dataset.renderer='rive';return;}
+     }
+     readyFrame=requestAnimationFrame(reveal);
+    };
+    readyFrame=requestAnimationFrame(reveal);
     host.dataset.riveAnimations=instance.animationNames.join(',');host.dataset.riveMachines=instance.stateMachineNames.join(',');
     if(still()||doc.hidden)instance.pause();
     observer=new ResizeObserver(()=>{
@@ -62,7 +76,7 @@ export function mountOnboardingCharacter(host,{state='idle',pose='standing',redu
   });
  })().catch(()=>{if(!disposed)host.dataset.renderer='fallback';});
  doc.addEventListener('visibilitychange',visibility);media.addEventListener('change',motion);
- const dispose=()=>{if(disposed)return;disposed=true;transition?.remove();observer?.disconnect();doc.removeEventListener('visibilitychange',visibility);media.removeEventListener('change',motion);instance?.cleanup();instance=null;for(const image of decoded)image.unref();canvas.remove();};
+ const dispose=()=>{if(disposed)return;disposed=true;cancelAnimationFrame(readyFrame);transition?.remove();observer?.disconnect();doc.removeEventListener('visibilitychange',visibility);media.removeEventListener('change',motion);instance?.cleanup();instance=null;for(const image of decoded)image.unref();canvas.remove();};
  dispose.replay=()=>{if(disposed||!instance||still())return;instance.stop();activeMachine=activePose==='sitting'?'Listening':activePose==='happy'?'Happy':'Welcome';instance.play(activeMachine);host.dataset.riveAnimation=activeMachine;};
  dispose.setPose=next=>{
   if(disposed||!['standing','sitting','happy'].includes(next)||next===activePose)return;

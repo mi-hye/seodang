@@ -4,7 +4,7 @@ import {t} from './i18n.js';
 import {basicLessons,basicProgress,basicUnlocked,nextBasic} from './basics-state.js';
 import {readingProgress} from './reading-state.js';
 import {dialogueProgress} from './dialogue-state.js';
-import { sentenceProgress } from "./sentence-state.js";
+import { sentenceProgress,sentenceLessons,nextSentence } from "./sentence-state.js";
 import { icon, esc } from './ui.js';
 import { assets } from './media.js';
 import { selectedLevel, kanaLessons, normalizeKana, kanaUnlocked } from './kana-state.js';
@@ -26,9 +26,9 @@ function scenery(index){
  ];
  return `<span class="map-village map-village-${index%4}" style="--scenery-x:${100-routePosition(index)}%" aria-hidden="true"><svg viewBox="0 0 120 100" fill="none">${scenes[index%4]}</svg></span>`;
 }
-function stop({title, symbol='book', ready, complete, current, detail='', status, action, id}, index, lessons) {
+function stop({title, symbol='book', ready, complete, current, detail='', status, action, id}, index, lessons, sectionEnd=false) {
   const x=routePosition(index),nextX=routePosition(index+1);
-  const route=index<lessons.length-1?`<svg class="map-trail${complete?' is-travelled':''}" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="map-trail-edge" d="M${x} 0 C${x} 50 ${nextX} 50 ${nextX} 100"/><path class="map-trail-fill" d="M${x} 0 C${x} 50 ${nextX} 50 ${nextX} 100"/></svg>`:'';
+  const route=!sectionEnd&&index<lessons.length-1?`<svg class="map-trail${complete?' is-travelled':''}" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="map-trail-edge" d="M${x} 0 C${x} 50 ${nextX} 50 ${nextX} 100"/><path class="map-trail-fill" d="M${x} 0 C${x} 50 ${nextX} 50 ${nextX} 100"/></svg>`:'';
   return `<li style="--stop-x:${x}%" class="map-stop${current ? ' is-current' : ''}${complete ? ' is-complete' : ''}${!ready ? ' is-locked' : ''}">${route}${scenery(index)}<button class="map-choice" ${ready ? `data-action="${action}"${id !== undefined ? ` data-id="${id}"` : ''}` : 'disabled'} aria-label="${index + 1}${t('번째')}, ${esc(title)}, ${esc(detail)}, ${esc(status)}"${current ? ' aria-current="step"' : ''}><span class="map-node" aria-hidden="true"><span class="map-number">${index+1}</span>${icon(complete?'check':!ready?'lock':current?'play':symbol)}${current?currentMascot(index):''}</span><span class="map-title">${index+1}. ${esc(title)}</span>${current||complete?`<span class="map-status">${esc(t(status))}${current?icon('arrow'):''}</span>`:''}</button></li>`;
 }
 export function renderLearningMap(state,{resumeCard=''}={}) {
@@ -51,7 +51,7 @@ export function renderLearningMap(state,{resumeCard=''}={}) {
     });
     for(const l of basicLessons.filter(l=>level===(l.id===6?2:0))){const b=basicProgress(state,l.id);count+=Number(b.completed);lessons.push({title:l.title,ready:basicUnlocked(state,l.id),complete:b.completed,current:(level===0?next<0:listening.completed)&&l.id===nextBasic(state)&&!b.completed,detail:'',status:b.completed?'완료':b.started?'이어하기':'시작하기',action:'basic',id:l.id});}
   } else if(level===2){
-    const p=sentenceProgress(state);title=courseName(level);count=Number(p.completed);lessons=[{title:'카페에 남겨진 가방',image:assets.cafe.src,ready:true,complete:p.completed,current:!p.completed,status:p.completed?'학습 완료':p.started?'이어하기':'시작하기',action:'sentence'}];
+    title=courseName(level);lessons=sentenceLessons.map(l=>{const p=sentenceProgress(state,l.id);return {...l,ready:true,complete:p.completed,current:l.id===nextSentence(state),status:p.completed?'학습 완료':p.started?'이어하기':'시작하기',action:'sentence'};});count=lessons.filter(l=>l.complete).length;
   } else if(level===4){
     const p=dialogueProgress(state);title=courseName(level);count=Number(p.completed);lessons=[{title:'따뜻한 커피를 포장해요',image:assets.cafe.src,ready:true,complete:p.completed,current:!p.completed,status:p.completed?'학습 완료':p.started?'이어하기':'시작하기',action:'dialogue'}];
   } else {
@@ -64,5 +64,9 @@ export function renderLearningMap(state,{resumeCard=''}={}) {
   if(current<0)current=lessons.findIndex(l=>l.ready&&!l.complete);
   lessons=lessons.map((l,i)=>({...l,current:i===current}));
   const progress=lessons.length?Math.round(count/lessons.length*100):0;
-  return `<section class="learning-map" aria-label="${title}${state.courseDirection==='ja-ko'&&!koreanImmersion(state)?'の学習マップ':' 학습 지도'}"><div class="map-overview"><div class="map-heading"><h1>${title}</h1><span>${count}/${lessons.length}</span></div>${current>=0?`<button class="map-locate" data-action="map-locate" aria-label="${t('현재 위치로 이동')}">${icon('locate')}</button>`:''}<div class="map-progress" aria-hidden="true"><span style="width:${progress}%"></span></div>${resumeCard}</div><div class="map-layout"><ol class="map-grid">${lessons.map(stop).join('')}</ol><div class="map-finish${count===lessons.length?' is-complete':''}" aria-hidden="true">${icon(count===lessons.length?'check':'home')}</div></div></section>`;
+  const recommendedEnd=state.courseDirection==='ko-ja'&&level===0?lessons.findIndex(l=>l.action==='basic'&&l.id===10):-1;
+  const routeStops=level===0?lessons:[...lessons,null];
+  const comingSoon=level===0?'':`<li class="map-stop map-coming-soon is-locked" style="--stop-x:${routePosition(lessons.length)}%"><div class="map-choice"><span class="map-node" aria-hidden="true">?</span><span class="map-title">Coming Soon</span></div></li>`;
+  const mapStops=lessons.map((lesson,index)=>stop(lesson,index,routeStops,index===recommendedEnd)+(index===recommendedEnd?'<li class="map-study-note"><h2>기본 추천 학습은 여기까지예요</h2><p>1~9번에서 히라가나와 기본 발음을 익혀요.</p><p>10번부터는 발음 보충과 가타카나를 배우는 추가 학습이에요. 레벨 2로 먼저 넘어가고 필요할 때 돌아와도 좋아요.</p></li>':'')).join('');
+  return `<section class="learning-map" aria-label="${title}${state.courseDirection==='ja-ko'&&!koreanImmersion(state)?'の学習マップ':' 학습 지도'}"><div class="map-overview"><div class="map-heading"><h1>${title}</h1><span>${count}/${lessons.length}</span></div>${current>=0?`<button class="map-locate" data-action="map-locate" aria-label="${t('현재 위치로 이동')}">${icon('locate')}</button>`:''}<div class="map-progress" aria-hidden="true"><span style="width:${progress}%"></span></div>${resumeCard}</div><div class="map-layout"><ol class="map-grid">${mapStops}${comingSoon}</ol></div></section>`;
 }

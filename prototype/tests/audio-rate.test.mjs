@@ -25,3 +25,12 @@ test('speed changes affect current audio without restarting and old settings acc
 test('pause and resume preserve position and rate, ending or stopping returns to idle',async()=>{
  const sound={currentTime:23,pause(){this.paused=true;},play(){this.paused=false;return Promise.resolve();}};const player=new AudioPlayer(()=>sound,{stop(){}});const pending=player.play({status:'ready',audioFile:'test.wav'},true,assert.fail,{rate:1.2});await new Promise(r=>setImmediate(r));assert.equal(player.state,'playing');player.pause();assert.equal(player.state,'paused');assert.equal(sound.currentTime,23);player.setRate(.7);await player.resume();assert.equal(player.state,'playing');assert.equal(sound.currentTime,23);assert.equal(sound.playbackRate,.7);sound.onended();await pending;assert.equal(player.state,'idle');await player.resume();assert.equal(player.state,'idle');await player.stop();assert.equal(sound.currentTime,0);
 });
+
+test('lesson playback speed preserves pitch and explicit overrides still work',async()=>{
+ const sounds=[];const player=new AudioPlayer(()=>{const sound={pause(){},play(){}};sounds.push(sound);return sound;},{stop(){}});
+ const entry={status:'ready',audioFile:'lesson.wav',playbackRate:.8};
+ const pending=player.play(entry,true,assert.fail);await new Promise(r=>setImmediate(r));
+ assert.equal(sounds[0].playbackRate,.8);assert.equal(sounds[0].preservesPitch,true);sounds[0].onended();await pending;
+ const override=player.play(entry,true,assert.fail,{rate:1.2});await new Promise(r=>setImmediate(r));
+ assert.equal(sounds[1].playbackRate,1.2);sounds[1].onended();await override;
+});

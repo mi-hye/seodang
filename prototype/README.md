@@ -458,3 +458,34 @@ Sources: https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice and https:/
 기존 쓰기 캔버스의 격자·한 획 지우기·전체 지우기·세션 내 초안 복원을 재사용합니다. 한자 자료와 획순은 창을 열 때 로드합니다. 기존 서당의 로컬 한자 카탈로그에서 뜻과 읽기를 가져오고, 이 과정에서 사용할 현대적인 기본 뜻을 보정했습니다. `assets/lesson-kanji/meaning-corrections.json`에 보정 내역, `sources.json`과 `NOTICE.txt`에 KanjiVG 출처와 라이선스를 보관합니다. 원본 SVG와 추출한 경로를 함께 번들해 오프라인에서 사용할 수 있습니다.
 
 검증: `tests/lesson-kanji.test.mjs`는 모든 장면의 뜻·읽기·획순 자산을 검사합니다. `scripts/check-lesson-kanji-browser.mjs`는 320/390px 큰 글씨에서 단어/글자 선택, 획순, 필기·지우기, 초안 복원, 닫기 및 원래 수업 복귀를 확인합니다.
+
+### Level 2: three lessons per language (2026-10-16)
+
+Japanese: the existing lost-bag lesson, convenience-store shopping, and meeting a friend at the station. Korean: the existing self-introduction lesson, convenience-store shopping, and meeting a friend at the station. Each new lesson has three contextual sentences with word meanings, questions and three transfer tasks. Japanese sentences also show kana readings.
+
+The original Japanese progress remains in `sentence`; additional lessons use `sentenceActive` and `sentenceLessons`, preserving old saves and independent progress, restart, calendar records and next-lesson navigation. Korean lessons use the existing per-lesson storage with IDs `3-2` and `3-3`. Full lesson content remains lazy-loaded. Fourteen bundled clips use the existing Ono_Anna / Sohee voices; generate only these clips with `scripts/generate-level-two-audio.py` in the existing MLX Audio environment. Source text, model revision and checksums are in `assets/audio/level-two/manifest.json`.
+
+Validation: `tests/level-two.test.mjs` and `scripts/check-level-two-browser.mjs` cover save compatibility, separate progress, questions, contextual practice, reload/resume, completion and next-lesson navigation at 320/390 with large text.
+
+## Downloaded learning audio
+
+The shipped app uses **VOICEVOX Nemo 男声1** (Japanese, style 10001) and **Supertonic 3 M1** (Korean). `assets/audio/catalog.json` pins a verified release; logical `.wav` names in lesson content resolve to immutable SHA-256-named AAC files in the existing Supabase project's `seodang-audio` bucket. The audio WAV sources are not copied into `dist` or the iPhone bundle. Voice credits and the Supertonic model license remain bundled.
+
+- Entering a lesson downloads that lesson's pack in the background. Playback can also fetch a missing clip immediately. Shared clips are stored once; a changed hash downloads a new version without redownloading unchanged clips.
+- Settings → 음성 다운로드 / 音声のダウンロード supports saving everything and deleting downloaded audio. Closing the download panel stops the queue after the current clip. Returning to a lesson resumes from the saved files.
+- iOS stores validated files in Application Support, excluded from iCloud backup. Browser downloads use IndexedDB ArrayBuffers (avoiding WebKit Blob-storage failures); persistent storage is requested where supported. Browser storage can still be removed by the browser or user.
+- `scripts/audio-schema.sql` documents the deployed PostgreSQL release table. RLS permits public reads only; anonymous clients cannot write releases or Storage objects. No server credential is bundled. A release is published only after every uploaded file has been downloaded again and its hash checked.
+
+Regeneration/publishing (run from `prototype`, approved local runtimes required):
+
+```sh
+node scripts/build-audio-jobs.mjs
+node scripts/build-audio-packs.mjs
+/tmp/seodang-voicevox/venv/bin/python scripts/generate-final-audio.py ja
+/tmp/seodang-melo-venv/bin/python scripts/generate-final-audio.py ko
+python3 scripts/publish-audio.py --env /path/to/private/.env
+npm run check
+node scripts/check-audio-downloads-browser.mjs
+```
+
+Source manifests retain their original WAV provenance. The new release catalog is authoritative for shipped audio. The app pins its catalog so a server edit cannot silently change lesson content; publishing a new catalog requires shipping that catalog with an app update. Output jobs, WAV masters and generation logs stay under ignored `output/final-voices/`. Changing synthesis settings requires changing the generator identity version to avoid reusing an earlier render. Isolated Japanese kana (including one-mora digraphs) use a 300 ms vowel/nasal duration with the original consonant and pitch. Kana is normalized to katakana before synthesis so は and へ cannot become the particle readings ワ and エ. Short Korean 하/까/따/짜/왜 use synthesis speed 0.75; 옷 retains its original synthesis with pitch-preserving duration correction and onset/coda margins. Playback remains at the user’s chosen rate. Run `scripts/audit-character-audio.py` with the Supertonic Python runtime to decode the final AAC and check all character lessons for silence, short speech, clipping, and onset margins. This acoustic audit is not a human listening certification.

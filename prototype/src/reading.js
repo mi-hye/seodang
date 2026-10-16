@@ -13,7 +13,7 @@ export function currentReadingAudio(state){
  const level=selectedLevel(state),p=readingProgress(state,level),index=Math.floor(p.index/2);
  if(level===7)return ['learn','read'].includes(p.phase)?advanced?.advancedAudio[index]:null;
  if(![5,6].includes(level)||!['learn','read'].includes(p.phase))return null;
- return {id:`reading.${level}.${index}`,text:readingCourses[level].passages[index].paragraphs.join('').replaceAll('|',''),locale:'ja-JP',status:'ready',voiceId:'Ono_Anna',audioFile:`assets/audio/reading/reading.${level}.${index}.wav`};
+ return {id:`reading.${level}.${index}`,text:readingCourses[level].passages[index].paragraphs.join('').replaceAll('|',''),locale:'ja-JP',status:'ready',voiceId:'VOICEVOX Nemo 男声1',audioFile:`assets/audio/reading/reading.${level}.${index}.wav`};
 }
 export function renderReading(state){
  const level=selectedLevel(state),jp=level>=6,course=level===7?advanced.advancedCourse:readingCourses[level],p=readingProgress(state,level);

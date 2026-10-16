@@ -19,8 +19,8 @@ export const audioManifest = Object.fromEntries(
       text,
       audioFile: `assets/audio/cafe/${id}.wav`,
       status: "ready",
-      productionMethod: "Qwen3-TTS (MLX Audio)",
-      voiceId: "Ono_Anna",
+      productionMethod: "Selected offline TTS",
+      voiceId: "VOICEVOX Nemo 男声1",
       rightsReviewed: true,
       languageReviewed: false,
     },
@@ -61,6 +61,8 @@ const deviceSpeech = {
 export class AudioPlayer {
   constructor(factory = (src) => new Audio(src), speech = deviceSpeech) {
     this.speech = speech;
+    this.remote = arguments.length === 0;
+    this.release = null;
     this.factory = factory;
     this.current = null;
     this.finishCurrent = null;
@@ -73,6 +75,7 @@ export class AudioPlayer {
     this.generation++;
     if(this.current){this.current.pause();this.current.currentTime=0;}
     this.finishCurrent?.();
+    this.release?.(); this.release=null;
     this.current=null;
     this.changeState('idle');
     return Promise.resolve().then(()=>this.speech.stop()).catch(()=>{});
@@ -85,7 +88,20 @@ export class AudioPlayer {
     try {await sound.play();}catch{if(token===this.generation&&this.current===sound)sound.onerror?.();}
   }
   setRate(rate) { if(this.current)this.current.playbackRate=normalizeAudioRate(rate); }
-  async play(entry, enabled, onError, { rate = 1 } = {}) {
+  async playSequence(entries,enabled,onError,options={}) {
+    const stopped=this.stop();let generation=this.generation;
+    await stopped;
+    if(!enabled||this.generation!==generation)return;
+    for(const entry of entries){
+      if(this.generation!==generation)return;
+      let failed=false;
+      const playing=this.play(entry,true,message=>{failed=true;onError(message);},options);
+      generation=this.generation;
+      await playing;
+      if(failed||this.generation!==generation)return;
+    }
+  }
+  async play(entry, enabled, onError, { rate = entry?.playbackRate ?? 1 } = {}) {
     const stopped = this.stop();
     const token = this.generation;
     if (entry?.status === "device-tts") {
@@ -105,8 +121,17 @@ export class AudioPlayer {
     await stopped;
     if (token !== this.generation) return;
     let sound;
-    try { sound = this.factory(entry.audioFile); }
-    catch { onError("음성을 불러오지 못했어요. 다시 눌러 주세요."); return; }
+    try {
+      let source=entry.audioFile;
+      if(this.remote){
+        const {resolveAudio}=await import('./audio-downloads.js');
+        const resolved=await resolveAudio(source);
+        if(token!==this.generation){resolved.release();return;}
+        source=resolved.url;this.release=resolved.release;
+      }
+      sound = this.factory(source);
+    }
+    catch { if(token===this.generation){this.release?.();this.release=null;onError("음성을 내려받지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.");} return; }
     sound.playbackRate = normalizeAudioRate(rate);
     sound.preservesPitch = true;
     if ("webkitPreservesPitch" in sound) sound.webkitPreservesPitch = true;
@@ -119,7 +144,7 @@ export class AudioPlayer {
         settled = true;
         sound.onended = null;
         sound.onerror = null;
-        if(this.current===sound)this.changeState('idle');
+        if(this.current===sound){this.changeState('idle');this.release?.();this.release=null;}
         if (this.finishCurrent === finish) this.finishCurrent = null;
         resolve();
       };

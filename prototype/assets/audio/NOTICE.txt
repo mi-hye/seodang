@@ -1,0 +1,9 @@
+Seodang learning audio is AI-generated.
+Japanese: VOICEVOX Nemo / 男声1 (style 10001).
+https://voicevox.hiroshiba.jp/nemo/term/
+Korean: Supertone / Supertonic 3 / preset M1.
+Model: https://huggingface.co/Supertone/supertonic-3
+Model license: OpenRAIL-M (see LICENSE-Supertonic-3.txt).
+Generated locally from learning scripts. Isolated character durations are adjusted for clarity; some short Korean syllables use slower synthesis or pitch-preserving duration correction. App playback defaults to 1.0.
+No custom voice cloning or reference recordings.
+Audio is delivered from Supabase Storage and saved per lesson.

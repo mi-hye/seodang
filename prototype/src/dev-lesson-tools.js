@@ -1,3 +1,4 @@
+import {sentenceId,setSentenceProgress} from './sentence-state.js';
 import {japaneseLessonUI} from './curriculum.js';
 import {basicLessons,basicSinglePass,basicHasIntro,basicGroup} from './basics-state.js';
 import {isCasePractice,normalizeCasePractice,practiceHasWriting,practiceRoundCount,normalizePractice} from './practice-state.js';
@@ -7,7 +8,7 @@ import {kanaLessons,kanaRound,selectedLevel} from './kana-state.js';
 import {koreanCase,koreanLessons,koreanQuizOnly,koreanStageZero,koreanGroup,koreanExplanation} from './korean-state.js';
 import {labelWords} from './labels-state.js';
 import {readingAnswers} from './reading-state.js';
-import {practiceKey,practiceUnits} from './practice-content.js';
+import {caseTasks,practiceKey,practiceUnits} from './practice-content.js';
 
 // Stable phase numbers keep existing practice saves compatible.
 const modesFor=(s,kind)=>practiceHasWriting(practiceKey(s,kind))?[0,2]:[0];
@@ -23,14 +24,14 @@ function originals(s,kind,count){
   for(let i=0;i<count;i++){if(kind==='korean'&&['5-1','6-1','7-1'].includes(s.korean.active))add('scenario',i);if(kind==='korean'&&koreanExplanation(s.korean.active)&&i===koreanGroup(s.korean.active,i).start)add('intro',i);if(kind==='basic'&&s.basics.active>=11&&i===basicGroup(s.basics.active,i).start)add('intro',i);if(!quizOnly)add('learn',i);if(kind==='korean'&&koreanExplanation(s.korean.active))continue;if(kind==='basic'&&basicSinglePass(s.basics.active)||kind==='korean'&&koreanStageZero(s.korean.active))add('write',i);if(kind!=='basic'||s.basics.active!==10)add('quiz',i);}
  }else if(kind==='labels'){add('intro');for(let i=0;i<count;i++){add('read',i);add('build',i);}add('match',count-1);}
  else if(kind==='listening'){for(let i=0;i<count;i++)add('',i);}
- else if(kind==='sentence'){add('intro');for(let i=0;i<3;i++){add('learn',i);add('arrange',i);}add('solve',2);}
+ else if(kind==='sentence'){add('intro');for(let i=0;i<count;i++){add('learn',i);add('arrange',i);}if(sentenceId(s)!==3)add('solve',count-1);}
  else if(kind==='dialogue'){add('intro');for(let i=0;i<3;i++)add('learn',i);for(let i=0;i<3;i++)add('practice',i);}
  else if(kind==='reading'){for(let i=0;i<6;i++){if(i%2===0){add('intro',i);add('learn',i);}add('read',i);}}
  else if(kind==='play')for(const [step,lesson,transfer] of [['intro',0],['learn',0],['learn',1],['investigate',1],['solved',1],['transfer',1,'not_attempted'],['transfer',1,'passed']])pages.push({step,lesson,...(transfer?{transfer}:{})});
  return pages;
 }
 export function devLessonPosition(s,kind){
- const modes=modesFor(s,kind),count=practiceUnits(s,kind).length,pages=originals(s,kind,kind==='basic'?basicLessons.find(l=>l.id===s.basics.active).count:count),practice=normalizePractice(normalizeCasePractice(s.practices?.[practiceKey(s,kind)],practiceKey(s,kind)),practiceRoundCount(practiceKey(s,kind)),practiceHasWriting(practiceKey(s,kind))),p=lessonProgress(s,kind)||{};
+ const modes=modesFor(s,kind),unitCount=practiceUnits(s,kind).length,count=caseTasks(s,kind)?.length??unitCount,pages=originals(s,kind,kind==='basic'?basicLessons.find(l=>l.id===s.basics.active).count:unitCount),practice=normalizePractice(normalizeCasePractice(s.practices?.[practiceKey(s,kind)],practiceKey(s,kind)),practiceRoundCount(practiceKey(s,kind)),practiceHasWriting(practiceKey(s,kind))),p=lessonProgress(s,kind)||{};
  let index=practice?pages.length+(practice.round*modes.length+Math.max(0,modes.indexOf(practice.mode)))*count+practice.index:pages.findIndex(x=>Object.entries(x).every(([k,v])=>p[k]===v));
  if(index<0)index=pages.length-1;
  return {index,total:pages.length+((kind==='basic'&&basicSinglePass(s.basics.active)||kind==='korean'&&koreanStageZero(s.korean.active))?0:count*modes.length*practiceRoundCount(practiceKey(s,kind))),pages,count};
@@ -40,6 +41,7 @@ function setProgress(s,kind,p){
  else if(kind==='basic')s.basics.lessons[s.basics.active]=p;
  else if(kind==='korean')s.korean.lessons[s.korean.active]=p;
  else if(kind==='reading'){s.readings||={};s.readings[selectedLevel(s)]=p;}
+ else if(kind==='sentence')setSentenceProgress(s,sentenceId(s),p);
  else s[kind==='play'?'episode':kind]=p;
 }
 function cleanProgress(p){
@@ -54,7 +56,7 @@ function completion(s,kind,p){
  if(kind==='basic'||kind==='korean'){p.selected=p.index%(kind==='korean'&&koreanStageZero(s.korean.active)?4:3);return {type:`${kind}-check`};}
  if(kind==='labels'){p.matches=labelWords.slice(0,-1).map(l=>l.id);const id=labelWords.at(-1).id;return {type:'labels-match',left:id,right:id};}
  if(kind==='listening')return {type:'listening-answer',id:'kasa'};
- if(kind==='sentence'){p.selected='window-blue';return {type:'sentence-submit'};}
+ if(kind==='sentence'){if(sentenceId(s)===3){p.selected=String(p.index%3);return {type:'sentence-check'};}p.selected=sentenceId(s)===0?'window-blue':String(sentenceId(s));return {type:'sentence-submit'};}
  if(kind==='dialogue'){p.selected=0;return {type:'dialogue-check'};}
  if(kind==='reading'){p.solved=[0,1,2,3,4];p.selected=readingAnswers[selectedLevel(s)][5];return {type:'reading-check'};}
  p.transfer='passed';return {type:'next'};

@@ -5,13 +5,14 @@ import {freshKoreanProgress,nextKorean,koreanLessons,koreanQuizOnly,koreanStageZ
 import {freshKana,normalizeKana,kanaLessons,kanaRound,selectedLevel} from './kana-state.js';
 import {freshLabels} from './labels-state.js';
 import {freshListening} from './listening-state.js';
-import {freshSentence} from './sentence-state.js';
+import {freshSentence,sentenceId,sentenceProgress,setSentenceProgress,nextSentence} from './sentence-state.js';
 import {freshDialogue} from './dialogue-state.js';
 import {freshReading} from './reading-state.js';
 import {freshEpisode} from './engine.js';
-import {practiceKey,practiceUnits} from './practice-content.js';
+import {caseTasks,practiceKey,practiceUnits} from './practice-content.js';
 import {showSheet,closeSheet} from './sheet.js';
 export function entryState(s,kind,id){
+ if(kind==='sentence')return {...s,sentenceActive:Number(id??nextSentence(s))};
  if(kind==='reading'&&id!==undefined)return {...s,onboardingLevel:Number(id)};
  if(kind==='basic')return {...s,basics:{...s.basics,active:Number(id??nextBasic(s))}};
  if(kind==='korean')return {...s,korean:{...s.korean,active:id??nextKorean(s).id}};
@@ -19,6 +20,7 @@ export function entryState(s,kind,id){
  return s;
 }
 export function lessonProgress(s,kind){
+ if(kind==='sentence')return sentenceProgress(s);
  if(kind==='basic')return s.basics?.lessons?.[s.basics.active];
  if(kind==='korean')return s.korean?.lessons?.[s.korean.active];
  if(kind==='kana')return s.kana?.lessons[s.kana.active];
@@ -43,12 +45,13 @@ export function restartLesson(s,kind){
  else if(kind==='korean'){next.korean.lessons||={};next.korean.lessons[next.korean.active]=fresh;}
  else if(kind==='kana')next.kana.lessons[next.kana.active]=fresh;
  else if(kind==='reading'){next.readings||={};next.readings[selectedLevel(s)]=fresh;}
+ else if(kind==='sentence')setSentenceProgress(next,sentenceId(next),fresh);
  else next[kind==='play'?'episode':kind]=fresh;
  if(next.practices)delete next.practices[practiceKey(s,kind)];
  return next;
 }
 export function lessonPercent(s,kind){
- const p=lessonProgress(s,kind)||{},practiceCount=practiceUnits(s,kind).length,count=kind==='basic'?basicLessons.find(l=>l.id===s.basics.active).count:practiceCount;if(!count)return 0;
+ const p=lessonProgress(s,kind)||{},practiceCount=caseTasks(s,kind)?.length??practiceUnits(s,kind).length,count=kind==='basic'?basicLessons.find(l=>l.id===s.basics.active).count:practiceUnits(s,kind).length;if(!count)return 0;
  let done=0,total=count*2;
  const i=p.index||0;
  if(kind==='kana'){
@@ -60,7 +63,7 @@ export function lessonPercent(s,kind){
   if(kind==='korean'&&koreanExplanation(s.korean.active)){const groups=koreanGroups[s.korean.active],group=koreanGroup(s.korean.active,i);let preceding=0,start=0;for(const size of groups){if(start===group.start)break;start+=size;preceding++;}total+=groups.length;done+=preceding+(p.phase==='intro'?0:1);}
  }else if(kind==='labels'){total=count*3;done=p.phase==='match'?count*2+(p.matches?.length||0):i*2+(p.phase==='build'?1:0);}
  else if(kind==='listening'){total=count;done=i;}
- else if(kind==='sentence'){total=count*2+1;done=p.phase==='solve'?count*2:i*2+(p.phase==='arrange'?1:0);}
+ else if(kind==='sentence'){total=count*2+(sentenceId(s)===3?0:1);done=p.phase==='solve'?count*2:i*2+(p.phase==='arrange'?1:0);}
  else if(kind==='dialogue'){done=p.phase==='practice'?count+i:p.phase==='learn'?i:0;}
  else if(kind==='reading'){total=12;done=Math.floor(i/2)*4+(p.phase==='intro'?0:p.phase==='learn'?1:2+i%2);}
  else if(kind==='play'){total=6;done={intro:0,learn:1+(p.lesson||0),investigate:3,solved:4,transfer:5,summary:6}[p.step]||0;}
