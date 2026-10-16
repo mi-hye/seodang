@@ -7,7 +7,7 @@ import {validDialogue} from './dialogue-state.js';
 import {validListening,freshListening} from './listening-state.js';
 import { validLabels } from "./labels-state.js";
 import { validHistory } from "./learning-history.js";
-import { validSentence } from "./sentence-state.js";
+import { validSentence,validSentenceCourses } from "./sentence-state.js";
 import { validKana, normalizeKana } from "./kana-state.js";
 import { freshState } from "./engine.js";
 export const STORAGE_KEY = "seodang.web-prototype.v1";
@@ -34,7 +34,7 @@ export function valid(s) {
     (s.dialogue === undefined || validDialogue(s.dialogue)) &&
     (s.listening === undefined || validListening(s.listening)) &&
     (s.labels === undefined || validLabels(s.labels)) &&
-    (s.sentence === undefined || validSentence(s.sentence)) &&
+    (s.sentence === undefined || validSentence(s.sentence)) && validSentenceCourses(s) &&
     typeof s.onboarded === "boolean" &&
     ["beginner", "phrase"].includes(s.support) &&
     s.episode?.contentVersion === 1 &&
@@ -65,11 +65,27 @@ export function valid(s) {
     [1, 1.2].includes(s.settings.textScale)
   );
 }
+// The old dev navigator used the lesson ID (3) as a choice index and only
+// enumerated three of the six introduction sentences. Repair only that known
+// legacy shape; unrelated malformed records still remain blocked and untouched.
+export function repairIntroductionProgress(state){
+ const p=state?.sentenceLessons?.[3],practice=state?.practices?.['ko-ja:sentence:3'];
+ if(!p||p.version!==1||p.phase!=='solve'||!['0','1','2','3',null].includes(p.selected))return false;
+ if(practice&&practice.action?.type!=='sentence-submit')return false;
+ p.phase=practice?'arrange':'learn';p.index=practice?5:Math.min(p.index,5);p.selected=practice?'2':null;p.tokens=[];p.checked=false;p.feedback='';
+ if(practice){practice.count=6;practice.action={type:'sentence-check'};}
+ return true;
+}
 export function load(storage) {
   try {
     const raw = storage.getItem(STORAGE_KEY);
     if (!raw) return { state: freshState(), blocked: false, error: "" };
     const state = JSON.parse(raw);
+    const repaired=repairIntroductionProgress(state);
+    if(repaired&&valid(state)){
+      const backupKey=STORAGE_KEY+'.backup.introduction-v2';
+      if(storage.getItem(backupKey)===null)storage.setItem(backupKey,raw);
+    }
     if (!valid(state))
       return {
         state: freshState(),
@@ -111,6 +127,7 @@ export function load(storage) {
     }
     const contracted=state.practices?.['ko-ja:basic:10'];
     if(contracted){if(contracted.count===12){contracted.count=6;contracted.index=Math.min(5,Math.floor(contracted.index/2));}contracted.action={type:'basic-next'};}
+    if(repaired&&valid(state))storage.setItem(STORAGE_KEY,JSON.stringify(state));
     return { state, blocked: false, error: "" };
   } catch {
     return {

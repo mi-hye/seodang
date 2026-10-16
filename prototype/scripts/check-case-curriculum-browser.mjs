@@ -12,13 +12,13 @@ try{for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])for(co
  await expect(page.locator('.learning-map')).toBeVisible();
  await expect(page.locator('.learning-map [data-action="labels"],.learning-map [data-id="1-11"],.learning-map [data-id="2-1"]')).toHaveCount(0);
  const kind=direction==='ja-ko'?'korean':level===2?'sentence':level===4?'dialogue':'reading';
- await page.locator(`.learning-map [data-action="${kind}"]${kind==='reading'?`[data-id="${level}"]`:kind==='korean'?`[data-id="${level===2?'3-1':`${level}-1`}"]`:''}`).click();
+ await page.locator(`.map-choice[data-action="${kind}"]${kind==='reading'?`[data-id="${level}"]`:kind==='korean'?`[data-id="${level===2?'3-1':`${level}-1`}"]`:kind==='sentence'?'[data-id="0"]':''}`).click();
  await expect(page.locator('main.lesson-centered')).toBeVisible();
  await expect(page.locator('.case-words')).toHaveCount(0);
  assert.ok(await page.locator('main').evaluate(main=>{const first=main.firstElementChild;return first.getBoundingClientRect().top-main.getBoundingClientRect().top<=10;}),'Case content starts without centering space');
  // Merely visiting the scene is not a resumable lesson.
  await page.locator('.app-header-back').click();
- await page.locator(`.learning-map [data-action="${kind}"]${kind==='reading'?`[data-id="${level}"]`:kind==='korean'?`[data-id="${level===2?'3-1':`${level}-1`}"]`:''}`).click();
+ await page.locator(`.map-choice[data-action="${kind}"]${kind==='reading'?`[data-id="${level}"]`:kind==='korean'?`[data-id="${level===2?'3-1':`${level}-1`}"]`:kind==='sentence'?'[data-id="0"]':''}`).click();
  await expect(page.locator('.lesson-resume')).toHaveCount(0);
  await expect(page.locator('main.lesson-centered')).toBeVisible();
  await page.locator(`main [data-action="${kind}-next"]`).click();
@@ -30,7 +30,7 @@ try{for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])for(co
  const audioRows=await page.locator('.audio-text-row').evaluateAll(rows=>rows.every(row=>{const button=row.querySelector('button');if(!button)return true;const b=button.getBoundingClientRect(),t=row.firstElementChild.getBoundingClientRect();return b.width>=43&&b.x>=t.right-2;}));assert.ok(audioRows,`${direction}/${level}/${width} speaker`);
  await page.screenshot({path:`/tmp/seodang-case-${direction}-${level}-${width}.png`,fullPage:true});
  await page.locator('.app-header-back').click();
- await page.locator(`.learning-map [data-action="${kind}"]${kind==='reading'?`[data-id="${level}"]`:kind==='korean'?`[data-id="${level===2?'3-1':`${level}-1`}"]`:''}`).click();
+ await page.locator(`.map-choice[data-action="${kind}"]${kind==='reading'?`[data-id="${level}"]`:kind==='korean'?`[data-id="${level===2?'3-1':`${level}-1`}"]`:kind==='sentence'?'[data-id="0"]':''}`).click();
  await expect(page.locator('.lesson-resume')).toBeVisible();
  await page.locator('[data-choice="resume"]').click();
  await expect(page.locator('.case-words')).toBeVisible();

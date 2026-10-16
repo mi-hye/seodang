@@ -6,7 +6,7 @@ import {reduceDialogue} from './dialogue-state.js';
 import {reduceListening} from './listening-state.js';
 import { reduceLabels } from "./labels-state.js";
 import { recordLearning } from "./learning-history.js";
-import { reduceSentence } from "./sentence-state.js";
+import { reduceSentence, sentenceId, sentenceProgress, setSentenceProgress } from "./sentence-state.js";
 import { reduceKana } from "./kana-state.js";
 import { episode, expressions } from "./content.js";
 export const freshEpisode = () => ({
@@ -55,7 +55,7 @@ function reduceCore(state, action) {
   }
   if(action.type.startsWith("dialogue-")){s.dialogue=reduceDialogue(s.dialogue,action);return s;}
   if (action.type.startsWith("kana-")) { s.kana = reduceKana(s.kana, action); return s; }
-  if (action.type.startsWith("sentence-")) { s.sentence = reduceSentence(s.sentence, action); return s; }
+  if(action.type.startsWith('sentence-')){const id=action.type==='sentence-start'&&action.id!==undefined?Number(action.id):sentenceId(s);if(![0,1,2,3].includes(id))return s;s.sentenceActive=id;const legacyPractice=id===3&&action.type==='sentence-start'&&s.practices?.['ko-ja:sentence:3'];if(legacyPractice&&legacyPractice.count===3){s.practices['ko-ja:sentence:3']={...legacyPractice,count:6,index:0,action:{type:'sentence-check'}};setSentenceProgress(s,id,{...sentenceProgress(s,id),phase:'arrange',index:5,selected:'2',tokens:[],checked:false});}setSentenceProgress(s,id,reduceSentence(sentenceProgress(s,id),action,id));return s;}
   if(action.type.startsWith("listening-")){s.listening=reduceListening(s,action);return s;}
   if (action.type.startsWith("labels-")) {
     s.labels = reduceLabels(s, action);

@@ -1,10 +1,12 @@
+import {extraSentenceCases,extraKoreanCases} from './level-two-content.js';
+import {sentenceId} from './sentence-state.js';
 // Authored transfer tasks: each answer depends on the scene, not a translation.
 const order=(scene,prompt,tokens,hint)=>({type:'order',scene,prompt,tokens,hint});
 const choose=(type,scene,prompt,options,answer,hint,passage='')=>({type,scene,prompt,options,answer,hint,passage});
 const cases={
  sentence:[
   order('가방을 찾는 손님이 자기 가방을 가리켜요.','말을 순서대로 놓아 문장을 만들어요.',['これは','わたしの','かばんです。'],'무엇인지 가리키고 누구의 것인지 말한 뒤 물건 이름을 붙여요.'),
-  choose('replace','이번에는 가방이 아니라 우산을 찾고 있어요.','빈칸을 바꿔 손님의 말을 완성해요.\nこれは わたしの ___ です。',['かばん','かさ','まど'],1,'우산은 かさ예요. 물건 이름만 바꿔 말해 보세요.'),
+  choose('replace','가방이 자기 것이라고 알려요.','빈칸을 바꿔 손님의 말을 완성해요.\nこれは わたしの ___ です。',['まど','かばん','わたし'],1,'가방은 かばん이에요.'),
   choose('apply','손님이 이렇게 설명했어요.\nかばんは まどの そばです。あかい かばんでは ありません。','어느 가방을 가져다줄까요?',['문 옆 파란 가방','창문 옆 빨간 가방','창문 옆 파란 가방'],2,'창문 옆에 있고 빨간색이 아닌 가방을 찾아요.')
  ],
  dialogue:[
@@ -14,11 +16,11 @@ const cases={
  ],
  'ko:3-1':[
   order('交流会で、学生であることを伝えます。','言葉を並べて自己紹介しましょう。',['저는','학생이에요.'],'「저는」で自分の話を始めます。'),
-  choose('replace','今度は韓国出身の友達が自己紹介します。','出身を変えて文を完成させましょう。\n저는 ___ 사람이에요.',['일본','한국','도쿄'],1,'国の名前を「사람」の前に入れます。'),
-  choose('reply','交流会で「요즘 뭐 공부해요?」と聞かれました。韓国語を勉強していると伝えます。','相手の質問に答えましょう。',['내일 시간이 있어요.','커피를 좋아해요.','한국어를 공부해요.'],2,'「공부해요?」は何を勉強しているか聞いています。'),
+  choose('replace','日本出身だと伝えます。','出身を変えて文を完成させましょう。\n저는 ___ 사람이에요.',['도쿄','일본','학생'],1,'日本は「일본」です。'),
+  choose('reply','何を勉強しているか聞かれました。韓国語を勉強していると伝えます。','相手の質問に答えましょう。',['내일 시간이 있어요.','커피를 좋아해요.','한국어를 공부해요.'],2,'「한국어를 공부해요.」を思い出しましょう。'),
   order('どこに住んでいるか聞かれました。東京に住んでいます。','住んでいる場所を伝えましょう。',['도쿄에','살아요.'],'場所の後に「에」、最後に「살아요」を置きます。'),
-  choose('replace','飲み物の好みを伝えます。今度はお茶が好きです。','飲み物を変えてみましょう。\n___ 좋아해요.',['차를','내일','도쿄에'],0,'「차」はお茶です。「를」を付けて好きなものを伝えます。'),
-  choose('apply','友達に「내일 만날까요?」と誘われました。明日は空いています。','会う約束につながる返事を選びましょう。',['저는 학생이에요.','내일 시간이 있어요.','도쿄에 살아요.'],1,'誘われた日について、時間があると伝えましょう。')
+  choose('replace','好きな飲み物を伝えます。コーヒーが好きです。','飲み物を変えてみましょう。\n___ 좋아해요.',['커피를','내일','도쿄에'],0,'「커피를 좋아해요.」を思い出しましょう。'),
+  choose('apply','明日は時間があることを伝えます。','習った文を使って伝えましょう。',['저는 학생이에요.','내일 시간이 있어요.','도쿄에 살아요.'],1,'「내일 시간이 있어요.」を思い出しましょう。')
  ],
  'ko:4-1':[
   order('冷たいアメリカーノを注文する場面です。まず一杯頼みます。','注文の文を作りましょう。',['아메리카노','한 잔','주세요.'],'飲み物、数、お願いの順に並べます。'),
@@ -62,6 +64,8 @@ readingTasks['ko:7-1']=[
  choose('apply','지원을 받지 않은 비슷한 지역에서도 같은 시기에 매출이 비슷하게 늘었다는 사실이 확인됐어요.','이 정보를 고려할 때 가장 신중한 결론은 무엇인가요?',['지원은 어떤 경우에도 효과가 없다고 확정할 수 있다.','관광객 증가는 지원의 효과와 무관하므로 고려할 필요가 없다.','매출이 늘었으므로 지원만의 성과라고 할 수 있다.','공통 요인의 영향을 더 살펴야 하며, 지원만의 효과라고 단정하기 어렵다.'],3,'비교 결과는 인과관계를 따져 볼 근거예요. 지원만이 원인이라거나 효과가 전혀 없다고 단정할 수는 없어요.')
 ];
 export function caseExercises(s,kind,source){
+ if(kind==='sentence'&&sentenceId(s)>0)return extraSentenceCases[sentenceId(s)].tasks;
+ if(kind==='korean'&&extraKoreanCases[s.korean.active])return extraKoreanCases[s.korean.active].tasks;
  if(kind==='sentence'||kind==='dialogue')return cases[kind];
  if(kind==='korean'&&cases[`ko:${s.korean.active}`])return cases[`ko:${s.korean.active}`];
  const key=kind==='korean'?`ko:${s.korean.active}`:`ja:${s.onboardingLevel}`,tasks=readingTasks[key];

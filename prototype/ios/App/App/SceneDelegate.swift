@@ -1,6 +1,7 @@
 import UIKit
 import Capacitor
 import AVFoundation
+import CryptoKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -29,6 +30,7 @@ class SeodangBridgeViewController: CAPBridgeViewController {
     override func capacitorDidLoad() {
         bridge?.registerPluginInstance(SeodangSpeechPlugin())
         bridge?.registerPluginInstance(SeodangUIPlugin())
+        bridge?.registerPluginInstance(SeodangAudioPlugin())
     }
 }
 
@@ -167,4 +169,61 @@ class SeodangUIPlugin: CAPPlugin, CAPBridgedPlugin {
             controller.present(alert, animated: true)
         }
     }
+}
+
+// Downloaded lessons survive app restarts and upgrades, but are not backed up to iCloud.
+@objc(SeodangAudioPlugin)
+class SeodangAudioPlugin: CAPPlugin, CAPBridgedPlugin {
+    let identifier = "SeodangAudioPlugin"
+    let jsName = "SeodangAudio"
+    let pluginMethods: [CAPPluginMethod] = ["get", "put", "list", "clear"].map {
+        CAPPluginMethod(name: $0, returnType: CAPPluginReturnPromise)
+    }
+    private let queue = DispatchQueue(label: "seodang.audio.storage")
+    private func directory() throws -> URL {
+        let base = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        var dir = base.appendingPathComponent("SeodangAudio-v1", isDirectory: true)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        var values = URLResourceValues(); values.isExcludedFromBackup = true
+        try dir.setResourceValues(values)
+        return dir
+    }
+    private func file(_ call: CAPPluginCall) throws -> URL {
+        guard let key = call.getString("key"), key.range(of: "^[a-f0-9]{64}$", options: .regularExpression) != nil else {
+            throw NSError(domain: "SeodangAudio", code: 1)
+        }
+        return try directory().appendingPathComponent(key + ".m4a")
+    }
+    private func valid(_ data: Data, _ call: CAPPluginCall) -> Bool {
+        data.count == call.getInt("bytes") && SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined() == call.getString("key")
+    }
+    @objc func get(_ call: CAPPluginCall) { queue.async {
+        do {
+            let url = try self.file(call)
+            guard let data = try? Data(contentsOf: url) else { call.resolve([:]); return }
+            guard self.valid(data, call) else { try? FileManager.default.removeItem(at: url); call.resolve([:]); return }
+            call.resolve(["uri": url.absoluteString])
+        } catch { call.reject("Audio storage unavailable", nil, error) }
+    }}
+    @objc func put(_ call: CAPPluginCall) { queue.async {
+        do {
+            let url = try self.file(call)
+            guard let encoded = call.getString("data"), let data = Data(base64Encoded: encoded), self.valid(data, call) else {
+                call.reject("Invalid audio download"); return
+            }
+            try data.write(to: url, options: .atomic)
+            call.resolve(["uri": url.absoluteString])
+        } catch { call.reject("Cannot save audio", nil, error) }
+    }}
+    @objc func list(_ call: CAPPluginCall) { queue.async {
+        do {
+            let files = try FileManager.default.contentsOfDirectory(at: self.directory(), includingPropertiesForKeys: [.fileSizeKey]).filter { $0.pathExtension == "m4a" }
+            let bytes = try files.reduce(0) { try $0 + ($1.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0) }
+            call.resolve(["count": files.count, "bytes": bytes])
+        } catch { call.reject("Cannot read downloads", nil, error) }
+    }}
+    @objc func clear(_ call: CAPPluginCall) { queue.async {
+        do { try FileManager.default.removeItem(at: self.directory()); call.resolve() }
+        catch { call.reject("Cannot delete downloads", nil, error) }
+    }}
 }

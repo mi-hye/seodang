@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import {createHash} from 'node:crypto';
 import {freshState,reduce} from '../src/engine.js';import {load,valid} from '../src/storage.js';
 import {koreanLessons,koreanProgress,koreanUnlocked,validKorean,koreanQuizOnly} from '../src/korean-state.js';import {koreanContent} from '../src/korean-content.js';import {koreanAudio,renderKorean,composeKorean} from '../src/korean.js';import {setUILanguage,loadUILanguage,t} from '../src/i18n.js';
-test('Korean course progresses through all 17 lessons with isolated records, retries and valid saves',()=>{
+test('Korean course progresses through all registered lessons with isolated records, retries and valid saves',()=>{
  let s=reduce({...freshState(),onboarded:true,onboardingLevel:3},{type:'course',value:'ja-ko'});const original=structuredClone(s.episode);
  assert.equal(s.onboardingLevel,0);assert.equal(koreanUnlocked(s,'1-2'),true);
  for(const lesson of koreanLessons){s=reduce(s,{type:'level',value:lesson.level});s=reduce(s,{type:'korean-start',id:lesson.id});assert.equal(koreanContent[lesson.id].length,lesson.count);
@@ -14,12 +14,14 @@ test('Korean course progresses through all 17 lessons with isolated records, ret
   }
   assert.equal(koreanProgress(s,lesson.id).completed,true);
  }
- assert.deepEqual(s.episode,original);assert.equal(Object.values(s.korean.lessons).filter(p=>p.completed).length,17);assert.equal(Object.keys(s.history.days).length,0);assert.equal(Object.values(s.korean.history.days).reduce((sum,d)=>sum+d.cases,0),17);
+ assert.deepEqual(s.episode,original);assert.equal(Object.values(s.korean.lessons).filter(p=>p.completed).length,koreanLessons.length);assert.equal(Object.keys(s.history.days).length,0);assert.equal(Object.values(s.korean.history.days).reduce((sum,d)=>sum+d.cases,0),koreanLessons.length);
  s=reduce(s,{type:'course',value:'ko-ja'});assert.equal(s.onboardingLevel,2);const progress=structuredClone(s.korean);s=reduce(s,{type:'course',value:'ja-ko'});assert.equal(s.onboardingLevel,7);assert.deepEqual(s.korean,progress);assert.ok(valid(s));
  assert.equal(validKorean({...s.korean,active:'1-99'}),false);assert.equal(valid({...s,courseDirection:'bad'}),false);
 });
 test('Korean audio uses bundled matching files and advanced passages stay hidden',()=>{
  const manifest=JSON.parse(readFileSync(new URL('../assets/audio/korean/manifest.json',import.meta.url)));
+ const extra=JSON.parse(readFileSync(new URL('../assets/audio/level-two/manifest.json',import.meta.url)));
+ Object.assign(manifest.files,Object.fromEntries(Object.entries(extra.files).filter(([,e])=>e.locale==='ko-KR')));
  let count=0;
  for(const l of koreanLessons)for(let index=0;index<l.count;index++){
   const s={...freshState(),courseDirection:'ja-ko',onboardingLevel:l.level,korean:{active:l.id,lessons:{[l.id]:{index,phase:koreanQuizOnly(l)?'quiz':'learn',selected:null}}}},entry=koreanAudio(s),info=manifest.files[entry.id];

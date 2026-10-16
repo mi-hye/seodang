@@ -3,7 +3,7 @@ export const koreanLevels=['文字と音','単語','単語と短い表現','短�
 export const koreanLessons=[
  ...[['文字を学ぶ · 基本',10],['文字を使う · 基本',10],['文字を学ぶ · 子音と母音',14],['文字を使う · 子音と母音',14],['文字を学ぶ · 濃音',5],['文字を使う · 濃音',5],['文字を学ぶ · 複合母音',11],['文字を使う · 複合母音',11],['文字を学ぶ · パッチム',6],['文字を使う · パッチム',6]].map(([title,count],i)=>({id:`1-${i+1}`,level:0,title,count,practice:i%2===1})),
  {id:'1-11',retired:true,level:2,title:'身近な単語',count:6},
- {id:'2-1',retired:true,level:2,title:'お店で使う言葉',count:6},{id:'3-1',level:2,title:'交流会で自己紹介する',count:6},{id:'4-1',level:4,title:'カフェで注文する',count:6},{id:'5-1',level:5,title:'案内と意見を読む',count:3},{id:'6-1',level:5,title:'条件と理由を読み解く',count:3},{id:'7-1',level:7,title:'전문 논설 읽기',count:3}
+ {id:'2-1',retired:true,level:2,title:'お店で使う言葉',count:6},{id:'3-1',level:2,title:'交流会で自己紹介する',count:6},{id:'3-4',level:2,title:'カフェでかばんを探す',count:3},{id:'3-2',level:2,title:'コンビニで買い物する',count:3},{id:'3-3',level:2,title:'駅で友達と会う',count:3},{id:'4-1',level:4,title:'カフェで注文する',count:6},{id:'5-1',level:5,title:'案内と意見を読む',count:3},{id:'6-1',level:5,title:'条件と理由を読み解く',count:3},{id:'7-1',level:7,title:'전문 논설 읽기',count:3}
 ];
 export const koreanStageZero=id=>koreanLessons.some(l=>l.id===id&&l.level===0);
 export const koreanExplanation=id=>koreanLessons.some(l=>l.id===id&&l.level===0&&!l.practice);

@@ -1,3 +1,4 @@
+@import url("./token-builder.css");
 .practice-page{padding-bottom:28px}.practice-page h1{font-size:calc(24px * var(--text-scale));line-height:1.5}.practice-target{font-size:calc(32px * var(--text-scale));line-height:1.8;margin:28px 0;word-break:keep-all;overflow-wrap:anywhere}.practice-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:28px}.practice-choices button{display:block;width:100%;min-width:0;min-height:100px;margin:0;padding:16px 10px;text-align:center;white-space:normal;line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}.practice-choices [aria-pressed=true]{border-color:var(--amber);background:var(--selected)}.practice-feedback{min-height:26px;line-height:1.6;color:var(--amber-light);margin:18px 0}.practice-board{position:relative;height:230px;background:var(--stage-raised);border:1px solid var(--line);border-radius:16px;margin:16px 0}.practice-board canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}.practice-guide{position:absolute;inset:16px;font-size:28px;line-height:1.8;color:var(--line);word-break:keep-all;overflow-wrap:anywhere;pointer-events:none}.practice-answer{font-size:24px;line-height:1.7;margin-top:20px;word-break:keep-all;overflow-wrap:anywhere}.practice-page>.button-pair{margin-top:20px}.practice-page .text-button{margin-top:16px}html[lang=ja] .practice-page{word-break:normal;line-break:strict}.practice-page [lang=ja]{word-break:normal;line-break:strict}
 
 .practice-choices:has(>button:last-child:nth-child(2)){flex-direction:row;flex-wrap:nowrap}.practice-choices:has(>button:last-child:nth-child(2))>button{flex:1;min-width:0}
@@ -97,14 +98,11 @@ html[data-motion=off] .practice-fireworks>i{animation:none}
 .case-task-passage p{margin:0 0 8px}.case-task-passage p:last-child{margin-bottom:0}
 .case-task-options{display:grid;gap:8px}.case-task-options button{text-align:left;line-height:1.6;padding:12px;min-height:48px;white-space:normal;margin:0}
 .case-task-options [aria-pressed=true]{border-color:var(--amber);background:var(--selected)}
-.case-task-answer{min-height:64px;padding:12px;border:1px solid var(--line);border-radius:12px;line-height:1.7;margin:10px 0;white-space:normal}
-.case-task-tokens{display:flex;flex-wrap:wrap;gap:8px}.case-task-tokens button{min-width:44px;min-height:44px;margin:0;padding:10px}
 .case-practice .practice-feedback{margin:12px 0;min-height:26px}
 .case-task-options{grid-template-columns:minmax(0,1fr)}
 .case-task-options button{min-width:0;overflow-wrap:anywhere}
 .case-practice,.case-task-passage,.case-task-tokens{min-width:0}
 .case-task-options button{display:block}
-.case-task-tokens button{display:block;width:auto;max-width:100%;white-space:normal}
 .case-task-options button:disabled{opacity:1}
 
 /* Completion owns its alignment instead of inheriting lesson stretching. */
@@ -114,3 +112,5 @@ html[data-motion=off] .practice-fireworks>i{animation:none}
 #app .lesson-complete-shell .practice-fireworks{flex:none;width:min(240px,100%);height:clamp(140px,24dvh,200px)}
 #app .lesson-complete-shell .practice-complete h1{width:100%;margin:12px 0 24px;text-align:center}
 #app .lesson-complete-shell .practice-complete>.primary{flex:none}
+
+.practice-fireworks>span svg{fill:currentColor;stroke:none}

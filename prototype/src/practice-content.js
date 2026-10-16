@@ -1,3 +1,4 @@
+import {sentenceId,sentenceProgress} from './sentence-state.js';
 import {isCasePractice} from './practice-state.js';
 import {koreanStageZero} from './korean-state.js';
 import {basicSinglePass} from './basics-state.js';
@@ -17,16 +18,16 @@ export async function prepareContent(kind){
  if(kind==='reading'){const source=await import('./reading-content.js'),{advancedCourse}=await import('./reading-advanced.js');loaded.readingSource={readingCourses:{...source.readingCourses,7:advancedCourse}};}
  if(kind==='kana')loaded.kanaState=await import('./kana-state.js');
 }
-export function practiceKey(s,kind){const id=kind==='basic'?s.basics?.active:kind==='korean'?s.korean?.active:kind==='kana'?s.kana?.active:kind==='reading'?s.onboardingLevel:0;return `${s.courseDirection}:${kind}:${id}`;}
+export function practiceKey(s,kind){const id=kind==='basic'?s.basics?.active:kind==='korean'?s.korean?.active:kind==='kana'?s.kana?.active:kind==='reading'?s.onboardingLevel:kind==='sentence'?sentenceId(s):0;return `${s.courseDirection}:${kind}:${id}`;}
 export const caseTasks=(s,kind)=>isCasePractice(practiceKey(s,kind))?loaded.caseExercises?.caseExercises(s,kind,kind==='reading'?loaded.readingSource:loaded[kind]):null;
 export function practiceUnits(s,kind){
  const mod=loaded[kind];if(!mod)return[];
  if(kind==='basic')return mod.basicContent[s.basics.active].map(([text,meaning],index)=>({text,meaning,audio:mod.basicAudio({basics:{active:s.basics.active,lessons:{[s.basics.active]:{index}}}})})).filter(unit=>s.basics.active!==10||unit.text.length>2);
- if(kind==='korean')return mod.koreanContent[s.korean.active].map((item,index)=>({text:item.answer&&Number(s.onboardingLevel)>=5?item.answer:item.text,meaning:item.meaning||koreanSyllableMeaning[item.text]||item.question,audio:entry(Number(s.onboardingLevel)>=5?item.answer:(item.spoken||item.text),`assets/audio/${Number(s.onboardingLevel)>=5?'practice':'korean'}/korean.${s.korean.active}.${index}.wav`,'ko-KR')}));
+ if(kind==='korean')return mod.koreanContent[s.korean.active].map((item,index)=>({text:item.answer&&Number(s.onboardingLevel)>=5?item.answer:item.text,meaning:item.meaning||koreanSyllableMeaning[item.text]||item.question,audio:entry(Number(s.onboardingLevel)>=5?item.answer:(item.spoken||item.text),`assets/audio/${['3-2','3-3','3-4'].includes(s.korean.active)?'level-two':Number(s.onboardingLevel)>=5?'practice':'korean'}/korean.${s.korean.active}.${index}.wav`,'ko-KR')}));
  if(kind==='kana')return loaded.kanaState.kanaLessons[s.kana.active].letters.map(letter=>({text:letter.text,meaning:letter.reading,audio:mod.kanaLetterAudio(letter)}));
  if(kind==='labels'||kind==='listening')return mod.labelWords.map(w=>({text:w.text,meaning:w.meaning,audio:entry(w.text,`assets/audio/labels/${w.id}.wav`)}));
  if(kind==='play')return mod.expressions.map(x=>({text:x.text,meaning:x.meaning,audio:entry(x.text,`assets/audio/cafe/case01.${x.id}.ja.wav`)}));
- if(kind==='sentence')return mod.sentences.map(x=>({text:x.text,meaning:x.meaning,audio:mod.sentenceAudio[x.id]}));
+ if(kind==='sentence'){const mod=loaded[kind].sentenceCourse(s);return mod.sentences.map(x=>({text:x.text,meaning:x.meaning,audio:mod.audio[x.id]}));}
  if(kind==='dialogue')return mod.dialogueTurns.map(x=>({text:x.reply,meaning:x.replyMeaning,audio:mod.dialogueAudio[`${x.id}-reply`]}));
  return mod.practiceReading[s.onboardingLevel].map((x,index)=>({...x,audio:entry(x.text,`assets/audio/practice/reading.${s.onboardingLevel}.${index}.wav`)}));
 }
@@ -37,7 +38,7 @@ export function completionAttempt(before,after,kind,action){
  if(kind==='labels')return before.labels?.phase!=='summary'&&after.labels?.phase==='summary';
  if(kind==='listening')return before.listening?.index<4&&after.listening?.index===4;
  if(kind==='play')return before.episode.step!=='summary'&&after.episode.step==='summary';
- if(kind==='sentence')return before.sentence?.phase!=='summary'&&after.sentence?.phase==='summary';
+ if(kind==='sentence')return sentenceProgress(before).phase!=='summary'&&sentenceProgress(after).phase==='summary';
  if(kind==='dialogue')return before.dialogue?.phase!=='done'&&after.dialogue?.phase==='done';
  if(kind==='reading')return before.readings?.[before.onboardingLevel]?.phase!=='done'&&after.readings?.[before.onboardingLevel]?.phase==='done';
  return false;
@@ -45,7 +46,7 @@ export function completionAttempt(before,after,kind,action){
 export function interceptCompletion(before,after,kind,action){
  if(kind==='basic'&&basicSinglePass(before.basics?.active)||kind==='korean'&&koreanStageZero(before.korean?.active))return after;
  if(!completionAttempt(before,after,kind,action))return after;
- const key=practiceKey(before,kind),count=practiceUnits(before,kind).length;
+ const key=practiceKey(before,kind),count=caseTasks(before,kind)?.length??practiceUnits(before,kind).length;
  if(!count)throw Error('Missing practice content');
  return {...before,practices:{...before.practices,[key]:before.practices?.[key]||{version:1,...(isCasePractice(key)?{caseVersion:1}:{}),round:0,mode:0,index:0,count,action:Object.fromEntries(Object.entries(action).filter(([,v])=>v!==undefined))}}};
 }

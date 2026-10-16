@@ -50,5 +50,5 @@ export function mountPractice(root,s,kind,{play,stop,advance}){
 export function renderPracticeComplete(s,top,hasNext){
  const jp=japanese(s),title=jp?'学習が完了しました':'학습을 완료하셨습니다';
  const sparks=Array.from({length:24},(_,i)=>`<i style="--angle:${i*15}deg;--delay:${i%3*80}ms;--distance:${70+i%4*15}px"></i>`).join('');
- return `${top(jp?'学習完了':'학습 완료')}<div class="lesson-progress" role="progressbar" aria-label="${jp?'学習の進み具合':'학습 진행률'}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span style="width:100%"></span></div><main class="page practice-complete"><div class="practice-fireworks" aria-hidden="true">${sparks}<span>${icon('check')}</span></div><h1 tabindex="-1">${title}</h1><button type="button" class="primary" data-action="completed-next">${hasNext?(jp?'次のレッスン':'다음 수업'):(jp?'学習ホームへ':'학습 홈으로')}</button></main>`;
+ return `${top(jp?'学習完了':'학습 완료')}<div class="lesson-progress" role="progressbar" aria-label="${jp?'学習の進み具合':'학습 진행률'}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span style="width:100%"></span></div><main class="page practice-complete"><div class="practice-fireworks" aria-hidden="true">${sparks}<span>${icon('paw')}</span></div><h1 tabindex="-1">${title}</h1><button type="button" class="primary" data-action="completed-next">${hasNext?(jp?'次のレッスン':'다음 수업'):(jp?'学習ホームへ':'학습 홈으로')}</button></main>`;
 }

@@ -54,5 +54,5 @@ test('all new speech uses bundled Ono_Anna WAVs with matching source and hash',(
 
 test('first case map offers only implemented cases',()=>{
  const s=freshState();s.onboardingLevel=2;const html=renderLearningMap(s);
- assert.ok(html.includes('카페에 남겨진 가방'));assert.equal((html.match(/data-action="sentence"/g)||[]).length,1);assert.equal((html.match(/ disabled/g)||[]).length,0);
+ assert.ok(html.includes('카페에 남겨진 가방'));assert.equal((html.match(/data-action="sentence"/g)||[]).length,4);assert.equal((html.match(/ disabled/g)||[]).length,0);
 });

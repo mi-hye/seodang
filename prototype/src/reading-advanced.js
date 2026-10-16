@@ -57,4 +57,4 @@ export const advancedCourse={title:'専門記事・論説を読む',intro:'学�
 ]};
 const glossaries=['指標 지표 · 裁量 재량 · 異議 이의','了承 양해 · 留保 유보 · 議事録 회의록','継承 계승 · 連続性 연속성 · 政策 정책'];
 advancedCourse.passages.forEach((p,i)=>p.words=glossaries[i]);
-export const advancedAudio=advancedCourse.passages.map((p,i)=>({id:`level7.${i+1}`,text:p.paragraphs.join(''),locale:'ja-JP',status:'ready',audioFile:`assets/audio/advanced/level7-${i+1}.wav`,voiceId:'Ono_Anna',productionMethod:'Qwen3-TTS (MLX Audio)'}));
+export const advancedAudio=advancedCourse.passages.map((p,i)=>({id:`level7.${i+1}`,text:p.paragraphs.join(''),locale:'ja-JP',status:'ready',audioFile:`assets/audio/advanced/level7-${i+1}.wav`,voiceId:'VOICEVOX Nemo 男声1',productionMethod:'Selected offline TTS'}));

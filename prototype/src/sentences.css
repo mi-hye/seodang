@@ -1,3 +1,4 @@
+@import url("./token-builder.css");
 /* Level 3 only: loaded with the sentence lesson, using shared UI colors. */
 .sentence-page{max-width:480px;margin:auto;padding-top:16px}
 .sentence-page h1{font-size:calc(24px * var(--text-scale));margin:10px 0 20px}
@@ -14,9 +15,6 @@
 .sentence-parts b{font-weight:500}.sentence-parts span span{color:var(--muted)}
 .sentence-page .sentence-help{font-size:calc(16px * var(--text-scale));line-height:1.7}
 .sentence-bag{display:grid;place-items:center;height:180px;margin:8px 0 20px;background:var(--stage-raised);border-radius:16px}.sentence-bag svg{width:150px;height:150px}
-.sentence-answer{display:flex;flex-wrap:wrap;align-content:center;gap:8px;min-height:128px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--stage-raised);margin:20px 0}.sentence-answer>span{color:var(--muted);font-size:16px}
-.sentence-choices{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
-.sentence-chip{font-size:calc(18px * var(--text-scale));min-height:48px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--stage-panel);color:var(--text);max-width:100%;overflow-wrap:break-word}
 .sentence-confirmed{padding:12px;border:1px solid var(--jade);border-radius:14px}
 .sentence-clues{display:grid;gap:16px;margin:22px 0;padding:16px;background:var(--stage-raised);border-radius:14px}
 .sentence-bags{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -32,8 +30,6 @@
 
 .sentence-actions{display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;margin-top:20px}.sentence-actions>button{width:100%;min-width:0;margin:0;min-height:52px}
 
-.sentence-choices:has(>button:nth-child(2):last-child),.sentence-answer:has(>button:nth-child(2):last-child){display:flex;flex-direction:row;flex-wrap:nowrap}
-.sentence-choices:has(>button:nth-child(2):last-child)>button,.sentence-answer:has(>button:nth-child(2):last-child)>button{flex:1 1 0;min-width:0}
 
 .sentence-kanji{margin:18px 0;border-block:1px solid var(--line);padding:12px 0}.sentence-kanji summary{cursor:pointer;color:var(--muted);min-height:32px}.sentence-kanji p{display:flex;align-items:baseline;gap:18px;margin:20px 0 8px}.sentence-kanji ruby{font-size:28px;line-height:1.8}.sentence-kanji rt{font-size:12px;color:var(--muted)}.sentence-kanji span{font-size:16px}
 
@@ -47,3 +43,17 @@
 .sentence-learn .case-words{margin:10px 0}
 .sentence-learn .sentence-help{margin:6px 0}
 .sentence-learn .sentence-kanji{margin:8px 0;padding:6px 0}
+
+.sentence-kana-reading{font-size:calc(15px * var(--text-scale));line-height:1.6;color:var(--muted);margin:4px 0 10px;word-break:normal;overflow-wrap:anywhere}
+
+.sentence-intro .sentence-scene-image{display:block;height:clamp(120px,22svh,180px);object-fit:cover;object-position:50% 60%}
+.sentence-learn .sentence-scene-image{display:block;object-fit:cover;object-position:50% 60%}
+
+.sentence-options{display:flex;flex-direction:column;gap:12px;margin:20px 0;min-width:0}
+.sentence-option{display:block;width:100%;min-width:0;min-height:52px;padding:16px;margin:0;border:1px solid var(--line);border-radius:14px;background:var(--stage-raised);color:var(--text);font-size:calc(18px * var(--text-scale));line-height:1.6;text-align:left;white-space:normal;word-break:keep-all;overflow-wrap:anywhere}
+.sentence-option.selected{border-color:var(--amber);background:var(--selected)}
+
+.sentence-choice-course .sentence-scene-image{object-position:50% 40%}
+.sentence-choice-course.sentence-learn .sentence-heading h2{font-size:calc(32px * var(--text-scale));line-height:1.5;text-align:center;margin:14px 0}
+.sentence-choice-course.sentence-learn .sentence-meaning{text-align:center;margin:12px 0 24px}
+.sentence-choice-course.sentence-learn .button-pair{margin-top:28px}

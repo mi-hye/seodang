@@ -1,0 +1,7 @@
+/* Token counts never change layout rules. Action button pairs remain separate. */
+.token-builder{min-width:0}
+.token-builder-answer,.token-builder-choices{display:flex;flex-flow:row wrap;align-items:center;align-content:center;gap:8px;min-width:0}
+.token-builder-answer{min-height:128px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--stage-raised);margin:20px 0}
+.token-builder-choices{margin:18px 0}
+.token-builder .token-builder-chip{display:block;flex:0 0 auto;align-self:center;width:auto;min-width:44px;max-width:100%;min-height:48px;margin:0;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--stage-panel);color:var(--text);font-size:calc(18px * var(--text-scale));line-height:1.6;white-space:normal;word-break:keep-all;overflow-wrap:anywhere;text-align:center}
+.token-builder-empty{color:var(--muted);font-size:16px}

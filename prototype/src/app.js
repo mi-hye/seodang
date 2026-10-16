@@ -10,7 +10,7 @@ import {readingProgress} from './reading-state.js';
 import {dialogueProgress} from './dialogue-state.js';
 import {listeningUnlocked} from './listening-state.js';
 import {labelsUnlocked} from "./labels-state.js";
-import { sentenceProgress } from "./sentence-state.js";
+import { sentenceProgress,sentenceId,sentenceLessons,nextSentence } from "./sentence-state.js";
 import { showSheet, closeSheet } from "./sheet.js";
 import { selectedLevel, kanaLetters, kanaLessons, normalizeKana, kanaSolvedCount } from "./kana-state.js";
 import { renderHeader, installFocusModality } from "./header.js";
@@ -82,6 +82,8 @@ function commit(action) {
   if (!blocked) storageError = save(storage, state);
 }
 function navigate(next) {
+  if(practiceKinds.includes(next))void import('./audio-download-ui.js').then(m=>m.prefetchLesson(state,next,message=>{toast=message;render();}));
+  else void import('./audio-download-ui.js').then(m=>m.cancelLessonDownload());
   completedKind=null;
   player.stop();
   view = next;
@@ -139,7 +141,8 @@ function currentPracticeKey(){
 }
 function homeCaseCard(props){
  let kind=props.action,s=state;
- if(kind==='practice-resume'){const key=currentPracticeKey();if(key){const [,k,id]=key.split(':');kind=k;if(k==='kana')s={...state,kana:{...state.kana,active:Number(id)}};if(k==='basic')s={...state,basics:{...state.basics,active:Number(id)}};if(k==='korean')s={...state,korean:{...state.korean,active:id}};if(k==='reading')s={...state,onboardingLevel:Number(id)};}}
+ if(kind==='practice-resume'){const key=currentPracticeKey();if(key){const [,k,id]=key.split(':');kind=k;if(k==='kana')s={...state,kana:{...state.kana,active:Number(id)}};if(k==='basic')s={...state,basics:{...state.basics,active:Number(id)}};if(k==='korean')s={...state,korean:{...state.korean,active:id}};if(k==='reading')s={...state,onboardingLevel:Number(id)};if(k==='sentence')s={...state,sentenceActive:Number(id)};}}
+ else if(kind==='sentence')s={...state,sentenceActive:Number(props.id??nextSentence(state))};
  else if(kind==='reading'&&props.id!==undefined)s={...state,onboardingLevel:props.id};
  else if(kind==='kana'){const k=normalizeKana(state.kana),active=k.lessons[k.active].phase==='summary'?Math.max(0,k.lessons.findIndex(l=>!l.caseSolved)):k.active;s={...state,kana:{...k,active}};}
  else if(kind==='korean')s={...state,korean:{...state.korean,active:nextKorean(state).id}};
@@ -151,7 +154,7 @@ function caseCard() {
   const pendingKey=currentPracticeKey();
   if(pendingKey){
     const [,kind,id]=pendingKey.split(':');
-    const title=kind==='korean'?koreanLessons.find(l=>l.id===id)?.title:kind==='kana'?kanaLessons[Number(id)]?.caseTitle:kind==='basic'?basicLessons.find(l=>l.id===Number(id))?.title:({labels:'그림에 이름표 붙이기',listening:'듣고 사진 고르기',play:'카페에 남겨진 가방',sentence:'가방 주인을 찾아요',dialogue:'카페에서 주문하기',reading:selectedLevel(state)===7?'行間を聴く':selectedLevel(state)===6?'読んで、考える':'글을 읽고 핵심 찾기'}[kind]);
+    const title=kind==='korean'?koreanLessons.find(l=>l.id===id)?.title:kind==='kana'?kanaLessons[Number(id)]?.caseTitle:kind==='basic'?basicLessons.find(l=>l.id===Number(id))?.title:kind==='sentence'?sentenceLessons.find(l=>l.id===Number(id))?.title:({labels:'그림에 이름표 붙이기',listening:'듣고 사진 고르기',play:'카페에 남겨진 가방',sentence:'가방 주인을 찾아요',dialogue:'카페에서 주문하기',reading:selectedLevel(state)===7?'行間を聴く':selectedLevel(state)===6?'読んで、考える':'글을 읽고 핵심 찾기'}[kind]);
     return homeCaseCard({title,action:'practice-resume',actionLabel:state.courseDirection==='ja-ko'&&!koreanImmersion(state)?'学習を続ける':'학습 이어하기'});
   }
   if(state.courseDirection==='ja-ko'){const l=nextKorean(state),p=koreanProgress(state,l.id);return homeCaseCard({title:`${koreanImmersion(state)?'레벨':'レベル'}${displayLevel(l.level)} · ${l.title}`,action:'korean',actionLabel:koreanImmersion(state)?(p.completed?'다시 학습하기':p.started?'학습 이어하기':'학습 시작하기'):(p.completed?'もう一度学ぶ':p.started?'学習を続ける':'学習を始める')});}
@@ -164,7 +167,7 @@ function caseCard() {
     const lesson = kanaLessons[next], progress = k.lessons[next];
     return homeCaseCard({coverText:lesson.letters.slice(0,5).map(l=>l.text).join(" "),title:`1단계 · ${lesson.caseTitle}`,description:`${lesson.rangeLabel} / 쓰기 · 읽기 · 카드 짝 맞추기`,action:"kana",actionLabel:count===kanaLessons.length?"글자 다시 연습하기":progress.started?"학습 이어하기":"학습 시작하기"});
   }
-  if(level===2){const p=sentenceProgress(state);return homeCaseCard({image:assets.cafe.src,imageAlt:"카페",title:"2단계 · 카페에 남겨진 가방",description:"짧은 문장을 듣고 가방의 주인과 위치를 알아봐요.",action:p.phase==='summary'?"sentence-review":"sentence",actionLabel:p.phase==='summary'?"배운 문장 복습하기":p.started?"학습 이어하기":"학습 시작하기"});}
+  if(level===2){const id=nextSentence(state),p=sentenceProgress(state,id);return homeCaseCard({title:`2단계 · ${sentenceLessons.find(l=>l.id===id).title}`,action:"sentence",id,actionLabel:p.completed?"다시 학습하기":p.started?"학습 이어하기":"학습 시작하기"});}
   if(level===4){const p=dialogueProgress(state);return homeCaseCard({image:assets.cafe.src,imageAlt:'カフェ',title:'3단계 · 따뜻한 커피를 포장해요',description:'질문을 듣고 원하는 음료와 포장 여부를 말해요.',action:'dialogue',actionLabel:p.phase==='done'?'다시 학습하기':p.started?'학습 이어하기':'학습 시작하기'});}
   if(level>=5){const id=level===5&&readingProgress(state,5).completed?6:level,p=readingProgress(state,id),jp=id===7;return homeCaseCard({id,title:jp?'5 · 専門記事・論説を読む':`4단계 · ${id===5?'안내·메시지에서 정보 찾기':'조건과 이유를 연결해 판단하기'}`,action:'reading',actionLabel:jp?(p.completed?'もう一度':p.started?'続ける':'始める'):(p.completed?'다시 학습하기':p.started?'학습 이어하기':'학습 시작하기')});}
 
@@ -239,7 +242,8 @@ async function loadKorean(){
  koreanStyles ||= new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href='src/korean.css';link.onload=resolve;link.onerror=()=>{link.remove();koreanStyles=null;reject(Error('Styles unavailable'));};document.head.append(link);});await koreanStyles;
 }
 function korean(){return koreanModule.renderKorean(state,top);}
-function speakKorean(){if(pendingPractice()||['intro','scenario'].includes(koreanProgress(state,state.korean.active).phase))return;const entry=koreanStageZero(state.korean.active)&&koreanProgress(state,state.korean.active).phase==='learn'?koreanModule.koreanExampleAudio(state)||koreanModule.koreanAudio(state):koreanModule.koreanAudio(state);void player.play(entry,state.settings.sound,()=>{toast=koreanImmersion(state)?'소리를 재생하지 못했어요. 다시 눌러 주세요.':'音声を再生できませんでした。もう一度お試しください。';render();},{rate:state.settings.audioRate??1});}
+function speakKoreanIntro(){const entries=koreanModule.koreanIntroAudio(state);if(entries.length)void player.playSequence(entries,state.settings.sound,()=>{toast='音声を再生できませんでした。もう一度お試しください。';render();});}
+function speakKorean(){if(pendingPractice())return;const phase=koreanProgress(state,state.korean.active).phase;if(phase==='scenario'){speakKoreanIntro();return;}if(phase==='intro')return;const entry=koreanStageZero(state.korean.active)&&koreanProgress(state,state.korean.active).phase==='learn'?koreanModule.koreanExampleAudio(state)||koreanModule.koreanAudio(state):koreanModule.koreanAudio(state);void player.play(entry,state.settings.sound,()=>{toast=koreanImmersion(state)?'소리를 재생하지 못했어요. 다시 눌러 주세요.':'音声を再生できませんでした。もう一度お試しください。';render();},{rate:entry?.playbackRate??state.settings.audioRate??1});}
 let basicModule,basicStyles;
 async function loadBasics(){
  basicModule ||= await import('./basics.js');
@@ -403,11 +407,13 @@ function hasNextLesson(kind){
  if(kind==='basic')return state.basics.active===6||Boolean(followingBasic(state.basics.active));
  if(kind==='korean')return Boolean(followingKorean(state.korean.active));
  if(kind==='reading')return selectedLevel(state)===5;
+ if(kind==='sentence')return sentenceLessons.findIndex(l=>l.id===sentenceId(state))<sentenceLessons.length-1;
  return false;
 }
 async function nextCompletedLesson(){
  const kind=completedKind;if(!kind)return;
  try{
+  if(kind==='sentence'&&sentenceLessons.findIndex(l=>l.id===sentenceId(state))<sentenceLessons.length-1){commit({type:'sentence-start',id:sentenceLessons[sentenceLessons.findIndex(l=>l.id===sentenceId(state))+1].id});navigate('sentence');return;}
   if(kind==='reading'&&selectedLevel(state)===5){commit({type:'level',value:6});await loadReading();commit({type:'reading-start'});navigate('reading');return;}
   if(kind==='basic'&&state.basics.active===6){commit({type:'level',value:2});await loadPractice('play');commit({type:'start'});navigate('play');return;}
   if(kind==='basic'&&followingBasic(state.basics.active)){commit({type:'basic-start',id:followingBasic(state.basics.active)});navigate('basic');return;}
@@ -427,12 +433,13 @@ async function handle(event) {
   }
   const a = el.dataset.action,
     id = el.dataset.id;
+  if(a==='audio-downloads'){player.stop();const {openAudioDownloads}=await import('./audio-download-ui.js');await openAudioDownloads(state);return;}
   if(a==='lesson-kanji'){el.disabled=true;player.stop();try{const {openLessonKanji}=await import('./lesson-kanji.js');await openLessonKanji(id,{trigger:el});}catch{toast='한자 학습을 불러오지 못했어요. 다시 눌러 주세요.';render();}finally{if(el.isConnected)el.disabled=false;}return;}
   if(a==='passage-pause'){if(player.state==='paused')void player.resume();else player.pause();return;}
   if(a==='completed-next'){el.disabled=true;await nextCompletedLesson();return;}
   if(a==='practice-resume'){
     const saved=currentPracticeKey();
-    if(!saved)return;const [,kind,lesson]=saved.split(':'),trigger=document.createElement('button');trigger.dataset.action=kind;if(['kana','basic','korean','reading'].includes(kind))trigger.dataset.id=lesson;await handle({target:trigger});return;
+    if(!saved)return;const [,kind,lesson]=saved.split(':'),trigger=document.createElement('button');trigger.dataset.action=kind;if(['kana','basic','korean','reading','sentence'].includes(kind))trigger.dataset.id=lesson;await handle({target:trigger});return;
   }
   const entryKind=practiceKinds.includes(a)?a:a==='kana-continue'||a==='kana-restart'?'kana':a==='labels-restart'?'labels':a==='sentence-restart'?'sentence':null;
   if(entryKind){el.disabled=true;try{await loadPractice(entryKind);}catch{el.disabled=false;toast=t('학습을 불러오지 못했어요. 다시 눌러 주세요.');render();return;}el.disabled=false;}
@@ -463,7 +470,8 @@ async function handle(event) {
     if(view!=='korean'||state.courseDirection!=='ja-ko')return;
     if(a==='korean-clear')return;
     if(a==='korean-stop'){player.stop();return;}
-    if(['korean-audio','korean-example-audio'].includes(a)){if(!state.settings.sound)commit({type:'setting',key:'sound',value:true});const entry=a==='korean-example-audio'?koreanModule.koreanExampleAudio(state):koreanModule.koreanAudio(state);if(entry)void player.play(entry,true,()=>{},{rate:state.settings.audioRate??1});return;}
+    if(a==='korean-intro-audio'){if(!state.settings.sound)commit({type:'setting',key:'sound',value:true});speakKoreanIntro();return;}
+    if(['korean-audio','korean-example-audio'].includes(a)){if(!state.settings.sound)commit({type:'setting',key:'sound',value:true});const entry=a==='korean-example-audio'?koreanModule.koreanExampleAudio(state):koreanModule.koreanAudio(state);if(entry)void player.play(entry,true,()=>{},{rate:entry?.playbackRate??state.settings.audioRate??1});return;}
     const moving=['korean-next','korean-check','korean-previous'].includes(a);
     if(moving){const now=performance.now();if(now-lastAdvance<450)return;lastAdvance=now;player.stop();}
     if(a==='korean-next'&&koreanProgress(state,state.korean.active).phase==='write')koreanModule.clearKoreanDraft(state);
@@ -582,16 +590,16 @@ async function handle(event) {
     try {
       await loadSentences();
       if(a==='sentence-review'||a==='review') navigate('review');
-      else {commit({type:a==='sentence-restart'?'sentence-restart':'sentence-start'});navigate('sentence');}
+      else {commit({type:a==='sentence-restart'?'sentence-restart':'sentence-start',id:a==='sentence-restart'?sentenceId(state):Number(id??nextSentence(state))});navigate('sentence');}
     } catch {toast='문장 학습을 불러오지 못했어요. 다시 눌러 주세요.';render();}
     return;
   }
   if (a === 'sentence-audio') {
-    await player.play(sentenceModule.sentenceAudio[id],state.settings.sound,message=>{toast=message;render();});return;
+    await player.play(sentenceModule.sentenceAudioEntry(state,id),state.settings.sound,message=>{toast=message;render();});return;
   }
   if (a.startsWith('sentence-')) {
     if(view!=='sentence') return;
-    const moves=['sentence-next','sentence-previous','sentence-submit'].includes(a);
+    const moves=['sentence-next','sentence-previous','sentence-submit'].includes(a)||(a==='sentence-check'&&sentenceId(state)===3);
     if(moves) {const now=performance.now();if(now-lastAdvance<450)return;lastAdvance=now;}
     player.stop();commit({type:a,id});render(moves);
     if(moves)speakSentence();
@@ -788,7 +796,6 @@ panel.addEventListener("change", async (event) => {
   if (key === "difficulty") {
     player.stop();
     commit({ type: "level", value: Number(el.value) });
-    if(!state.levelGuideSeen?.[`${state.courseDirection}:${selectedLevel(state)}`]){window.location.assign('setup.html#guide');return;}
     view = "home";
     toast = "";
     render(true);
@@ -828,6 +835,7 @@ if(enteringCase && selectedLevel(state)>=5){try{await loadReading();commit({type
 if(enteringCase && selectedLevel(state)===4){try{await loadDialogue();commit({type:'dialogue-start'});}catch{view='home';toast='대화 학습을 불러오지 못했어요. 다시 눌러 주세요.';}}
 if(enteringCase&&practiceKinds.includes(view)){try{await loadPractice(view);}catch{view="home";}}
 if(!needsKoreanGuide)render();
+if(enteringCase&&practiceKinds.includes(view))void import('./audio-download-ui.js').then(m=>m.prefetchLesson(state,view,message=>{toast=message;render();}));
 if(enteringCase && view==='reading')speakReading();
 else if(enteringCase && view==='dialogue')speakDialogue();
 else if (enteringCase && view==='sentence') speakSentence();

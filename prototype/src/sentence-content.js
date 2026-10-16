@@ -1,3 +1,5 @@
+import {extraSentenceCases,levelTwoAudio} from './level-two-content.js';
+import {sentenceId} from './sentence-state.js';
 // Level 3 case and lesson order are provisional, editable learning content.
 export const sentenceCase = {id:'cafe-owner',title:'카페에 남겨진 가방',image:'assets/cafe-dusk-v2.jpg'};
 export const sentences = [
@@ -8,6 +10,12 @@ export const sentences = [
 export const sentenceAudio = Object.fromEntries([
   ['intro','わたしの鞄を探しています。窓のそばにあります。赤い鞄ではありません。'],
   ...sentences.map(s=>[s.id,s.spoken]),
-].map(([id,text])=>[id,{id:`level3.${id}.ja`,text,locale:'ja-JP',audioFile:`assets/audio/sentences/level3.${id}.ja.wav`,status:'ready',voiceId:'Ono_Anna',productionMethod:'Qwen3-TTS (MLX Audio)',languageReviewed:false}]));
+].map(([id,text])=>[id,{id:`level3.${id}.ja`,text,locale:'ja-JP',playbackRate:0.8,audioFile:`assets/audio/sentences/level3.${id}.ja.wav`,status:'ready',voiceId:'VOICEVOX Nemo 男声1',productionMethod:'Selected offline TTS',languageReviewed:false}]));
 
 export const sentenceWords=[[['これ','이것'],['わたし','나'],['かばん','가방']],[['かばん','가방'],['まど','창문'],['そば','옆']],[['あかい','빨간'],['かばん','가방']]];
+
+export function sentenceCourse(s){const id=sentenceId(s);return id===0?{...sentenceCase,sentences,words:sentenceWords,audio:sentenceAudio}:extraSentenceCases[id];}
+for(const [id,lesson] of Object.entries(extraSentenceCases)){
+ lesson.words=lesson.sentences.map(x=>x.words);
+ lesson.audio={intro:levelTwoAudio(`sentence.${id}.intro`,lesson.intro,'ja-JP'),...Object.fromEntries(lesson.sentences.map(x=>[x.id,levelTwoAudio(x.id,x.spoken,'ja-JP')]))};
+}

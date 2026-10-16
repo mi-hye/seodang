@@ -1,3 +1,4 @@
+import {sentenceLessons,sentenceId} from './sentence-state.js';
 import {kanaLessons} from './kana-state.js';
 import {basicLessons} from './basics-state.js';
 import {koreanLessons} from './korean-state.js';
@@ -9,7 +10,7 @@ export function lessonTitle(s,kind,fallback=''){
  else if(kind==='labels')title='그림에 이름표 붙이기';
  else if(kind==='listening'){number=2;title='듣고 사진 고르기';}
  else if(kind==='play'){number=4;title='카페에 남겨진 가방';}
- else if(kind==='sentence'||kind==='sentence-review')title='카페에 남겨진 가방';
+ else if(kind==='sentence'||kind==='sentence-review'){number=sentenceLessons.findIndex(l=>l.id===sentenceId(s))+1;title=sentenceLessons[number-1].title;}
  else if(kind==='dialogue')title='따뜻한 커피를 포장해요';
  else if(kind==='reading'){number=Number(s.onboardingLevel)===6?2:1;title=Number(s.onboardingLevel)===7?'専門記事・論説を読む':Number(s.onboardingLevel)===6?'条件と理由をつなげて判断する':'안내·메시지에서 정보 찾기';}
  return `${number}. ${title}`;

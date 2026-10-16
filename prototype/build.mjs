@@ -1,9 +1,13 @@
 import { cp, mkdir, rm, readdir, readFile, writeFile } from "node:fs/promises";
 import { gzipSync } from "node:zlib";
+await readFile('assets/audio/catalog.json'); // Never ship a build without a published voice release.
 await rm("dist", { recursive: true, force: true });
 await mkdir("dist");
 for (const p of ["index.html", "playable.html", "setup.html", "src", "assets"])
-  await cp(p, `dist/${p}`, { recursive: true });
+  await cp(p, `dist/${p}`, { recursive: true, filter: source => {
+    if(!source.startsWith('assets/audio/'))return true;
+    return ['assets/audio/catalog.json','assets/audio/NOTICE.txt','assets/audio/LICENSE-Supertonic-3.txt'].includes(source);
+  } });
 const developmentMode = process.env.SEODANG_DEV_MODE === '1';
 await writeFile('dist/src/build-config.js', `export const developmentMode = ${developmentMode};\n`);
 await cp("start-asset-test.html", "dist/start-asset-test.html");

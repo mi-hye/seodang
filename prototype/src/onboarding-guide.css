@@ -4,14 +4,15 @@
 .setup-shell:has([data-step="3"]:not([hidden])) .step-content{padding:8px 0 12px;scrollbar-gutter:auto}
 .setup-shell:has([data-step="3"]:not([hidden])) .actions{width:min(100%,560px);margin-inline:auto}
 [data-step="3"]>h1{display:none}
-[data-step="3"],#onboarding-guide{min-height:100%}
-.dog-guide{--character-size:min(100vw,480px);display:flex;flex-direction:column;align-items:center;gap:16px;min-height:calc(100svh - 180px);padding:0 0 4px;word-break:keep-all;overflow-wrap:anywhere}
+[data-step="3"],#onboarding-guide{height:100%;min-height:0}
+.dog-guide{display:grid;grid-template-rows:minmax(0,1fr) auto auto;justify-items:center;gap:12px;height:100%;min-height:0;padding:0 0 4px;word-break:keep-all;overflow-wrap:anywhere}
 .dog-guide:lang(ja){word-break:normal;line-break:strict}
-.guide-scene{position:relative;display:grid;place-items:center;isolation:isolate;flex:1 0 auto;width:100%;min-height:var(--character-size);overflow:visible}
+.guide-scene{position:relative;display:grid;place-items:center;isolation:isolate;width:100%;height:100%;min-width:0;min-height:0;container-type:size;overflow:visible}
+.guide-scene>*{--character-size:min(100cqw,100cqh,480px)}
 .guide-replay{padding:0;border:0;background:transparent;color:inherit;cursor:pointer;touch-action:manipulation;border-radius:24px}
 .guide-runner{position:relative}
 .guide-mascot{width:var(--character-size);height:var(--character-size);background-size:300% 200%;background-repeat:no-repeat;background-position:0 0}
-/* The same canvas dimensions on every page avoid resize/clear flashes. */
+/* Both renderers fit the space left above the text and navigation. */
 .guide-rive-canvas{position:absolute;inset:auto;width:var(--character-size);height:var(--character-size);opacity:0;pointer-events:none}
 .guide-scene[data-renderer=rive] .guide-rive-canvas{opacity:1}
 .guide-scene[data-renderer=rive] .guide-runner{visibility:hidden}
@@ -29,11 +30,11 @@
 .guide-flow-icon svg{width:24px;height:24px}
 .guide-flow h3{margin:0 0 4px;font-size:calc(17px * var(--text-scale,1));line-height:1.45;font-weight:650}
 .guide-flow p{margin:0;color:var(--muted);font-size:calc(14px * var(--text-scale,1));line-height:1.6}
-.guide-dots{display:flex;gap:7px;justify-content:center;margin-top:auto;padding:10px 0 4px}
+.guide-dots{display:flex;gap:7px;justify-content:center;margin:0;padding:4px 0}
 .guide-dots span{width:6px;height:6px;border-radius:50%;background:var(--line)}
 .guide-dots [aria-current]{width:20px;border-radius:6px;background:var(--amber)}
-@media(max-height:700px){.dog-guide{--character-size:min(100vw,48svh,360px);gap:12px}.guide-copy{padding:16px 14px;gap:12px}.guide-copy h2{font-size:calc(23px * var(--text-scale,1))}.guide-description{font-size:calc(16px * var(--text-scale,1))}.guide-note{font-size:calc(15px * var(--text-scale,1))}}
-@media(min-width:800px) and (min-height:701px){.dog-guide{--character-size:min(55svh,560px)}}
+@media(max-height:700px){.dog-guide{gap:8px}.guide-content{gap:10px}.guide-flow{gap:8px}.guide-flow li{padding:10px}.guide-copy{padding:16px 14px;gap:12px}.guide-copy h2{font-size:calc(23px * var(--text-scale,1))}.guide-description{font-size:calc(16px * var(--text-scale,1))}.guide-note{font-size:calc(15px * var(--text-scale,1))}}
+@media(min-width:800px) and (min-height:701px){.guide-scene>*{--character-size:min(100cqw,100cqh,560px)}}
 .guide-paused *{animation-play-state:paused!important}
 .guide-still,.guide-still *{animation:none!important}
 @media(prefers-reduced-motion:reduce){.dog-guide,.dog-guide *{animation:none!important}}
