@@ -1,0 +1,13 @@
+{
+  "before": {
+    "initialJS_gzip": 56014,
+    "initialCSS_gzip": 15426,
+    "staticModules": 28
+  },
+  "after": {
+    "initialJS_gzip": 57576,
+    "initialCSS_gzip": 15426,
+    "staticModules": 28
+  },
+  "method": "Node gzipSync; recursive static import closure from app.js; identical production build-config; shared mobile/desktop"
+}

@@ -1,0 +1,8 @@
+.learning-app dialog.analytics-consent { padding:24px; width:calc(100% - 32px); max-width:480px; max-height:calc(100dvh - 48px); overflow-y:auto; box-sizing:border-box; }
+.analytics-consent h2 { font-size:calc(21px * var(--text-scale,1)); line-height:1.45; margin:0 0 16px; word-break:keep-all; overflow-wrap:anywhere; }
+.analytics-consent p { font-size:calc(15px * var(--text-scale,1)); line-height:1.65; word-break:keep-all; overflow-wrap:anywhere; }
+.analytics-consent .button-pair { margin-top:20px; }
+.analytics-consent .button-pair button { min-height:48px; }
+.learning-app .analytics-consent button.secondary { color:var(--ink); background:transparent; border:1px solid currentColor; }
+
+.analytics-consent:lang(ja) h2, .analytics-consent:lang(ja) p { word-break:normal; line-break:strict; }

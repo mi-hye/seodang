@@ -1,0 +1,398 @@
+{
+  "projectId": 650471,
+  "dashboardId": 2180325,
+  "specs": [
+    {
+      "id": 12604429,
+      "name": "01 · 매일 실제로 학습한 기기",
+      "description": "수업에서 다음 단계로 진행한 기기를 하루에 한 번 셉니다. 앱을 열기만 한 경우는 제외합니다. 선이 꾸준히 올라가는지 보세요. 동일한 사람이 여러 기기를 쓰면 각각 집계됩니다.",
+      "query": {
+        "kind": "TrendsQuery",
+        "dateRange": {
+          "date_from": "-28d"
+        },
+        "properties": [
+          {
+            "key": "client",
+            "type": "event",
+            "value": [
+              "seodang-capacitor"
+            ],
+            "operator": "exact"
+          },
+          {
+            "key": "environment",
+            "type": "event",
+            "value": [
+              "production"
+            ],
+            "operator": "exact"
+          }
+        ],
+        "filterTestAccounts": false,
+        "interval": "day",
+        "series": [
+          {
+            "kind": "EventsNode",
+            "event": "learning_progress",
+            "math": "dau",
+            "custom_name": "학습 진행"
+          }
+        ],
+        "trendsFilter": {
+          "display": "ActionsLineGraph"
+        }
+      }
+    },
+    {
+      "id": 12604430,
+      "name": "04 · 참여한 뒤 첫 수업까지 마쳤나요?",
+      "description": "통계 참여 → 수업 시작 → 수업 완료에 7일 안에 도달한 비율입니다. 기존 사용자도 첫 동의 때 들어오므로 신규 설치 전환율은 아닙니다. 어느 단계에서 줄어드는지 보고 개선할 화면을 정하세요. 마지막 7일은 아직 진행 중입니다.",
+      "query": {
+        "kind": "FunnelsQuery",
+        "dateRange": {
+          "date_from": "-28d"
+        },
+        "properties": [
+          {
+            "key": "client",
+            "type": "event",
+            "value": [
+              "seodang-capacitor"
+            ],
+            "operator": "exact"
+          },
+          {
+            "key": "environment",
+            "type": "event",
+            "value": [
+              "production"
+            ],
+            "operator": "exact"
+          }
+        ],
+        "filterTestAccounts": false,
+        "series": [
+          {
+            "kind": "EventsNode",
+            "event": "analytics_enabled",
+            "custom_name": "통계 참여"
+          },
+          {
+            "kind": "EventsNode",
+            "event": "lesson_started",
+            "custom_name": "수업 시작"
+          },
+          {
+            "kind": "EventsNode",
+            "event": "lesson_completed",
+            "custom_name": "수업 완료"
+          }
+        ],
+        "funnelsFilter": {
+          "funnelOrderType": "ordered",
+          "funnelVizType": "steps",
+          "funnelStepReference": "total",
+          "funnelWindowInterval": 7,
+          "funnelWindowIntervalUnit": "day",
+          "layout": "vertical"
+        }
+      }
+    },
+    {
+      "id": 12604431,
+      "name": "05 · 다음 날·7일 뒤에도 공부하나요?",
+      "description": "첫 관측 학습 후 정확히 다음 날(Day 1)·7일 뒤(Day 7) 다시 학습한 비율입니다. 한국 날짜 기준입니다. 아직 날짜가 지나지 않은 칸과 표본이 적은 날은 판단을 미뤄 주세요. 전체 설치자가 아닌 통계 참여 기기 기준입니다.",
+      "query": {
+        "kind": "RetentionQuery",
+        "dateRange": {
+          "date_from": "-28d"
+        },
+        "properties": [
+          {
+            "key": "client",
+            "type": "event",
+            "value": [
+              "seodang-capacitor"
+            ],
+            "operator": "exact"
+          },
+          {
+            "key": "environment",
+            "type": "event",
+            "value": [
+              "production"
+            ],
+            "operator": "exact"
+          }
+        ],
+        "filterTestAccounts": false,
+        "retentionFilter": {
+          "targetEntity": {
+            "id": "learning_progress",
+            "type": "events"
+          },
+          "returningEntity": {
+            "id": "learning_progress",
+            "type": "events"
+          },
+          "period": "Day",
+          "retentionType": "retention_first_time",
+          "timeWindowMode": "strict_calendar_dates",
+          "totalIntervals": 8,
+          "cumulative": false,
+          "retentionReference": "total",
+          "meanRetentionCalculation": "weighted",
+          "aggregationType": "count"
+        }
+      }
+    },
+    {
+      "id": 12604432,
+      "name": "02 · 최근 7일 학습 기기 추이",
+      "description": "각 날짜를 기준으로 최근 7일 동안 한 번이라도 학습한 기기 수입니다. 하루의 변동보다 이 선이 2~4주 동안 늘어나는지 먼저 보세요. 오늘은 아직 집계 중입니다.",
+      "query": {
+        "kind": "TrendsQuery",
+        "dateRange": {
+          "date_from": "-28d"
+        },
+        "properties": [
+          {
+            "key": "client",
+            "type": "event",
+            "value": [
+              "seodang-capacitor"
+            ],
+            "operator": "exact"
+          },
+          {
+            "key": "environment",
+            "type": "event",
+            "value": [
+              "production"
+            ],
+            "operator": "exact"
+          }
+        ],
+        "filterTestAccounts": false,
+        "interval": "day",
+        "series": [
+          {
+            "kind": "EventsNode",
+            "event": "learning_progress",
+            "math": "weekly_active",
+            "custom_name": "학습 진행"
+          }
+        ],
+        "trendsFilter": {
+          "display": "ActionsLineGraph"
+        }
+      }
+    },
+    {
+      "id": 12604433,
+      "name": "03 · 새로 통계에 참여한 기기",
+      "description": "해당 날짜에 통계 공유에 동의한 기기 수입니다. 다운로드 수가 아닙니다. 재설치·재동의는 새 기기로 잡힐 수 있습니다. 스토어 설치 수와 함께 보되 두 수치를 더하지 마세요.",
+      "query": {
+        "kind": "TrendsQuery",
+        "dateRange": {
+          "date_from": "-28d"
+        },
+        "properties": [
+          {
+            "key": "client",
+            "type": "event",
+            "value": [
+              "seodang-capacitor"
+            ],
+            "operator": "exact"
+          },
+          {
+            "key": "environment",
+            "type": "event",
+            "value": [
+              "production"
+            ],
+            "operator": "exact"
+          }
+        ],
+        "filterTestAccounts": false,
+        "interval": "day",
+        "series": [
+          {
+            "kind": "EventsNode",
+            "event": "analytics_enabled",
+            "math": "dau",
+            "custom_name": "통계 참여"
+          }
+        ],
+        "trendsFilter": {
+          "display": "ActionsLineGraph"
+        }
+      }
+    },
+    {
+      "id": 12604434,
+      "name": "06 · 어느 언어를 많이 공부하나요?",
+      "description": "최근 28일 동안 학습한 기기 수입니다. ko-ja는 일본어 학습, ja-ko는 한국어 학습입니다. 양쪽을 공부한 기기는 양쪽에 포함됩니다. 참여가 많은 언어의 수업을 우선 살펴보세요.",
+      "query": {
+        "kind": "TrendsQuery",
+        "dateRange": {
+          "date_from": "-28d"
+        },
+        "properties": [
+          {
+            "key": "client",
+            "type": "event",
+            "value": [
+              "seodang-capacitor"
+            ],
+            "operator": "exact"
+          },
+          {
+            "key": "environment",
+            "type": "event",
+            "value": [
+              "production"
+            ],
+            "operator": "exact"
+          }
+        ],
+        "filterTestAccounts": false,
+        "interval": "day",
+        "series": [
+          {
+            "kind": "EventsNode",
+            "event": "learning_progress",
+            "math": "dau",
+            "custom_name": "학습 진행"
+          }
+        ],
+        "trendsFilter": {
+          "display": "ActionsBarValue"
+        },
+        "breakdownFilter": {
+          "breakdowns": [
+            {
+              "property": "course_direction",
+              "type": "event"
+            }
+          ],
+          "breakdown_limit": 2
+        }
+      }
+    },
+    {
+      "id": 12604435,
+      "name": "07 · 어느 난이도를 공부하나요?",
+      "description": "최근 28일 동안 난이도별로 학습한 기기 수입니다. 1 글자·발음 / 2 짧은 문장 / 3 대화 / 4 독해 / 5 전문 기사. 여러 난이도를 공부하면 중복 포함됩니다. 수가 적다는 이유만으로 어려운 수업이라고 단정하지 마세요.",
+      "query": {
+        "kind": "TrendsQuery",
+        "dateRange": {
+          "date_from": "-28d"
+        },
+        "properties": [
+          {
+            "key": "client",
+            "type": "event",
+            "value": [
+              "seodang-capacitor"
+            ],
+            "operator": "exact"
+          },
+          {
+            "key": "environment",
+            "type": "event",
+            "value": [
+              "production"
+            ],
+            "operator": "exact"
+          }
+        ],
+        "filterTestAccounts": false,
+        "interval": "day",
+        "series": [
+          {
+            "kind": "EventsNode",
+            "event": "learning_progress",
+            "math": "dau",
+            "custom_name": "학습 진행"
+          }
+        ],
+        "trendsFilter": {
+          "display": "ActionsBarValue"
+        },
+        "breakdownFilter": {
+          "breakdowns": [
+            {
+              "property": "level",
+              "type": "event"
+            }
+          ],
+          "breakdown_limit": 5
+        }
+      }
+    },
+    {
+      "id": 12604437,
+      "name": "08 · 데이터가 계속 들어오나요?",
+      "description": "최근 28일의 앱 실행·수업 시작·학습 진행·완료 이벤트 건수입니다. 기기 수가 아닙니다. 모든 선이 함께 끊기면 사용자 감소로 판단하기 전에 배포·동의·네트워크 연결을 확인하세요. 테스트 기록은 제외합니다.",
+      "query": {
+        "kind": "TrendsQuery",
+        "dateRange": {
+          "date_from": "-28d"
+        },
+        "properties": [
+          {
+            "key": "client",
+            "type": "event",
+            "value": [
+              "seodang-capacitor"
+            ],
+            "operator": "exact"
+          },
+          {
+            "key": "environment",
+            "type": "event",
+            "value": [
+              "production"
+            ],
+            "operator": "exact"
+          }
+        ],
+        "filterTestAccounts": false,
+        "interval": "day",
+        "series": [
+          {
+            "kind": "EventsNode",
+            "event": "app_opened",
+            "math": "total",
+            "custom_name": "앱 실행"
+          },
+          {
+            "kind": "EventsNode",
+            "event": "lesson_started",
+            "math": "total",
+            "custom_name": "수업 시작"
+          },
+          {
+            "kind": "EventsNode",
+            "event": "learning_progress",
+            "math": "total",
+            "custom_name": "학습 진행"
+          },
+          {
+            "kind": "EventsNode",
+            "event": "lesson_completed",
+            "math": "total",
+            "custom_name": "수업 완료"
+          }
+        ],
+        "trendsFilter": {
+          "display": "ActionsLineGraph",
+          "showLegend": true
+        }
+      }
+    }
+  ]
+}
