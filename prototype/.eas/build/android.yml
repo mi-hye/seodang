@@ -14,6 +14,7 @@ build:
             sudo apt-get install -y openjdk-21-jdk-headless
           fi
           set-env JAVA_HOME /usr/lib/jvm/java-21-openjdk-amd64
+          set-env GRADLE_OPTS '-Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" -Dorg.gradle.daemon=false'
     - eas/configure_android_version
     - eas/inject_android_credentials
     - eas/run_gradle
