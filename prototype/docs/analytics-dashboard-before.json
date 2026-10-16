@@ -1,0 +1,703 @@
+[
+  {
+    "id": 13221309,
+    "layouts": {
+      "sm": {
+        "h": 3,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    },
+    "text": {
+      "body": "### 데이터 연결 대기 중\n아직 앱 → PostHog 전송은 켜지 않았습니다. 빈 차트와 0은 **실사용 결과가 아닙니다**.\n\n최근 30일 · 한국 시간 · 수집에 동의한 production 설치만 집계합니다. 설치 수는 사람 수와 다르며, 오늘과 아직 관측 기간이 끝나지 않은 재학습 칸은 미완성입니다. 지표는 연결 후 재검증할 잠정 정의입니다.\n\n난이도: starter(1) · kana(2) · words(3) · sentences(4) · advanced(5)."
+    }
+  },
+  {
+    "id": 13221300,
+    "layouts": {
+      "sm": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 3
+      }
+    },
+    "insight": {
+      "id": 12604429,
+      "name": "매일 학습한 설치 수",
+      "description": "[연결 대기·잠정 지표] 하루에 문항을 완료한 설치 수와 수업 전체를 완료한 설치 수. 사람 수가 아니며 두 집합을 합산하지 않습니다.",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "dau",
+              "event": "item_completed",
+              "properties": [],
+              "custom_name": "문항 완료"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "dau",
+              "event": "lesson_completed",
+              "properties": [],
+              "custom_name": "수업 전체 완료"
+            }
+          ],
+          "version": 4,
+          "interval": "day",
+          "dateRange": {
+            "date_from": "-30d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "environment",
+              "type": "event",
+              "value": [
+                "production"
+              ],
+              "operator": "exact"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsLineGraph",
+            "showLegend": true,
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "numeric",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "filterTestAccounts": false
+        }
+      }
+    }
+  },
+  {
+    "id": 13221301,
+    "layouts": {
+      "sm": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 3
+      }
+    },
+    "insight": {
+      "id": 12604430,
+      "name": "수업 준비 → 문항 완료 → 수업 완료",
+      "description": "[연결 대기·잠정 지표] 동일 세션에서 순서대로 도달한 비율(최대 1일). 준비는 자동 계획 생성이며 첫 답안 제출이 아닙니다. 재개만 한 세션은 제외되고 같은 수업 ID를 강제하지 않습니다.",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "FunnelsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "event": "lesson_started",
+              "custom_name": "수업 준비"
+            },
+            {
+              "kind": "EventsNode",
+              "event": "item_completed",
+              "custom_name": "문항 완료"
+            },
+            {
+              "kind": "EventsNode",
+              "event": "lesson_completed",
+              "custom_name": "수업 전체 완료"
+            }
+          ],
+          "version": 2,
+          "dateRange": {
+            "date_from": "-30d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "environment",
+              "type": "event",
+              "value": [
+                "production"
+              ],
+              "operator": "exact"
+            }
+          ],
+          "funnelsFilter": {
+            "layout": "horizontal",
+            "exclusions": [],
+            "showLegend": false,
+            "funnelVizType": "steps",
+            "legendPosition": "bottom",
+            "funnelOrderType": "ordered",
+            "showAnnotations": true,
+            "showValuesOnSeries": false,
+            "funnelStepReference": "total",
+            "funnelWindowInterval": 1,
+            "funnelAggregateByHogQL": "properties.$session_id",
+            "breakdownAttributionType": "first_touch",
+            "funnelWindowIntervalUnit": "day",
+            "hideIncompleteConversionWindowPeriods": false
+          },
+          "filterTestAccounts": false
+        }
+      }
+    }
+  },
+  {
+    "id": 13221302,
+    "layouts": {
+      "sm": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      }
+    },
+    "insight": {
+      "id": 12604431,
+      "name": "다음 날·7일 뒤 다시 학습했나요?",
+      "description": "[연결 대기·잠정 지표] 관측 첫 수업 완료 후 정확히 N일 뒤 다시 수업을 완료한 설치의 비율. Day 1·Day 7을 확인하세요. 한국 날짜 기준이며 아직 관측 기간이 끝나지 않은 칸은 판단하지 않습니다.",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "RetentionQuery",
+          "version": 2,
+          "dateRange": {
+            "date_from": "-30d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "environment",
+              "type": "event",
+              "value": [
+                "production"
+              ],
+              "operator": "exact"
+            }
+          ],
+          "retentionFilter": {
+            "period": "Day",
+            "cumulative": false,
+            "targetEntity": {
+              "id": "lesson_completed",
+              "type": "events"
+            },
+            "retentionType": "retention_first_time",
+            "timeWindowMode": "strict_calendar_dates",
+            "totalIntervals": 8,
+            "aggregationType": "count",
+            "returningEntity": {
+              "id": "lesson_completed",
+              "type": "events"
+            },
+            "retentionReference": "total",
+            "cohortLabelStartIndex": 0,
+            "aggregationPropertyType": "event",
+            "meanRetentionCalculation": "weighted"
+          },
+          "filterTestAccounts": false
+        }
+      }
+    }
+  },
+  {
+    "id": 13221303,
+    "layouts": {
+      "sm": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 14
+      }
+    },
+    "insight": {
+      "id": 12604432,
+      "name": "난이도별 퀴즈 정답률",
+      "description": "[연결 대기·잠정 지표] 정답 제출 / 전체 제출. 재시도 포함, 쓰기 제외. 학습 능력 점수가 아닙니다. 바로 아래 제출 건수와 함께 보세요. 표본이 없으면 해석하지 않습니다.",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "item_answered",
+              "properties": [
+                {
+                  "key": "correct",
+                  "type": "event",
+                  "value": [
+                    "true"
+                  ],
+                  "operator": "exact"
+                }
+              ],
+              "custom_name": "정답"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "item_answered",
+              "properties": [],
+              "custom_name": "전체 제출"
+            }
+          ],
+          "version": 4,
+          "interval": "day",
+          "dateRange": {
+            "date_from": "-30d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "environment",
+              "type": "event",
+              "value": [
+                "production"
+              ],
+              "operator": "exact"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsBarValue",
+            "showLegend": true,
+            "formulaNodes": [
+              {
+                "formula": "A/B",
+                "custom_name": "퀴즈 정답률"
+              }
+            ],
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "percentage_scaled",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "breakdownFilter": {
+            "breakdowns": [
+              {
+                "type": "event",
+                "property": "stage"
+              }
+            ],
+            "breakdown_type": "event",
+            "breakdown_limit": 5
+          },
+          "filterTestAccounts": false
+        }
+      }
+    }
+  },
+  {
+    "id": 13221304,
+    "layouts": {
+      "sm": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 14
+      }
+    },
+    "insight": {
+      "id": 12604433,
+      "name": "난이도별 정답·오답 제출 건수",
+      "description": "[연결 대기·잠정 지표] 정답률의 표본 크기 확인용. 정답과 오답 모두 재시도를 포함하며 쓰기 시도는 포함하지 않습니다.",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "item_answered",
+              "properties": [
+                {
+                  "key": "correct",
+                  "type": "event",
+                  "value": [
+                    "true"
+                  ],
+                  "operator": "exact"
+                }
+              ],
+              "custom_name": "정답"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "item_answered",
+              "properties": [
+                {
+                  "key": "correct",
+                  "type": "event",
+                  "value": [
+                    "false"
+                  ],
+                  "operator": "exact"
+                }
+              ],
+              "custom_name": "오답"
+            }
+          ],
+          "version": 4,
+          "interval": "day",
+          "dateRange": {
+            "date_from": "-30d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "environment",
+              "type": "event",
+              "value": [
+                "production"
+              ],
+              "operator": "exact"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsBarValue",
+            "showLegend": true,
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "numeric",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "breakdownFilter": {
+            "breakdowns": [
+              {
+                "type": "event",
+                "property": "stage"
+              }
+            ],
+            "breakdown_type": "event",
+            "breakdown_limit": 5
+          },
+          "filterTestAccounts": false
+        }
+      }
+    }
+  },
+  {
+    "id": 13221305,
+    "layouts": {
+      "sm": {
+        "h": 5,
+        "w": 12,
+        "x": 0,
+        "y": 19
+      }
+    },
+    "insight": {
+      "id": 12604434,
+      "name": "난이도별 힌트 사용",
+      "description": "[연결 대기·잠정 지표] 힌트를 열어본 설치 수와 총 열기 횟수. 수업·문항 수가 아니며 쓰기 화면은 이 이벤트에 포함되지 않습니다.",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "dau",
+              "event": "hint_opened",
+              "properties": [],
+              "custom_name": "힌트 사용 설치"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "hint_opened",
+              "properties": [],
+              "custom_name": "힌트 열기 횟수"
+            }
+          ],
+          "version": 4,
+          "interval": "day",
+          "dateRange": {
+            "date_from": "-30d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "environment",
+              "type": "event",
+              "value": [
+                "production"
+              ],
+              "operator": "exact"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsTable",
+            "showLegend": true,
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "numeric",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "breakdownFilter": {
+            "breakdowns": [
+              {
+                "type": "event",
+                "property": "stage"
+              }
+            ],
+            "breakdown_type": "event",
+            "breakdown_limit": 5
+          },
+          "filterTestAccounts": false
+        }
+      }
+    }
+  },
+  {
+    "id": 13221306,
+    "layouts": {
+      "sm": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 24
+      }
+    },
+    "insight": {
+      "id": 12604435,
+      "name": "콘텐츠 요청 결과",
+      "description": "[연결 대기·잠정 지표] success 성공 / empty 준비된 콘텐츠 없음 / cancelled 사용자 취소. 나머지는 망·HTTP·서버·스키마·시간 초과 오류입니다. 수집 동의한 앱 요청만 관측합니다.",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "lesson_fetch",
+              "properties": [],
+              "custom_name": "요청 건수"
+            }
+          ],
+          "version": 4,
+          "interval": "day",
+          "dateRange": {
+            "date_from": "-30d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "environment",
+              "type": "event",
+              "value": [
+                "production"
+              ],
+              "operator": "exact"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsBarValue",
+            "showLegend": true,
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "numeric",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "breakdownFilter": {
+            "breakdowns": [
+              {
+                "type": "event",
+                "property": "outcome"
+              }
+            ],
+            "breakdown_type": "event",
+            "breakdown_limit": 8
+          },
+          "filterTestAccounts": false
+        }
+      }
+    }
+  },
+  {
+    "id": 13221308,
+    "layouts": {
+      "sm": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 24
+      }
+    },
+    "insight": {
+      "id": 12604437,
+      "name": "콘텐츠 로딩 오류 비율",
+      "description": "[연결 대기·잠정 지표] 망·HTTP·서버·스키마·시간 초과 오류 / 취소 제외 전체 요청. empty는 분모에만 포함합니다. 동의한 앱에서 본 오류율이며 서버 전체 가용성은 아닙니다. 요청이 없는 날의 0%는 정상 운영이 아니라 미측정입니다.",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "lesson_fetch",
+              "properties": [
+                {
+                  "key": "outcome",
+                  "type": "event",
+                  "value": [
+                    "network_error",
+                    "http_error",
+                    "server_error",
+                    "schema_error",
+                    "timeout"
+                  ],
+                  "operator": "exact"
+                }
+              ],
+              "custom_name": "오류"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "lesson_fetch",
+              "properties": [
+                {
+                  "key": "outcome",
+                  "type": "event",
+                  "value": [
+                    "cancelled"
+                  ],
+                  "operator": "is_not"
+                }
+              ],
+              "custom_name": "취소 제외 요청"
+            }
+          ],
+          "version": 4,
+          "interval": "day",
+          "dateRange": {
+            "date_from": "-30d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "environment",
+              "type": "event",
+              "value": [
+                "production"
+              ],
+              "operator": "exact"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsLineGraph",
+            "showLegend": true,
+            "formulaNodes": [
+              {
+                "formula": "A/B",
+                "custom_name": "로딩 오류 비율"
+              }
+            ],
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "percentage_scaled",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "filterTestAccounts": false
+        }
+      }
+    }
+  }
+]

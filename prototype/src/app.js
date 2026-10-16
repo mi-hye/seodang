@@ -1,3 +1,6 @@
+import {analytics,openAnalytics} from './analytics.js';
+import {learningSnapshot,createLearningTracker} from './analytics-learning.js';
+const learningTracker=createLearningTracker(analytics);
 import {japaneseLessonUI,koreanImmersion,courseGroup,displayLevel,retiredPractice} from './curriculum.js';
 import {lessonTitle} from './lesson-title.js';
 import {developmentMode} from './build-config.js';
@@ -77,8 +80,10 @@ async function loadPractice(kind){
 function pendingPractice(){return practiceModule?.practiceState(state,view);}
 function commit(action) {
   if(['kana-restart','labels-restart','sentence-restart','restart'].includes(action.type)&&pendingPractice()){const entries={...state.practices};delete entries[practiceModule.practiceKey(state,view)];state={...state,practices:entries};}
+  const analyticsBefore=learningSnapshot(state,view);
   const next=reduce(state,action);
   state=practiceModule&&practiceKinds.includes(view)?practiceModule.interceptCompletion(state,next,view,action):next;
+  learningTracker.transition(analyticsBefore,learningSnapshot(state,view),action.type);
   if (!blocked) storageError = save(storage, state);
 }
 function navigate(next) {
@@ -87,6 +92,7 @@ function navigate(next) {
   completedKind=null;
   player.stop();
   view = next;
+  learningTracker.enter(learningSnapshot(state,view));
   toast = "";
   render(true);
   if (next === "korean") speakKorean();
@@ -395,9 +401,11 @@ function closePanel() {
 }
 async function finishPracticeStep(){
  const key=practiceModule.practiceKey(state,view),previous=practiceModule.practiceState(state,view);if(!previous)return;
+ const analyticsBefore=learningSnapshot(state,view);
  player.stop();const progress=advancePractice(previous,practiceRoundCount(key),practiceHasWriting(key)),kind=view;
- if(progress){state={...state,practices:{...state.practices,[key]:progress}};if(!blocked)storageError=save(storage,state);render(true);return;}
+ if(progress){state={...state,practices:{...state.practices,[key]:progress}};learningTracker.transition(analyticsBefore,learningSnapshot(state,view));if(!blocked)storageError=save(storage,state);render(true);return;}
  const practices={...state.practices};delete practices[key];state=reduce({...state,practices},previous.action);
+ learningTracker.transition(analyticsBefore,learningSnapshot(state,view));
  if(!blocked)storageError=save(storage,state);
  completedKind=kind;render(true);
  app.querySelector('.practice-complete h1')?.focus({preventScroll:true});
@@ -433,6 +441,7 @@ async function handle(event) {
   }
   const a = el.dataset.action,
     id = el.dataset.id;
+  if(a==='analytics-consent'){const {askAnalyticsConsent}=await import('./analytics-consent.js');closePanel();await askAnalyticsConsent(state);openAnalytics(state);learningTracker.enter(learningSnapshot(state,view));return;}
   if(a==='audio-downloads'){player.stop();const {openAudioDownloads}=await import('./audio-download-ui.js');await openAudioDownloads(state);return;}
   if(a==='lesson-kanji'){el.disabled=true;player.stop();try{const {openLessonKanji}=await import('./lesson-kanji.js');await openLessonKanji(id,{trigger:el});}catch{toast='한자 학습을 불러오지 못했어요. 다시 눌러 주세요.';render();}finally{if(el.isConnected)el.disabled=false;}return;}
   if(a==='passage-pause'){if(player.state==='paused')void player.resume();else player.pause();return;}
@@ -724,6 +733,7 @@ async function handle(event) {
     if (!(await confirmReset())) return;
     try {
       reset(storage);
+      analytics.setConsent(false);
       state = freshState();
       blocked = false;
       storageError = "";
@@ -819,7 +829,7 @@ panel.addEventListener("change", async (event) => {
 });
 window.addEventListener("pagehide", () => {clearMapCharacter();disposeDevLessonTools?.();disposePractice?.();player.stop();});
 window.addEventListener("pageshow",event=>{if(event.persisted){if(pendingPractice())render();else void mountMapCharacter();}});
-document.addEventListener("visibilitychange", () => { if (document.hidden) player.stop(); });
+document.addEventListener("visibilitychange", () => { if (document.hidden) player.stop(); else openAnalytics(state); });
 window.addEventListener("storage", (e) => {
   if (e.key === STORAGE_KEY) {
     blocked = true;
@@ -842,3 +852,8 @@ else if (enteringCase && view==='sentence') speakSentence();
 else if (enteringCase && view==='play') speakEpisodeAudio();
 
 app.addEventListener('input',event=>{const input=event.target;if(!input.matches('[data-audio-rate]'))return;const rate=Number(input.value);commit({type:'setting',key:'audioRate',value:rate});player.setRate(rate);const output=input.closest('.passage-speed').querySelector('[data-audio-rate-label]');const label=`${rate===1?output.dataset.normalLabel+' ':''}${rate.toFixed(1)}×`;output.textContent=label;input.setAttribute('aria-valuetext',label);});
+
+if(state.onboarded&&!needsKoreanGuide){
+ openAnalytics(state);learningTracker.enter(learningSnapshot(state,view));
+ if(analytics.consent===null&&view==='home'){const {askAnalyticsConsent}=await import('./analytics-consent.js');await askAnalyticsConsent(state);openAnalytics(state);}
+}

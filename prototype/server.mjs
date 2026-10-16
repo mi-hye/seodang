@@ -1,6 +1,7 @@
 import http from "node:http";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+const appVersion=JSON.parse(await readFile(new URL('./app.json',import.meta.url),'utf8')).expo.version;
 const root = path.dirname(new URL(import.meta.url).pathname),
   port = Number(process.env.PORT || 4173);
 http
@@ -15,7 +16,7 @@ http
       );
       if (!file.startsWith(root + path.sep)) throw Error();
       const data = name === '/src/build-config.js'
-        ? 'export const developmentMode = true;\n'
+        ? `export const developmentMode = true;\nexport const appVersion = ${JSON.stringify(appVersion)};\n`
         : await readFile(file);
       res.writeHead(200, {
         "Content-Type":

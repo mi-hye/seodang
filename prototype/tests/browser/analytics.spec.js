@@ -1,0 +1,16 @@
+import {test,expect} from '@playwright/test';
+for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])test(`analytics consent ${direction} ${width}`,async({page})=>{
+ await page.setViewportSize({width,height:844});const errors=[];page.on('pageerror',e=>errors.push(e.message));const sent=[];
+ await page.route('https://us.i.posthog.com/**',async route=>{sent.push(JSON.parse(route.request().postData()));await route.fulfill({status:200,contentType:'application/json',body:'{"status":"Ok"}'});});
+ await page.goto('/analytics-privacy.html');await page.evaluate(async direction=>{const {freshState,reduce}=await import('/src/engine.js');const {save}=await import('/src/storage.js');let s=reduce(freshState(),{type:'course',value:direction});s=reduce(s,{type:'onboard',value:'beginner'});s.onboardingLevel=0;s.koreanGuideSeenVersion=1;s.settings.textScale=1.2;save(localStorage,s);},direction);
+ await page.goto('/playable.html');const dialog=page.locator('.analytics-consent');await expect(dialog).toBeVisible();expect(sent).toHaveLength(0);
+ const boxes=await dialog.locator('[data-consent]').evaluateAll(nodes=>nodes.map(n=>{const r=n.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width};}));expect(Math.abs(boxes[0].y-boxes[1].y)).toBeLessThan(2);expect(boxes[1].x).toBeGreaterThan(boxes[0].x);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await dialog.evaluate(async el=>{await Promise.all(el.getAnimations().map(a=>a.finished));});
+ await page.screenshot({path:`test-results/analytics-${direction}-${width}.png`});
+ await dialog.locator('[data-consent=false]').click();await expect(dialog).toHaveCount(0);await page.reload();await expect(page.locator('.analytics-consent')).toHaveCount(0);expect(sent).toHaveLength(0);
+ await page.locator('[data-action=settings]').first().click();await page.locator('[data-action=analytics-consent]').click();await page.locator('[data-consent=true]').click();await expect.poll(()=>sent.length).toBeGreaterThan(0);
+ const events=sent.flatMap(x=>x.batch);expect(events.map(e=>e.event)).toEqual(['analytics_enabled','app_opened']);expect(events.every(e=>e.properties.environment==='development')).toBe(true);
+ await page.locator('[data-action=settings]').first().click();await page.locator('[data-action=analytics-consent]').click();await expect(page.locator('.analytics-consent')).toContainText('ID:');await page.locator('[data-consent=false]').click();
+ const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('seodang.analytics.v1')));expect(saved.consent).toBe(false);expect(saved.queue).toEqual([]);expect(saved.id).toBeUndefined();expect(errors).toEqual([]);
+});
