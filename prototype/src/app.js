@@ -250,7 +250,7 @@ function basic(){return basicModule.renderBasic(state,top);}
 function speakBasic(){if(pendingPractice()||basicProgress(state,state.basics.active).phase==='intro')return;void player.play(basicModule.basicAudio(state),state.settings.sound,message=>{toast=message;render();});}
 
 function home() {
-  return `${top("서당", false)}<main class="page home">${caseCard()}${renderLearningMap(state)}</main>${tabs()}`;
+  return `${top("서당", false)}<main class="page home">${renderLearningMap(state,{resumeCard:caseCard()})}</main>${tabs()}`;
 }
 function review() {
   if (selectedLevel(state) === 2) return sentenceModule.renderSentenceReview(state,top,tabs);
@@ -316,7 +316,19 @@ function play() {
   return `${top("카페에 남겨진 가방")}<main class="play play-${e.step}">${e.step !== "intro" ? "" : `<div class="play-heading">${audioButton(episode.intro[0].audioId, state.settings.sound, "직원 말 다시 듣기")}</div>`}<div class="progress-heading"><span>${labels[progress()]}</span><ol class="steps" aria-label="사건 진행">${labels.map((l, i) => `<li class="${i <= progress() ? "filled" : ""}" ${i === progress() ? 'aria-current="step"' : ""}><span class="sr-only">${l}</span></li>`).join("")}</ol></div>${body}</main>`;
 }
 let disposeWriting,disposeMatching,completedKind=null;
+let disposeMapCharacter,mapCharacterRequest=0;
+function clearMapCharacter(){mapCharacterRequest++;disposeMapCharacter?.();disposeMapCharacter=null;}
+async function mountMapCharacter(){
+  const host=app.querySelector('.map-mascot');if(!host||host.dataset.pose==='running')return;
+  const request=mapCharacterRequest;
+  try{
+    const {mountOnboardingCharacter}=await import('./onboarding-character.js');
+    if(request!==mapCharacterRequest||!host.isConnected)return;
+    disposeMapCharacter=mountOnboardingCharacter(host,{state:'idle',pose:host.dataset.pose||'standing',reducedMotion:state.settings.motion==='off'});
+  }catch{/* The original pose remains visible if the optional renderer is unavailable. */}
+}
 function render(scroll = false) {
+  clearMapCharacter();
   disposeDevLessonTools?.();disposeDevLessonTools=null;
   disposePractice?.();disposePractice=null;
 
@@ -337,6 +349,7 @@ function render(scroll = false) {
   if(!completedKind&&lessonSession&&practiceKinds.includes(view))app.querySelector('.app-header')?.insertAdjacentHTML('afterend',lessonSession.progressBar(state,view));
   if(!completedKind&&developmentMode&&devLessonTools&&practiceKinds.includes(view))app.querySelector('.lesson-progress, .app-header')?.insertAdjacentHTML('afterend',devLessonTools.renderDevLessonTools(state,view));
   if(lessonSession&&practiceKinds.includes(view))lessonSession.centerLesson(app,state,view,Boolean(completedKind));
+  void mountMapCharacter();
   updatePassagePlayback();
   if(pendingPractice())disposePractice=practiceModule.mountPractice(app,state,view,{play:(entry,onError)=>player.play(entry,true,onError),stop:()=>player.stop(),advance:finishPracticeStep});
   if(!completedKind&&!pendingPractice()&&view==='basic'&&basicProgress(state,state.basics.active).phase==='write')disposePractice=practiceModule.mountPractice(app,basicModule.basicWritingState(state),'basic',{play:(entry,onError)=>player.play(entry,true,onError),stop:()=>player.stop(),advance:()=>{player.stop();commit({type:'basic-next'});if(basicProgress(state,state.basics.active).phase==='done')completedKind='basic';render(true);if(!completedKind&&!pendingPractice())speakBasic();}});
@@ -797,8 +810,8 @@ panel.addEventListener("change", async (event) => {
     render();
   }
 });
-window.addEventListener("pagehide", () => {disposeDevLessonTools?.();disposePractice?.();player.stop();});
-window.addEventListener("pageshow",event=>{if(event.persisted&&pendingPractice())render();});
+window.addEventListener("pagehide", () => {clearMapCharacter();disposeDevLessonTools?.();disposePractice?.();player.stop();});
+window.addEventListener("pageshow",event=>{if(event.persisted){if(pendingPractice())render();else void mountMapCharacter();}});
 document.addEventListener("visibilitychange", () => { if (document.hidden) player.stop(); });
 window.addEventListener("storage", (e) => {
   if (e.key === STORAGE_KEY) {

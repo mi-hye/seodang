@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "reference": "seodang-dog-icon.png",
+  "prompt": "Preserve the original Seodang puppy on a dark plum background, peeking over a large open ivory book. Print exactly あ on the left page and 가 on the right page, large bold dark glyphs readable at small app-icon size. Full-bleed square opaque icon, no flags, badges, extra text, decorations, frame or rounded outer corners.",
+  "exports": {
+    "ios": "1024x1024 opaque PNG",
+    "appleTouch": "180x180 PNG",
+    "favicon": "64x64 PNG"
+  }
+}

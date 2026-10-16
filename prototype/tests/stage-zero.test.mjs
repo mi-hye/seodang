@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {freshState,reduce} from '../src/engine.js';import {load,valid} from '../src/storage.js';
 import {freshKana} from '../src/kana-state.js';import {freshBasic} from '../src/basics-state.js';
 import {koreanLessons,nextKorean} from '../src/korean-state.js';import {renderLearningMap} from '../src/learning-map.js';
-import {guidePages,prepareGuide} from '../src/onboarding-guide.js';
+import {guidePages} from '../src/onboarding-guide.js';
 test('zero and word stages are separate in both directions, zero survives language switching',()=>{
  for(const courseDirection of ['ko-ja','ja-ko']){
   let s={...freshState(),onboarded:true,courseDirection,onboardingLevel:0};assert.ok(valid(s));const letters=renderLearningMap(s),words=renderLearningMap({...s,onboardingLevel:2});
@@ -19,10 +19,9 @@ test('old stage-one saves migrate membership without losing lessons, history or 
   assert.deepEqual(load({getItem:()=>JSON.stringify(restored.state)}).state,restored.state);
  }
 });
-test('each stage has distinct guide copy and activity with valid answer/audio',async()=>{
- for(const direction of ['ko-ja','ja-ko']){
-  const prompts=[],types=[];for(const level of [0,2,4,5,6]){const page=guidePages(level,direction)[0],units=await prepareGuide(level,direction);prompts.push(guidePages(level,direction)[1].title);types.push(page.type);assert.equal(units.demo.choices.length,2);assert.notEqual(units.demo.choices[0],units.demo.choices[1]);if(level===3)assert.ok(units.demo.parts.length>1);}
-  assert.equal(new Set(prompts).size,5);assert.equal(new Set(types).size,5);
+test('the common welcome does not depend on the selected learning stage',()=>{
+ for(const direction of ['ko-ja','ja-ko'])for(const level of [0,2,4,5,7]){
+  assert.deepEqual(guidePages(level,direction),guidePages(0,direction));
  }
 });
 

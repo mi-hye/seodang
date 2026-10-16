@@ -12,14 +12,18 @@
     "ios:open": "cap open ios",
     "ios:sync:start-test": "npm run ios:sync",
     "build:dev": "SEODANG_DEV_MODE=1 node build.mjs",
-    "ios:sync:dev": "npm run build:dev && cap sync ios"
+    "ios:sync:dev": "npm run build:dev && cap sync ios",
+    "build:rive": "node scripts/sync-rive-runtime.mjs && node scripts/build-onboarding-rive.mjs",
+    "android:sync": "npm run build && cap sync android"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.3",
     "@playwright/test": "1.64.0"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.3",
     "@capacitor/core": "^8.5.3",
-    "@capacitor/ios": "^8.5.3"
+    "@capacitor/ios": "^8.5.3",
+    "@rive-app/canvas-lite": "2.44.2"
   }
 }
