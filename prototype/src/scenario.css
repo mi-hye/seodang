@@ -1,3 +1,4 @@
+@import './case-lesson.css';
 @import './speaking.css';
 @import './token-builder.css';
 .scenario-page{min-height:calc(100svh - 110px - env(safe-area-inset-top) - env(safe-area-inset-bottom));display:flex;flex-direction:column;justify-content:center;gap:16px;padding-top:16px;padding-bottom:24px;word-break:keep-all;overflow-wrap:anywhere}

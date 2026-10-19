@@ -1,3 +1,4 @@
+import {caseLesson} from './case-lesson.js';
 import {renderKoreanSpeaking} from './korean-speaking.js';
 export {mountKoreanSpeaking} from './korean-speaking.js';
 import {feedbackText} from './feedback-text.js';
@@ -18,12 +19,20 @@ export function koreanIntroAudio(s){
  if(!l||![2,4].includes(l.level)||l.retired||koreanProgress(s,id).phase!=='scenario')return [];
  return koreanContent[id].map((_,index)=>koreanAudio({...s,korean:{...s.korean,lessons:{...s.korean.lessons,[id]:{...koreanProgress(s,id),index}}}}));
 }
+function renderCafeCue(cue){
+ if(!cue)return '';
+ const parts=cue.match(/^(.*?)(（[^）]+）)$/u);
+ if(!parts)return `<p>${esc(cue)}</p>`;
+ return `<p class="case-lesson-cue"><span lang="ko">${esc(parts[1])}</span><span lang="ja">${esc(parts[2])}</span></p>`;
+}
 export function renderKorean(s,top){
  if(koreanProgress(s,s.korean.active).phase==='speak')return renderKoreanSpeaking(top,koreanContent[s.korean.active][koreanProgress(s,s.korean.active).index].text);
  if(koreanProgress(s,s.korean.active).phase==='scenario'&&koreanCases[s.korean.active])return renderKoreanCase(s,top);
  if(koreanLessons.find(l=>l.id===s.korean.active)?.level===0)return renderKoreanLetters(s,top);
  const id=s.korean.active,l=koreanLessons.find(l=>l.id===id),p=koreanProgress(s,id),item=koreanContent[id][p.index],learn=p.phase==='learn',reading=l.level>=5,audioOnly=false;
+ if(id==='4-1'&&learn)return `${top(l.title)}${caseLesson({index:p.index,count:l.count,image:'assets/cafe-dusk-v2.jpg',content:`${renderCafeCue(item.cue)}<div class="audio-text-row"><p lang="ko">${phraseText(item.text)}</p>${button(icon('sound'),'korean-audio','icon-button','aria-label="もう一度聞く"')}</div>`,meaning:item.meaning,words:(koreanCases[id]?.words[p.index]||[]).filter(([word])=>item.text.includes(word)),lang:'ko',japanese:true,actions:button('戻る','korean-previous','secondary')+button('場面で使う','korean-next')})}`;
  const options=[...item.others];options.splice(p.index%3,0,item.answer||item.text);
+ if(id==='4-1'&&!learn)return `${top(l.title)}${caseLesson({index:p.index,count:l.count,image:'assets/cafe-dusk-v2.jpg',content:`<div class="audio-text-row"><h1>${esc(koreanCaseQuestions[id]?.[p.index]||item.meaning)}</h1>${button(icon('sound'),'korean-audio','icon-button','aria-label="もう一度聞く"')}</div>`,lang:'ko',japanese:true,extra:`<div class="case-lesson-choices">${options.map((o,i)=>button(phraseText(o),'korean-select',`secondary${p.selected===i?' selected':''}`,`data-id="${i}" lang="ko" aria-pressed="${p.selected===i}"`)).join('')}</div>${p.retry?`<p role="status">${feedbackText(item.wrongFeedback?.[options[p.selected]]||item.explanation||'もう一度選んでください。')}</p>`:''}`,actions:button('戻る','korean-previous','secondary')+button('確認','korean-check','primary',p.selected===null?'disabled':'')})}`;
  const trace=learn&&l.level===0;
  const practice=Boolean(l.practice),single=koreanQuizOnly(l);
  const selected=p.selected===null?null:options[p.selected];

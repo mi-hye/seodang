@@ -1,3 +1,4 @@
+@import url('./word-memory.css');
 @import url("./token-builder.css");
 .practice-page{padding-bottom:28px}.practice-page h1{font-size:calc(24px * var(--text-scale));line-height:1.5}.practice-target{font-size:calc(32px * var(--text-scale));line-height:1.8;margin:28px 0;word-break:keep-all;overflow-wrap:anywhere}.practice-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:28px}.practice-choices button{display:block;width:100%;min-width:0;min-height:100px;margin:0;padding:16px 10px;text-align:center;white-space:normal;line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}.practice-choices [aria-pressed=true]{border-color:var(--amber);background:var(--selected)}.practice-feedback{min-height:26px;line-height:1.6;color:var(--amber-light);margin:18px 0}.practice-board{position:relative;height:230px;background:var(--stage-raised);border:1px solid var(--line);border-radius:16px;margin:16px 0}.practice-board canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}.practice-guide{position:absolute;inset:16px;font-size:28px;line-height:1.8;color:var(--line);word-break:keep-all;overflow-wrap:anywhere;pointer-events:none}.practice-answer{font-size:24px;line-height:1.7;margin-top:20px;word-break:keep-all;overflow-wrap:anywhere}.practice-page>.button-pair{margin-top:20px}.practice-page .text-button{margin-top:16px}html[lang=ja] .practice-page{word-break:normal;line-break:strict}.practice-page [lang=ja]{word-break:normal;line-break:strict}
 
@@ -118,3 +119,8 @@ html[data-motion=off] .practice-fireworks>i{animation:none}
 .practice-feedback{word-break:normal;line-break:strict;overflow-wrap:anywhere}
 .practice-feedback .feedback-phrase{display:inline;word-break:keep-all}
 .practice-feedback .feedback-phrase-short{white-space:nowrap}
+
+/* Separate vocabulary from the example; optional explanations start collapsed. */
+.case-words,.scenario-words{border-top:1px solid var(--line);padding-top:16px}
+.lesson-explanation .word-memory-body p{white-space:pre-line}
+html[lang=ja] .lesson-explanation .word-memory-body p{word-break:normal;line-break:strict}

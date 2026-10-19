@@ -15,7 +15,9 @@
 .library-theme .calendar-day[aria-pressed=true]{border-color:var(--amber)}
 .library-theme .calendar-day.has-activity:after{background:var(--amber)}
 
-.home-card-heading{display:flex;flex-direction:column;align-items:flex-start;gap:9px;margin-bottom:20px}
+.home-card-heading{display:flex;flex-flow:row nowrap;align-items:baseline;gap:8px;min-width:0;margin-bottom:20px}
+.home-card-heading>.home-position{flex:none;white-space:nowrap}
+.library-theme .home-card-heading>h2{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .home-position{display:block;max-width:100%;color:var(--muted);font-size:calc(12px * var(--text-scale));font-weight:500;line-height:1.5;word-break:keep-all;overflow-wrap:anywhere}
 
 html[lang=ja] .map-title,html[lang=ja] .setting{word-break:normal;line-break:strict}

@@ -10,7 +10,7 @@ for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])for(const 
  await page.goto('/playable.html');
  const entry=page.locator(`[data-action="scenario"][data-id="${lesson.id}"]`);await entry.first().click();
  const click=async a=>page.locator(`[data-action="${a}"]`).click();
- const check=async()=>{if(['2','3'].includes(lesson.id)&&!await page.locator('.practice-complete').count()){const image=page.locator('.scenario-image');await expect(image).toBeVisible();expect(await image.evaluate(el=>el.complete&&el.naturalWidth>0)).toBe(true);const gap=await page.evaluate(()=>{const img=document.querySelector('.scenario-image').getBoundingClientRect(),progress=document.querySelector('.scenario-progress').getBoundingClientRect();return img.top-progress.bottom;});expect(gap).toBeLessThan(60);}expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);const pair=page.locator('.scenario-page .button-pair');if(await pair.count()){const b=await pair.locator('button').evaluateAll(xs=>xs.map(x=>x.getBoundingClientRect().top));expect(Math.abs(b[0]-b[1])).toBeLessThan(2);}};
+ const check=async()=>{if(['2','3'].includes(lesson.id)&&!await page.locator('.practice-complete').count()){const image=page.locator('.scenario-image, .case-lesson-image');await expect(image).toBeVisible();expect(await image.evaluate(el=>el.complete&&el.naturalWidth>0)).toBe(true);const gap=await page.evaluate(()=>{const img=document.querySelector('.scenario-image, .case-lesson-image').getBoundingClientRect(),progress=document.querySelector('.lesson-progress, .scenario-progress').getBoundingClientRect();return img.top-progress.bottom;});expect(gap).toBeLessThan(60);}expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);const pair=page.locator('.scenario-page .button-pair, .case-lesson .button-pair');if(await pair.count()){const b=await pair.locator('button').evaluateAll(xs=>xs.map(x=>x.getBoundingClientRect().top));expect(Math.abs(b[0]-b[1])).toBeLessThan(2);}};
  await expect(page.locator('.scenario-page h1')).toContainText(lesson.titles[direction==='ja-ko'?1:0]);await check();await click('scenario-next');
  for(let i=0;i<3;i++){
   await expect(page.locator('.scenario-text')).toBeVisible();await check();
@@ -20,11 +20,11 @@ for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])for(const 
    const boxes=await spans.evaluateAll(xs=>xs.map(x=>({text:x.textContent,top:x.getBoundingClientRect().top,bottom:x.getBoundingClientRect().bottom})));
    expect(boxes[0].top).toBeLessThanOrEqual(boxes[1].top+1);
    expect(boxes[2].top).toBeGreaterThanOrEqual(boxes[1].bottom-1);
-   await expect(page.locator('.scenario-page')).toContainText('お名前（おなまえ·오나마에）');
+   await expect(page.locator('.case-lesson')).toContainText('お名前（おなまえ·오나마에）');
   }
 
   const pos=await page.locator('.audio-text-row').evaluate(el=>{const text=el.querySelector('.scenario-text').getBoundingClientRect(),button=el.querySelector('[data-action="scenario-audio"]').getBoundingClientRect();return button.x>=text.right-1;});expect(pos).toBe(true);
-  if(i===1){await click('home');await page.locator(`[data-action="scenario"][data-id="${lesson.id}"]`).first().click();await expect(page.locator('.scenario-count')).toHaveText('2 / 3');}
+  if(i===1){await click('home');await page.locator(`[data-action="scenario"][data-id="${lesson.id}"]`).first().click();await expect(page.locator('.scenario-count, .case-lesson-count')).toHaveText('2 / 3');}
   if(lesson.id==='5'&&direction==='ja-ko')expect(await page.locator('.scenario-page').getAttribute('lang')).toBe('ko');
   await click('scenario-next');await check();
   if(lesson.id==='2'){for(const n of [2,1,0])await page.locator(`.token-builder-choices [data-id="${n}"]`).click();}
