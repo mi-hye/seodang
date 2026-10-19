@@ -1,10 +1,10 @@
 import {displayLevel} from './curriculum.js';
 // Pure snapshots keep analytics independent of large lesson/content modules.
 export function learningSnapshot(s,kind){
- if(!['kana','basic','korean','sentence','reading','dialogue','labels','listening','play'].includes(kind))return null;
- const id=kind==='basic'?s.basics?.active:kind==='korean'?s.korean?.active:kind==='kana'?s.kana?.active:kind==='reading'?s.onboardingLevel:kind==='sentence'?(s.sentenceActive??0):0;
+ if(!['scenario','kana','basic','korean','sentence','reading','dialogue','labels','listening','play'].includes(kind))return null;
+ const id=kind==='scenario'?s.scenarioActive:kind==='basic'?s.basics?.active:kind==='korean'?s.korean?.active:kind==='kana'?s.kana?.active:kind==='reading'?s.onboardingLevel:kind==='sentence'?(s.sentenceActive??0):0;
  const key=`${s.courseDirection}:${kind}:${id}`;
- const p=kind==='basic'?s.basics?.lessons?.[id]:kind==='korean'?s.korean?.lessons?.[id]:kind==='kana'?s.kana?.lessons?.[id]:kind==='reading'?s.readings?.[id]:kind==='sentence'?(id?s.sentenceLessons?.[id]:s.sentence):s[kind==='play'?'episode':kind];
+ const p=kind==='scenario'?s.scenarios?.[key]:kind==='basic'?s.basics?.lessons?.[id]:kind==='korean'?s.korean?.lessons?.[id]:kind==='kana'?s.kana?.lessons?.[id]:kind==='reading'?s.readings?.[id]:kind==='sentence'?(id?s.sentenceLessons?.[id]:s.sentence):s[kind==='play'?'episode':kind];
  if(!p)return null;
  const practice=s.practices?.[key],phase=practice?'practice':p.phase||p.step||(kind==='listening'?'listen':undefined);
  return {lesson_id:key,course_direction:s.courseDirection,level:displayLevel(s.onboardingLevel??0),phase,item_index:practice?practice.index:p.index??p.lesson??0,round_index:practice?.round??0,mode_index:practice?.mode??0,match_count:p.matches?.length??0,_selected:p.selected!==null&&p.selected!==undefined,_attempts:(p.attempts??0)+(p.transferAttempts??0),_retry:Boolean(p.retry||p.feedback),_checked:Boolean(p.checked||p.answered),_tiles:p.tiles?.filter(x=>x!==null).length??0,done:!practice&&(['done','summary'].includes(phase)||(kind==='listening'&&p.index===4)),position:JSON.stringify(practice?[practice.round,practice.mode,practice.index]:[phase,p.index??p.lesson??0,p.solved?.length??p.matches?.length??0]),practice:Boolean(practice)};

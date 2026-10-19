@@ -5,6 +5,7 @@ export const koreanLessons=[
  {id:'1-11',retired:true,level:2,title:'身近な単語',count:6},
  {id:'2-1',retired:true,level:2,title:'お店で使う言葉',count:6},{id:'3-1',level:2,title:'交流会で自己紹介する',count:6},{id:'3-4',level:2,title:'カフェでかばんを探す',count:3},{id:'3-2',level:2,title:'コンビニで買い物する',count:3},{id:'3-3',level:2,title:'駅で友達と会う',count:3},{id:'4-1',level:4,title:'カフェで注文する',count:6},{id:'5-1',level:5,title:'案内と意見を読む',count:3},{id:'6-1',level:5,title:'条件と理由を読み解く',count:3},{id:'7-1',level:7,title:'전문 논설 읽기',count:3}
 ];
+export const koreanHasSpeaking=id=>koreanLessons.some(l=>l.id===id&&l.level===2&&!l.retired);
 export const koreanStageZero=id=>koreanLessons.some(l=>l.id===id&&l.level===0);
 export const koreanExplanation=id=>koreanLessons.some(l=>l.id===id&&l.level===0&&!l.practice);
 export const koreanGroups={'1-1':[3,3,4],'1-2':[3,3,4],'1-3':[5,5,4],'1-4':[5,5,4],'1-5':[5],'1-6':[5],'1-7':[4,4,3],'1-8':[4,4,3],'1-9':[3,3],'1-10':[3,3]};
@@ -14,7 +15,7 @@ export const freshKoreanProgress=id=>({index:0,phase:koreanExplanation(id)?'intr
 export const koreanProgress=(s,id)=>s.korean?.lessons?.[id]||freshKoreanProgress(id);
 export const koreanUnlocked=(s,id)=>koreanLessons.some(l=>l.id===id);
 export function nextKorean(s){const lessons=koreanLessons.filter(l=>!l.retired&&l.level===courseGroup(s.onboardingLevel??0));return lessons.find(l=>l.id===s.korean?.active&&koreanUnlocked(s,l.id)&&!koreanProgress(s,l.id).completed)||lessons.find(l=>koreanUnlocked(s,l.id)&&!koreanProgress(s,l.id).completed)||lessons.at(-1);}
-export function validKorean(k){return k===undefined||Boolean([1,2,3,4].includes(k?.version)&&koreanLessons.some(l=>l.id===k.active)&&k.lessons&&typeof k.lessons==='object'&&!Array.isArray(k.lessons)&&Object.entries(k.lessons).every(([id,p])=>{const l=koreanLessons.find(l=>l.id===id);return l&&p&&Number.isInteger(p.index)&&p.index>=0&&p.index<(k.version===1&&l.level===0?[6,4,7,7,5,11,6,6,6,4][Number(id.split('-')[1])-1]:l.count)&&(k.version===4&&l.level===0?(l.practice?['learn','write','quiz','done']:['intro','learn','done']):k.version===3&&l.level===0?['intro','learn','write','quiz','done']:[...(koreanCase(id)?['scenario']:[]),'learn','quiz','done']).includes(p.phase)&&(k.version>=3&&l.level===0?[null,0,1,2,3]:[null,0,1,2]).includes(p.selected)&&['retry','started','completed'].every(f=>typeof p[f]==='boolean')&&(p.phase!=='done'||p.completed);})&&(!k.history||(k.history.version===1&&/^\d{4}-\d{2}-\d{2}$/.test(k.history.startedOn)&&k.history.days&&typeof k.history.days==='object'&&!Array.isArray(k.history.days)&&Object.entries(k.history.days).every(([day,p])=>/^\d{4}-\d{2}-\d{2}$/.test(day)&&['letters','expressions','sentences','cases'].every(f=>Number.isSafeInteger(p[f])&&p[f]>=0)))));}
+export function validKorean(k){return k===undefined||Boolean([1,2,3,4].includes(k?.version)&&koreanLessons.some(l=>l.id===k.active)&&k.lessons&&typeof k.lessons==='object'&&!Array.isArray(k.lessons)&&Object.entries(k.lessons).every(([id,p])=>{const l=koreanLessons.find(l=>l.id===id);return l&&p&&Number.isInteger(p.index)&&p.index>=0&&p.index<(k.version===1&&l.level===0?[6,4,7,7,5,11,6,6,6,4][Number(id.split('-')[1])-1]:l.count)&&(k.version===4&&l.level===0?(l.practice?['learn','write','quiz','done']:['intro','learn','done']):k.version===3&&l.level===0?['intro','learn','write','quiz','done']:[...(koreanCase(id)?['scenario']:[]),'learn','quiz','done',...(koreanHasSpeaking(id)?['speak']:[])]).includes(p.phase)&&(k.version>=3&&l.level===0?[null,0,1,2,3]:[null,0,1,2]).includes(p.selected)&&['retry','started','completed'].every(f=>typeof p[f]==='boolean')&&(p.phase!=='done'||p.completed);})&&(!k.history||(k.history.version===1&&/^\d{4}-\d{2}-\d{2}$/.test(k.history.startedOn)&&k.history.days&&typeof k.history.days==='object'&&!Array.isArray(k.history.days)&&Object.entries(k.history.days).every(([day,p])=>/^\d{4}-\d{2}-\d{2}$/.test(day)&&['letters','expressions','sentences','cases'].every(f=>Number.isSafeInteger(p[f])&&p[f]>=0)))));}
 export function normalizeKorean(k){
  if(!k||k.version===4)return k;
  const next=structuredClone(k);
@@ -41,14 +42,16 @@ export function reduceKorean(s,a,now=new Date()){
  if(a.type==='korean-next'&&['learn','write'].includes(p.phase)){p.phase=l.level===0&&p.phase==='learn'?'write':'quiz';p.selected=null;p.retry=false;}
  if(a.type==='korean-previous'){
   if(l.level===0){if(p.phase==='quiz')p.phase='write';else if(p.phase==='write')p.phase='learn';else if(p.phase==='learn'&&koreanExplanation(id)&&p.index===koreanGroup(id,p.index).start)p.phase='intro';else if(p.index>0){p.index--;p.phase='learn';}}
-  else if(p.phase==='learn'&&p.index===0&&koreanCase(id)){p.phase='scenario';}else if(p.phase==='quiz'&&!koreanQuizOnly(l))p.phase='learn';else if(p.index>0){p.index--;p.phase=koreanQuizOnly(l)?'quiz':'learn';}
+  else if(p.phase==='learn'&&p.index===0&&koreanCase(id)){p.phase='scenario';}else if(p.phase==='speak')p.phase='quiz';else if(p.phase==='quiz'&&!koreanQuizOnly(l))p.phase='learn';else if(p.index>0){p.index--;p.phase=koreanQuizOnly(l)?'quiz':'learn';}
   p.selected=null;p.retry=false;
  }
  if(a.type==='korean-select'&&p.phase==='quiz'&&(l.level===0?[0,1,2,3]:[0,1,2]).includes(Number(a.id))){p.selected=l.practice&&p.selected===Number(a.id)?null:Number(a.id);p.retry=false;}
  if(a.type==='korean-check'&&p.phase==='quiz'&&p.selected!==null){
   if(p.selected!==p.index%(l.level===0?4:3)){p.retry=true;return k;}
+  if(koreanHasSpeaking(id)){p.phase='speak';p.selected=null;p.retry=false;return k;}
   finishItem(k,l,p,now);
  }
+ if(a.type==='korean-speak-next'&&koreanHasSpeaking(id)&&p.phase==='speak')finishItem(k,l,p,now);
  return k;
 }
 

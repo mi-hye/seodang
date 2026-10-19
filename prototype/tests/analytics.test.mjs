@@ -90,7 +90,7 @@ test('final checked answer uses reducer result before practice interception; com
  const {prepareContent,interceptCompletion}=await import('../src/practice-content.js');await prepareContent('sentence');
  const events=[];const t=createLearningTracker({capture:(e,p)=>events.push([e,p])},()=> '00000000-0000-4000-8000-000000000001',()=>0);
  let s=reduce(freshState(),{type:'sentence-start',id:3});s.sentenceLessons[3]={...s.sentenceLessons[3],phase:'arrange',index:5,selected:'2'};
- const before=learningSnapshot(s,'sentence');t.enter(before);const action={type:'sentence-check'},judged=reduce(s,action),after=interceptCompletion(s,judged,'sentence',action);
+ const before=learningSnapshot(s,'sentence');t.enter(before);const action={type:'sentence-check'},judged=reduce(s,action);const speakingAction={type:'sentence-speak-next'},after=interceptCompletion(judged,reduce(judged,speakingAction),'sentence',speakingAction);
  t.transition(before,learningSnapshot(after,'sentence'),action.type,learningSnapshot(judged,'sentence'));
  assert.equal(events.find(e=>e[0]==='answer_checked')[1].correct,true);assert.equal(events.some(e=>e[0]==='lesson_completed'),false);
  assert.equal(learningSnapshot({...after,practices:{...after.practices,'ko-ja:sentence:3':{...after.practices['ko-ja:sentence:3'],index:2}}},'sentence').item_index,2);

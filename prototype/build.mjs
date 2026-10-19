@@ -16,6 +16,7 @@ for (const name of ["01_start_hanok.png"])
   await cp(`references/${name}`, `dist/references/${name}`);
 const initial = [
   "app.js",
+  "scenario-state.js",
   "analytics.js",
   "analytics-core.js",
   "analytics-learning.js",

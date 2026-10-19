@@ -1,8 +1,8 @@
 """Regenerate selected voices, resumably, into output/final-voices (never overwrite source audio)."""
 from pathlib import Path
 import argparse, json, hashlib, subprocess, wave, re
-p=argparse.ArgumentParser();p.add_argument('language',choices=['ja','ko']);args=p.parse_args()
-root=Path(__file__).resolve().parents[1];out=root/'output/final-voices';out.mkdir(parents=True,exist_ok=True)
+p=argparse.ArgumentParser();p.add_argument('language',choices=['ja','ko']);p.add_argument('--output',type=Path);p.add_argument('--segment',action='store_true');args=p.parse_args()
+root=Path(__file__).resolve().parents[1];out=args.output.resolve() if args.output else root/'output/final-voices';out.mkdir(parents=True,exist_ok=True)
 jobs=[j for j in json.loads((out/'jobs.json').read_text()) if j['locale'].startswith(args.language)]
 if args.language=='ja':
  from voicevox_core.blocking import Onnxruntime,OpenJtalk,Synthesizer,VoiceModelFile
@@ -30,6 +30,7 @@ for n,j in enumerate(jobs):
    moras[0].vowel_length=.30
  short_korean=args.language=='ko' and j['text'].strip() in ['하','까','따','짜','왜']
  revision='supertonic3M1-ot-stretch-v3' if args.language=='ko' and j['text']=='옷' else 'nemo10001-character300ms-v3' if isolated_kana else 'supertonic3M1-short-syllable-v2' if short_korean else 'nemo10001-supertonic3M1-v1'
+ if args.segment:revision+='-sentence-segments-v1'
  identity=hashlib.sha256((j['locale']+'|'+j['text']+'|'+revision).encode()).hexdigest()
  wav=out/(identity+'.wav');m4a=out/(identity+'.m4a')
  if not wav.exists():
@@ -39,8 +40,15 @@ for n,j in enumerate(jobs):
    tmp.write_bytes(synth.synthesis(q,10001))
   else:
    np.random.seed(42)
-   audio,_=synth.synthesize(j['text'],voice_style=style,lang='ko',speed=.75 if short_korean else 1.,total_steps=12)
-   data=np.asarray(audio).reshape(-1)
+   parts=re.findall(r'[^.!?。！？]+[.!?。！？]*',j['text']) if args.segment else [j['text']]
+   assert ''.join(parts)==j['text']
+   waves=[]
+   for part in parts:
+    audio,_=synth.synthesize(part,voice_style=style,lang='ko',speed=.75 if short_korean else 1.,total_steps=12)
+    wave_data=np.asarray(audio).reshape(-1)
+    assert np.isfinite(wave_data).all() and np.max(np.abs(wave_data))>.005
+    waves.extend([wave_data,np.zeros(int(synth.sample_rate*.18))])
+   data=np.concatenate(waves[:-1])
    assert np.isfinite(data).all() and np.max(np.abs(data))>.005, j
    if j['text']=='옷':
     # The preset produces a ~140 ms isolated closed syllable even at its minimum

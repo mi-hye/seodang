@@ -14,8 +14,8 @@ test('published packs cover every lesson practice clip and use verified immutabl
  }
  for(const [key,pack]of Object.entries(catalog.packs)){
   const [courseDirection,kind,id]=key.split(':');await prepareContent(kind);
-  const s={...freshState(),courseDirection,onboardingLevel:pack.level,sentenceActive:Number(id),basics:{active:Number(id)},kana:{active:Number(id)},korean:{active:id}};
-  for(const unit of practiceUnits(s,kind))assert.ok(pack.files.includes(unit.audio.audioFile),`${key}: ${unit.audio.audioFile}`);
+  const s={...freshState(),courseDirection,onboardingLevel:pack.level,scenarioActive:id,sentenceActive:Number(id),basics:{active:Number(id)},kana:{active:Number(id)},korean:{active:id}};
+  for(const unit of practiceUnits(s,kind)){assert.ok(pack.files.includes(unit.audio.audioFile),`${key}: ${unit.audio.audioFile}`);if(kind==='scenario')assert.equal(catalog.files[unit.audio.audioFile].text,unit.audio.text);}
   for(const file of pack.files)assert.ok(catalog.files[file],`${key}: ${file}`);
  }
 });

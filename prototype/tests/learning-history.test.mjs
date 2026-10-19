@@ -18,7 +18,7 @@ test('calendar tracks actual learned steps across levels and dates, never views 
  s=reduce(s,{type:'next'},now);assert.equal(s.history.days['2026-10-13'].expressions,1);
  s.kana=freshKana();s=reduce(s,{type:'kana-start'},now);s=reduce(s,{type:'kana-next'},now);s=reduce(s,{type:'kana-help'},now);s=reduce(s,{type:'kana-next'},now);assert.equal(s.history.days['2026-10-13'].letters,1);
  s.sentence={...freshSentence(),started:true,phase:'arrange',checked:false};s=reduce(s,{type:'sentence-next'},now);assert.equal(s.history.days['2026-10-13'].sentences,0);
- s.sentence.checked=true;s=reduce(s,{type:'sentence-next'},new Date(2026,9,14,0,1));assert.equal(s.history.days['2026-10-14'].sentences,1);assert.equal(valid(s),true);
+ s.sentence.checked=true;s=reduce(s,{type:'sentence-next'},new Date(2026,9,14,0,1));assert.equal(s.sentence.phase,'speak');s=reduce(s,{type:'sentence-speak-next'},new Date(2026,9,14,0,1));assert.equal(s.history.days['2026-10-14'].sentences,1);assert.equal(valid(s),true);
  assert.equal(activityMonth(s.history,now).activeDays,2);
 });
 test('completion is counted once; invalid history does not overwrite saved data',()=>{

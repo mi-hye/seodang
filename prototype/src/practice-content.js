@@ -12,16 +12,17 @@ const koreanSyllableMeaning=Object.fromEntries([
 const entry=(text,file,locale='ja-JP')=>({text,locale,status:'ready',audioFile:file});
 export async function prepareContent(kind){
  if(loaded[kind])return;
- const paths={basic:'./basics.js',korean:'./korean-content.js',kana:'./kana-audio.js',labels:'./labels-state.js',listening:'./labels-state.js',play:'./content.js',sentence:'./sentence-content.js',dialogue:'./dialogue-content.js',reading:'./practice-reading.js'};
+ const paths={scenario:'./scenario-content.js',basic:'./basics.js',korean:'./korean-content.js',kana:'./kana-audio.js',labels:'./labels-state.js',listening:'./labels-state.js',play:'./content.js',sentence:'./sentence-content.js',dialogue:'./dialogue-content.js',reading:'./practice-reading.js'};
  loaded[kind]=await import(paths[kind]);
  if(['sentence','dialogue','reading','korean'].includes(kind))loaded.caseExercises ||= await import('./case-exercises.js');
  if(kind==='reading'){const source=await import('./reading-content.js'),{advancedCourse}=await import('./reading-advanced.js');loaded.readingSource={readingCourses:{...source.readingCourses,7:advancedCourse}};}
  if(kind==='kana')loaded.kanaState=await import('./kana-state.js');
 }
-export function practiceKey(s,kind){const id=kind==='basic'?s.basics?.active:kind==='korean'?s.korean?.active:kind==='kana'?s.kana?.active:kind==='reading'?s.onboardingLevel:kind==='sentence'?sentenceId(s):0;return `${s.courseDirection}:${kind}:${id}`;}
+export function practiceKey(s,kind){const id=kind==='scenario'?s.scenarioActive:kind==='basic'?s.basics?.active:kind==='korean'?s.korean?.active:kind==='kana'?s.kana?.active:kind==='reading'?s.onboardingLevel:kind==='sentence'?sentenceId(s):0;return `${s.courseDirection}:${kind}:${id}`;}
 export const caseTasks=(s,kind)=>isCasePractice(practiceKey(s,kind))?loaded.caseExercises?.caseExercises(s,kind,kind==='reading'?loaded.readingSource:loaded[kind]):null;
 export function practiceUnits(s,kind){
  const mod=loaded[kind];if(!mod)return[];
+ if(kind==='scenario')return (mod.scenarioContent[s.courseDirection][s.scenarioActive]?.items||[]).map((x,i)=>({text:x.text,meaning:x.meaning,audio:mod.scenarioAudio(s.courseDirection,s.scenarioActive,i)}));
  if(kind==='basic')return mod.basicContent[s.basics.active].map(([text,meaning],index)=>({text,meaning,audio:mod.basicAudio({basics:{active:s.basics.active,lessons:{[s.basics.active]:{index}}}})})).filter(unit=>s.basics.active!==10||unit.text.length>2);
  if(kind==='korean')return mod.koreanContent[s.korean.active].map((item,index)=>({text:item.answer&&Number(s.onboardingLevel)>=5?item.answer:item.text,meaning:item.meaning||koreanSyllableMeaning[item.text]||item.question,audio:entry(Number(s.onboardingLevel)>=5?item.answer:(item.spoken||item.text),`assets/audio/${['3-2','3-3','3-4'].includes(s.korean.active)?'level-two':Number(s.onboardingLevel)>=5?'practice':'korean'}/korean.${s.korean.active}.${index}.wav`,'ko-KR')}));
  if(kind==='kana')return loaded.kanaState.kanaLessons[s.kana.active].letters.map(letter=>({text:letter.text,meaning:letter.reading,audio:mod.kanaLetterAudio(letter)}));
@@ -33,7 +34,7 @@ export function practiceUnits(s,kind){
 }
 export function completionAttempt(before,after,kind,action){
  if(kind==='basic')return ['basic-check','basic-next'].includes(action.type)&&before.basics?.lessons[before.basics.active]?.phase!=='done'&&after.basics?.lessons[before.basics.active]?.phase==='done';
- if(kind==='korean')return action.type==='korean-check'&&before.korean?.lessons[before.korean.active]?.phase!=='done'&&after.korean?.lessons[before.korean.active]?.phase==='done';
+ if(kind==='korean')return ['korean-check','korean-speak-next'].includes(action.type)&&before.korean?.lessons[before.korean.active]?.phase!=='done'&&after.korean?.lessons[before.korean.active]?.phase==='done';
  if(kind==='kana')return action.type==='kana-next'&&before.kana?.lessons[before.kana.active]?.phase!=='summary'&&after.kana?.lessons[before.kana.active]?.phase==='summary';
  if(kind==='labels')return before.labels?.phase!=='summary'&&after.labels?.phase==='summary';
  if(kind==='listening')return before.listening?.index<4&&after.listening?.index===4;

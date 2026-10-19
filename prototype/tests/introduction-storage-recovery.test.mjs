@@ -7,8 +7,8 @@ test('known iPhone dev-navigation record is recovered with original backup and p
  assert.equal(result.blocked,false);assert.ok(valid(result.state));assert.equal(result.state.onboarded,true);
  assert.ok(valid(JSON.parse(storage.getItem(STORAGE_KEY))));assert.equal(storage.getItem(STORAGE_KEY+'.backup.introduction-v2'),raw);
  assert.deepEqual(result.state.episode,original.episode);assert.equal(result.state.practices['ko-ja:sentence:3'].index,1);
- assert.equal(result.state.practices['ko-ja:sentence:3'].action.type,'sentence-check');
- const completed=reduce(result.state,{type:'sentence-check'});assert.equal(sentenceProgress(completed).phase,'summary');
+ assert.equal(result.state.practices['ko-ja:sentence:3'].action.type,'sentence-speak-next');
+ const completed=reduce(result.state,{type:'sentence-speak-next'});assert.equal(sentenceProgress(completed).phase,'summary');
  storage.setItem(STORAGE_KEY,JSON.stringify(result.state));assert.equal(load(storage).blocked,false);assert.equal(storage.getItem(STORAGE_KEY+'.backup.introduction-v2'),raw);
 });
 test('unknown damage is not silently reset or treated as the known legacy defect',()=>{
@@ -23,7 +23,7 @@ test('development next/back covers every introduction screen and only writes rel
  for(const id of [0,1,2,3]){
   let s=reduce({...freshState(),onboarded:true,onboardingLevel:2},{type:'sentence-start',id});const position=devLessonPosition(s,'sentence');
   assert.equal(position.count,caseTasks(s,'sentence').length);
-  if(id===3){assert.deepEqual(position.pages.filter(p=>p.phase==='learn').map(p=>p.index),[0,1,2,3,4,5]);assert.ok(!position.pages.some(p=>p.phase==='solve'));assert.equal(position.total,19);}
+  if(id===3){assert.deepEqual(position.pages.filter(p=>p.phase==='learn').map(p=>p.index),[0,1,2,3,4,5]);assert.ok(!position.pages.some(p=>p.phase==='solve'));assert.equal(position.total,25);}
   for(let index=1;index<position.total;index++){s=seekDevLesson(s,'sentence',1);assert.ok(valid(s),`${id}:${index}`);assert.equal(load(memory(s)).blocked,false);assert.equal(devLessonPosition(s,'sentence').index,index);}
   const pending=s.practices[`ko-ja:sentence:${id}`];const finished=reduce(s,pending.action);assert.equal(sentenceProgress(finished).phase,'summary');
   for(let index=position.total-2;index>=0;index--){s=seekDevLesson(s,'sentence',-1);assert.ok(valid(s));assert.equal(devLessonPosition(s,'sentence').index,index);}

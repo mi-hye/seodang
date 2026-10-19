@@ -1,3 +1,4 @@
+import {scenarioLessons,scenarioProgress,scenarioTitle} from './scenario-state.js';
 import {courseName,courseGroup,koreanImmersion} from './curriculum.js';
 import {koreanLessons, koreanProgress, koreanUnlocked, nextKorean} from './korean-state.js';
 import {t} from './i18n.js';
@@ -57,6 +58,9 @@ export function renderLearningMap(state,{resumeCard=''}={}) {
   } else {
     const levels=level===5?[5,6]:[7];title=courseName(level,level===7);lessons=levels.map((id,i)=>{const p=readingProgress(state,id);return {id,title:id===5?'안내·메시지에서 정보 찾기':id===6?'조건과 이유를 연결해 판단하기':'専門記事・論説を読む',ready:true,complete:p.completed,current:id===selectedLevel(state)&&!p.completed,status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'reading'};});count=lessons.filter(l=>l.complete).length;
   }
+
+  const addition=scenarioLessons.find(l=>l.level===level);
+  if(addition){const p=scenarioProgress(state,addition.id);lessons.push({id:addition.id,title:scenarioTitle(state,addition),ready:true,complete:p.completed,current:p.started&&!p.completed,detail:'',status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'scenario'});count+=Number(p.completed);}
 
   // A single destination mirrors the home resume card, including direct dev entry.
   const active=state.courseDirection==='ko-ja'&&state.basics?.active;

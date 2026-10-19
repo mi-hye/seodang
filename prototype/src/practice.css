@@ -114,3 +114,7 @@ html[data-motion=off] .practice-fireworks>i{animation:none}
 #app .lesson-complete-shell .practice-complete>.primary{flex:none}
 
 .practice-fireworks>span svg{fill:currentColor;stroke:none}
+
+.practice-feedback{word-break:normal;line-break:strict;overflow-wrap:anywhere}
+.practice-feedback .feedback-phrase{display:inline;word-break:keep-all}
+.practice-feedback .feedback-phrase-short{white-space:nowrap}

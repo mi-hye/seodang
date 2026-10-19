@@ -36,6 +36,9 @@ for(const l of koreanLessons){
 for(const [index,{id}] of sentenceLessons.entries()){const s={...freshState(),courseDirection:'ko-ja',onboardingLevel:2,sentenceActive:id};add(s,'sentence',`Level 2 · ${index+1}`,Object.values(sentenceCourse(s).audio));}
 for(const level of [5,6,7]){const s={...freshState(),courseDirection:'ko-ja',onboardingLevel:level};add(s,'reading',`Reading · ${level}`,jobs.filter(j=>level===7?j.file.includes('/advanced/'):j.file.startsWith(`assets/audio/reading/reading.${level}.`)).map(j=>({audioFile:j.file})));}
 for(const kind of ['dialogue','labels','listening','play'])add({...freshState(),courseDirection:'ko-ja',onboardingLevel:kind==='dialogue'?4:2},kind,kind,kind==='dialogue'?Object.values(dialogueAudio):kind==='play'?Object.values(audioManifest):[]);
+const {scenarioLessons,scenarioKey,scenarioTitle}=await import('../src/scenario-state.js');
+const {scenarioAudio}=await import('../src/scenario-content.js');
+for(const courseDirection of ['ko-ja','ja-ko'])for(const l of scenarioLessons){const s={courseDirection,scenarioActive:l.id};const files=[0,1,2].map(i=>scenarioAudio(courseDirection,l.id,i).audioFile);for(const file of files)if(!known.has(file))missing.push(file);packs[scenarioKey(s)]={title:scenarioTitle(s,l),course:courseDirection,level:l.level,files};}
 if(missing.length)throw Error('Missing audio jobs: '+[...new Set(missing)].join(', '));
 await writeFile('output/final-voices/packs.json',JSON.stringify(packs,null,2)+'\n');
 console.log(Object.keys(packs).length,'lesson packs; all references covered');

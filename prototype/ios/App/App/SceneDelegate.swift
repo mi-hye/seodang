@@ -2,6 +2,7 @@ import UIKit
 import Capacitor
 import AVFoundation
 import CryptoKit
+import Speech
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -28,9 +29,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 // Local system speech bridge; no external service or generated audio files.
 class SeodangBridgeViewController: CAPBridgeViewController {
     override func capacitorDidLoad() {
+        // Keep fixed navigation still at the scroll edges and hide native indicators.
+        if let scrollView = bridge?.webView?.scrollView {
+            scrollView.bounces = false
+            scrollView.alwaysBounceVertical = false
+            scrollView.alwaysBounceHorizontal = false
+            scrollView.showsVerticalScrollIndicator = false
+            scrollView.showsHorizontalScrollIndicator = false
+        }
         bridge?.registerPluginInstance(SeodangSpeechPlugin())
         bridge?.registerPluginInstance(SeodangUIPlugin())
         bridge?.registerPluginInstance(SeodangAudioPlugin())
+        bridge?.registerPluginInstance(SeodangRecognitionPlugin())
     }
 }
 
@@ -226,4 +236,105 @@ class SeodangAudioPlugin: CAPPlugin, CAPBridgedPlugin {
         do { try FileManager.default.removeItem(at: self.directory()); call.resolve() }
         catch { call.reject("Cannot delete downloads", nil, error) }
     }}
+}
+
+// Speech practice stays on device. No audio file, server fallback, or transcript logging.
+@objc(SeodangRecognitionPlugin)
+class SeodangRecognitionPlugin: CAPPlugin, CAPBridgedPlugin {
+    let identifier = "SeodangRecognitionPlugin"
+    let jsName = "SeodangRecognition"
+    let pluginMethods: [CAPPluginMethod] = ["recognize", "finish", "cancel"].map {
+        CAPPluginMethod(name: $0, returnType: CAPPluginReturnPromise)
+    }
+    private let engine = AVAudioEngine()
+    private var recognizer: SFSpeechRecognizer?
+    private var request: SFSpeechAudioBufferRecognitionRequest?
+    private var task: SFSpeechRecognitionTask?
+    private var pending: CAPPluginCall?
+    private var timeout: DispatchWorkItem?
+    private var session = UUID()
+    private var tapped = false
+    private var text = ""
+    override func load() {
+        NotificationCenter.default.addObserver(self, selector: #selector(interrupted), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(interrupted), name: AVAudioSession.interruptionNotification, object: nil)
+    }
+    @objc private func interrupted() { DispatchQueue.main.async { self.complete(code: "INTERRUPTED") } }
+    private func complete(code: String? = nil) {
+        guard pending != nil else { return }
+        let call = pending, result = text
+        pending = nil; session = UUID(); timeout?.cancel(); timeout = nil
+        engine.stop()
+        if tapped { engine.inputNode.removeTap(onBus: 0); tapped = false }
+        request?.endAudio(); task?.cancel(); task = nil; request = nil; recognizer = nil; text = ""
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+        if let code { call?.reject(code, code) } else { call?.resolve(["text": result]) }
+    }
+    @objc func recognize(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            self.complete(code: "CANCELLED")
+            self.pending = call; let id = self.session
+            let locale = call.getString("locale") ?? "ko-KR"
+            guard ["ko-KR", "ja-JP"].contains(locale), let recognizer = SFSpeechRecognizer(locale: Locale(identifier: locale)), recognizer.supportsOnDeviceRecognition else {
+                self.complete(code: "ON_DEVICE_UNAVAILABLE"); return
+            }
+            self.recognizer = recognizer
+            SFSpeechRecognizer.requestAuthorization { status in
+                DispatchQueue.main.async {
+                    guard self.session == id, self.pending != nil else { return }
+                    guard status == .authorized else { self.complete(code: "PERMISSION_DENIED"); return }
+                    AVAudioSession.sharedInstance().requestRecordPermission { allowed in
+                        DispatchQueue.main.async {
+                            guard self.session == id, self.pending != nil else { return }
+                            guard allowed else { self.complete(code: "PERMISSION_DENIED"); return }
+                            guard UIApplication.shared.applicationState == .active else { self.complete(code: "INTERRUPTED"); return }
+                            self.begin(id: id)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private func begin(id: UUID) {
+        guard let recognizer, recognizer.isAvailable, recognizer.supportsOnDeviceRecognition else { complete(code: "ON_DEVICE_UNAVAILABLE"); return }
+        do {
+            let audio = AVAudioSession.sharedInstance()
+            try audio.setCategory(.record, mode: .measurement, options: .duckOthers)
+            try audio.setActive(true)
+            let request = SFSpeechAudioBufferRecognitionRequest()
+            request.requiresOnDeviceRecognition = true
+            request.shouldReportPartialResults = true
+            self.request = request
+            let input = engine.inputNode, format = input.outputFormat(forBus: 0)
+            guard format.sampleRate > 0, format.channelCount > 0 else { complete(code: "AUDIO_UNAVAILABLE"); return }
+            input.installTap(onBus: 0, bufferSize: 1024, format: format) { buffer, _ in request.append(buffer) }
+            tapped = true
+            task = recognizer.recognitionTask(with: request) { result, error in
+                DispatchQueue.main.async {
+                    guard self.session == id, self.pending != nil else { return }
+                    if let result { self.text = result.bestTranscription.formattedString }
+                    if result?.isFinal == true { self.complete() }
+                    else if error != nil { self.complete(code: self.text.isEmpty ? "RECOGNITION_FAILED" : nil) }
+                }
+            }
+            engine.prepare(); try engine.start()
+            let work = DispatchWorkItem { [weak self] in guard let self, self.session == id else { return }; self.endInput(id: id) }
+            timeout = work; DispatchQueue.main.asyncAfter(deadline: .now() + 10, execute: work)
+        } catch { complete(code: "AUDIO_UNAVAILABLE") }
+    }
+    private func endInput(id: UUID) {
+        guard session == id, pending != nil else { return }
+        engine.stop()
+        if tapped { engine.inputNode.removeTap(onBus: 0); tapped = false }
+        request?.endAudio(); timeout?.cancel()
+        let work = DispatchWorkItem { [weak self] in guard let self, self.session == id else { return }; self.complete() }
+        timeout = work; DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: work)
+    }
+    @objc func finish(_ call: CAPPluginCall) {
+        DispatchQueue.main.async { self.endInput(id: self.session); call.resolve() }
+    }
+    @objc func cancel(_ call: CAPPluginCall) {
+        DispatchQueue.main.async { self.complete(code: "CANCELLED"); call.resolve() }
+    }
 }

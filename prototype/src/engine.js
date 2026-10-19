@@ -1,3 +1,4 @@
+import {reduceScenario} from './scenario-state.js';
 import {canonicalLevel} from './curriculum.js';
 import {reduceKorean} from './korean-state.js';
 import {reduceBasics} from './basics-state.js';
@@ -41,6 +42,7 @@ export function episodeAudioId(state) {
   return null;
 }
 export function reduce(state, action, now) {
+  if(action.type.startsWith("scenario-")){const next=reduceScenario(state,action);return next===state?state:recordLearning(state,next,action,now);}
   if(action.type.startsWith("korean-"))return state.courseDirection==='ja-ko'?{...state,korean:reduceKorean(state,action,now)}:state;
   return recordLearning(state, reduceCore(state, action), action, now);
 }
@@ -55,7 +57,7 @@ function reduceCore(state, action) {
   }
   if(action.type.startsWith("dialogue-")){s.dialogue=reduceDialogue(s.dialogue,action);return s;}
   if (action.type.startsWith("kana-")) { s.kana = reduceKana(s.kana, action); return s; }
-  if(action.type.startsWith('sentence-')){const id=action.type==='sentence-start'&&action.id!==undefined?Number(action.id):sentenceId(s);if(![0,1,2,3].includes(id))return s;s.sentenceActive=id;const legacyPractice=id===3&&action.type==='sentence-start'&&s.practices?.['ko-ja:sentence:3'];if(legacyPractice&&legacyPractice.count===3){s.practices['ko-ja:sentence:3']={...legacyPractice,count:6,index:0,action:{type:'sentence-check'}};setSentenceProgress(s,id,{...sentenceProgress(s,id),phase:'arrange',index:5,selected:'2',tokens:[],checked:false});}setSentenceProgress(s,id,reduceSentence(sentenceProgress(s,id),action,id));return s;}
+  if(action.type.startsWith('sentence-')){const id=action.type==='sentence-start'&&action.id!==undefined?Number(action.id):sentenceId(s);if(![0,1,2,3].includes(id))return s;s.sentenceActive=id;const legacyPractice=id===3&&action.type==='sentence-start'&&s.practices?.['ko-ja:sentence:3'];if(legacyPractice&&legacyPractice.count===3){s.practices['ko-ja:sentence:3']={...legacyPractice,count:6,index:0,action:{type:'sentence-speak-next'}};setSentenceProgress(s,id,{...sentenceProgress(s,id),phase:'speak',index:5,selected:null,tokens:[],checked:false});}setSentenceProgress(s,id,reduceSentence(sentenceProgress(s,id),action,id));return s;}
   if(action.type.startsWith("listening-")){s.listening=reduceListening(s,action);return s;}
   if (action.type.startsWith("labels-")) {
     s.labels = reduceLabels(s, action);

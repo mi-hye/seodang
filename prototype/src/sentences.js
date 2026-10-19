@@ -1,3 +1,5 @@
+import {renderKoreanSpeaking} from './korean-speaking.js';
+export {mountKoreanSpeaking as mountSentenceSpeaking} from './korean-speaking.js';
 import {renderTokenBuilder} from './token-builder.js';
 import {sentenceCourse} from './sentence-content.js';
 import {icon, button, bag, esc, phraseText} from './ui.js';
@@ -16,6 +18,7 @@ const artwork=lesson=>lesson.image?`<img class="sentence-image" src="${lesson.im
 const sceneArtwork=course=>course.image?`<img class="sentence-image sentence-scene-image" src="${esc(course.image)}" alt="${esc(course.title)}" width="960" height="640" decoding="async">`:'';
 export function renderSentences(state,top) {
   const s=sentenceProgress(state),course=sentenceCourse(state),{sentences,words:sentenceWords}=course,lesson=sentences[s.index],sound=state.settings.sound;
+  if(s.phase==='speak')return renderKoreanSpeaking(top,lesson.text,'ja-JP',lesson.id,lesson.parts.flatMap(([text],i)=>i&&lesson.text.includes(' ')?[' ',text]:[text]),{spoken:lesson.spoken});
   const progress=`<div class="sentence-step" aria-label="전체 ${sentences.length*2}단계 중 ${s.index*2+(s.phase==='arrange'?2:1)}단계">${s.index*2+(s.phase==='arrange'?2:1)}/${sentences.length*2}</div>`;
   let body='';
   if(s.phase==='intro'&&!course.scene) body=`<img class="sentence-image" src="${sentenceCase.image}" alt="가방이 남겨진 카페"><div class="audio-text-row"><h1>카페에 남겨진 가방</h1>${listen('intro',sound)}</div><p>손님이 가방을 찾고 있어요. 손님의 말을 듣고 어느 가방인지 찾아주세요.</p>${button('필요한 문장 배우기','sentence-next')}`;
