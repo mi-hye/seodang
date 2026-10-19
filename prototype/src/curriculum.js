@@ -8,4 +8,4 @@ export const courseName=(level,jp=false)=>courseNames[jp?'ja':'ko'][displayLevel
 export const retiredPractice=key=>/^(ko-ja:(labels|listening|play):|ko-ja:basic:6$|ja-ko:korean:(1-11|2-1)$)/.test(key);
 
 export const koreanImmersion=s=>s?.courseDirection==='ja-ko'&&Number(s.onboardingLevel)>=7;
-export const japaneseLessonUI=s=>!koreanImmersion(s)&&(s?.courseDirection==='ja-ko'||Number(s?.onboardingLevel)>=6);
+export const japaneseLessonUI=s=>!koreanImmersion(s)&&(s?.courseDirection==='ja-ko'||Number(s?.onboardingLevel)>=7);

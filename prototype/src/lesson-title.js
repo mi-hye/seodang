@@ -12,6 +12,6 @@ export function lessonTitle(s,kind,fallback=''){
  else if(kind==='play'){number=4;title='카페에 남겨진 가방';}
  else if(kind==='sentence'||kind==='sentence-review'){number=sentenceLessons.findIndex(l=>l.id===sentenceId(s))+1;title=sentenceLessons[number-1].title;}
  else if(kind==='dialogue')title='따뜻한 커피를 포장해요';
- else if(kind==='reading'){number=Number(s.onboardingLevel)===6?2:1;title=Number(s.onboardingLevel)===7?'専門記事・論説を読む':Number(s.onboardingLevel)===6?'条件と理由をつなげて判断する':'안내·메시지에서 정보 찾기';}
+ else if(kind==='reading'){number=Number(s.onboardingLevel)===6?2:1;title=Number(s.onboardingLevel)===7?'専門記事・論説を読む':Number(s.onboardingLevel)===6?'조건과 이유를 연결해 판단하기':'안내·메시지에서 정보 찾기';}
  return `${number}. ${title}`;
 }

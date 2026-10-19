@@ -4,7 +4,7 @@ import {scenarioLessons,scenarioKey,scenarioProgress} from '../src/scenario-stat
 const act=(s,type,id)=>reduce(s,{type,id},new Date('2026-10-19T12:00:00'));
 for(const direction of ['ko-ja','ja-ko'])for(const l of scenarioLessons)test(`${direction}/${l.id}: map, learn, retry, resume, finish and replay preserve other progress`,()=>{
  let s={...freshState(),courseDirection:direction,onboardingLevel:l.level};
- assert.equal((renderLearningMap(s).match(/data-action="scenario"/g)||[]).length,1);
+ assert.equal((renderLearningMap(s).match(/data-action="scenario"/g)||[]).length,l.id==='5'?0:1);
  s=act(s,'scenario-start',l.id);assert.equal(scenarioProgress(s).phase,'intro');s=act(s,'scenario-next');
  for(let i=0;i<3;i++){
   assert.equal(scenarioProgress(s).phase,'learn');s=act(s,'scenario-next');const untouched=act(s,'scenario-next');assert.equal(scenarioProgress(untouched).phase,'quiz');

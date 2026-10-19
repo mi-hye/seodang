@@ -1,3 +1,4 @@
+import {reduceExpert} from './expert-state.js';
 import {reduceScenario} from './scenario-state.js';
 import {canonicalLevel} from './curriculum.js';
 import {reduceKorean} from './korean-state.js';
@@ -42,6 +43,7 @@ export function episodeAudioId(state) {
   return null;
 }
 export function reduce(state, action, now) {
+  if(action.type.startsWith("expert-")){const next=reduceExpert(state,action);return next===state?state:recordLearning(state,next,action,now);}
   if(action.type.startsWith("scenario-")){const next=reduceScenario(state,action);return next===state?state:recordLearning(state,next,action,now);}
   if(action.type.startsWith("korean-"))return state.courseDirection==='ja-ko'?{...state,korean:reduceKorean(state,action,now)}:state;
   return recordLearning(state, reduceCore(state, action), action, now);

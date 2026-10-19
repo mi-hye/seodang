@@ -17,6 +17,7 @@ for (const name of ["01_start_hanok.png"])
 const initial = [
   "app.js",
   "scenario-state.js",
+  "expert-state.js",
   "analytics.js",
   "analytics-core.js",
   "analytics-learning.js",

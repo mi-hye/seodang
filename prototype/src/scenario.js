@@ -1,3 +1,4 @@
+import {readingPassage,readingOptions} from './reading-layout.js';
 import {caseLesson} from './case-lesson.js';
 import {lessonExplanation} from './lesson-explanation.js';
 import {renderKoreanSpeaking} from './korean-speaking.js';
@@ -15,6 +16,17 @@ export function renderScenario(s,top){
  const l=scenarioLessons.find(l=>l.id===s.scenarioActive),p=scenarioProgress(s),c=scenarioContent[s.courseDirection][l.id],x=c.items[p.index],jp=japaneseLessonUI(s),lang=s.courseDirection==='ja-ko'?'ko':'ja';
  if(p.phase==='speak')return renderKoreanSpeaking(title=>`${top(title)}<div class="lesson-progress" role="progressbar" aria-label="${jp?'学習の進み具合':'학습 진행률'}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round((p.index*3+2)/9*100)}"><span style="width:${(p.index*3+2)/9*100}%"></span></div>`,x.text,lang==='ja'?'ja-JP':'ko-KR','',x.phrases,{audioAction:'scenario-audio',previousAction:'scenario-previous'});
  const title=scenarioTitle(s,l),label=(ko,ja)=>jp?ja:ko;
+ if(l.id==='4'){
+  const heading=top(`${l.number[s.courseDirection]}. ${title}`),ratio=p.phase==='intro'?0:Math.round((p.index*2+(p.phase==='quiz'?1:0))/6*100);
+  const progress=`<div class="lesson-progress" role="progressbar" aria-label="${label('학습 진행률','学習の進み具合')}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${ratio}"><span style="width:${ratio}%"></span></div>`;
+  const passage=readingPassage(s,{content:`<p>${x.phrases?phraseText(x.text,x.phrases):text(x.text)}</p>`,lang,action:'scenario-audio',japanese:jp});
+  const options=[...x.others];options.splice(p.index,0,x.answer);
+  let content;
+  if(p.phase==='intro')content=`<h1>${esc(title)}</h1><p class="reading-intro">${text(c.scene)}</p>${button(label('필요한 문장 읽기','必要な文を読む'),'scenario-next')}`;
+  else if(p.phase==='learn')content=`${jp?`<div class="reading-count">${p.index+1} / ${l.count}</div>`:''}${passage}<section class="case-words"><h2>${label('문장 속 단어','文の中の単語')}</h2>${jp?`<dl>${x.words.map(([w,m])=>`<div><dt lang="ko">${esc(w)}</dt><dd lang="ja">${esc(m)}</dd></div>`).join('')}</dl>`:`<p>${x.words.map(([w,m])=>`${esc(w)} ${esc(m)}`).join(' · ')}</p>`}</section>${lessonExplanation(x.hint,jp)}${s.courseDirection==='ko-ja'?button('한자 뜻과 쓰기','lesson-kanji','secondary',`data-id="scenario:${l.id}:${p.index}"`):''}${jp?`<div class="button-pair">${button('戻る','scenario-previous','secondary')}${button('場面で使う','scenario-next')}</div>`:button('사건 해결하기','scenario-next')}`;
+  else content=`<div class="reading-count">${p.index+1} / ${l.count}</div>${passage}<h2 class="reading-question">${text(x.prompt)}</h2>${readingOptions({options:options.map(text),selected:p.selected,action:'scenario-select',lang,japanese:jp,disabled:p.checked})}${p.retry||p.checked?`<p class="reading-feedback" role="status">${text(x.hint)}</p>`:''}<div class="button-pair">${button(label('이전','戻る'),'scenario-previous','secondary')}${p.checked?button(p.index===2?label('학습 마치기','学習を終える'):label('다음','次へ'),'scenario-next'):button(label('확인','確認'),'scenario-check','primary',p.selected===null?'disabled':'')}</div>`;
+  return `${heading}${progress}<main class="page reading-page" lang="${jp?'ja':'ko'}">${content}</main>`;
+ }
  const audio=button(icon('sound'),'scenario-audio','icon-button',`aria-label="${label('다시 듣기','もう一度聞く')}"`);
  const pause=Number(l.id)>=4?button(icon('pause'),'passage-pause','icon-button',`data-passage-pause data-pause-label="${label('일시정지','一時停止')}" data-resume-label="${label('이어서 재생','続きから再生')}" aria-label="${label('일시정지','一時停止')}" disabled`):'';
  const rate=normalizeAudioRate(s.settings?.audioRate),rateLabel=`${rate===1?label('일반','標準')+' ':''}${rate.toFixed(1)}×`;

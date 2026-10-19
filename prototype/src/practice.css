@@ -124,3 +124,7 @@ html[data-motion=off] .practice-fireworks>i{animation:none}
 .case-words,.scenario-words{border-top:1px solid var(--line);padding-top:16px}
 .lesson-explanation .word-memory-body p{white-space:pre-line}
 html[lang=ja] .lesson-explanation .word-memory-body p{word-break:normal;line-break:strict}
+
+/* Leave space above the iPhone home-indicator cover after the final action row. */
+#app main:is(.reading-page,.scenario-page,.practice-page){padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+#app main:is(.reading-page,.scenario-page,.practice-page)>.button-pair{flex-shrink:0}

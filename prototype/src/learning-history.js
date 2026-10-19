@@ -1,3 +1,4 @@
+import {expertProgress} from './expert-state.js';
 import {scenarioProgress,scenarioLessons} from './scenario-state.js';
 import {sentenceProgress} from './sentence-state.js';
 import {basicLessons} from './basics-state.js';
@@ -21,6 +22,16 @@ export function validHistory(h) {
 }
 export function recordLearning(before, after, action, now=new Date()) {
  const today=localDateKey(now);
+ if(action.type.startsWith('expert-')){
+  if(action.type==='expert-start')return after;
+  const a=expertProgress(before),b=expertProgress(after),learned=a.phase==='review'&&(a.sentence!==b.sentence||b.phase==='done'),finished=!a.completed&&b.completed;
+  if(!learned&&!finished)return after;
+  after=structuredClone(after);let host=after;if(after.courseDirection==='ja-ko')host=after.korean ||= {version:4,active:'1-1',lessons:{}};
+  const h=host.history ||= {version:1,startedOn:today,days:{},...(after.courseDirection==='ko-ja'?{completed:completedCases(before)}:{})};
+  h.startedOn=h.startedOn<today?h.startedOn:today;const d=h.days[today] ||= {letters:0,expressions:0,sentences:0,cases:0};
+  if(learned)d.sentences++;if(finished)d.cases++;return after;
+ }
+
  if(action.type.startsWith('scenario-')){
   const p=scenarioProgress(before),q=scenarioProgress(after),id=before.scenarioActive;
   const learned=(action.type==='scenario-next'&&p.phase==='quiz'&&p.checked||action.type==='scenario-speak-next'&&p.phase==='speak')&&(q.index!==p.index||q.phase==='done');

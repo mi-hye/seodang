@@ -1,3 +1,4 @@
+import {readingPassage,readingOptions} from './reading-layout.js';
 import {caseLesson} from './case-lesson.js';
 import {renderKoreanSpeaking} from './korean-speaking.js';
 export {mountKoreanSpeaking} from './korean-speaking.js';
@@ -33,6 +34,11 @@ export function renderKorean(s,top){
  if(id==='4-1'&&learn)return `${top(l.title)}${caseLesson({index:p.index,count:l.count,image:'assets/cafe-dusk-v2.jpg',content:`${renderCafeCue(item.cue)}<div class="audio-text-row"><p lang="ko">${phraseText(item.text)}</p>${button(icon('sound'),'korean-audio','icon-button','aria-label="もう一度聞く"')}</div>`,meaning:item.meaning,words:(koreanCases[id]?.words[p.index]||[]).filter(([word])=>item.text.includes(word)),lang:'ko',japanese:true,actions:button('戻る','korean-previous','secondary')+button('場面で使う','korean-next')})}`;
  const options=[...item.others];options.splice(p.index%3,0,item.answer||item.text);
  if(id==='4-1'&&!learn)return `${top(l.title)}${caseLesson({index:p.index,count:l.count,image:'assets/cafe-dusk-v2.jpg',content:`<div class="audio-text-row"><h1>${esc(koreanCaseQuestions[id]?.[p.index]||item.meaning)}</h1>${button(icon('sound'),'korean-audio','icon-button','aria-label="もう一度聞く"')}</div>`,lang:'ko',japanese:true,extra:`<div class="case-lesson-choices">${options.map((o,i)=>button(phraseText(o),'korean-select',`secondary${p.selected===i?' selected':''}`,`data-id="${i}" lang="ko" aria-pressed="${p.selected===i}"`)).join('')}</div>${p.retry?`<p role="status">${feedbackText(item.wrongFeedback?.[options[p.selected]]||item.explanation||'もう一度選んでください。')}</p>`:''}`,actions:button('戻る','korean-previous','secondary')+button('確認','korean-check','primary',p.selected===null?'disabled':'')})}`;
+ if(['5-1','6-1'].includes(id)){
+  const passage=readingPassage(s,{content:`<p>${phraseText(item.text)}</p>`,lang:'ko',action:'korean-audio',japanese:true});
+  const body=learn?`${passage}${koreanCaseWords(id,p.index,item.text)}<div class="button-pair">${button('戻る','korean-previous','secondary')}${button('場面で使う','korean-next')}</div>`:`${passage}<h2 class="reading-question">${esc(item.question)}</h2>${readingOptions({options:options.map(o=>phraseText(o)),selected:p.selected,action:'korean-select',lang:'ko',japanese:true})}${p.retry?`<p class="reading-feedback" role="status">${feedbackText(item.wrongFeedback?.[options[p.selected]]||item.explanation||'もう一度選んでください。')}</p>`:''}<div class="button-pair">${button('戻る','korean-previous','secondary')}${button('確認','korean-check','primary',p.selected===null?'disabled':'')}</div>`;
+  return `${top(l.title)}<main class="page reading-page" lang="ja"><div class="reading-count">${p.index+1} / ${l.count}</div>${body}</main>`;
+ }
  const trace=learn&&l.level===0;
  const practice=Boolean(l.practice),single=koreanQuizOnly(l);
  const selected=p.selected===null?null:options[p.selected];

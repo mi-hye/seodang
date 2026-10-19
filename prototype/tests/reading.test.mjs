@@ -24,7 +24,7 @@ test('reading levels validate, retry, resume, complete independently, and preser
    const answer=readingAnswers[level][i];
    s=act(s,'reading-select',(answer+1)%3);s=act(s,'reading-check');assert.equal(s.readings[level].retry,true);assert.equal(s.readings[level].index,i);
    assert.ok(valid(s));const map=new Map();const storage={getItem:k=>map.get(k),setItem:(k,v)=>map.set(k,v)};save(storage,s);s=load(storage).state;assert.equal(s.readings[level].retry,true);
-   if(level>=6){const html=renderReading(s);assert.doesNotMatch(html,/[가-힣]/);assert.doesNotMatch(html,/\|/);}
+   if(level>=6){const html=renderReading(s);assert.match(html,/확인/);assert.match(html,/[가-힣]/);assert.doesNotMatch(html,/\||undefined/);}
    s=act(s,'reading-select',answer);s=act(s,'reading-check');
   }
   assert.equal(s.onboardingLevel,level);assert.equal(s.readings[level].phase,'done');assert.ok(valid(s));assert.ok(s.history.completed.includes(`reading-${level}`));
@@ -38,9 +38,9 @@ test('previous does not double count solved questions; new stages cannot advance
  s=reduce(s,{type:'level',value:4},day);const prior=structuredClone(s.readings);s=act(s,'reading-next');assert.deepEqual(s.readings,prior);
  assert.ok(valid(freshState()));assert.equal(validReading({...freshReading(),index:6}),false);assert.equal(validReading({...freshReading(),phase:'done',completed:true}),false);assert.equal(valid({...freshState(),readings:{8:freshReading()}}),false);
 });
-test('six questions per level have varied answers and Japanese-only level 6 content',()=>{
+test('six questions per level preserve Japanese study text with Korean level-four guidance',()=>{
  for(const level of [5,6]){const questions=readingCourses[level].passages.flatMap(p=>p.questions);assert.equal(questions.length,6);assert.equal(new Set(readingAnswers[level]).size,3);questions.forEach((q,i)=>{assert.equal(q.choices.length,3);assert.ok(q.choices[readingAnswers[level][i]]);});}
- assert.doesNotMatch(JSON.stringify(readingCourses[6]),/[가-힣]/);
+ for(const p of readingCourses[6].passages){assert.match(p.title,/[가-힣]/);assert.doesNotMatch(p.paragraphs.join(''),/[가-힣]/);for(const q of p.questions){assert.match(q.prompt,/[가-힣]/);assert.match(q.hint,/[가-힣]/);assert.doesNotMatch(q.choices.join(''),/[가-힣]/);}}
 });
 
 test('level 5 opens a scene and learning screen, and resumes answers',()=>{

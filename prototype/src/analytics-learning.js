@@ -1,6 +1,8 @@
+import {expertProgress,expertKey} from './expert-state.js';
 import {displayLevel} from './curriculum.js';
 // Pure snapshots keep analytics independent of large lesson/content modules.
 export function learningSnapshot(s,kind){
+ if(kind==='expert'){const p=expertProgress(s);return {lesson_id:expertKey(s),course_direction:s.courseDirection,level:5,phase:p.phase,item_index:p.phase==='review'?p.sentence:p.index,round_index:0,mode_index:0,match_count:0,_selected:p.selected!==null,_attempts:p.attempts,_retry:p.retry,_checked:p.checked,done:p.phase==='done',position:JSON.stringify([p.phase,p.index,p.sentence]),practice:false};}
  if(!['scenario','kana','basic','korean','sentence','reading','dialogue','labels','listening','play'].includes(kind))return null;
  const id=kind==='scenario'?s.scenarioActive:kind==='basic'?s.basics?.active:kind==='korean'?s.korean?.active:kind==='kana'?s.kana?.active:kind==='reading'?s.onboardingLevel:kind==='sentence'?(s.sentenceActive??0):0;
  const key=`${s.courseDirection}:${kind}:${id}`;

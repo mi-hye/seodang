@@ -1,0 +1,20 @@
+import {test,expect} from '@playwright/test';
+import {freshState} from '../../src/engine.js';
+for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])for(const number of [1,2,3])test(`level four ${direction} lesson ${number} width ${width}`,async({page})=>{
+ await page.setViewportSize({width,height:844});
+ await page.addInitScript(s=>{localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},{...freshState(),onboarded:true,koreanGuideSeenVersion:1,onboardingLevel:5,courseDirection:direction,settings:{sound:false,motion:'off',textScale:1.2,audioRate:1}});
+ await page.route('**/assets/audio/catalog.json',async r=>{const response=await r.fetch(),c=await response.json();await r.fulfill({json:{...c,packs:{}}});});
+ await page.goto('/playable.html');
+ const kind=number===3?'scenario':direction==='ko-ja'?'reading':'korean';
+ const id=number===3?'4':kind==='reading'?String(number===1?5:6):number===1?'5-1':'6-1';
+ await page.locator(`[data-action="${kind}"][data-id="${id}"]`).first().click();
+ await page.locator(`[data-action="${kind}-next"]`).click();
+ const card=page.locator('.reading-passage');await expect(card).toBeVisible();
+ const style=await card.evaluate(el=>{const c=getComputedStyle(el),p=getComputedStyle(el.querySelector('p'));return {padding:c.padding,border:c.borderRadius,font:p.fontSize,overflow:document.documentElement.scrollWidth>innerWidth+1,playerBelow:document.querySelector('.passage-player').getBoundingClientRect().top>=el.getBoundingClientRect().bottom};});
+ expect(style).toEqual({padding:'20px 16px',border:'16px',font:'21.6px',overflow:false,playerBelow:true});
+ await page.screenshot({path:`output/level-four-${direction}-${number}-${width}-${test.info().project.name}.png`,fullPage:true});
+ await page.waitForTimeout(500);await page.locator(`[data-action="${kind}-next"]`).click();
+ await expect(page.locator('.reading-options')).toBeVisible();
+ const buttons=page.locator('.reading-page>.button-pair>button');await expect(buttons).toHaveCount(2);
+ const tops=await buttons.evaluateAll(xs=>xs.map(x=>x.getBoundingClientRect().top));expect(Math.abs(tops[0]-tops[1])).toBeLessThan(2);
+});
