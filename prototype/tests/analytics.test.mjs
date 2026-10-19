@@ -64,10 +64,10 @@ test('reconfirming consent preserves offline records and identity',()=>{
  const f=fixture();f.a.setConsent(true);f.a.capture('learning_progress');const id=f.a.installationId;assert.equal(f.a.setConsent(true),true);assert.equal(f.a.pending,2);assert.equal(f.a.installationId,id);
 });
 test('malformed persisted queue entries cannot crash collection',async()=>{
- const f=fixture();f.storage.setItem(ANALYTICS_KEY,JSON.stringify({consent:true,consent_version:2,queue:[null,{},'invalid']}));const a=createAnalytics(f.options);assert.equal(a.capture('app_opened'),true);await a.flush();assert.equal(a.pending,0);
+ const f=fixture();f.storage.setItem(ANALYTICS_KEY,JSON.stringify({consent:true,consent_version:3,queue:[null,{},'invalid']}));const a=createAnalytics(f.options);assert.equal(a.capture('app_opened'),true);await a.flush();assert.equal(a.pending,0);
 });
 
-test('expanded collection requires renewed version 2 consent',async()=>{
+test('expanded collection requires renewed version 3 consent',async()=>{
  const f=fixture(async()=>assert.fail('old consent must not send'));
  f.storage.setItem(ANALYTICS_KEY,JSON.stringify({consent:true,consent_version:1,queue:[]}));
  const a=createAnalytics(f.options);assert.equal(a.consent,null);assert.equal(a.capture('app_opened'),false);await a.flush();

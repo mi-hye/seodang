@@ -7,7 +7,14 @@ let storage;try{storage=window.localStorage;}catch{storage={getItem(){return nul
 const platform=globalThis.Capacitor?.getPlatform?.()||'web';
 export const analytics=createAnalytics({storage,platform,environment:developmentMode||platform==='web'?'development':'production',appVersion,send:(batch,signal)=>fetch('https://us.i.posthog.com/batch/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({api_key:token,batch}),signal,credentials:'omit',referrerPolicy:'no-referrer'})});
 export const analyticsContext=s=>({course_direction:s.courseDirection,level:displayLevel(s.onboardingLevel??0)});
-export function openAnalytics(s){analytics.capture('app_opened',analyticsContext(s));void analytics.flush();}
+let acquisitionTracker;
+async function collectAcquisition(){
+ if(analytics.consent!==true||platform==='web')return;
+ const {createAcquisitionTracker}=await import('./analytics-acquisition.js');
+ acquisitionTracker ||= createAcquisitionTracker({analytics,platform,readReferrer:()=>globalThis.Capacitor.nativePromise('SeodangAttribution','getInstallReferrer',{})});
+ await acquisitionTracker();
+}
+export function openAnalytics(s){analytics.capture('app_opened',analyticsContext(s));void analytics.flush();void collectAcquisition();}
 setInterval(()=>void analytics.flush(),15000);
 window.addEventListener('online',()=>void analytics.flush());
 window.addEventListener('pagehide',()=>void analytics.flush());

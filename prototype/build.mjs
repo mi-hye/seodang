@@ -18,6 +18,7 @@ const initial = [
   "app.js",
   "analytics.js",
   "analytics-core.js",
+  "analytics-acquisition.js",
   "analytics-learning.js",
   "practice-state.js",
   "i18n.js",
