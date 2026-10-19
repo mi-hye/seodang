@@ -6,7 +6,8 @@ export const scenarioLessons=[
  {id:'5',level:7,titles:['調査結果をどう読むか','조사 결과를 어떻게 읽을까'],count:3,number:{'ko-ja':2,'ja-ko':2}}
 ];
 export const scenarioKey=(s,id=s.scenarioActive)=>`${s.courseDirection}:scenario:${id}`;
-export const scenarioProgress=(s,id=s.scenarioActive)=>s.scenarios?.[scenarioKey(s,id)]||{version:1,started:false,phase:'intro',index:0,selected:null,tokens:[],checked:false,retry:false,completed:false,attempts:0};
+export const freshScenario=()=>({version:1,started:false,phase:'intro',index:0,selected:null,tokens:[],checked:false,retry:false,completed:false,attempts:0});
+export const scenarioProgress=(s,id=s.scenarioActive)=>s.scenarios?.[scenarioKey(s,id)]||freshScenario();
 export const scenarioTitle=(s,l)=>l.titles[s.courseDirection==='ja-ko'?1:0];
 export function validScenarios(s){
  return (s.scenarioActive===undefined||s.scenarioActive==='1'||scenarioLessons.some(l=>l.id===s.scenarioActive))&&(s.scenarios===undefined||Boolean(s.scenarios&&typeof s.scenarios==='object'&&!Array.isArray(s.scenarios)&&Object.entries(s.scenarios).every(([key,p])=>/^(ko-ja|ja-ko):scenario:[1-5]$/.test(key)&&p?.version===1&&(['intro','learn','quiz','done'].includes(p.phase)||key.endsWith(':2')&&p.phase==='speak')&&Number.isInteger(p.index)&&p.index>=0&&p.index<3&&[null,0,1,2].includes(p.selected)&&Array.isArray(p.tokens)&&p.tokens.every(x=>[0,1,2].includes(x))&&new Set(p.tokens).size===p.tokens.length&&['started','checked','retry','completed'].every(k=>typeof p[k]==='boolean')&&Number.isInteger(p.attempts)&&p.attempts>=0&&(p.phase!=='done'||p.completed))));

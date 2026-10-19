@@ -1,0 +1,58 @@
+{
+  "updated_at_kst": "2026-10-19",
+  "channels": {
+    "instagram": {
+      "profile": "https://www.instagram.com/seodang_app/",
+      "ios": "https://apps.apple.com/app/apple-store/id6780309771?pt=129039245&ct=seodang_ig_202610&mt=8",
+      "android": "https://play.google.com/store/apps/details?id=com.mihye.seodang&utm_source=instagram&utm_medium=social&utm_campaign=seodang_ig_202610&utm_content=link_in_bio",
+      "params": {
+        "utm_source": "instagram",
+        "utm_medium": "social",
+        "utm_campaign": "seodang_ig_202610",
+        "utm_content": "link_in_bio"
+      },
+      "placement_status": "verified_existing_public_profile_both_stores_2026-10-19",
+      "ios_provenance": "Existing ASC-generated campaign preserved; no UTM appended to live iOS URL",
+      "validation": "Actual public profile link modal confirmed iOS pt/ct and Android UTM. Preserved existing naming.",
+      "prepared_ios": "https://apps.apple.com/app/apple-store/id6780309771?pt=129039245&ct=seodang_ig_202610&mt=8&utm_source=instagram&utm_medium=organic_social&utm_campaign=seodang_202610_launch&utm_content=profile",
+      "prepared_android": "https://play.google.com/store/apps/details?id=com.mihye.seodang&utm_source=instagram&utm_medium=organic_social&utm_campaign=seodang_202610_launch&utm_content=profile"
+    },
+    "x": {
+      "profile": "https://x.com/seodang_app",
+      "ios": "https://apps.apple.com/app/apple-store/id6780309771?pt=129039245&ct=seodang_x_202610&mt=8",
+      "android": "https://play.google.com/store/apps/details?id=com.mihye.seodang&utm_source=x&utm_medium=organic_social&utm_campaign=seodang_202610_launch&utm_content=profile",
+      "params": {
+        "utm_source": "x",
+        "utm_medium": "organic_social",
+        "utm_campaign": "seodang_202610_launch",
+        "utm_content": "profile"
+      },
+      "placement_status": "verified_public_profile_ios_redirect_2026-10-19",
+      "ios_provenance": "Existing provider token; new X ct constructed per Apple documentation, not generated in console",
+      "validation": "Saved website, public t.co/AhU6TjRY9i redirects to exact App Store URL with seodang_x_202610 campaign; one operator QA click. Android not placed.",
+      "prepared_ios": "https://apps.apple.com/app/apple-store/id6780309771?pt=129039245&ct=seodang_x_202610&mt=8&utm_source=x&utm_medium=organic_social&utm_campaign=seodang_202610_launch&utm_content=profile",
+      "note": "X Website has a 100-character limit observed in UI; iOS campaign89 chars used, Android UTM retained for approved posts or future landing page."
+    },
+    "threads": {
+      "profile": "https://www.threads.com/@seodang_app",
+      "ios": "https://apps.apple.com/app/apple-store/id6780309771?pt=129039245&ct=seodang_threads_202610&mt=8",
+      "android": "https://play.google.com/store/apps/details?id=com.mihye.seodang&utm_source=threads&utm_medium=organic_social&utm_campaign=seodang_202610_launch&utm_content=profile",
+      "params": {
+        "utm_source": "threads",
+        "utm_medium": "organic_social",
+        "utm_campaign": "seodang_202610_launch",
+        "utm_content": "profile"
+      },
+      "placement_status": "verified_public_profile_both_stores_after_navigation_2026-10-19",
+      "ios_provenance": "Existing ASC-generated pt/ct campaign reused",
+      "validation": "Saved each link separately, navigated directly to profile, opened public links modal and verified both exact destinations and tracking parameters. Do not resave stale parent profile form. Store reporting receipt not verified.",
+      "prepared_ios": "https://apps.apple.com/app/apple-store/id6780309771?pt=129039245&ct=seodang_threads_202610&mt=8&utm_source=threads&utm_medium=organic_social&utm_campaign=seodang_202610_launch&utm_content=profile"
+    }
+  },
+  "limitations": [
+    "No independent click logger or landing page",
+    "App does not collect UTM; no channel-level learning attribution",
+    "UTM does not itself count clicks",
+    "Instagram both existing links verified; X iOS saved and redirect verified (Android prepared only); Threads both links saved and public destination parameters verified."
+  ]
+}

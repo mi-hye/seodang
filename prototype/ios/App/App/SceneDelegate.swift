@@ -3,6 +3,7 @@ import Capacitor
 import AVFoundation
 import CryptoKit
 import Speech
+import WebKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -41,6 +42,7 @@ class SeodangBridgeViewController: CAPBridgeViewController {
         bridge?.registerPluginInstance(SeodangUIPlugin())
         bridge?.registerPluginInstance(SeodangAudioPlugin())
         bridge?.registerPluginInstance(SeodangRecognitionPlugin())
+        bridge?.registerPluginInstance(SeodangVideoPlugin())
     }
 }
 
@@ -336,5 +338,108 @@ class SeodangRecognitionPlugin: CAPPlugin, CAPBridgedPlugin {
     }
     @objc func cancel(_ call: CAPPluginCall) {
         DispatchQueue.main.async { self.complete(code: "CANCELLED"); call.resolve() }
+    }
+}
+
+
+// Inline child WebView supplies the HTTPS identity missing from capacitor://.
+@objc(SeodangVideoPlugin)
+class SeodangVideoPlugin: CAPPlugin, CAPBridgedPlugin, WKUIDelegate, WKNavigationDelegate {
+    let identifier = "SeodangVideoPlugin"
+    let jsName = "SeodangVideo"
+    let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "mount", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "layout", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "remove", returnType: CAPPluginReturnPromise)
+    ]
+    private var player: WKWebView?
+    private var token: String?
+
+    @objc func mount(_ call: CAPPluginCall) {
+        guard let videoID = call.getString("videoId"), let token = call.getString("token"),
+              ["xRlcrGXwtrA", "PZGxO0qCKRg", "pQ8lfI_W2To", "X3Y9esqDspY", "r5m1bfVUfSQ", "DddirskV5Vo", "sczKFlBP1Y4", "JPZfvT5zTBE", "sst8SX32Yhw"].contains(videoID) else {
+            call.reject("Unknown lesson video"); return
+        }
+        let start = call.getInt("startSeconds") ?? 0
+        let end = call.getInt("endSeconds") ?? 0
+        guard start >= 0, end == 0 || end > start else {
+            call.reject("Invalid clip bounds"); return
+        }
+        DispatchQueue.main.async {
+            guard let host = self.bridge?.webView else { call.reject("WebView unavailable"); return }
+            self.removePlayer()
+            self.token = token
+            let configuration = WKWebViewConfiguration()
+            configuration.websiteDataStore = .nonPersistent()
+            configuration.allowsInlineMediaPlayback = true
+            let player = WKWebView(frame: .zero, configuration: configuration)
+            player.uiDelegate = self; player.navigationDelegate = self
+            player.isOpaque = false; player.backgroundColor = .black
+            player.scrollView.isScrollEnabled = false
+            self.player = player
+            // Shares the lesson's native scroll container, so it scrolls with the text.
+            host.scrollView.addSubview(player)
+            self.applyFrame(call)
+            let identity = "https://" + (Bundle.main.bundleIdentifier ?? "com.mihye.seodang").lowercased()
+            let bounds = "&start=\(start)" + (end > 0 ? "&end=\(end)" : "")
+            guard let controlsURL = Bundle.main.url(forResource: "youtube-captions", withExtension: "js", subdirectory: "public/src"),
+                  let controls = try? String(contentsOf: controlsURL, encoding: .utf8) else {
+                self.removePlayer(); call.reject("Player controls unavailable"); return
+            }
+            let html = """
+            <!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="strict-origin-when-cross-origin"><style>html,body{margin:0;width:100%;height:100%;background:#000}iframe{display:block;width:100%;height:100%;border:0}</style></head><body><iframe src="https://www.youtube.com/embed/\(videoID)?playsinline=1&autoplay=0&enablejsapi=1&cc_load_policy=0&origin=\(identity)\(bounds)" title="YouTube" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe><script type="module">\(controls)
+            mountCaptionDefaults(document.querySelector("iframe"));
+            </script></body></html>
+            """
+            player.loadHTMLString(html, baseURL: URL(string: identity))
+            call.resolve()
+        }
+    }
+    @objc func layout(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            if self.token == call.getString("token") { self.applyFrame(call) }
+            call.resolve()
+        }
+    }
+    private func applyFrame(_ call: CAPPluginCall) {
+        guard let host = bridge?.webView, let player = player else { return }
+        let viewport = call.getDouble("viewportWidth") ?? Double(host.bounds.width)
+        let scale = host.bounds.width / max(1, CGFloat(viewport))
+        let offset = host.scrollView.contentOffset
+        player.frame = CGRect(x: CGFloat(call.getDouble("x") ?? 0) * scale + offset.x,
+                              y: CGFloat(call.getDouble("y") ?? 0) * scale + offset.y,
+                              width: CGFloat(call.getDouble("width") ?? 200) * scale,
+                              height: CGFloat(call.getDouble("height") ?? 200) * scale)
+        let hidden = call.getBool("hidden") ?? false
+        if hidden && !player.isHidden {
+            // Pause before settings or backgrounding; never resume without a user tap.
+            player.evaluateJavaScript("document.querySelector('iframe')?.contentWindow.postMessage(JSON.stringify({event:'command',func:'pauseVideo',args:[]}), 'https://www.youtube.com')", completionHandler: nil)
+        }
+        player.isHidden = hidden
+    }
+    @objc func remove(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            if self.token == call.getString("token") { self.removePlayer() }
+            call.resolve()
+        }
+    }
+    private func removePlayer() {
+        player?.stopLoading()
+        player?.loadHTMLString("", baseURL: nil)
+        player?.removeFromSuperview()
+        player = nil; token = nil
+    }
+    func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration,
+                 for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+        if let url = navigationAction.request.url, url.scheme == "https" { UIApplication.shared.open(url) }
+        return nil
+    }
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
+                 decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        if navigationAction.targetFrame?.isMainFrame == true, navigationAction.navigationType == .linkActivated,
+           let url = navigationAction.request.url, url.scheme == "https" {
+            UIApplication.shared.open(url); decisionHandler(.cancel); return
+        }
+        decisionHandler(.allow)
     }
 }

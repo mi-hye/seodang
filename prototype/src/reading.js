@@ -1,3 +1,4 @@
+import {japaneseLessonUI} from './curriculum.js';
 import {readingPassage,readingOptions} from './reading-layout.js';
 
 import {lessonTitle} from './lesson-title.js';
@@ -16,8 +17,8 @@ export function currentReadingAudio(state){
  return {id:`reading.${level}.${index}`,text:readingCourses[level].passages[index].paragraphs.join('').replaceAll('|',''),locale:'ja-JP',status:'ready',voiceId:'VOICEVOX Nemo 男声1',audioFile:`assets/audio/reading/reading.${level}.${index}.wav`};
 }
 export function renderReading(state){
- const level=selectedLevel(state),jp=level>=7,course=level===7?advanced.advancedCourse:readingCourses[level],p=readingProgress(state,level);
- const text=t=>jp?ja(t):esc(t),passage=course.passages[Math.floor(p.index/2)],q=passage.questions[p.index%2];
+ const level=selectedLevel(state),jp=japaneseLessonUI(state),course=level===7?advanced.advancedCourse:readingCourses[level],p=readingProgress(state,level);
+ const text=t=>level===7?ja(t):esc(t),passage=course.passages[Math.floor(p.index/2)],q=passage.questions[p.index%2];
  const header=renderHeader(lessonTitle(state,'reading',course.title),{backLabel:jp?'ホームへ':'학습 홈으로',settingsHidden:jp});
  const spokenPassage=readingPassage(state,{title:text(passage.title),content:(passage.paragraphs||[]).map(t=>`<p>${ja(t)}</p>`).join(''),lang:'ja',action:'reading-audio',japanese:jp});
  let body;

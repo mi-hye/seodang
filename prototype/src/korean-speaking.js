@@ -6,13 +6,13 @@ const normalizeSpeech=text=>String(text||'').normalize('NFC').replace(/[\s\p{P}\
 export const matchesSpeakingTarget=(text,target=speakingTarget)=>Boolean(normalizeSpeech(target))&&normalizeSpeech(text)===normalizeSpeech(target);
 const koCopy={'話してみよう':'말해 봐요','話す':'말하기','お手本を聞く':'예시 듣기','戻る':'이전','スキップ':'건너뛰기','次へ':'다음','録音を終える':'녹음 끝내기','聞いているよ':'듣고 있어요','聞いているよ…':'듣고 있어요…','もう一度、話してみよう':'다시 말해 봐요','よくできたね！':'잘했어요!','スキップして進もう':'건너뛰어도 괜찮아요','設定でマイクと音声認識を許可してね':'설정에서 마이크와 음성 인식을 허용해 주세요','聞き取った文：':'들은 문장: ','ソダン犬':'서당개','笑顔のソダン犬':'웃는 서당개','耳をすますソダン犬':'귀 기울이는 서당개','首をかしげるソダン犬':'고개를 기울이는 서당개'};
 export function renderKoreanSpeaking(top,target=speakingTarget,locale='ko-KR',audioId='',parts,options={}){
- const japanese=locale==='ja-JP',t=text=>japanese?(koCopy[text]||text):text,uiLang=japanese?'ko':'ja',lang=japanese?'ja':'ko';
+ const japanese=locale==='ja-JP',koreanUI=options.uiLocale==='ko'||japanese,t=text=>koreanUI?(koCopy[text]||text):text,uiLang=koreanUI?'ko':'ja',lang=japanese?'ja':'ko';
  const audioAction=options.audioAction||(japanese?'sentence-audio':'korean-audio'),previousAction=options.previousAction||(japanese?'sentence-previous':'korean-previous');
- return `${top(t('話してみよう'))}<main class="page korean-speaking" data-speaking-locale="${locale}" data-speaking-spoken="${esc(options.spoken||target)}"><div class="speaking-coach"><h1 lang="${uiLang}" role="status" aria-live="polite" data-speaking-status>${t('話してみよう')}</h1><span class="speaking-dog" data-speaking-mood="idle" role="img" aria-label="${t('ソダン犬')}"></span></div><button class="primary speaking-microphone" type="button" data-speaking-record aria-label="${t('話す')}" aria-pressed="false">${microphone()}</button><div class="audio-text-row"><h2 lang="${lang}">${phraseText(target,parts)}</h2>${button(icon('sound'),audioAction,'icon-button',`aria-label="${t('お手本を聞く')}" data-id="${esc(audioId)}" data-speaking-example`)}</div><p data-speaking-transcript lang="${lang}" hidden></p><div class="speaking-actions"><div class="button-pair speaking-navigation">${button(t('戻る'),previousAction,'text-button')}<button class="text-button" type="button" data-speaking-skip>${t('スキップ')}</button><button class="primary" type="button" data-speaking-next disabled hidden>${t('次へ')}</button></div></div></main>`;
+ return `${top(t('話してみよう'))}<main class="page korean-speaking" data-speaking-locale="${locale}" data-speaking-ui="${uiLang}" data-speaking-free="${Boolean(options.freeSpeech)}" data-speaking-spoken="${esc(options.spoken||target)}"><div class="speaking-coach"><h1 lang="${uiLang}" role="status" aria-live="polite" data-speaking-status>${esc(options.prompt||t('話してみよう'))}</h1><span class="speaking-dog" data-speaking-mood="idle" role="img" aria-label="${t('ソダン犬')}"></span></div><button class="primary speaking-microphone" type="button" data-speaking-record aria-label="${t('話す')}" aria-pressed="false">${microphone()}</button><div class="audio-text-row"><h2 lang="${lang}">${phraseText(target,parts)}</h2>${button(icon('sound'),audioAction,'icon-button',`aria-label="${t('お手本を聞く')}" data-id="${esc(audioId)}" data-speaking-example`)}</div><p data-speaking-transcript lang="${lang}" hidden></p><div class="speaking-actions"><div class="button-pair speaking-navigation">${button(t('戻る'),previousAction,'text-button')}<button class="text-button" type="button" data-speaking-skip>${t('スキップ')}</button><button class="primary" type="button" data-speaking-next disabled hidden>${t('次へ')}</button></div></div></main>`;
 }
 export function mountKoreanSpeaking(root,{stop,advance,recognize,cancel,end}={}){
  const page=root.querySelector('.korean-speaking');if(!page)return()=>{};
- const locale=page.dataset.speakingLocale||'ko-KR',localize=text=>locale==='ja-JP'?(koCopy[text]||text):text;
+ const locale=page.dataset.speakingLocale||'ko-KR',localize=text=>page.dataset.speakingUi==='ko'||locale==='ja-JP'?(koCopy[text]||text):text;
  const cap=globalThis.Capacitor,supported=Boolean(recognize||cap?.isNativePlatform?.()&&cap.getPlatform?.()==='ios');
  const call=(method)=>cap.nativePromise('SeodangRecognition',method,{locale});
  recognize ||= ()=>call('recognize');cancel ||= ()=>call('cancel');end ||= ()=>call('finish');
@@ -33,8 +33,9 @@ export function mountKoreanSpeaking(root,{stop,advance,recognize,cancel,end}={})
   try{
    const result=await recognize();if(!alive||id!==request)return;
    const heard=String(result.text||'').trim();transcript.textContent=heard?`${localize('聞き取った文：')}${heard}`:'';transcript.hidden=!heard;
-   const matched=(matchesSpeakingTarget(heard,page.querySelector('h2').textContent)||matchesSpeakingTarget(heard,page.dataset.speakingSpoken));showNext(matched);
-   tell(matched?'よくできたね！':'もう一度、話してみよう',matched?'happy':'retry');
+   const free=page.dataset.speakingFree==='true';
+   const matched=free?Boolean(heard):(matchesSpeakingTarget(heard,page.querySelector('h2').textContent)||matchesSpeakingTarget(heard,page.dataset.speakingSpoken));showNext(matched);
+   tell(matched?(free?'생각을 들려줘서 고마워요':'よくできたね！'):'もう一度、話してみよう',matched?'happy':'retry');
   }catch(error){if(!alive||id!==request)return;tell(error.code==='PERMISSION_DENIED'?'設定でマイクと音声認識を許可してね':error.code==='ON_DEVICE_UNAVAILABLE'?'スキップして進もう':'もう一度、話してみよう');}
   finally{if(alive&&id===request){recording=false;record.disabled=false;micState(false);example.disabled=false;}}
  };

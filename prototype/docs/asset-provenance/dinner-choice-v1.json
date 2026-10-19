@@ -1,0 +1,7 @@
+{
+  "tool": "image_gen built-in",
+  "useCase": "photorealistic-natural",
+  "prompt": "Create one photorealistic editorial lifestyle photo for a bilingual Korean/Japanese language-learning mobile app lesson: two adult East Asian female friends in casual everyday clothes, one in a muted cream cardigan and one in a muted blue jacket, standing together on a pleasant neighborhood restaurant street at early evening deciding where to have dinner. One friend holds a phone loosely angled away from camera and gestures toward a cozy popular restaurant with a small softly blurred queue; the other smiles thoughtfully toward a quieter intimate restaurant entrance nearby. Warm natural storefront light, candid friendly interaction, realistic anatomy and hands, subtle film-like color, approachable everyday life, not a fashion shoot, not romantic, not corporate. Medium-wide horizontal composition 3:2, both friends' heads and torsos centered in the middle horizontal band so the scene still makes sense in a wide 2.4:1 banner crop. Background restaurants are context, main subjects are the two friends. No readable text, no lettering, no logos, no watermarks, no captions or UI, no exaggerated facial expressions.",
+  "asset": "assets/lesson-scenes/dinner-choice-v1.jpg",
+  "source": "/Users/kangmihye/.codex/generated_images/01a139a7-6a36-73d1-98af-ec314075ab0a/exec-b83c1f57-6fc6-4729-abcc-be90ccdbaf5d.png"
+}

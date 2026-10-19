@@ -1,0 +1,16 @@
+{
+  "query": "SELECT cohort_day, count() AS eligible, countIf(has(learning_days,cohort_day + INTERVAL 1 DAY)) AS returned\nFROM (\n SELECT distinct_id,countIf(event='analytics_enabled') AS has_consent,\n toDate(toTimeZone(minIf(timestamp,event='analytics_enabled'),'Asia/Seoul')) AS cohort_day,\n groupUniqArrayIf(toDate(toTimeZone(timestamp,'Asia/Seoul')),event='learning_progress') AS learning_days\n FROM events WHERE timestamp >= toDateTime('2026-10-15 15:00:00','UTC') AND timestamp < toDateTime('2026-10-18 15:00:00','UTC')\n AND properties.client='seodang-capacitor' AND properties.environment='production'\n AND event IN ('analytics_enabled','learning_progress') GROUP BY distinct_id\n) WHERE has_consent > 0 AND cohort_day >= toDate('2026-10-16') AND cohort_day < toDate('2026-10-18')\nGROUP BY cohort_day ORDER BY cohort_day LIMIT 100",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "cohort_day|eligible|returned\n2026-10-16|1|0"
+      },
+      {
+        "type": "text",
+        "text": "{\"conversation_id\":\"01a15285-da51-7ef5-963c-150f5195f6a0\"}"
+      }
+    ],
+    "isError": false
+  }
+}

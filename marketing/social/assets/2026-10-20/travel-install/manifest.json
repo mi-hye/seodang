@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-20",
+  "status": "superseded_do_not_publish",
+  "topic": "여행지 계산대에서 말이 막힐 때",
+  "format": "one_post_two_videos_bilingual_caption",
+  "channels": [
+    "instagram",
+    "threads",
+    "x"
+  ],
+  "media": [
+    {
+      "language": "ko",
+      "file": "marketing/social/assets/2026-10-20/travel-install/seodang-konbini-ko.mp4",
+      "duration_seconds": 22.0666667,
+      "sha256": "7bd047a1599d6a127d88b45ebd3ee0fe45adfde3291feb419f635a1cf7d0b76b"
+    },
+    {
+      "language": "ja",
+      "file": "marketing/social/assets/2026-10-20/travel-install/seodang-konbini-ja.mp4",
+      "duration_seconds": 20.2666667,
+      "sha256": "0fe1435b01464268a7d9533a36c4750e34abcf0e3655d8a33711c217a3463795"
+    }
+  ],
+  "validation": {
+    "video": "1080x1920, 30fps, one audio track each",
+    "visual": "Both contact sheets reviewed: hook, gameplay, download CTA; no clipped text",
+    "audio": "Published M4A sources from 2026-10-19/published-audio; 0.8x spectral pitch preservation; shifted 3 seconds after hook"
+  },
+  "attribution": "Profile link conversions cannot be attributed to this post alone",
+  "superseded_by": "marketing/social/assets/2026-10-20/station-meeting"
+}

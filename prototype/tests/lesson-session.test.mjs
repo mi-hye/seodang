@@ -36,3 +36,18 @@ test('opening a case introduction alone never prompts to resume, actual learning
   assert.equal(shouldOfferResume(s,kind),true,kind);
  }
 });
+
+test('scenario and expert entries share resume and isolated restart for both languages',async()=>{
+ const {freshState}=await import('../src/engine.js');const {valid}=await import('../src/storage.js');
+ const {scenarioLessons}=await import('../src/scenario-state.js');
+ for(const direction of ['ko-ja','ja-ko'])for(const kind of ['scenario','expert'])for(const lesson of kind==='scenario'?scenarioLessons:[0,1,2,3].map(id=>({id,level:7}))){
+  let s=entryState({...freshState(),onboarded:true,onboardingLevel:lesson.level,courseDirection:direction},kind,lesson.id);
+  assert.equal(shouldOfferResume(s,kind),false);
+  s=reduce(s,{type:`${kind}-start`,id:lesson.id});assert.equal(shouldOfferResume(s,kind),false);
+  s=reduce(s,{type:`${kind}-next`});assert.equal(shouldOfferResume(s,kind),true);
+  const before=structuredClone(s),reset=restartLesson(s,kind);assert.deepEqual(s,before);assert.equal(lessonProgress(reset,kind).phase,'intro');assert.equal(shouldOfferResume(reset,kind),false);assert.ok(valid(reset));
+  const resumed=reduce(s,{type:`${kind}-start`,id:lesson.id});assert.deepEqual(lessonProgress(resumed,kind),lessonProgress(s,kind));
+  const other=kind==='expert'?(Number(lesson.id)+1)%4:lesson.id==='2'?'3':'2';assert.equal(shouldOfferResume(entryState(s,kind,other),kind),false);
+  const done=structuredClone(s);lessonProgress(done,kind).phase='done';lessonProgress(done,kind).completed=true;assert.equal(shouldOfferResume(done,kind),false);assert.equal(lessonProgress(restartLesson(done,kind),kind).completed,true);
+ }
+});

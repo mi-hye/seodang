@@ -1,0 +1,110 @@
+[
+  {
+    "lesson": "frieren-reaction",
+    "source": {
+      "id": "X3Y9esqDspY",
+      "title": "葬送のフリーレン ミニアニメ「●●の魔法」第1回：「考えていることを言ってしまう魔法」",
+      "channel": "TOHO animation",
+      "channel_id": "UC14Yc2Qv92DMuyNRlHvpo2Q",
+      "channel_url": "https://www.youtube.com/channel/UC14Yc2Qv92DMuyNRlHvpo2Q",
+      "duration": 69,
+      "availability": "public",
+      "playable_in_embed": true,
+      "language": "ja"
+    },
+    "startSeconds": 15,
+    "endSeconds": 17,
+    "quote": "そうなの？",
+    "verification": "Original audio transcription followed by an independent isolated crop transcription; no YouTube captions used."
+  },
+  {
+    "lesson": "frieren-uncertainty",
+    "source": {
+      "id": "r5m1bfVUfSQ",
+      "title": "葬送のフリーレン ミニアニメ「●●の魔法」第14回：「大体なんでも切る魔法」",
+      "channel": "TOHO animation",
+      "channel_id": "UC14Yc2Qv92DMuyNRlHvpo2Q",
+      "channel_url": "https://www.youtube.com/channel/UC14Yc2Qv92DMuyNRlHvpo2Q",
+      "duration": 97,
+      "availability": "public",
+      "playable_in_embed": true,
+      "language": "ja"
+    },
+    "startSeconds": 44,
+    "endSeconds": 47,
+    "quote": "作れるかは分かんないけどね。",
+    "verification": "Original audio transcription followed by an independent isolated crop transcription; no YouTube captions used."
+  },
+  {
+    "lesson": "frieren-opinion",
+    "source": {
+      "id": "DddirskV5Vo",
+      "title": "葬送のフリーレン ミニアニメ「●●の魔法」第20回：「心と体が入れ替わる魔法」",
+      "channel": "TOHO animation",
+      "channel_id": "UC14Yc2Qv92DMuyNRlHvpo2Q",
+      "channel_url": "https://www.youtube.com/channel/UC14Yc2Qv92DMuyNRlHvpo2Q",
+      "duration": 105,
+      "availability": "public",
+      "playable_in_embed": true,
+      "language": "ja"
+    },
+    "startSeconds": 16,
+    "endSeconds": 21,
+    "quote": "それ、いろんな人が迷惑すると思うので、使わないでおきましょう。",
+    "verification": "Original audio transcription followed by an independent isolated crop transcription; no YouTube captions used."
+  },
+  {
+    "lesson": "hospital-reassurance",
+    "source": {
+      "id": "sczKFlBP1Y4",
+      "title": "[종합 예고] '괜찮아요' 당신에게 건네는 작은 위로의 한마디! | 슬기로운 의사생활 Hospital Playlist EP.0",
+      "channel": "tvN DRAMA",
+      "channel_id": "UC9w-h_ciMmX64TcLRcb1xPg",
+      "channel_url": "https://www.youtube.com/channel/UC9w-h_ciMmX64TcLRcb1xPg",
+      "duration": 30,
+      "availability": "public",
+      "playable_in_embed": true,
+      "language": "en-US"
+    },
+    "startSeconds": 21,
+    "endSeconds": 23,
+    "quote": "괜찮아요.",
+    "verification": "Original audio transcription followed by an independent isolated crop transcription; no YouTube captions used."
+  },
+  {
+    "lesson": "blackdog-help",
+    "source": {
+      "id": "JPZfvT5zTBE",
+      "title": "수업자료도 버리고 우울해하는 하늘쌤😢 내내 바라보던 도연우쌤의 한마디 \"도와줄까요?\" EP2-13ㅣ#블랙독",
+      "channel": "디글 :Diggle",
+      "channel_id": "UCWYzc_p0GgfCepIWDHGFmEg",
+      "channel_url": "https://www.youtube.com/channel/UCWYzc_p0GgfCepIWDHGFmEg",
+      "duration": 249,
+      "availability": "public",
+      "playable_in_embed": true,
+      "language": "ko"
+    },
+    "startSeconds": 240,
+    "endSeconds": 243,
+    "quote": "제가 좀 도와줄까요?",
+    "verification": "Original audio transcription followed by an independent isolated crop transcription; no YouTube captions used."
+  },
+  {
+    "lesson": "queen-condition",
+    "source": {
+      "id": "sst8SX32Yhw",
+      "title": "박성훈의 이간질에 넘어가지 않는 김지원, 남편 김수현을 향한 강한 믿음! #눈물의여왕 EP.3 | tvN 240316 방송",
+      "channel": "tvN DRAMA",
+      "channel_id": "UC9w-h_ciMmX64TcLRcb1xPg",
+      "channel_url": "https://www.youtube.com/channel/UC9w-h_ciMmX64TcLRcb1xPg",
+      "duration": 141,
+      "availability": "public",
+      "playable_in_embed": true,
+      "language": "ko"
+    },
+    "startSeconds": 129,
+    "endSeconds": 132,
+    "quote": "보통은 자신이 없을 때 설명이 길어지지.",
+    "verification": "Original audio transcription followed by an independent isolated crop transcription; no YouTube captions used."
+  }
+]

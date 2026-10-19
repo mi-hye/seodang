@@ -1,3 +1,5 @@
+import {expertProgress,expertKey,freshExpert} from './expert-state.js';
+import {scenarioProgress,scenarioKey,freshScenario} from './scenario-state.js';
 import {japaneseLessonUI} from './curriculum.js';
 import {practiceHasWriting,practiceRoundCount,normalizePractice,normalizeCasePractice} from './practice-state.js';
 import {basicLessons,freshBasic,nextBasic,basicSinglePass,basicHasIntro,basicGroup} from './basics-state.js';
@@ -12,6 +14,8 @@ import {freshEpisode} from './engine.js';
 import {caseTasks,practiceKey,practiceUnits} from './practice-content.js';
 import {showSheet,closeSheet} from './sheet.js';
 export function entryState(s,kind,id){
+ if(kind==='expert')return {...s,expertActive:Number(id??0)};
+ if(kind==='scenario')return {...s,scenarioActive:String(id??s.scenarioActive)};
  if(kind==='sentence')return {...s,sentenceActive:Number(id??nextSentence(s))};
  if(kind==='reading'&&id!==undefined)return {...s,onboardingLevel:Number(id)};
  if(kind==='basic')return {...s,basics:{...s.basics,active:Number(id??nextBasic(s))}};
@@ -20,6 +24,8 @@ export function entryState(s,kind,id){
  return s;
 }
 export function lessonProgress(s,kind){
+ if(kind==='expert')return expertProgress(s);
+ if(kind==='scenario')return scenarioProgress(s);
  if(kind==='sentence')return sentenceProgress(s);
  if(kind==='basic')return s.basics?.lessons?.[s.basics.active];
  if(kind==='korean')return s.korean?.lessons?.[s.korean.active];
@@ -28,20 +34,23 @@ export function lessonProgress(s,kind){
  return s[kind==='play'?'episode':kind];
 }
 export function shouldOfferResume(s,kind){
- if(s.practices?.[practiceKey(s,kind)])return true;
+ if(!['expert','scenario'].includes(kind)&&s.practices?.[practiceKey(s,kind)])return true;
  const p=lessonProgress(s,kind),phase=p?.phase||p?.step;
  if(!p?.started||['summary','done'].includes(phase)||(kind==='listening'&&p.index===4))return false;
  // Opening the first page sets started, but is not progress worth resuming.
  const initial=kind==='basic'?freshBasic(s.basics.active).phase:kind==='korean'?freshKoreanProgress(s.korean.active).phase:kind==='listening'?undefined:'intro';
+ if(kind==='expert'&&p.resumePhase)return true;
  const effectivePhase=phase==='scenario'&&p.resumePhase?p.resumePhase:phase;
  return Boolean((p.index||p.lesson||0)>0||effectivePhase!==initial||p.selected!=null||p.retry||p.feedback||p.checked||p.tokens?.length||p.matches?.length);
 }
 export function restartLesson(s,kind){
- const next=structuredClone(s),old=lessonProgress(s,kind),fresh={basic:()=>freshBasic(next.basics.active),korean:()=>freshKoreanProgress(next.korean.active),kana:()=>freshKana().lessons[0],labels:freshLabels,listening:freshListening,sentence:freshSentence,dialogue:freshDialogue,reading:freshReading,play:freshEpisode}[kind]();
+ const next=structuredClone(s),old=lessonProgress(s,kind),fresh={expert:freshExpert,scenario:freshScenario,basic:()=>freshBasic(next.basics.active),korean:()=>freshKoreanProgress(next.korean.active),kana:()=>freshKana().lessons[0],labels:freshLabels,listening:freshListening,sentence:freshSentence,dialogue:freshDialogue,reading:freshReading,play:freshEpisode}[kind]();
  // Completion unlocks and accumulated records survive a new attempt.
  if('completed' in fresh)fresh.completed=Boolean(old?.completed);
  if('caseSolved' in fresh)fresh.caseSolved=Boolean(old?.caseSolved);
- if(kind==='basic'){next.basics.lessons||={};next.basics.lessons[next.basics.active]=fresh;}
+ if(kind==='expert'){next.experts||={};next.experts[expertKey(next)]=fresh;}
+ else if(kind==='scenario'){next.scenarios||={};next.scenarios[scenarioKey(next)]=fresh;}
+ else if(kind==='basic'){next.basics.lessons||={};next.basics.lessons[next.basics.active]=fresh;}
  else if(kind==='korean'){next.korean.lessons||={};next.korean.lessons[next.korean.active]=fresh;}
  else if(kind==='kana')next.kana.lessons[next.kana.active]=fresh;
  else if(kind==='reading'){next.readings||={};next.readings[selectedLevel(s)]=fresh;}

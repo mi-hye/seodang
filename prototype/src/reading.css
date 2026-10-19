@@ -1,3 +1,4 @@
+@import './speaking.css';
 .reading-page{max-width:480px;margin:auto;padding-bottom:32px}
 .reading-page h1{font-size:calc(24px * var(--text-scale));line-height:1.6;margin:10px 0 20px}
 .reading-count{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;margin-bottom:14px}
@@ -30,3 +31,7 @@
 .expert-translation{border-top:1px solid var(--line);padding-top:16px;margin:20px 0}.expert-translation h2{font-size:16px;color:var(--muted)}.expert-translation p{font-size:calc(18px * var(--text-scale));line-height:1.8;word-break:keep-all}.expert-translation [lang=ja]{word-break:normal;line-break:strict}
 .expert-page [lang=ja]{word-break:normal;line-break:strict;overflow-wrap:break-word}
 .expert-page [lang=ja] .text-phrase{display:inline;white-space:normal;word-break:normal;overflow-wrap:normal}
+
+.expert-discussion h1{font-size:calc(24px * var(--text-scale));line-height:1.5}.expert-discussion .word-memory{margin:16px 0}.expert-discussion .word-memory-body p{line-height:1.8;word-break:keep-all}.expert-discussion .word-memory-body [lang=ja]{word-break:normal;line-break:strict}.expert-discussion .audio-text-row{align-items:center;gap:8px}.expert-discussion .audio-text-row>p{flex:1;min-width:0;line-height:1.8;word-break:keep-all}.expert-discussion .audio-text-row>[lang=ja]{word-break:normal;line-break:strict}.expert-discussion .audio-text-row>.icon-button{flex:none}.expert-discussion .discussion-coach{display:flex;flex-direction:column;align-items:center;text-align:center}.expert-discussion .discussion-coach p{line-height:1.7}.expert-discussion .discussion-pattern{font-size:calc(22px * var(--text-scale));line-height:1.6;word-break:keep-all}.expert-discussion .discussion-pattern[lang=ja]{word-break:normal;line-break:strict}
+
+.expert-discussion .discussion-image{display:block;width:100%;height:clamp(88px,16svh,140px);object-fit:cover;object-position:50% 36%;border-radius:16px;margin:0 0 16px;flex:none}

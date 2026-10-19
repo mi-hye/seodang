@@ -1,3 +1,4 @@
+import {videoLesson,videoProgress} from './video-lesson-state.js';
 import {expertCatalog,expertProgress} from './expert-state.js';
 import {scenarioProgress,scenarioLessons,scenarioTitle} from './scenario-state.js';
 import {analytics,openAnalytics} from './analytics.js';
@@ -8,7 +9,7 @@ import {japaneseLessonUI,koreanImmersion,courseGroup,displayLevel,retiredPractic
 import {lessonTitle} from './lesson-title.js';
 import {developmentMode} from './build-config.js';
 import {practiceHasWriting,practiceRoundCount,advancePractice} from './practice-state.js';
-import {t,t as translate,setUILanguage,loadUILanguage,confirmReset} from './i18n.js';
+import {t,setUILanguage,loadUILanguage,confirmReset} from './i18n.js';
 import {nextKorean,koreanLessons,koreanProgress,koreanUnlocked,koreanStageZero,followingKorean} from './korean-state.js';
 import {basicLessons,basicProgress,basicUnlocked,nextBasic,basicLevel,basicSinglePass,followingBasic} from './basics-state.js';
 import {renderLearningMap} from './learning-map.js';
@@ -87,7 +88,7 @@ async function loadPractice(kind){
  practiceModule ||= await import('./practice.js');
  lessonSession ||= await import('./lesson-session.js');
  practiceStyles ||= new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href='src/practice.css';link.onload=resolve;link.onerror=()=>{link.remove();practiceStyles=null;reject(Error('Practice styles unavailable'));};document.head.append(link);});
- await Promise.all([practiceStyles,practiceModule.prepareContent(kind)]);
+ await Promise.all([practiceStyles,kind?practiceModule.prepareContent(kind):Promise.resolve()]);
  if(developmentMode){
   devLessonTools ||= await import('./dev-lesson-tools.js');
   devLessonStyles ||= new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href='src/dev-lesson-tools.css';link.onload=resolve;link.onerror=()=>{link.remove();devLessonStyles=null;reject(Error('Dev styles unavailable'));};document.head.append(link);});
@@ -137,24 +138,21 @@ function top(title, back = true) {
   if(!completedKind&&practiceKinds.includes(view))title=lessonTitle(state,view,title);
   return renderHeader(title || "서당", { backAction: "home", backLabel: "학습 홈으로", backDisabled: !back, backHidden: !back });
 }
+let communityModule,communityStyles,disposeCommunity,communityScreen='feed';
+async function loadCommunity(){
+ communityModule ||= await import('./community.js');
+ communityStyles ||= new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href='src/community.css';link.onload=resolve;link.onerror=()=>{link.remove();communityStyles=null;reject(Error('Community styles unavailable'));};document.head.append(link);});
+ await communityStyles;
+}
+function community(){const header=top(japaneseLessonUI(state)?'交流':'교류',false).replace('<span class="app-header-title',`${button(icon('people'),'community-inbox','app-header-back',`aria-label="${japaneseLessonUI(state)?'メッセージ':'대화함'}"`)}<span class="app-header-title`);return `${header}<main class="community" data-community-root></main>${tabs()}`;}
 function tabs() {
-  return `<nav class="tabs" aria-label="${t('주 메뉴')}">${[
-    ["home", "book", "배우기"],
-    ["kana-chart", "letters", "글자"],
-    ["my", "chart", "내 기록"],
-    ["settings", "settings", "설정"],
-  ]
-    .map(([id, i, t]) =>
-      button(
-        `${icon(i)}<span>${translate(t)}</span>`,
-        id,
-        view === id
-          ? "tab active"
-          : "tab",
-        ["settings","kana-chart"].includes(id) ? 'aria-haspopup="dialog"' : `aria-current="${view === id ? "page" : "false"}"`,
-      ),
-    )
-    .join("")}</nav>`;
+  const japanese=japaneseLessonUI(state);
+  const items=[
+    ['home','book',japanese?'学習':'학습'],
+    ['my','chart',japanese?'記録':'기록'],
+    ['community','people',japanese?'交流':'교류'],
+  ];
+  return `<nav class="tabs" aria-label="${japanese?'メインメニュー':'주 메뉴'}">${items.map(([id,i,label])=>button(`${icon(i)}<span>${esc(label)}</span>`,id,view===id?'tab active':'tab',`aria-current="${view===id?'page':'false'}"`)).join('')}</nav>`;
 }
 function currentPracticeKey(){
  return Object.keys(state.practices||{}).find(key=>{
@@ -175,14 +173,15 @@ function homeCaseCard(props){
  return renderHomeCaseCard({...props,title:prefix+lessonTitle(s,kind,parts.join(' · '))});
 }
 function caseCard() {
+  const v=videoLesson(state);if(v&&videoProgress(state).started&&!videoProgress(state).completed)return renderHomeCaseCard({title:`${v.number}. ${v.title}`,action:'video',actionLabel:'학습 이어하기'});
   if(selectedLevel(state)===7){const list=expertCatalog[state.courseDirection];let id=list.findIndex((_,i)=>expertProgress(state,i).started&&!expertProgress(state,i).completed);if(id<0)id=list.findIndex((_,i)=>!expertProgress(state,i).completed);if(id<0)id=0;const p=expertProgress(state,id);return renderHomeCaseCard({title:`${id+1}. ${list[id].title}`,action:'expert',id,actionLabel:p.completed?'다시 학습하기':p.started?'학습 이어하기':'학습 시작하기'});}
   const extra=scenarioLessons.find(l=>l.level===courseGroup(selectedLevel(state))&&scenarioProgress(state,l.id).started&&!scenarioProgress(state,l.id).completed);
   if(extra)return renderHomeCaseCard({title:`${displayLevel(extra.level)}단계 · ${extra.number[state.courseDirection]}. ${scenarioTitle(state,extra)}`,action:'scenario',id:extra.id,actionLabel:t('학습 이어하기')});
   const pendingKey=currentPracticeKey();
   if(pendingKey){
     const [,kind,id]=pendingKey.split(':');
-    const title=kind==='korean'?koreanLessons.find(l=>l.id===id)?.title:kind==='kana'?kanaLessons[Number(id)]?.caseTitle:kind==='basic'?basicLessons.find(l=>l.id===Number(id))?.title:kind==='sentence'?sentenceLessons.find(l=>l.id===Number(id))?.title:({labels:'그림에 이름표 붙이기',listening:'듣고 사진 고르기',play:'카페에 남겨진 가방',sentence:'가방 주인을 찾아요',dialogue:'카페에서 주문하기',reading:selectedLevel(state)===7?'行間を聴く':selectedLevel(state)===6?'조건과 이유를 읽고 판단하기':'글을 읽고 핵심 찾기'}[kind]);
-    return homeCaseCard({title,action:'practice-resume',actionLabel:state.courseDirection==='ja-ko'&&!koreanImmersion(state)?'学習を続ける':'학습 이어하기'});
+    const title=kind==='korean'?koreanLessons.find(l=>l.id===id)?.title:kind==='kana'?kanaLessons[Number(id)]?.caseTitle:kind==='basic'?basicLessons.find(l=>l.id===Number(id))?.title:kind==='sentence'?sentenceLessons.find(l=>l.id===Number(id))?.title:({labels:'그림에 이름표 붙이기',listening:'듣고 사진 고르기',play:'카페에 남겨진 가방',sentence:'가방 주인을 찾아요',dialogue:'카페에서 주문하기',reading:selectedLevel(state)===7?'생각 나누기':selectedLevel(state)===6?'조건과 이유를 읽고 판단하기':'글을 읽고 핵심 찾기'}[kind]);
+    return homeCaseCard({title,action:'practice-resume',actionLabel:japaneseLessonUI(state)?'学習を続ける':'학습 이어하기'});
   }
   if(state.courseDirection==='ja-ko'){const l=nextKorean(state),p=koreanProgress(state,l.id);return homeCaseCard({title:`${koreanImmersion(state)?'레벨':'レベル'}${displayLevel(l.level)} · ${l.title}`,action:'korean',actionLabel:koreanImmersion(state)?(p.completed?'다시 학습하기':p.started?'학습 이어하기':'학습 시작하기'):(p.completed?'もう一度学ぶ':p.started?'学習を続ける':'学習を始める')});}
 
@@ -222,6 +221,13 @@ async function loadLabels(){
  if(!labelsStyles)labelsStyles=new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href='src/labels.css';link.onload=resolve;link.onerror=()=>{link.remove();labelsStyles=null;reject(Error('Labels styles unavailable'));};document.head.append(link);});
  await labelsStyles;
 }
+let videoModule,videoStyles,disposeVideo;
+async function loadVideo(){
+ videoModule ||= await import('./video-lesson.js');
+ videoStyles ||= new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href='src/video-lesson.css';link.onload=resolve;link.onerror=()=>{link.remove();videoStyles=null;reject(Error('Video lesson styles unavailable'));};document.head.append(link);});
+ await Promise.all([videoStyles,loadPractice()]);
+}
+function video(){return videoProgress(state).phase==='done'?practiceModule.renderPracticeComplete(state,top,false):videoModule.renderVideoLesson(state,title=>renderHeader(title,{backLabel:'학습 홈으로'}));}
 let expertModule;
 async function loadExpert(){expertModule ||= await import('./expert.js');await Promise.all([loadReading(),loadPractice('reading'),expertModule.prepareExpert()]);}
 function expert(){return expertProgress(state).phase==='done'?practiceModule.renderPracticeComplete(state,top,false):expertModule.renderExpert(state,title=>renderHeader(title,{backLabel:'학습 홈으로'}));}
@@ -363,6 +369,8 @@ async function mountMapCharacter(){
   }catch{/* The original pose remains visible if the optional renderer is unavailable. */}
 }
 function render(scroll = false) {
+  disposeVideo?.();disposeVideo=null;
+  disposeCommunity?.();disposeCommunity=null;
   clearMapCharacter();
   disposeDevLessonTools?.();disposeDevLessonTools=null;
   disposePractice?.();disposePractice=null;
@@ -380,18 +388,21 @@ function render(scroll = false) {
     state.settings.textScale,
   );
   document.documentElement.dataset.motion = state.settings.motion;
-  document.documentElement.classList.toggle("library-theme", ["home", "my"].includes(view));
-  app.innerHTML = `<div class="shell view-${view}">${storageError ? `<aside class="storage-warning" role="status">${esc(t(storageError))}</aside>` : ""}${completedKind?(completedKind==='korean'&&state.korean.active==='1-10'?koreanModule.renderKoreanLettersComplete(top):practiceModule.renderPracticeComplete(state,top,hasNextLesson(completedKind))):pendingPractice()?practiceModule.renderPractice(state,view,top):{ home, expert, scenario, korean, basic, review, my, play, kana, sentence, labels, listening, dialogue, reading }[view]()}${toast ? `<div class="toast" role="status">${esc(t(toast))}</div>` : ""}</div>`;
+  document.documentElement.classList.toggle("library-theme", ["home", "my", "community"].includes(view));
+  app.innerHTML = `<div class="shell view-${view}">${storageError ? `<aside class="storage-warning" role="status">${esc(t(storageError))}</aside>` : ""}${completedKind?(completedKind==='korean'&&state.korean.active==='1-10'?koreanModule.renderKoreanLettersComplete(top):practiceModule.renderPracticeComplete(state,top,hasNextLesson(completedKind))):pendingPractice()?practiceModule.renderPractice(state,view,top):{ home, community, video, expert, scenario, korean, basic, review, my, play, kana, sentence, labels, listening, dialogue, reading }[view]()}${toast ? `<div class="toast" role="status">${esc(t(toast))}</div>` : ""}</div>`;
   if(!completedKind&&lessonSession&&practiceKinds.includes(view))app.querySelector('.app-header')?.insertAdjacentHTML('afterend',lessonSession.progressBar(state,view));
   if(!completedKind&&developmentMode&&devLessonTools&&practiceKinds.includes(view))app.querySelector('.lesson-progress, .app-header')?.insertAdjacentHTML('afterend',devLessonTools.renderDevLessonTools(state,view));
   if(lessonSession&&practiceKinds.includes(view))lessonSession.centerLesson(app,state,view,Boolean(completedKind));
   if(view==='expert'&&expertProgress(state).phase==='done'){lessonSession.centerLesson(app,state,view,true);app.querySelector('.practice-complete h1')?.focus({preventScroll:true});}
   if(view==='scenario'&&scenarioProgress(state).phase==='done'){lessonSession.centerLesson(app,state,view,true);app.querySelector('.practice-complete h1')?.focus({preventScroll:true});}
+  if(view==='video'){disposeVideo=videoModule.mountVideoPlayer(app,state);if(videoProgress(state).phase==='done'){lessonSession.centerLesson(app,state,view,true);app.querySelector('.practice-complete h1')?.focus({preventScroll:true});}}
+  if(view==='community')disposeCommunity=communityModule.mountCommunity(app.querySelector('[data-community-root]'),state,{initialScreen:communityScreen});
   void mountMapCharacter();
   updatePassagePlayback();
   if(pendingPractice())disposePractice=practiceModule.mountPractice(app,state,view,{play:(entry,onError)=>player.play(entry,true,onError),stop:()=>player.stop(),onAnswer:correct=>learningTracker.answer(correct),advance:finishPracticeStep});
   if(!completedKind&&!pendingPractice()&&view==='basic'&&basicProgress(state,state.basics.active).phase==='write')disposePractice=practiceModule.mountPractice(app,basicModule.basicWritingState(state),'basic',{play:(entry,onError)=>player.play(entry,true,onError),stop:()=>player.stop(),advance:()=>{player.stop();commit({type:'basic-next'});if(basicProgress(state,state.basics.active).phase==='done')completedKind='basic';render(true);if(!completedKind&&!pendingPractice())speakBasic();}});
   if(!completedKind&&!pendingPractice()&&view === "korean")disposeKoreanWriting=koreanModule.mountKoreanWriting(app);
+  if(view==='expert'&&expertProgress(state).phase==='speak')disposeSpeaking=expertModule.mountExpertSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'expert-next'});render(true);}});
   if(view==='scenario'&&scenarioProgress(state).phase==='speak')disposeSpeaking=scenarioModule.mountScenarioSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'scenario-speak-next'});render(true);speakScenario();}});
   if(view==='sentence'&&sentenceProgress(state).phase==='speak')disposeSpeaking=sentenceModule.mountSentenceSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'sentence-speak-next'});render(true);speakSentence();}});
   if(view==='korean'&&koreanProgress(state,state.korean.active).phase==='speak')disposeSpeaking=koreanModule.mountKoreanSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'korean-speak-next'});render(true);speakKorean();}});
@@ -473,18 +484,23 @@ async function handle(event) {
   }
   const a = el.dataset.action,
     id = el.dataset.id;
+  if(a==='video'){
+    if(entryBusy||!videoLesson(state))return;entryBusy=true;el.disabled=true;
+    try{await loadVideo();commit({type:'video-start'});navigate('video');}catch{toast='학습을 불러오지 못했어요. 다시 눌러 주세요.';render();}finally{entryBusy=false;if(el.isConnected)el.disabled=false;}return;
+  }
+  if(a.startsWith('video-')){if(view!=='video')return;commit(a==='video-restart'?{type:'video-start',restart:true}:{type:a});render(true);return;}
   if(a==='analytics-consent'){const {askAnalyticsConsent}=await import('./analytics-consent.js');closePanel();await askAnalyticsConsent(state);openAnalytics(state);learningTracker.enter(learningSnapshot(state,view));return;}
   if(a==='audio-downloads'){player.stop();const {openAudioDownloads}=await import('./audio-download-ui.js');await openAudioDownloads(state);return;}
   if(a==='lesson-kanji'){el.disabled=true;player.stop();try{const {openLessonKanji}=await import('./lesson-kanji.js');await openLessonKanji(id,{trigger:el});}catch{toast='한자 학습을 불러오지 못했어요. 다시 눌러 주세요.';render();}finally{if(el.isConnected)el.disabled=false;}return;}
   if(a==='passage-pause'){if(player.state==='paused')void player.resume();else player.pause();return;}
-  if(a==='completed-next'){el.disabled=true;if(view==='scenario'&&scenarioProgress(state).phase==='done'||view==='expert'&&expertProgress(state).phase==='done'){navigate('home');return;}await nextCompletedLesson();return;}
+  if(a==='completed-next'){el.disabled=true;if(view==='video'&&videoProgress(state).phase==='done'||view==='scenario'&&scenarioProgress(state).phase==='done'||view==='expert'&&expertProgress(state).phase==='done'){navigate('home');return;}await nextCompletedLesson();return;}
   if(a==='practice-resume'){
     const saved=currentPracticeKey();
     if(!saved)return;const [,kind,lesson]=saved.split(':'),trigger=document.createElement('button');trigger.dataset.action=kind;if(['kana','basic','korean','reading','sentence'].includes(kind))trigger.dataset.id=lesson;await handle({target:trigger});return;
   }
-  const entryKind=practiceKinds.includes(a)?a:a==='kana-continue'||a==='kana-restart'?'kana':a==='labels-restart'?'labels':a==='sentence-restart'?'sentence':null;
-  if(entryKind){el.disabled=true;try{await loadPractice(entryKind);}catch{el.disabled=false;toast=t('학습을 불러오지 못했어요. 다시 눌러 주세요.');render();return;}el.disabled=false;}
-  if(entryKind&&practiceKinds.includes(a)&&!practiceKinds.includes(view)){
+  const entryKind=[...practiceKinds,'scenario','expert'].includes(a)?a:a==='kana-continue'||a==='kana-restart'?'kana':a==='labels-restart'?'labels':a==='sentence-restart'?'sentence':null;
+  if(entryKind){if(entryBusy)return;el.disabled=true;try{await loadPractice(entryKind==='expert'?'reading':entryKind);}catch{el.disabled=false;toast=t('학습을 불러오지 못했어요. 다시 눌러 주세요.');render();return;}el.disabled=false;}
+  if(entryKind&&[...practiceKinds,'scenario','expert','kana-continue'].includes(a)){
     if(entryBusy)return;entryBusy=true;
     try{
       const target=lessonSession.entryState(state,entryKind,id);
@@ -504,23 +520,17 @@ async function handle(event) {
   }
   if(a==='guide'){player.stop();window.location.assign('setup.html#guide');return;}
   if(a==='expert'){
-    if(selectedLevel(state)!==7||entryBusy)return;entryBusy=true;el.disabled=true;
-    try{
-      await loadExpert();const lessonId=Number(id??0),p=expertProgress(state,lessonId);let restart=false;
-      if(p.started&&!['intro','done'].includes(p.phase)){
-        player.stop();const choice=await lessonSession.askResume(japaneseLessonUI(state));
-        if(!choice)return;restart=choice==='restart';
-      }
-      commit({type:'expert-start',id:lessonId,restart});navigate('expert');
-    }catch{toast='학습을 불러오지 못했어요. 다시 눌러 주세요.';render();}
-    finally{entryBusy=false;el.disabled=false;}return;
+    if(selectedLevel(state)!==7)return;el.disabled=true;
+    try{await loadExpert();commit({type:'expert-start',id:id??0});navigate('expert');}
+    catch{toast='학습을 불러오지 못했어요. 다시 눌러 주세요.';render();}
+    finally{el.disabled=false;}return;
   }
   if(a.startsWith('expert-')){
     if(view!=='expert')return;
     if(a==='expert-audio'){if(!state.settings.sound)commit({type:'setting',key:'sound',value:true});speakExpert(true);return;}
     const before=expertProgress(state),moving=['expert-next','expert-previous'].includes(a);
     if(moving){const now=performance.now();if(now-lastAdvance<450)return;lastAdvance=now;player.stop();}
-    commit({type:a,id});const after=expertProgress(state);render(moving&&(before.phase!==after.phase||before.index!==after.index||before.sentence!==after.sentence));return;
+    commit({type:a,id});const after=expertProgress(state);render(moving&&(before.phase!==after.phase||before.index!==after.index||before.sentence!==after.sentence||before.part!==after.part));return;
   }
   if(a==='scenario'){
     if(!scenarioLessons.some(l=>l.id===id&&l.level===courseGroup(selectedLevel(state))))return;
@@ -583,7 +593,7 @@ async function handle(event) {
   if(a==='reading'){
    if(id!==undefined&&[5,6,7].includes(Number(id)))commit({type:'level',value:Number(id)});
    if(![5,6,7].includes(selectedLevel(state)))return;
-   el.disabled=true;try{await loadReading();commit({type:'reading-start'});navigate('reading');}catch{toast=selectedLevel(state)>=7?'読み込めませんでした。もう一度お試しください。':'학습을 불러오지 못했어요. 다시 눌러 주세요.';render();}return;
+   el.disabled=true;try{await loadReading();commit({type:'reading-start'});navigate('reading');}catch{toast=japaneseLessonUI(state)?'読み込めませんでした。もう一度お試しください。':'학습을 불러오지 못했어요. 다시 눌러 주세요.';render();}return;
   }
   if(a.startsWith('reading-')){
    if(view!=='reading')return;
@@ -631,6 +641,7 @@ async function handle(event) {
    if(advancing){const now=performance.now();if(now-lastAdvance<450)return;lastAdvance=now;player.stop();}
    commit({type:a,id});if(state.labels.phase==='summary'){navigate('listening');return;}render(advancing);if(advancing)speakLabels();return;
   }
+  if(['community','community-profile','community-inbox'].includes(a)){el.disabled=true;try{await loadCommunity();communityScreen=a==='community-profile'?'profile':a==='community-inbox'?'inbox':'feed';if(panel.open)closePanel();navigate('community');}catch{toast=state.courseDirection==='ja-ko'?'交流を読み込めませんでした。':'커뮤니티를 불러오지 못했어요.';render();}return;}
   if(a==='my') {
     el.disabled=true;
     try { await loadRecords(); navigate('my'); }
@@ -858,6 +869,7 @@ panel.addEventListener("change", async (event) => {
   const el = event.target,
     key = el.dataset.setting;
   if(key==='course'){
+    if(!developmentMode)return;
     const request=++courseRequest,direction=el.value;
     try{await loadUILanguage({courseDirection:direction});}catch{if(request===courseRequest)el.value=state.courseDirection;return;}
     if(request!==courseRequest)return;

@@ -1,3 +1,4 @@
+import {videoProgress} from './video-lesson-state.js';
 import {expertProgress} from './expert-state.js';
 import {scenarioProgress,scenarioLessons} from './scenario-state.js';
 import {sentenceProgress} from './sentence-state.js';
@@ -22,9 +23,17 @@ export function validHistory(h) {
 }
 export function recordLearning(before, after, action, now=new Date()) {
  const today=localDateKey(now);
+ if(action.type.startsWith('video-')){
+  const a=videoProgress(before),b=videoProgress(after),learned=action.type==='video-next'&&a.phase==='learn'&&(a.index!==b.index||b.phase==='done'),finished=!a.completed&&b.completed;
+  if(!learned&&!finished)return after;
+  after=structuredClone(after);let host=after;if(after.courseDirection==='ja-ko')host=after.korean ||= {version:4,active:'1-1',lessons:{}};
+  const h=host.history ||= {version:1,startedOn:today,days:{},...(after.courseDirection==='ko-ja'?{completed:completedCases(before)}:{})};
+  h.startedOn=h.startedOn<today?h.startedOn:today;const d=h.days[today] ||= {letters:0,expressions:0,sentences:0,cases:0};
+  if(learned)d.expressions++;if(finished)d.cases++;return after;
+ }
  if(action.type.startsWith('expert-')){
   if(action.type==='expert-start')return after;
-  const a=expertProgress(before),b=expertProgress(after),learned=a.phase==='review'&&(a.sentence!==b.sentence||b.phase==='done'),finished=!a.completed&&b.completed;
+  const a=expertProgress(before),b=expertProgress(after),learned=action.type==='expert-next'&&(a.phase==='review'&&(a.sentence!==b.sentence||b.phase==='done')||a.phase==='expression'&&(a.part!==b.part||a.phase!==b.phase)),finished=!a.completed&&b.completed;
   if(!learned&&!finished)return after;
   after=structuredClone(after);let host=after;if(after.courseDirection==='ja-ko')host=after.korean ||= {version:4,active:'1-1',lessons:{}};
   const h=host.history ||= {version:1,startedOn:today,days:{},...(after.courseDirection==='ko-ja'?{completed:completedCases(before)}:{})};

@@ -1,0 +1,336 @@
+{
+  "lang": "ko",
+  "shots": [
+    {
+      "file": "ko-frames/0000.png",
+      "time": 0.001,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0001.png",
+      "time": 0.215,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0002.png",
+      "time": 0.416,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0003.png",
+      "time": 0.618,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0004.png",
+      "time": 0.821,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0005.png",
+      "time": 1.022,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0006.png",
+      "time": 1.225,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0007.png",
+      "time": 1.531,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0008.png",
+      "time": 1.732,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0009.png",
+      "time": 1.935,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0010.png",
+      "time": 2.138,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0011.png",
+      "time": 2.338,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0012.png",
+      "time": 2.541,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0013.png",
+      "time": 2.743,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0014.png",
+      "time": 2.947,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0015.png",
+      "time": 3.153,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0016.png",
+      "time": 3.35,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0017.png",
+      "time": 3.551,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0018.png",
+      "time": 3.755,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0019.png",
+      "time": 3.958,
+      "phase": "listen"
+    },
+    {
+      "file": "ko-frames/0020.png",
+      "time": 4.446,
+      "phase": "question"
+    },
+    {
+      "file": "ko-frames/0021.png",
+      "time": 4.647,
+      "phase": "question"
+    },
+    {
+      "file": "ko-frames/0022.png",
+      "time": 4.865,
+      "phase": "question"
+    },
+    {
+      "file": "ko-frames/0023.png",
+      "time": 5.067,
+      "phase": "question"
+    },
+    {
+      "file": "ko-frames/0024.png",
+      "time": 5.271,
+      "phase": "question"
+    },
+    {
+      "file": "ko-frames/0025.png",
+      "time": 5.473,
+      "phase": "question"
+    },
+    {
+      "file": "ko-frames/0026.png",
+      "time": 5.663,
+      "phase": "question"
+    },
+    {
+      "file": "ko-frames/0027.png",
+      "time": 5.881,
+      "phase": "question"
+    },
+    {
+      "file": "ko-frames/0028.png",
+      "time": 6.083,
+      "phase": "question"
+    },
+    {
+      "file": "ko-frames/0029.png",
+      "time": 6.285,
+      "phase": "question"
+    },
+    {
+      "file": "ko-frames/0030.png",
+      "time": 6.485,
+      "phase": "word1"
+    },
+    {
+      "file": "ko-frames/0031.png",
+      "time": 6.696000000000001,
+      "phase": "word1"
+    },
+    {
+      "file": "ko-frames/0032.png",
+      "time": 6.898000000000001,
+      "phase": "word1"
+    },
+    {
+      "file": "ko-frames/0033.png",
+      "time": 7.1000000000000005,
+      "phase": "word1"
+    },
+    {
+      "file": "ko-frames/0034.png",
+      "time": 7.303,
+      "phase": "word1"
+    },
+    {
+      "file": "ko-frames/0035.png",
+      "time": 7.506,
+      "phase": "word1"
+    },
+    {
+      "file": "ko-frames/0036.png",
+      "time": 7.706,
+      "phase": "word2"
+    },
+    {
+      "file": "ko-frames/0037.png",
+      "time": 7.934,
+      "phase": "word2"
+    },
+    {
+      "file": "ko-frames/0038.png",
+      "time": 8.138,
+      "phase": "word2"
+    },
+    {
+      "file": "ko-frames/0039.png",
+      "time": 8.34,
+      "phase": "word2"
+    },
+    {
+      "file": "ko-frames/0040.png",
+      "time": 8.537,
+      "phase": "word2"
+    },
+    {
+      "file": "ko-frames/0041.png",
+      "time": 8.742,
+      "phase": "word2"
+    },
+    {
+      "file": "ko-frames/0042.png",
+      "time": 8.942,
+      "phase": "word3"
+    },
+    {
+      "file": "ko-frames/0043.png",
+      "time": 9.173,
+      "phase": "word3"
+    },
+    {
+      "file": "ko-frames/0044.png",
+      "time": 9.376,
+      "phase": "word3"
+    },
+    {
+      "file": "ko-frames/0045.png",
+      "time": 9.577,
+      "phase": "word3"
+    },
+    {
+      "file": "ko-frames/0046.png",
+      "time": 9.782,
+      "phase": "word3"
+    },
+    {
+      "file": "ko-frames/0047.png",
+      "time": 10.089,
+      "phase": "word3"
+    },
+    {
+      "file": "ko-frames/0048.png",
+      "time": 10.290000000000001,
+      "phase": "word3"
+    },
+    {
+      "file": "ko-frames/0049.png",
+      "time": 10.493,
+      "phase": "word3"
+    },
+    {
+      "file": "ko-frames/0050.png",
+      "time": 10.696,
+      "phase": "word3"
+    },
+    {
+      "file": "ko-frames/0051.png",
+      "time": 10.895999999999999,
+      "phase": "correct"
+    },
+    {
+      "file": "ko-frames/0052.png",
+      "time": 11.1,
+      "phase": "correct"
+    },
+    {
+      "file": "ko-frames/0053.png",
+      "time": 11.321,
+      "phase": "correct"
+    },
+    {
+      "file": "ko-frames/0054.png",
+      "time": 11.539,
+      "phase": "correct"
+    },
+    {
+      "file": "ko-frames/0055.png",
+      "time": 11.741999999999999,
+      "phase": "correct"
+    },
+    {
+      "file": "ko-frames/0056.png",
+      "time": 11.944999999999999,
+      "phase": "correct"
+    },
+    {
+      "file": "ko-frames/0057.png",
+      "time": 12.146999999999998,
+      "phase": "correct"
+    },
+    {
+      "file": "ko-frames/0058.png",
+      "time": 12.35,
+      "phase": "correct"
+    },
+    {
+      "file": "ko-frames/0059.png",
+      "time": 12.552,
+      "phase": "correct"
+    },
+    {
+      "file": "ko-frames/0060.png",
+      "time": 12.755999999999998,
+      "phase": "correct"
+    },
+    {
+      "file": "ko-frames/0061.png",
+      "time": 12.959,
+      "phase": "correct"
+    },
+    {
+      "file": "ko-frames/0062.png",
+      "time": 13.161999999999999,
+      "phase": "correct"
+    },
+    {
+      "file": "ko-frames/0063.png",
+      "time": 13.36,
+      "phase": "correct"
+    },
+    {
+      "file": "ko-frames/0064.png",
+      "time": 13.565,
+      "phase": "correct"
+    },
+    {
+      "file": "ko-frames/0065.png",
+      "time": 13.767999999999999,
+      "phase": "correct"
+    }
+  ],
+  "audio": "shop-count.wav"
+}

@@ -24,7 +24,7 @@ for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])for(const 
   }
 
   if(lesson.id==='4'){expect(await page.locator('.passage-player').evaluate(el=>el.getBoundingClientRect().top>=document.querySelector('.reading-passage').getBoundingClientRect().bottom)).toBe(true);}else{const pos=await page.locator('.audio-text-row').evaluate(el=>{const text=el.querySelector('.scenario-text').getBoundingClientRect(),button=el.querySelector('[data-action="scenario-audio"]').getBoundingClientRect();return button.x>=text.right-1;});expect(pos).toBe(true);}
-  if(i===1&&lesson.id!=='4'){await click('home');await page.locator(`[data-action="scenario"][data-id="${lesson.id}"]`).first().click();await expect(page.locator('.scenario-count, .case-lesson-count, .reading-count')).toHaveText('2 / 3');}
+  if(i===1&&lesson.id!=='4'){await click('home');await page.locator(`[data-action="scenario"][data-id="${lesson.id}"]`).first().click();await page.locator('[data-choice="resume"]').click();await expect(page.locator('.scenario-count, .case-lesson-count, .reading-count')).toHaveText('2 / 3');}
   if(lesson.id==='5'&&direction==='ja-ko')expect(await page.locator('.scenario-page').getAttribute('lang')).toBe('ko');
   await click('scenario-next');await check();
   if(lesson.id==='2'){for(const n of [2,1,0])await page.locator(`.token-builder-choices [data-id="${n}"]`).click();}

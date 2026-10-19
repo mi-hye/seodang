@@ -1,0 +1,25 @@
+{
+  "account": "seodang_app",
+  "format": "one post with two videos and bilingual caption per channel",
+  "media": [
+    "marketing/social/assets/2026-10-19/konbini-play/publish/01-ko.mp4",
+    "marketing/social/assets/2026-10-19/konbini-play/publish/02-ja.mp4"
+  ],
+  "instagram": {
+    "status": "published_verified",
+    "url": "https://www.instagram.com/p/DerC18ZDzMZ/",
+    "media_count": 2
+  },
+  "x": {
+    "status": "published_verified",
+    "url": "https://x.com/seodang_app/status/2112129023870701793",
+    "media_count": 2
+  },
+  "threads": {
+    "status": "published_verified",
+    "url": "https://www.threads.com/@seodang_app/post/DerC3SoD2Sd",
+    "media_count": 2,
+    "verification": "Profile refreshed; post caption and two Video player controls in same post confirmed."
+  },
+  "note": "Published audio v2; removed final private-trial CTA segment. Current profile app-download links referenced."
+}

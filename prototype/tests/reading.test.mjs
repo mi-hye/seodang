@@ -56,7 +56,7 @@ test('expert reading shows the article with four-way reasoning and matching audi
   const state={...freshState(),onboardingLevel:7,readings:{7:{...freshReading(),started:true,phase:'read',index:i*2}}};
   const html=renderReading(state);for(const para of passage.paragraphs)assert.ok(html.replace(/<[^>]*>/g,'').includes(para));
   const learnHtml=renderReading({...state,readings:{7:{...state.readings[7],phase:'learn'}}});assert.ok(learnHtml.includes(passage.words));assert.match(learnHtml,/글 속 단어/);
-  assert.match(html,/reading-passage/);assert.doesNotMatch(html,/[가-힣]/);assert.match(html,/reading-audio/);
+  assert.match(html,/reading-passage/);assert.match(html,/학습 홈으로/);assert.match(html,/>확인</);assert.match(html,/reading-audio/);
   for(const q of passage.questions)assert.equal(q.choices.length,4);
   const a=advancedAudio[i],meta=manifest.files[`level7-${i+1}`],bytes=readFileSync(a.audioFile);assert.equal(meta.text,a.text);assert.equal(createHash('sha256').update(bytes).digest('hex'),meta.sha256);assert.ok(meta.duration>60&&meta.duration<240);assert.equal(bytes.toString('ascii',0,4),'RIFF');
  }

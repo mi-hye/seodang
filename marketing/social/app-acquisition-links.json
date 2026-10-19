@@ -1,0 +1,36 @@
+{
+  "status": "prepared_not_placed",
+  "requires": "Android build with Install Referrer + renewed analytics consent; no new installation inferred from consent",
+  "channels": {
+    "instagram": {
+      "android": "https://play.google.com/store/apps/details?id=com.mihye.seodang&referrer=utm_source%3Dinstagram%26utm_medium%3Dsocial%26utm_campaign%3Dseodang_ig_202610%26utm_content%3Dlink_in_bio",
+      "ios": "https://apps.apple.com/app/apple-store/id6780309771?pt=129039245&ct=seodang_ig_202610&mt=8",
+      "params": {
+        "utm_source": "instagram",
+        "utm_medium": "social",
+        "utm_campaign": "seodang_ig_202610",
+        "utm_content": "link_in_bio"
+      }
+    },
+    "x": {
+      "android": "https://play.google.com/store/apps/details?id=com.mihye.seodang&referrer=utm_source%3Dx%26utm_medium%3Dorganic_social%26utm_campaign%3Dseodang_202610_launch%26utm_content%3Dprofile",
+      "ios": "https://apps.apple.com/app/apple-store/id6780309771?pt=129039245&ct=seodang_x_202610&mt=8",
+      "params": {
+        "utm_source": "x",
+        "utm_medium": "organic_social",
+        "utm_campaign": "seodang_202610_launch",
+        "utm_content": "profile"
+      }
+    },
+    "threads": {
+      "android": "https://play.google.com/store/apps/details?id=com.mihye.seodang&referrer=utm_source%3Dthreads%26utm_medium%3Dorganic_social%26utm_campaign%3Dseodang_202610_launch%26utm_content%3Dprofile",
+      "ios": "https://apps.apple.com/app/apple-store/id6780309771?pt=129039245&ct=seodang_threads_202610&mt=8",
+      "params": {
+        "utm_source": "threads",
+        "utm_medium": "organic_social",
+        "utm_campaign": "seodang_202610_launch",
+        "utm_content": "profile"
+      }
+    }
+  }
+}

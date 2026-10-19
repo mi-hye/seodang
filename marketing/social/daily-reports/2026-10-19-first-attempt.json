@@ -1,0 +1,16 @@
+{
+  "query": "SELECT count() AS first_observed_learners,\ncountIf(first_start + INTERVAL 24 HOUR > now()) AS pending_24h,\ncountIf(first_start + INTERVAL 24 HOUR <= now()) AS mature_starts,\ncountIf(first_start + INTERVAL 24 HOUR <= now() AND first_completion >= first_start AND first_completion <= first_start + INTERVAL 24 HOUR) AS mature_completed\nFROM (\n SELECT distinct_id, min(started_at) AS first_start, argMin(completed_at,started_at) AS first_completion\n FROM (\n  SELECT distinct_id, properties.lesson_id AS lesson_id, properties.attempt_id AS attempt_id,\n  countIf(event='lesson_started') AS has_start,\n  minIf(timestamp,event='lesson_started') AS started_at,\n  minIf(timestamp,event='lesson_completed') AS completed_at\n  FROM events\n  WHERE timestamp >= toDateTime('2026-10-15 15:00:00','UTC') AND timestamp < now()\n  AND properties.client='seodang-capacitor' AND properties.environment='production'\n  AND event IN ('lesson_started','lesson_completed') AND properties.attempt_id IS NOT NULL\n  GROUP BY distinct_id,lesson_id,attempt_id\n ) WHERE has_start > 0 GROUP BY distinct_id\n) WHERE first_start >= toDateTime('2026-10-17 15:00:00','UTC') AND first_start < toDateTime('2026-10-18 15:00:00','UTC')",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "first_observed_learners|pending_24h|mature_starts|mature_completed\n1|1|0|0"
+      },
+      {
+        "type": "text",
+        "text": "{\"conversation_id\":\"01a15283-a88a-7422-882d-f24253a128f3\"}"
+      }
+    ],
+    "isError": false
+  }
+}

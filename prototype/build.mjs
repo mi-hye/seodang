@@ -16,10 +16,13 @@ for (const name of ["01_start_hanok.png"])
   await cp(`references/${name}`, `dist/references/${name}`);
 const initial = [
   "app.js",
+  "video-lesson-state.js",
   "scenario-state.js",
   "expert-state.js",
+  "expert-discussion-state.js",
   "analytics.js",
   "analytics-core.js",
+  "analytics-acquisition.js",
   "analytics-learning.js",
   "practice-state.js",
   "i18n.js",
