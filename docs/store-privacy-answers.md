@@ -7,7 +7,7 @@
 - Apple categories to review: User ID, Device ID (analytics install ID), Product Interaction, Photos or Videos (photos only), Emails or Text Messages (private messages), Other User Content (posts/comments/profile). Community categories linked to user; analytics follows existing installation-ID linked disclosure. No tracking.
 - Google categories to review: User IDs, App interactions, Photos, Other in-app messages, Other user-generated content. Encrypted in transit; optional community and optional analytics. User-directed public posting is disclosed in policy; apply Play's user-initiated sharing exception only to the actual user-directed transmissions. No sale or advertising use.
 - iOS speech recognition requires on-device recognition; no recorded voice or transcript upload/storage by Seodang.
-- Video lessons embed official YouTube players; disclose third-party playback processing in public policy. No local video download or rehosting.
+- Video lessons embed official YouTube players; disclose third-party playback processing in public policy. No local video download or rehosting. YouTube may display provider ads; declare ads present where the store asks about embedded ads, despite no Seodang-owned ad SDK.
 - Community account deletion is available at settings → profile edit → delete account. Public deletion request route: privacy policy contact. Learning progress remains on device. Deleted photos retry server-side every 15 minutes; unpublished photos enter cleanup after 24 hours.
 - Analytics withdrawal stops new collection and clears local ID/queue. Already sent records can be deleted by contacting support with the analytics installation ID. Do not claim the 1-year PostHog query window is automatic deletion.
 
