@@ -12,6 +12,7 @@
     "jest.config.js",
     "android",
     "ios",
-    "seodang-local-prototype"
+    "seodang-local-prototype",
+    "supabase/functions"
   ]
 }

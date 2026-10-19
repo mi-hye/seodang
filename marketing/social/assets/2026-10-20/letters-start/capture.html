@@ -1,0 +1,7 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="/prototype/"><link rel="stylesheet" href="src/style.css"><link rel="stylesheet" href="src/header.css"><link rel="stylesheet" href="src/kana.css"><link rel="stylesheet" href="src/korean.css"><link rel="stylesheet" href="src/practice.css"></head><body class="learning-app"><div id="app" class="shell"></div><script type="module">
+import{renderKana}from'/prototype/src/kana.js';import{reduceKana}from'/prototype/src/kana-state.js';import{renderKoreanLetters}from'/prototype/src/korean-letters.js';import{reduceKorean}from'/prototype/src/korean-state.js';import{loadUILanguage,setUILanguage}from'/prototype/src/i18n.js';
+const ja=new URLSearchParams(location.search).get('lang')==='ja';const s={courseDirection:ja?'ja-ko':'ko-ja',onboardingLevel:0,settings:{sound:true}};
+s.kana=reduceKana(undefined,{type:'kana-start',lesson:0});s.kana.lessons[0].phase='reading';s.korean=reduceKorean(s,{type:'korean-start',id:'1-1'});s.korean=reduceKorean(s,{type:'korean-next'});await loadUILanguage(s);setUILanguage(s);
+const top=()=>`<header style="padding:18px 24px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #393541"><img src="assets/brand/seodang-dog-icon.png" width="32" height="32"><b>${ja?'ソダン':'서당'}</b></header>`;
+document.getElementById('app').innerHTML=ja?renderKoreanLetters(s,top):renderKana(s,top);
+</script></body></html>

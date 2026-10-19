@@ -1,3 +1,4 @@
+import {exchangeTaskFeedback} from './korean-exchange-feedback.js';
 import {extraSentenceCases,extraKoreanCases} from './level-two-content.js';
 import {sentenceId} from './sentence-state.js';
 // Authored transfer tasks: each answer depends on the scene, not a translation.
@@ -67,7 +68,7 @@ export function caseExercises(s,kind,source){
  if(kind==='sentence'&&sentenceId(s)>0)return extraSentenceCases[sentenceId(s)].tasks;
  if(kind==='korean'&&extraKoreanCases[s.korean.active])return extraKoreanCases[s.korean.active].tasks;
  if(kind==='sentence'||kind==='dialogue')return cases[kind];
- if(kind==='korean'&&cases[`ko:${s.korean.active}`])return cases[`ko:${s.korean.active}`];
+ if(kind==='korean'&&cases[`ko:${s.korean.active}`])return cases[`ko:${s.korean.active}`].map((task,i)=>s.korean.active==='3-1'?{...task,...exchangeTaskFeedback[i]}:task);
  const key=kind==='korean'?`ko:${s.korean.active}`:`ja:${s.onboardingLevel}`,tasks=readingTasks[key];
  return tasks?.map((task,i)=>({...task,passage:kind==='korean'?source.koreanContent[s.korean.active][i].text:source.readingCourses[s.onboardingLevel].passages[i].paragraphs.join('\n')}));
 }

@@ -24,7 +24,7 @@ test('each added Japanese lesson completes its own questions and contextual prac
   for(let i=0;i<c.sentences.length;i++){
    s=act(s,'sentence-next');s=act(s,'sentence-token',1);s=act(s,'sentence-token',0);s=act(s,'sentence-check');assert.equal(sentenceProgress(s).checked,false);
    s=act(s,'sentence-clear');for(let n=0;n<c.sentences[i].parts.length;n++)s=act(s,'sentence-token',n);
-   s=act(s,'sentence-check');assert.equal(sentenceProgress(s).checked,true);s=act(s,'sentence-next');assert.ok(valid(s));
+   s=act(s,'sentence-check');assert.equal(sentenceProgress(s).checked,true);s=act(s,'sentence-next');assert.equal(sentenceProgress(s).phase,'speak');s=act(s,'sentence-speak-next');assert.ok(valid(s));
   }
   s=act(s,'sentence-select',String((c.solve.answer+1)%3));s=act(s,'sentence-submit');assert.equal(sentenceProgress(s).completed,false);
   s=act(s,'sentence-select',String(c.solve.answer));const action={type:'sentence-submit'},finished=reduce(s,action),intercepted=interceptCompletion(s,finished,'sentence',action);
@@ -73,7 +73,7 @@ test('Japanese introduction follows the Korean learn-choice sequence and six mat
   assert.equal(sentenceProgress(ja).phase,'arrange');assert.equal(ko.korean.lessons['3-1'].phase,'quiz');
   ja=act(ja,'sentence-select',String((index+1)%3));ja=act(ja,'sentence-check');assert.ok(sentenceProgress(ja).feedback);
   ja=act(ja,'sentence-select',String(index%3));ko=act(ko,'korean-select',index%3);
-  const before=ja;ja=act(ja,'sentence-check');ko=act(ko,'korean-check');assert.ok(valid(ja));
+  const before=ja;ja=act(ja,'sentence-check');ko=act(ko,'korean-check');assert.ok(valid(ja));assert.equal(ko.korean.lessons['3-1'].phase,'speak');ko=act(ko,'korean-speak-next');ja=act(ja,'sentence-speak-next');
   if(index===5){const intercepted=interceptCompletion(before,ja,'sentence',{type:'sentence-check'});assert.equal(intercepted.practices['ko-ja:sentence:3'].count,6);assert.ok(valid(intercepted));assert.equal(load({getItem:()=>JSON.stringify(intercepted)}).blocked,false);}
  }
  assert.equal(sentenceProgress(ja).phase,'summary');assert.equal(ko.korean.lessons['3-1'].phase,'done');
@@ -86,5 +86,5 @@ test('old introduction solve and three-task practice saves resume in the aligned
  const resumed=act(old,'sentence-start',3);assert.equal(sentenceProgress(resumed).phase,'arrange');assert.equal(sentenceProgress(resumed).selected,null);assert.ok(valid(resumed));
  old.practices={'ko-ja:sentence:3':{version:1,caseVersion:1,round:0,mode:0,index:2,count:3,action:{type:'sentence-submit'}}};
  const practice=act(old,'sentence-start',3);assert.equal(practice.practices['ko-ja:sentence:3'].count,6);assert.equal(practice.practices['ko-ja:sentence:3'].index,0);assert.ok(valid(practice));
- const completed=act(practice,'sentence-check');assert.equal(sentenceProgress(completed).phase,'summary');
+ const completed=act(practice,'sentence-speak-next');assert.equal(sentenceProgress(completed).phase,'summary');
 });

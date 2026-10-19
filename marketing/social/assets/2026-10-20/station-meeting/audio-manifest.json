@@ -1,0 +1,71 @@
+{
+  "catalog": "837eec18c6d5aac1",
+  "files": {
+    "assets/audio/level-two/meet-location.wav": {
+      "url": "https://jrmtfhmhcbkdzqzhbgfv.supabase.co/storage/v1/object/public/seodang-audio/voices-v1/54b23791f22292ebac0e4b5412ba01fa5e6d3e002a1ddeb75a6d48580375b62a.m4a",
+      "sha256": "54b23791f22292ebac0e4b5412ba01fa5e6d3e002a1ddeb75a6d48580375b62a",
+      "bytes": 15472,
+      "duration": 1.333,
+      "voice": "VOICEVOX Nemo 男声1",
+      "text": "今、駅にいます。",
+      "locale": "ja-JP",
+      "pronunciation": null,
+      "file": "assets/audio/level-two/meet-location.m4a"
+    },
+    "assets/audio/level-two/meet-wait.wav": {
+      "url": "https://jrmtfhmhcbkdzqzhbgfv.supabase.co/storage/v1/object/public/seodang-audio/voices-v1/5856403afda0efb4ef479f8d77852e7c5c759663473b94cdfd3a609726f51ccb.m4a",
+      "sha256": "5856403afda0efb4ef479f8d77852e7c5c759663473b94cdfd3a609726f51ccb",
+      "bytes": 17029,
+      "duration": 1.504,
+      "voice": "VOICEVOX Nemo 男声1",
+      "text": "改札の前で待っています。",
+      "locale": "ja-JP",
+      "pronunciation": null,
+      "file": "assets/audio/level-two/meet-wait.m4a"
+    },
+    "assets/audio/level-two/meet-time.wav": {
+      "url": "https://jrmtfhmhcbkdzqzhbgfv.supabase.co/storage/v1/object/public/seodang-audio/voices-v1/1755752c97008882c796dfd537dd92454c0a415ed0aba84629c06420ffbcd36b.m4a",
+      "sha256": "1755752c97008882c796dfd537dd92454c0a415ed0aba84629c06420ffbcd36b",
+      "bytes": 13880,
+      "duration": 1.12,
+      "voice": "VOICEVOX Nemo 男声1",
+      "text": "三時に会いましょう。",
+      "locale": "ja-JP",
+      "pronunciation": null,
+      "file": "assets/audio/level-two/meet-time.m4a"
+    },
+    "assets/audio/level-two/korean.3-3.0.wav": {
+      "url": "https://jrmtfhmhcbkdzqzhbgfv.supabase.co/storage/v1/object/public/seodang-audio/voices-v1/dc84a4108b06a920a6f1c4b45e9e1b95b5975c0a6bb85201b04dc82550642b1f.m4a",
+      "sha256": "dc84a4108b06a920a6f1c4b45e9e1b95b5975c0a6bb85201b04dc82550642b1f",
+      "bytes": 18775,
+      "duration": 1.811,
+      "voice": "Supertonic 3 M1",
+      "text": "지금 역에 있어요.",
+      "locale": "ko-KR",
+      "pronunciation": null,
+      "file": "assets/audio/level-two/korean.3-3.0.m4a"
+    },
+    "assets/audio/level-two/korean.3-3.1.wav": {
+      "url": "https://jrmtfhmhcbkdzqzhbgfv.supabase.co/storage/v1/object/public/seodang-audio/voices-v1/68409a763918eb84f653062ff32047a56afe3367903acf2b3353c547f6f15dc0.m4a",
+      "sha256": "68409a763918eb84f653062ff32047a56afe3367903acf2b3353c547f6f15dc0",
+      "bytes": 21770,
+      "duration": 2.159,
+      "voice": "Supertonic 3 M1",
+      "text": "출구 앞에서 기다려요.",
+      "locale": "ko-KR",
+      "pronunciation": null,
+      "file": "assets/audio/level-two/korean.3-3.1.m4a"
+    },
+    "assets/audio/level-two/korean.3-3.2.wav": {
+      "url": "https://jrmtfhmhcbkdzqzhbgfv.supabase.co/storage/v1/object/public/seodang-audio/voices-v1/96cf13edbd827463f4784101fe127de066554b05de292a7f7e7ed904f143ee42.m4a",
+      "sha256": "96cf13edbd827463f4784101fe127de066554b05de292a7f7e7ed904f143ee42",
+      "bytes": 17806,
+      "duration": 1.741,
+      "voice": "Supertonic 3 M1",
+      "text": "세 시에 만나요.",
+      "locale": "ko-KR",
+      "pronunciation": null,
+      "file": "assets/audio/level-two/korean.3-3.2.m4a"
+    }
+  }
+}

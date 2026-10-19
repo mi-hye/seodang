@@ -1,0 +1,25 @@
+@import './reading.css';
+@import './case-lesson.css';
+@import './speaking.css';
+@import './token-builder.css';
+.scenario-page{min-height:calc(100svh - 110px - env(safe-area-inset-top) - env(safe-area-inset-bottom));display:flex;flex-direction:column;justify-content:center;gap:16px;padding-top:16px;padding-bottom:24px;word-break:keep-all;overflow-wrap:anywhere}
+.scenario-page.scenario-quiz{justify-content:flex-start}
+.scenario-page h1{font-size:calc(23px * var(--text-scale));line-height:1.5;margin:0}
+.scenario-page p{font-size:calc(17px * var(--text-scale));line-height:1.75;margin:0}
+.scenario-text{flex:1;min-width:0}.scenario-text p{white-space:pre-line}.scenario-page .audio-text-row{display:flex;flex-flow:row nowrap;align-items:center;gap:8px}.scenario-page .audio-text-row .icon-button{flex:none;width:44px;min-height:44px}
+.scenario-image{height:140px;width:100%;object-fit:cover;border-radius:16px}.scenario-meaning,.scenario-count{color:var(--muted)}.scenario-count{text-align:right}.scenario-words h2{font-size:16px;margin:0 0 8px}.scenario-words dl{display:flex;flex-flow:row wrap;gap:10px 20px;margin:0}.scenario-words dl div{display:flex;gap:8px}.scenario-words dd{margin:0;color:var(--muted)}
+.scenario-choices{display:grid;gap:10px}.scenario-choices button{text-align:left;white-space:normal;line-height:1.6;min-height:48px;margin:0}.scenario-choices .selected{outline:2px solid var(--text);outline-offset:-2px}
+.scenario-progress{height:4px;background:var(--line)}.scenario-progress span{display:block;height:100%;background:var(--text)}.scenario-page .button-pair{margin-top:8px}
+
+.scenario-audio-buttons{display:flex;flex-flow:column nowrap;flex:none;gap:4px}
+.scenario-choices{grid-template-columns:minmax(0,1fr);min-width:0}.scenario-choices button{min-width:0;max-width:100%;overflow-wrap:anywhere}.scenario-page>*{min-width:0;max-width:100%}
+.scenario-choices button{display:block}
+.view-scenario .toast{pointer-events:none}
+
+.scenario-page .passage-speed{display:grid;gap:8px;font-size:14px;color:var(--muted)}.scenario-page .passage-speed input{width:100%;min-height:44px;margin:0}
+
+.scenario-page.scenario-illustrated{justify-content:flex-start;gap:12px;padding-top:12px}
+.scenario-illustrated .scenario-image{flex:none;height:clamp(88px,16svh,140px)}
+.scenario-illustrated .scenario-count{line-height:1;margin:0}
+.scenario-illustrated .token-builder-answer{margin:12px 0;min-height:96px}
+.scenario-illustrated .token-builder-choices{margin:12px 0}

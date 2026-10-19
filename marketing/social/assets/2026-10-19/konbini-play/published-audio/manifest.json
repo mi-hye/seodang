@@ -1,0 +1,75 @@
+{
+  "catalog_version": "2de0d51bc747c941",
+  "files": {
+    "assets/audio/level-two/shop-price.wav": {
+      "url": "https://jrmtfhmhcbkdzqzhbgfv.supabase.co/storage/v1/object/public/seodang-audio/voices-v1/f913d6b7d82acbc088b58fe10f463e79d3f719e2837fb5ca168368a1ba9e8d30.m4a",
+      "sha256": "f913d6b7d82acbc088b58fe10f463e79d3f719e2837fb5ca168368a1ba9e8d30",
+      "bytes": 16175,
+      "duration": 1.323,
+      "voice": "VOICEVOX Nemo 男声1",
+      "text": "この水はいくらですか。",
+      "locale": "ja-JP",
+      "pronunciation": null
+    },
+    "assets/audio/level-two/shop-count.wav": {
+      "url": "https://jrmtfhmhcbkdzqzhbgfv.supabase.co/storage/v1/object/public/seodang-audio/voices-v1/23b8f15a8ba1a3e018fb3adf8e0ddbe08d084ba8088407aa01072ba66e2245b3.m4a",
+      "sha256": "23b8f15a8ba1a3e018fb3adf8e0ddbe08d084ba8088407aa01072ba66e2245b3",
+      "bytes": 14503,
+      "duration": 1.173,
+      "voice": "VOICEVOX Nemo 男声1",
+      "text": "水を二本ください。",
+      "locale": "ja-JP",
+      "pronunciation": null
+    },
+    "assets/audio/level-two/shop-bag.wav": {
+      "url": "https://jrmtfhmhcbkdzqzhbgfv.supabase.co/storage/v1/object/public/seodang-audio/voices-v1/170b307e6cd0a9400ed600d59b883791c478078a2220ec05bea6d0be7ebd60c3.m4a",
+      "sha256": "170b307e6cd0a9400ed600d59b883791c478078a2220ec05bea6d0be7ebd60c3",
+      "bytes": 15713,
+      "duration": 1.312,
+      "voice": "VOICEVOX Nemo 男声1",
+      "text": "袋を一枚ください。",
+      "locale": "ja-JP",
+      "pronunciation": null
+    },
+    "assets/audio/level-two/sentence.1.intro.wav": {
+      "url": "https://jrmtfhmhcbkdzqzhbgfv.supabase.co/storage/v1/object/public/seodang-audio/voices-v1/af8aaf54f05eee4cbd8edba9feada5b978d9effb6abdf05b639496c826cb09d8.m4a",
+      "sha256": "af8aaf54f05eee4cbd8edba9feada5b978d9effb6abdf05b639496c826cb09d8",
+      "bytes": 38385,
+      "duration": 3.883,
+      "voice": "VOICEVOX Nemo 男声1",
+      "text": "この水はいくらですか。水を二本ください。袋を一枚ください。",
+      "locale": "ja-JP",
+      "pronunciation": null
+    },
+    "assets/audio/level-two/korean.3-2.0.wav": {
+      "url": "https://jrmtfhmhcbkdzqzhbgfv.supabase.co/storage/v1/object/public/seodang-audio/voices-v1/906bd30af7676b2629345996b6f7ce7ccce53d3c0ce54a436203cbe7822d166f.m4a",
+      "sha256": "906bd30af7676b2629345996b6f7ce7ccce53d3c0ce54a436203cbe7822d166f",
+      "bytes": 18251,
+      "duration": 1.741,
+      "voice": "Supertonic 3 M1",
+      "text": "이 물은 얼마예요?",
+      "locale": "ko-KR",
+      "pronunciation": null
+    },
+    "assets/audio/level-two/korean.3-2.1.wav": {
+      "url": "https://jrmtfhmhcbkdzqzhbgfv.supabase.co/storage/v1/object/public/seodang-audio/voices-v1/20c9954fc47a536eabbf0557eadb63400ae665b18c26195e3101e243a6dd6040.m4a",
+      "sha256": "20c9954fc47a536eabbf0557eadb63400ae665b18c26195e3101e243a6dd6040",
+      "bytes": 18885,
+      "duration": 1.741,
+      "voice": "Supertonic 3 M1",
+      "text": "물 두 병 주세요.",
+      "locale": "ko-KR",
+      "pronunciation": null
+    },
+    "assets/audio/level-two/korean.3-2.2.wav": {
+      "url": "https://jrmtfhmhcbkdzqzhbgfv.supabase.co/storage/v1/object/public/seodang-audio/voices-v1/157a36505f78f3d5f6930ac1acb38944cd6db7ed1d8273b184bcf0af8b7a725e.m4a",
+      "sha256": "157a36505f78f3d5f6930ac1acb38944cd6db7ed1d8273b184bcf0af8b7a725e",
+      "bytes": 18770,
+      "duration": 1.881,
+      "voice": "Supertonic 3 M1",
+      "text": "봉투 하나 주세요.",
+      "locale": "ko-KR",
+      "pronunciation": null
+    }
+  }
+}

@@ -1,3 +1,4 @@
+@import './speaking.css';
 @import url("./token-builder.css");
 /* Level 3 only: loaded with the sentence lesson, using shared UI colors. */
 .sentence-page{max-width:480px;margin:auto;padding-top:16px}

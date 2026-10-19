@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-20",
+  "status": "authorized_scheduled_via_heartbeat",
+  "format": "one_post_two_images_bilingual_caption",
+  "topic": "여행을 준비하는 글자 입문자",
+  "supersedes": "station-meeting videos held; travel-install rejected",
+  "channels": [
+    "instagram",
+    "threads",
+    "x"
+  ],
+  "images": [
+    {
+      "path": "marketing/social/assets/2026-10-20/letters-start/01-ko.png",
+      "width": 1122,
+      "height": 1402,
+      "sha256": "fe65fd74c7f50165a6c89439e1d166b74f24c076be3fd3e5e06a79a06861d3eb"
+    },
+    {
+      "path": "marketing/social/assets/2026-10-20/letters-start/02-ja.png",
+      "width": 1122,
+      "height": 1402,
+      "sha256": "ce060f7d51f40d714090493c9cc1eadd1d9fb8f63b02074219589e82e7355936"
+    }
+  ],
+  "validation": "Both generated images visually reviewed against app screenshots. Korean and Japanese headline, CTA and glyphs checked.",
+  "generation": "built-in image_gen; prompts saved in image-prompts.txt",
+  "scheduled_for": "2026-10-20T10:00:00+09:00",
+  "automation_id": "sns",
+  "authorization": "User explicitly approved 2 photos and prepared captions, one post per Instagram, Threads, X; not yet published."
+}

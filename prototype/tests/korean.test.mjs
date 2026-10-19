@@ -10,7 +10,7 @@ test('Korean course progresses through all registered lessons with isolated reco
    if(lesson.level===0&&!lesson.practice){if(koreanProgress(s,lesson.id).phase==='intro')s=reduce(s,{type:'korean-next'});assert.equal(koreanProgress(s,lesson.id).phase,'learn');s=reduce(s,{type:'korean-next'});assert.ok(valid(s));continue;}
    while(koreanProgress(s,lesson.id).phase!=='quiz')s=reduce(s,{type:'korean-next'});
    s=reduce(s,{type:'korean-select',id:String((index+1)%(lesson.level===0?4:3))});s=reduce(s,{type:'korean-check'});assert.equal(koreanProgress(s,lesson.id).index,index);assert.equal(koreanProgress(s,lesson.id).retry,true);
-   s=reduce(s,{type:'korean-select',id:String(index%(lesson.level===0?4:3))});s=reduce(s,{type:'korean-check'});assert.ok(valid(s));const restored=load({getItem:()=>JSON.stringify(s)});assert.equal(restored.blocked,false);s=restored.state;
+   s=reduce(s,{type:'korean-select',id:String(index%(lesson.level===0?4:3))});s=reduce(s,{type:'korean-check'});assert.ok(valid(s));const restored=load({getItem:()=>JSON.stringify(s)});assert.equal(restored.blocked,false);s=restored.state;if(koreanProgress(s,lesson.id).phase==='speak')s=reduce(s,{type:'korean-speak-next'});
   }
   assert.equal(koreanProgress(s,lesson.id).completed,true);
  }

@@ -1,0 +1,56 @@
+{
+  "date_kst": "2026-10-19",
+  "authorization": "User approved image posts on Instagram, Threads, X; clarified two separate audience/language posts on each channel.",
+  "account": "seodang_app",
+  "posts": [
+    {
+      "channel": "instagram",
+      "language": "ko",
+      "url": "https://www.instagram.com/p/DeqfOcuj7Qs/",
+      "status": "published_verified",
+      "image": "assets/2026-10-19/instagram-renewal-ko.png",
+      "audience": "Korean speakers learning Japanese"
+    },
+    {
+      "channel": "instagram",
+      "language": "ja",
+      "status": "published_verified",
+      "url": "https://www.instagram.com/p/DeqfcKdD3XZ/",
+      "image": "assets/2026-10-19/instagram-renewal-ja.png",
+      "audience": "Japanese speakers learning Korean"
+    },
+    {
+      "channel": "threads",
+      "language": "ko",
+      "status": "published_verified",
+      "url": "https://www.threads.com/@seodang_app/post/DeqfPIKjxan",
+      "image": "assets/2026-10-19/instagram-renewal-ko.png",
+      "audience": "Korean speakers learning Japanese"
+    },
+    {
+      "channel": "threads",
+      "language": "ja",
+      "status": "published_verified",
+      "url": "https://www.threads.com/@seodang_app/post/DeqfcvPj39R",
+      "image": "assets/2026-10-19/instagram-renewal-ja.png",
+      "audience": "Japanese speakers learning Korean"
+    },
+    {
+      "channel": "x",
+      "language": "ko",
+      "url": "https://x.com/seodang_app/status/2112050633792688407",
+      "status": "published_verified",
+      "image": "assets/2026-10-19/instagram-renewal-ko.png",
+      "audience": "Korean speakers learning Japanese"
+    },
+    {
+      "channel": "x",
+      "language": "ja",
+      "status": "published_verified",
+      "url": "https://x.com/seodang_app/status/2112051067743834248",
+      "image": "assets/2026-10-19/instagram-renewal-ja.png",
+      "audience": "Japanese speakers learning Korean"
+    }
+  ],
+  "note": "Two separate posts per channel, one matching-language image each. Threads crossposted using this-post-only setting and independently verified in profile. X text shortened to fit composer, both store links retained. Verification views are operator activity, not organic performance."
+}

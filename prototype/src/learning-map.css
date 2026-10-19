@@ -51,7 +51,7 @@
 
 /* One compact course/progress/resume panel. It scrolls away with the map. */
 .library-theme .home .map-overview .case-card.home-start-card{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin:4px 0 0;padding:10px 0 0;border:0;border-top:1px solid var(--line);border-radius:0;background:transparent}
-.library-theme .map-overview .home-card-heading{flex:1;min-width:0;gap:3px;margin:0}
+.library-theme .map-overview .home-card-heading{flex:1;min-width:0;gap:6px;margin:0}
 .library-theme .map-overview .home-start-card h2{font-size:calc(15px * var(--text-scale));line-height:1.45}
 .library-theme .map-overview .home-position{font-size:calc(11px * var(--text-scale))}
 .library-theme .map-overview .home-start-card>.primary{flex:0 0 auto;width:auto;max-width:42%;min-height:44px;gap:6px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--selected);font-size:calc(13px * var(--text-scale));line-height:1.4;white-space:normal;text-align:center}

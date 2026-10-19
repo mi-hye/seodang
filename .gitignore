@@ -55,3 +55,12 @@ yarn-error.*
 
 # Supabase local CLI state
 /supabase/.temp/
+
+# Local copy-review output and browser runs
+/_workspace/
+/test-results/
+# Marketing renders can be reproduced from the retained source and final assets.
+/marketing/social/assets/**/*-frames/
+/marketing/social/assets/**/capture-app/
+# Sites plugin maintains this as a separate, already committed repository.
+/sites/seodang-konbini-trial/

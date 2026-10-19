@@ -21,7 +21,7 @@ test('level 3 requires correct sentence order and both color/location clues, pre
     go('sentence-check');assert.equal(state.sentence.checked,false);assert.ok(state.sentence.feedback);
     go('sentence-clear');
     for(let n=0;n<sentences[i].parts.length;n++)go('sentence-token',String(n));
-    go('sentence-check');assert.equal(state.sentence.checked,true);go('sentence-next');
+    go('sentence-check');assert.equal(state.sentence.checked,true);go('sentence-next');assert.equal(state.sentence.phase,'speak');go('sentence-speak-next');
   }
   assert.equal(state.sentence.phase,'solve');assert.deepEqual(state.sentence.learned,[0,1,2]);
   go('sentence-submit');assert.equal(state.sentence.completed,false);

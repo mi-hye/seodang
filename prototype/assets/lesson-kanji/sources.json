@@ -1792,6 +1792,371 @@
       "character": "黙",
       "file": "09ed9.svg",
       "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/09ed9.svg"
+    },
+    {
+      "character": "七",
+      "file": "04e03.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/04e03.svg"
+    },
+    {
+      "character": "九",
+      "file": "04e5d.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/04e5d.svg"
+    },
+    {
+      "character": "住",
+      "file": "04f4f.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/04f4f.svg"
+    },
+    {
+      "character": "候",
+      "file": "05019.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/05019.svg"
+    },
+    {
+      "character": "六",
+      "file": "0516d.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0516d.svg"
+    },
+    {
+      "character": "別",
+      "file": "05225.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/05225.svg"
+    },
+    {
+      "character": "到",
+      "file": "05230.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/05230.svg"
+    },
+    {
+      "character": "刻",
+      "file": "0523b.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0523b.svg"
+    },
+    {
+      "character": "回",
+      "file": "056de.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/056de.svg"
+    },
+    {
+      "character": "夕",
+      "file": "05915.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/05915.svg"
+    },
+    {
+      "character": "天",
+      "file": "05929.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/05929.svg"
+    },
+    {
+      "character": "学",
+      "file": "05b66.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/05b66.svg"
+    },
+    {
+      "character": "完",
+      "file": "05b8c.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/05b8c.svg"
+    },
+    {
+      "character": "席",
+      "file": "05e2d.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/05e2d.svg"
+    },
+    {
+      "character": "延",
+      "file": "05ef6.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/05ef6.svg"
+    },
+    {
+      "character": "役",
+      "file": "05f79.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/05f79.svg"
+    },
+    {
+      "character": "悪",
+      "file": "060aa.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/060aa.svg"
+    },
+    {
+      "character": "施",
+      "file": "065bd.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/065bd.svg"
+    },
+    {
+      "character": "早",
+      "file": "065e9.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/065e9.svg"
+    },
+    {
+      "character": "昇",
+      "file": "06607.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/06607.svg"
+    },
+    {
+      "character": "月",
+      "file": "06708.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/06708.svg"
+    },
+    {
+      "character": "望",
+      "file": "0671b.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0671b.svg"
+    },
+    {
+      "character": "朝",
+      "file": "0671d.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0671d.svg"
+    },
+    {
+      "character": "期",
+      "file": "0671f.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0671f.svg"
+    },
+    {
+      "character": "査",
+      "file": "067fb.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/067fb.svg"
+    },
+    {
+      "character": "機",
+      "file": "06a5f.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/06a5f.svg"
+    },
+    {
+      "character": "火",
+      "file": "0706b.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0706b.svg"
+    },
+    {
+      "character": "的",
+      "file": "07684.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/07684.svg"
+    },
+    {
+      "character": "着",
+      "file": "07740.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/07740.svg"
+    },
+    {
+      "character": "確",
+      "file": "078ba.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/078ba.svg"
+    },
+    {
+      "character": "習",
+      "file": "07fd2.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/07fd2.svg"
+    },
+    {
+      "character": "荷",
+      "file": "08377.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/08377.svg"
+    },
+    {
+      "character": "表",
+      "file": "08868.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/08868.svg"
+    },
+    {
+      "character": "設",
+      "file": "08a2d.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/08a2d.svg"
+    },
+    {
+      "character": "認",
+      "file": "08a8d.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/08a8d.svg"
+    },
+    {
+      "character": "調",
+      "file": "08abf.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/08abf.svg"
+    },
+    {
+      "character": "資",
+      "file": "08cc7.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/08cc7.svg"
+    },
+    {
+      "character": "関",
+      "file": "095a2.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/095a2.svg"
+    },
+    {
+      "character": "除",
+      "file": "09664.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/09664.svg"
+    },
+    {
+      "character": "集",
+      "file": "096c6.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/096c6.svg"
+    },
+    {
+      "character": "類",
+      "file": "0985e.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0985e.svg"
+    },
+    {
+      "character": "食",
+      "file": "098df.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/098df.svg"
+    },
+    {
+      "character": "値",
+      "file": "05024.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/05024.svg"
+    },
+    {
+      "character": "初",
+      "file": "0521d.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0521d.svg"
+    },
+    {
+      "character": "向",
+      "file": "05411.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/05411.svg"
+    },
+    {
+      "character": "在",
+      "file": "05728.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/05728.svg"
+    },
+    {
+      "character": "捨",
+      "file": "06368.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/06368.svg"
+    },
+    {
+      "character": "法",
+      "file": "06cd5.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/06cd5.svg"
+    },
+    {
+      "character": "質",
+      "file": "08cea.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/08cea.svg"
+    },
+    {
+      "character": "適",
+      "file": "09069.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/09069.svg"
+    },
+    {
+      "character": "際",
+      "file": "0969b.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0969b.svg"
+    },
+    {
+      "character": "高",
+      "file": "09ad8.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/09ad8.svg"
+    },
+    {
+      "character": "以",
+      "file": "04ee5.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/04ee5.svg"
+    },
+    {
+      "character": "静",
+      "file": "09759.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/09759.svg"
+    },
+    {
+      "character": "久",
+      "file": "04e45.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/04e45.svg"
+    },
+    {
+      "character": "動",
+      "file": "052d5.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/052d5.svg"
+    },
+    {
+      "character": "夜",
+      "file": "0591c.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0591c.svg"
+    },
+    {
+      "character": "寂",
+      "file": "05bc2.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/05bc2.svg"
+    },
+    {
+      "character": "心",
+      "file": "05fc3.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/05fc3.svg"
+    },
+    {
+      "character": "忙",
+      "file": "05fd9.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/05fd9.svg"
+    },
+    {
+      "character": "旅",
+      "file": "065c5.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/065c5.svg"
+    },
+    {
+      "character": "海",
+      "file": "06d77.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/06d77.svg"
+    },
+    {
+      "character": "疲",
+      "file": "075b2.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/075b2.svg"
+    },
+    {
+      "character": "絡",
+      "file": "07d61.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/07d61.svg"
+    },
+    {
+      "character": "裕",
+      "file": "088d5.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/088d5.svg"
+    },
+    {
+      "character": "誘",
+      "file": "08a98.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/08a98.svg"
+    },
+    {
+      "character": "送",
+      "file": "09001.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/09001.svg"
+    },
+    {
+      "character": "遅",
+      "file": "09045.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/09045.svg"
+    },
+    {
+      "character": "過",
+      "file": "0904e.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0904e.svg"
+    },
+    {
+      "character": "部",
+      "file": "090e8.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/090e8.svg"
+    },
+    {
+      "character": "配",
+      "file": "0914d.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0914d.svg"
+    },
+    {
+      "character": "障",
+      "file": "0969c.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/0969c.svg"
+    },
+    {
+      "character": "飯",
+      "file": "098ef.svg",
+      "url": "https://raw.githubusercontent.com/KanjiVG/kanjivg/70a0b7ae0c18ceb5cb358274b029cce0234a43bc/kanji/098ef.svg"
     }
   ]
 }

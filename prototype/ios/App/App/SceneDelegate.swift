@@ -2,6 +2,8 @@ import UIKit
 import Capacitor
 import AVFoundation
 import CryptoKit
+import Speech
+import WebKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -28,9 +30,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 // Local system speech bridge; no external service or generated audio files.
 class SeodangBridgeViewController: CAPBridgeViewController {
     override func capacitorDidLoad() {
+        // Keep fixed navigation still at the scroll edges and hide native indicators.
+        if let scrollView = bridge?.webView?.scrollView {
+            scrollView.bounces = false
+            scrollView.alwaysBounceVertical = false
+            scrollView.alwaysBounceHorizontal = false
+            scrollView.showsVerticalScrollIndicator = false
+            scrollView.showsHorizontalScrollIndicator = false
+        }
         bridge?.registerPluginInstance(SeodangSpeechPlugin())
         bridge?.registerPluginInstance(SeodangUIPlugin())
         bridge?.registerPluginInstance(SeodangAudioPlugin())
+        bridge?.registerPluginInstance(SeodangRecognitionPlugin())
+        bridge?.registerPluginInstance(SeodangVideoPlugin())
     }
 }
 
@@ -226,4 +238,208 @@ class SeodangAudioPlugin: CAPPlugin, CAPBridgedPlugin {
         do { try FileManager.default.removeItem(at: self.directory()); call.resolve() }
         catch { call.reject("Cannot delete downloads", nil, error) }
     }}
+}
+
+// Speech practice stays on device. No audio file, server fallback, or transcript logging.
+@objc(SeodangRecognitionPlugin)
+class SeodangRecognitionPlugin: CAPPlugin, CAPBridgedPlugin {
+    let identifier = "SeodangRecognitionPlugin"
+    let jsName = "SeodangRecognition"
+    let pluginMethods: [CAPPluginMethod] = ["recognize", "finish", "cancel"].map {
+        CAPPluginMethod(name: $0, returnType: CAPPluginReturnPromise)
+    }
+    private let engine = AVAudioEngine()
+    private var recognizer: SFSpeechRecognizer?
+    private var request: SFSpeechAudioBufferRecognitionRequest?
+    private var task: SFSpeechRecognitionTask?
+    private var pending: CAPPluginCall?
+    private var timeout: DispatchWorkItem?
+    private var session = UUID()
+    private var tapped = false
+    private var text = ""
+    override func load() {
+        NotificationCenter.default.addObserver(self, selector: #selector(interrupted), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(interrupted), name: AVAudioSession.interruptionNotification, object: nil)
+    }
+    @objc private func interrupted() { DispatchQueue.main.async { self.complete(code: "INTERRUPTED") } }
+    private func complete(code: String? = nil) {
+        guard pending != nil else { return }
+        let call = pending, result = text
+        pending = nil; session = UUID(); timeout?.cancel(); timeout = nil
+        engine.stop()
+        if tapped { engine.inputNode.removeTap(onBus: 0); tapped = false }
+        request?.endAudio(); task?.cancel(); task = nil; request = nil; recognizer = nil; text = ""
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+        if let code { call?.reject(code, code) } else { call?.resolve(["text": result]) }
+    }
+    @objc func recognize(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            self.complete(code: "CANCELLED")
+            self.pending = call; let id = self.session
+            let locale = call.getString("locale") ?? "ko-KR"
+            guard ["ko-KR", "ja-JP"].contains(locale), let recognizer = SFSpeechRecognizer(locale: Locale(identifier: locale)), recognizer.supportsOnDeviceRecognition else {
+                self.complete(code: "ON_DEVICE_UNAVAILABLE"); return
+            }
+            self.recognizer = recognizer
+            SFSpeechRecognizer.requestAuthorization { status in
+                DispatchQueue.main.async {
+                    guard self.session == id, self.pending != nil else { return }
+                    guard status == .authorized else { self.complete(code: "PERMISSION_DENIED"); return }
+                    AVAudioSession.sharedInstance().requestRecordPermission { allowed in
+                        DispatchQueue.main.async {
+                            guard self.session == id, self.pending != nil else { return }
+                            guard allowed else { self.complete(code: "PERMISSION_DENIED"); return }
+                            guard UIApplication.shared.applicationState == .active else { self.complete(code: "INTERRUPTED"); return }
+                            self.begin(id: id)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private func begin(id: UUID) {
+        guard let recognizer, recognizer.isAvailable, recognizer.supportsOnDeviceRecognition else { complete(code: "ON_DEVICE_UNAVAILABLE"); return }
+        do {
+            let audio = AVAudioSession.sharedInstance()
+            try audio.setCategory(.record, mode: .measurement, options: .duckOthers)
+            try audio.setActive(true)
+            let request = SFSpeechAudioBufferRecognitionRequest()
+            request.requiresOnDeviceRecognition = true
+            request.shouldReportPartialResults = true
+            self.request = request
+            let input = engine.inputNode, format = input.outputFormat(forBus: 0)
+            guard format.sampleRate > 0, format.channelCount > 0 else { complete(code: "AUDIO_UNAVAILABLE"); return }
+            input.installTap(onBus: 0, bufferSize: 1024, format: format) { buffer, _ in request.append(buffer) }
+            tapped = true
+            task = recognizer.recognitionTask(with: request) { result, error in
+                DispatchQueue.main.async {
+                    guard self.session == id, self.pending != nil else { return }
+                    if let result { self.text = result.bestTranscription.formattedString }
+                    if result?.isFinal == true { self.complete() }
+                    else if error != nil { self.complete(code: self.text.isEmpty ? "RECOGNITION_FAILED" : nil) }
+                }
+            }
+            engine.prepare(); try engine.start()
+            let work = DispatchWorkItem { [weak self] in guard let self, self.session == id else { return }; self.endInput(id: id) }
+            timeout = work; DispatchQueue.main.asyncAfter(deadline: .now() + 10, execute: work)
+        } catch { complete(code: "AUDIO_UNAVAILABLE") }
+    }
+    private func endInput(id: UUID) {
+        guard session == id, pending != nil else { return }
+        engine.stop()
+        if tapped { engine.inputNode.removeTap(onBus: 0); tapped = false }
+        request?.endAudio(); timeout?.cancel()
+        let work = DispatchWorkItem { [weak self] in guard let self, self.session == id else { return }; self.complete() }
+        timeout = work; DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: work)
+    }
+    @objc func finish(_ call: CAPPluginCall) {
+        DispatchQueue.main.async { self.endInput(id: self.session); call.resolve() }
+    }
+    @objc func cancel(_ call: CAPPluginCall) {
+        DispatchQueue.main.async { self.complete(code: "CANCELLED"); call.resolve() }
+    }
+}
+
+
+// Inline child WebView supplies the HTTPS identity missing from capacitor://.
+@objc(SeodangVideoPlugin)
+class SeodangVideoPlugin: CAPPlugin, CAPBridgedPlugin, WKUIDelegate, WKNavigationDelegate {
+    let identifier = "SeodangVideoPlugin"
+    let jsName = "SeodangVideo"
+    let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "mount", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "layout", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "remove", returnType: CAPPluginReturnPromise)
+    ]
+    private var player: WKWebView?
+    private var token: String?
+
+    @objc func mount(_ call: CAPPluginCall) {
+        guard let videoID = call.getString("videoId"), let token = call.getString("token"),
+              ["xRlcrGXwtrA", "PZGxO0qCKRg", "pQ8lfI_W2To", "X3Y9esqDspY", "r5m1bfVUfSQ", "DddirskV5Vo", "sczKFlBP1Y4", "JPZfvT5zTBE", "sst8SX32Yhw"].contains(videoID) else {
+            call.reject("Unknown lesson video"); return
+        }
+        let start = call.getInt("startSeconds") ?? 0
+        let end = call.getInt("endSeconds") ?? 0
+        guard start >= 0, end == 0 || end > start else {
+            call.reject("Invalid clip bounds"); return
+        }
+        DispatchQueue.main.async {
+            guard let host = self.bridge?.webView else { call.reject("WebView unavailable"); return }
+            self.removePlayer()
+            self.token = token
+            let configuration = WKWebViewConfiguration()
+            configuration.websiteDataStore = .nonPersistent()
+            configuration.allowsInlineMediaPlayback = true
+            let player = WKWebView(frame: .zero, configuration: configuration)
+            player.uiDelegate = self; player.navigationDelegate = self
+            player.isOpaque = false; player.backgroundColor = .black
+            player.scrollView.isScrollEnabled = false
+            self.player = player
+            // Shares the lesson's native scroll container, so it scrolls with the text.
+            host.scrollView.addSubview(player)
+            self.applyFrame(call)
+            let identity = "https://" + (Bundle.main.bundleIdentifier ?? "com.mihye.seodang").lowercased()
+            let bounds = "&start=\(start)" + (end > 0 ? "&end=\(end)" : "")
+            guard let controlsURL = Bundle.main.url(forResource: "youtube-captions", withExtension: "js", subdirectory: "public/src"),
+                  let controls = try? String(contentsOf: controlsURL, encoding: .utf8) else {
+                self.removePlayer(); call.reject("Player controls unavailable"); return
+            }
+            let html = """
+            <!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="strict-origin-when-cross-origin"><style>html,body{margin:0;width:100%;height:100%;background:#000}iframe{display:block;width:100%;height:100%;border:0}</style></head><body><iframe src="https://www.youtube.com/embed/\(videoID)?playsinline=1&autoplay=0&enablejsapi=1&cc_load_policy=0&origin=\(identity)\(bounds)" title="YouTube" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe><script type="module">\(controls)
+            mountCaptionDefaults(document.querySelector("iframe"));
+            </script></body></html>
+            """
+            player.loadHTMLString(html, baseURL: URL(string: identity))
+            call.resolve()
+        }
+    }
+    @objc func layout(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            if self.token == call.getString("token") { self.applyFrame(call) }
+            call.resolve()
+        }
+    }
+    private func applyFrame(_ call: CAPPluginCall) {
+        guard let host = bridge?.webView, let player = player else { return }
+        let viewport = call.getDouble("viewportWidth") ?? Double(host.bounds.width)
+        let scale = host.bounds.width / max(1, CGFloat(viewport))
+        let offset = host.scrollView.contentOffset
+        player.frame = CGRect(x: CGFloat(call.getDouble("x") ?? 0) * scale + offset.x,
+                              y: CGFloat(call.getDouble("y") ?? 0) * scale + offset.y,
+                              width: CGFloat(call.getDouble("width") ?? 200) * scale,
+                              height: CGFloat(call.getDouble("height") ?? 200) * scale)
+        let hidden = call.getBool("hidden") ?? false
+        if hidden && !player.isHidden {
+            // Pause before settings or backgrounding; never resume without a user tap.
+            player.evaluateJavaScript("document.querySelector('iframe')?.contentWindow.postMessage(JSON.stringify({event:'command',func:'pauseVideo',args:[]}), 'https://www.youtube.com')", completionHandler: nil)
+        }
+        player.isHidden = hidden
+    }
+    @objc func remove(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            if self.token == call.getString("token") { self.removePlayer() }
+            call.resolve()
+        }
+    }
+    private func removePlayer() {
+        player?.stopLoading()
+        player?.loadHTMLString("", baseURL: nil)
+        player?.removeFromSuperview()
+        player = nil; token = nil
+    }
+    func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration,
+                 for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+        if let url = navigationAction.request.url, url.scheme == "https" { UIApplication.shared.open(url) }
+        return nil
+    }
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
+                 decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        if navigationAction.targetFrame?.isMainFrame == true, navigationAction.navigationType == .linkActivated,
+           let url = navigationAction.request.url, url.scheme == "https" {
+            UIApplication.shared.open(url); decisionHandler(.cancel); return
+        }
+        decisionHandler(.allow)
+    }
 }

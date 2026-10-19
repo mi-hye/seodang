@@ -1,0 +1,296 @@
+{
+  "lang": "ja",
+  "shots": [
+    {
+      "file": "ja-frames/0000.png",
+      "time": 0,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0001.png",
+      "time": 0.208,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0002.png",
+      "time": 0.413,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0003.png",
+      "time": 0.615,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0004.png",
+      "time": 0.819,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0005.png",
+      "time": 1.021,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0006.png",
+      "time": 1.224,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0007.png",
+      "time": 1.49,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0008.png",
+      "time": 1.724,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0009.png",
+      "time": 1.931,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0010.png",
+      "time": 2.135,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0011.png",
+      "time": 2.34,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0012.png",
+      "time": 2.611,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0013.png",
+      "time": 2.845,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0014.png",
+      "time": 3.05,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0015.png",
+      "time": 3.252,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0016.png",
+      "time": 3.454,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0017.png",
+      "time": 3.657,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0018.png",
+      "time": 3.869,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0019.png",
+      "time": 4.061,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0020.png",
+      "time": 4.265,
+      "phase": "listen"
+    },
+    {
+      "file": "ja-frames/0021.png",
+      "time": 4.465,
+      "phase": "question"
+    },
+    {
+      "file": "ja-frames/0022.png",
+      "time": 4.664,
+      "phase": "question"
+    },
+    {
+      "file": "ja-frames/0023.png",
+      "time": 4.889,
+      "phase": "question"
+    },
+    {
+      "file": "ja-frames/0024.png",
+      "time": 5.09,
+      "phase": "question"
+    },
+    {
+      "file": "ja-frames/0025.png",
+      "time": 5.294,
+      "phase": "question"
+    },
+    {
+      "file": "ja-frames/0026.png",
+      "time": 5.491,
+      "phase": "question"
+    },
+    {
+      "file": "ja-frames/0027.png",
+      "time": 5.697,
+      "phase": "question"
+    },
+    {
+      "file": "ja-frames/0028.png",
+      "time": 5.9,
+      "phase": "question"
+    },
+    {
+      "file": "ja-frames/0029.png",
+      "time": 6.103,
+      "phase": "question"
+    },
+    {
+      "file": "ja-frames/0030.png",
+      "time": 6.307,
+      "phase": "question"
+    },
+    {
+      "file": "ja-frames/0031.png",
+      "time": 6.496,
+      "phase": "question"
+    },
+    {
+      "file": "ja-frames/0032.png",
+      "time": 6.713,
+      "phase": "question"
+    },
+    {
+      "file": "ja-frames/0033.png",
+      "time": 6.913,
+      "phase": "question"
+    },
+    {
+      "file": "ja-frames/0034.png",
+      "time": 7.116,
+      "phase": "question"
+    },
+    {
+      "file": "ja-frames/0035.png",
+      "time": 7.321,
+      "phase": "question"
+    },
+    {
+      "file": "ja-frames/0036.png",
+      "time": 7.521,
+      "phase": "selected"
+    },
+    {
+      "file": "ja-frames/0037.png",
+      "time": 7.809,
+      "phase": "selected"
+    },
+    {
+      "file": "ja-frames/0038.png",
+      "time": 8.015,
+      "phase": "selected"
+    },
+    {
+      "file": "ja-frames/0039.png",
+      "time": 8.219,
+      "phase": "selected"
+    },
+    {
+      "file": "ja-frames/0040.png",
+      "time": 8.419,
+      "phase": "selected"
+    },
+    {
+      "file": "ja-frames/0041.png",
+      "time": 8.622,
+      "phase": "selected"
+    },
+    {
+      "file": "ja-frames/0042.png",
+      "time": 8.825,
+      "phase": "selected"
+    },
+    {
+      "file": "ja-frames/0043.png",
+      "time": 9.027,
+      "phase": "selected"
+    },
+    {
+      "file": "ja-frames/0044.png",
+      "time": 9.229,
+      "phase": "selected"
+    },
+    {
+      "file": "ja-frames/0045.png",
+      "time": 9.429,
+      "phase": "selected"
+    },
+    {
+      "file": "ja-frames/0046.png",
+      "time": 9.629,
+      "phase": "next"
+    },
+    {
+      "file": "ja-frames/0047.png",
+      "time": 9.866,
+      "phase": "next"
+    },
+    {
+      "file": "ja-frames/0048.png",
+      "time": 10.067,
+      "phase": "next"
+    },
+    {
+      "file": "ja-frames/0049.png",
+      "time": 10.257,
+      "phase": "next"
+    },
+    {
+      "file": "ja-frames/0050.png",
+      "time": 10.472,
+      "phase": "next"
+    },
+    {
+      "file": "ja-frames/0051.png",
+      "time": 10.674999999999999,
+      "phase": "next"
+    },
+    {
+      "file": "ja-frames/0052.png",
+      "time": 10.878,
+      "phase": "next"
+    },
+    {
+      "file": "ja-frames/0053.png",
+      "time": 11.081,
+      "phase": "next"
+    },
+    {
+      "file": "ja-frames/0054.png",
+      "time": 11.285,
+      "phase": "next"
+    },
+    {
+      "file": "ja-frames/0055.png",
+      "time": 11.487,
+      "phase": "next"
+    },
+    {
+      "file": "ja-frames/0056.png",
+      "time": 11.776,
+      "phase": "next"
+    },
+    {
+      "file": "ja-frames/0057.png",
+      "time": 11.992999999999999,
+      "phase": "next"
+    }
+  ],
+  "audio": "korean.3-2.1.wav"
+}

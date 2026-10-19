@@ -9,13 +9,13 @@ test('published packs cover every lesson practice clip and use verified immutabl
  for(const [file,clip]of Object.entries(catalog.files)){
   assert.match(file,/^assets\/audio\/.+\.wav$/);assert.match(clip.sha256,/^[a-f0-9]{64}$/);assert.ok(clip.bytes>0&&clip.duration>0);
   assert.equal(clip.url,`https://jrmtfhmhcbkdzqzhbgfv.supabase.co/storage/v1/object/public/seodang-audio/voices-v1/${clip.sha256}.m4a`);
-  assert.ok(['VOICEVOX Nemo 男声1','Supertonic 3 M1'].includes(clip.voice));
+  assert.ok(['VOICEVOX Nemo 男声1','Supertonic 3 M1','Google Cloud Chirp 3 HD Kore'].includes(clip.voice));
   if(hashes.has(clip.sha256))assert.equal(clip.bytes,hashes.get(clip.sha256));hashes.set(clip.sha256,clip.bytes);
  }
  for(const [key,pack]of Object.entries(catalog.packs)){
-  const [courseDirection,kind,id]=key.split(':');await prepareContent(kind);
-  const s={...freshState(),courseDirection,onboardingLevel:pack.level,sentenceActive:Number(id),basics:{active:Number(id)},kana:{active:Number(id)},korean:{active:id}};
-  for(const unit of practiceUnits(s,kind))assert.ok(pack.files.includes(unit.audio.audioFile),`${key}: ${unit.audio.audioFile}`);
+  const [courseDirection,kind,id]=key.split(':');if(kind==='expert'){const article=JSON.parse(readFileSync(new URL('../src/expert-content.json',import.meta.url)))[courseDirection][id];assert.deepEqual(pack.files,article.discussion?[...article.discussion.perspectives,...article.discussion.expressions].map(s=>s.audioFile):[article.audio.audioFile,...article.sentences.map(s=>s.audioFile)]);for(const file of pack.files)assert.ok(catalog.files[file]);continue;}await prepareContent(kind);
+  const s={...freshState(),courseDirection,onboardingLevel:pack.level,scenarioActive:id,sentenceActive:Number(id),basics:{active:Number(id)},kana:{active:Number(id)},korean:{active:id}};
+  for(const unit of practiceUnits(s,kind)){assert.ok(pack.files.includes(unit.audio.audioFile),`${key}: ${unit.audio.audioFile}`);if(kind==='scenario')assert.equal(catalog.files[unit.audio.audioFile].text,unit.audio.text);}
   for(const file of pack.files)assert.ok(catalog.files[file],`${key}: ${file}`);
  }
 });
@@ -32,4 +32,14 @@ test('isolated kana keep character readings instead of particle readings',()=>{
  assert.equal(catalog.files['assets/audio/kana/he.wav'].pronunciation,"ヘ'");
  assert.equal(catalog.files['assets/audio/kana/n.wav'].pronunciation,"ン'");
  for(const [file,clip]of Object.entries(catalog.files))if(clip.pronunciation)assert.ok(clip.duration>=.45,`${file} has a clipped character example`);
+});
+
+
+test('all eight level-five packs use the approved Kore voice with matching text',()=>{
+ const content=JSON.parse(readFileSync(new URL('../src/expert-content.json',import.meta.url)));
+ for(const [direction,lessons] of Object.entries(content))for(const [id,lesson] of lessons.entries()){
+  const lines=[...lesson.discussion.perspectives,...lesson.discussion.expressions],pack=catalog.packs[`${direction}:expert:${id}`];
+  assert.equal(pack.files.length,4);assert.deepEqual(pack.files,lines.map(line=>line.audioFile));
+  for(const line of lines){const clip=catalog.files[line.audioFile];assert.equal(clip.voice,'Google Cloud Chirp 3 HD Kore');assert.equal(clip.text,line.text);assert.equal(clip.locale,direction==='ko-ja'?'ja-JP':'ko-KR');}
+ }
 });

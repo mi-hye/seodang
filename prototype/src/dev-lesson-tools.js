@@ -5,7 +5,7 @@ import {isCasePractice,normalizeCasePractice,practiceHasWriting,practiceRoundCou
 import {developmentMode} from './build-config.js';
 import {lessonProgress} from './lesson-session.js';
 import {kanaLessons,kanaRound,selectedLevel} from './kana-state.js';
-import {koreanCase,koreanLessons,koreanQuizOnly,koreanStageZero,koreanGroup,koreanExplanation} from './korean-state.js';
+import {koreanCase,koreanLessons,koreanHasSpeaking,koreanQuizOnly,koreanStageZero,koreanGroup,koreanExplanation} from './korean-state.js';
 import {labelWords} from './labels-state.js';
 import {readingAnswers} from './reading-state.js';
 import {caseTasks,practiceKey,practiceUnits} from './practice-content.js';
@@ -21,10 +21,10 @@ function originals(s,kind,count){
   if(kind==='korean'&&koreanCase(s.korean.active)&&!['5-1','6-1','7-1'].includes(s.korean.active))add('scenario');
   const quizOnly=kind==='korean'&&koreanQuizOnly(koreanLessons.find(l=>l.id===s.korean.active));
   if(kind==='basic'&&s.basics.active<11&&basicHasIntro(s.basics.active))add('intro');
-  for(let i=0;i<count;i++){if(kind==='korean'&&['5-1','6-1','7-1'].includes(s.korean.active))add('scenario',i);if(kind==='korean'&&koreanExplanation(s.korean.active)&&i===koreanGroup(s.korean.active,i).start)add('intro',i);if(kind==='basic'&&s.basics.active>=11&&i===basicGroup(s.basics.active,i).start)add('intro',i);if(!quizOnly)add('learn',i);if(kind==='korean'&&koreanExplanation(s.korean.active))continue;if(kind==='basic'&&basicSinglePass(s.basics.active)||kind==='korean'&&koreanStageZero(s.korean.active))add('write',i);if(kind!=='basic'||s.basics.active!==10)add('quiz',i);}
+  for(let i=0;i<count;i++){if(kind==='korean'&&['5-1','6-1','7-1'].includes(s.korean.active))add('scenario',i);if(kind==='korean'&&koreanExplanation(s.korean.active)&&i===koreanGroup(s.korean.active,i).start)add('intro',i);if(kind==='basic'&&s.basics.active>=11&&i===basicGroup(s.basics.active,i).start)add('intro',i);if(!quizOnly)add('learn',i);if(kind==='korean'&&koreanExplanation(s.korean.active))continue;if(kind==='basic'&&basicSinglePass(s.basics.active)||kind==='korean'&&koreanStageZero(s.korean.active))add('write',i);if(kind!=='basic'||s.basics.active!==10)add('quiz',i);if(kind==='korean'&&koreanHasSpeaking(s.korean.active))add('speak',i);}
  }else if(kind==='labels'){add('intro');for(let i=0;i<count;i++){add('read',i);add('build',i);}add('match',count-1);}
  else if(kind==='listening'){for(let i=0;i<count;i++)add('',i);}
- else if(kind==='sentence'){add('intro');for(let i=0;i<count;i++){add('learn',i);add('arrange',i);}if(sentenceId(s)!==3)add('solve',count-1);}
+ else if(kind==='sentence'){add('intro');for(let i=0;i<count;i++){add('learn',i);add('arrange',i);add('speak',i);}if(sentenceId(s)!==3)add('solve',count-1);}
  else if(kind==='dialogue'){add('intro');for(let i=0;i<3;i++)add('learn',i);for(let i=0;i<3;i++)add('practice',i);}
  else if(kind==='reading'){for(let i=0;i<6;i++){if(i%2===0){add('intro',i);add('learn',i);}add('read',i);}}
  else if(kind==='play')for(const [step,lesson,transfer] of [['intro',0],['learn',0],['learn',1],['investigate',1],['solved',1],['transfer',1,'not_attempted'],['transfer',1,'passed']])pages.push({step,lesson,...(transfer?{transfer}:{})});
@@ -53,10 +53,11 @@ function completion(s,kind,p){
  if(kind==='kana'){p.matches=kanaRound(kanaLessons[s.kana.active],p.index).letters.map(l=>l.id);p.answered=true;return {type:'kana-next'};}
  if(kind==='basic'&&[7,8,10].includes(s.basics.active))return {type:'basic-next'};
  if(kind==='korean'&&koreanExplanation(s.korean.active))return {type:'korean-next'};
+ if(kind==='korean'&&koreanHasSpeaking(s.korean.active)){p.phase='speak';return {type:'korean-speak-next'};}
  if(kind==='basic'||kind==='korean'){p.selected=p.index%(kind==='korean'&&koreanStageZero(s.korean.active)?4:3);return {type:`${kind}-check`};}
  if(kind==='labels'){p.matches=labelWords.slice(0,-1).map(l=>l.id);const id=labelWords.at(-1).id;return {type:'labels-match',left:id,right:id};}
  if(kind==='listening')return {type:'listening-answer',id:'kasa'};
- if(kind==='sentence'){if(sentenceId(s)===3){p.selected=String(p.index%3);return {type:'sentence-check'};}p.selected=sentenceId(s)===0?'window-blue':String(sentenceId(s));return {type:'sentence-submit'};}
+ if(kind==='sentence'){if(sentenceId(s)===3){p.phase='speak';return {type:'sentence-speak-next'};}p.selected=sentenceId(s)===0?'window-blue':String(sentenceId(s));return {type:'sentence-submit'};}
  if(kind==='dialogue'){p.selected=0;return {type:'dialogue-check'};}
  if(kind==='reading'){p.solved=[0,1,2,3,4];p.selected=readingAnswers[selectedLevel(s)][5];return {type:'reading-check'};}
  p.transfer='passed';return {type:'next'};

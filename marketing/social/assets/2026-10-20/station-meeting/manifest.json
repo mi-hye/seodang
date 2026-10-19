@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-20",
+  "status": "prepared_not_published",
+  "topic": "역에서 친구 만나기",
+  "supersedes": "assets/2026-10-20/travel-install",
+  "format": "one_post_two_videos_bilingual_caption",
+  "channels": [
+    "instagram",
+    "threads",
+    "x"
+  ],
+  "media": [
+    {
+      "language": "ko",
+      "file": "marketing/social/assets/2026-10-20/station-meeting/seodang-station-ko.mp4",
+      "sha256": "cf152ad2ed27a0cf6c8395a098937bc1a0e64ca4be88838542bf6d224b228927"
+    },
+    {
+      "language": "ja",
+      "file": "marketing/social/assets/2026-10-20/station-meeting/seodang-station-ja.mp4",
+      "sha256": "a7e94ff06ba0c7adae97af385b42be55458bcae2e621fbd97bec02397deab8c7"
+    }
+  ],
+  "validation": "Both contact sheets reviewed; 1080x1920, 30fps, 19.3s, one audio track per video. New captured learning screens, current catalog audio SHA256 verified."
+}

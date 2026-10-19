@@ -1,0 +1,31 @@
+{
+  "created": "2026-10-19",
+  "site": "https://seodang-konbini-try.lilac-puppy-3950.chatgpt.site",
+  "audience": "owner-private",
+  "deployment_id": "appgdep_6ad5b4a0ca8481918e75f30e1f0c53a6",
+  "status": "succeeded",
+  "videos": {
+    "ko": {
+      "file": "seodang-konbini-ko.mp4",
+      "duration_seconds": 18.0667
+    },
+    "ja": {
+      "file": "seodang-konbini-ja.mp4",
+      "duration_seconds": 16.2667
+    }
+  },
+  "verification": [
+    "both flows completed via browser UI",
+    "wrong answer retry in both languages",
+    "320px no horizontal overflow",
+    "1080x1920 video with audio",
+    "video contact sheets reviewed"
+  ],
+  "not_done": [
+    "public audience change",
+    "social publication",
+    "profile link replacement",
+    "analytics collection",
+    "deferred deep linking"
+  ]
+}

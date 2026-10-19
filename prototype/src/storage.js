@@ -1,3 +1,6 @@
+import {validVideoLessons} from './video-lesson-state.js';
+import {validExperts} from './expert-state.js';
+import {validScenarios} from './scenario-state.js';
 import {canonicalLevel,retiredPractice} from './curriculum.js';
 import {normalizeCasePractice,practiceHasWriting,practiceRoundCount,validPractices,normalizePractice} from './practice-state.js';
 import {validKorean,normalizeKorean,koreanStageZero,koreanExplanation} from './korean-state.js';
@@ -21,7 +24,7 @@ const steps = [
 ];
 export function valid(s) {
   return (
-    s?.schemaVersion === 1 && validPractices(s.practices) &&
+    s?.schemaVersion === 1 && validVideoLessons(s) && validScenarios(s) && validExperts(s) && validPractices(s.practices) &&
     (s.koreanGuideSeenVersion===undefined||s.koreanGuideSeenVersion===1) &&
     validKorean(s.korean) &&
     (s.courseLevels===undefined||(s.courseLevels&&typeof s.courseLevels==='object'&&!Array.isArray(s.courseLevels)&&Object.entries(s.courseLevels).every(([key,value])=>['ko-ja','ja-ko'].includes(key)&&Number.isInteger(value)&&value>=0&&value<=7))) &&
@@ -105,6 +108,7 @@ export function load(storage) {
       delete state.practices[key];
     }
 
+    for(const [key,type,p] of [['ko-ja:sentence:3','sentence',state.sentenceLessons?.[3]],...['3-1','3-2','3-3','3-4'].map(id=>[`ja-ko:korean:${id}`,'korean',state.korean?.lessons?.[id]])]){const practice=state.practices?.[key];if(practice&&p&&practice.action.type===`${type}-check`){p.phase='speak';p.selected=null;practice.action={type:`${type}-speak-next`};}}
     if (state.basics) state.basics = normalizeBasics(state.basics);
     // Repair the previous build's cross-level handoff once, preserving level 2 progress.
     if(state.courseDirection==='ko-ja' && state.labels?.completed && !state.listening){

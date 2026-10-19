@@ -1,4 +1,7 @@
-import {courseName,courseGroup,koreanImmersion} from './curriculum.js';
+import {videoLesson,videoProgress} from './video-lesson-state.js';
+import {expertCatalog,expertProgress} from './expert-state.js';
+import {scenarioLessons,scenarioProgress,scenarioTitle} from './scenario-state.js';
+import {courseName,courseGroup,japaneseLessonUI} from './curriculum.js';
 import {koreanLessons, koreanProgress, koreanUnlocked, nextKorean} from './korean-state.js';
 import {t} from './i18n.js';
 import {basicLessons,basicProgress,basicUnlocked,nextBasic} from './basics-state.js';
@@ -35,8 +38,9 @@ export function renderLearningMap(state,{resumeCard=''}={}) {
   const level = courseGroup(selectedLevel(state));
   if (level > 7) return `<section class="map-empty"><span aria-hidden="true">${icon('lock')}</span><h1>${level}단계 학습을 준비하고 있어요</h1></section>`;
   let lessons, title, count;
-  if(state.courseDirection==='ja-ko'){
-    title=courseName(level,!koreanImmersion(state));const active=nextKorean(state);lessons=koreanLessons.filter(l=>!l.retired&&l.level===level).map(l=>{const p=koreanProgress(state,l.id),ready=koreanUnlocked(state,l.id);return {title:l.title,ready,complete:p.completed,current:active.id===l.id,detail:'',status:koreanImmersion(state)?(p.completed?'완료':ready?p.started?'이어하기':'시작하기':'앞 학습을 마치면 열려요'):(p.completed?'完了':ready?p.started?'続きから':'開始':'前の学習を終えると開きます'),action:'korean',id:l.id};});count=lessons.filter(l=>l.complete).length;
+  if(level===7){title=courseName(level);lessons=expertCatalog[state.courseDirection].map((l,id)=>{const p=expertProgress(state,id);return {id,title:l.title,ready:true,complete:p.completed,current:p.started&&!p.completed,status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'expert'};});count=lessons.filter(l=>l.complete).length;
+  } else if(state.courseDirection==='ja-ko'){
+    title=courseName(level,true);const active=nextKorean(state);lessons=koreanLessons.filter(l=>!l.retired&&l.level===level).map(l=>{const p=koreanProgress(state,l.id),ready=koreanUnlocked(state,l.id);return {title:l.title,ready,complete:p.completed,current:active.id===l.id,detail:'',status:p.completed?'完了':ready?p.started?'続きから':'開始':'前の学習を終えると開きます',action:'korean',id:l.id};});count=lessons.filter(l=>l.complete).length;
   } else if (level === 0) {
     const k = normalizeKana(state.kana);
     const available = kanaLessons.map((_,i)=>kanaUnlocked(k,i));
@@ -49,18 +53,25 @@ export function renderLearningMap(state,{resumeCard=''}={}) {
         detail:lesson.rangeLabel,
         status:p.caseSolved?'학습 완료':!available[i]?'앞 학습을 마치면 열려요':p.started?'이어하기':'시작하기',action:'kana',id:i};
     });
-    for(const l of basicLessons.filter(l=>level===(l.id===6?2:0))){const b=basicProgress(state,l.id);count+=Number(b.completed);lessons.push({title:l.title,ready:basicUnlocked(state,l.id),complete:b.completed,current:(level===0?next<0:listening.completed)&&l.id===nextBasic(state)&&!b.completed,detail:'',status:b.completed?'완료':b.started?'이어하기':'시작하기',action:'basic',id:l.id});}
+    for(const l of basicLessons.filter(l=>l.id!==6)){const b=basicProgress(state,l.id);count+=Number(b.completed);lessons.push({title:l.title,ready:basicUnlocked(state,l.id),complete:b.completed,current:next<0&&l.id===nextBasic(state)&&!b.completed,detail:'',status:b.completed?'완료':b.started?'이어하기':'시작하기',action:'basic',id:l.id});}
   } else if(level===2){
     title=courseName(level);lessons=sentenceLessons.map(l=>{const p=sentenceProgress(state,l.id);return {...l,ready:true,complete:p.completed,current:l.id===nextSentence(state),status:p.completed?'학습 완료':p.started?'이어하기':'시작하기',action:'sentence'};});count=lessons.filter(l=>l.complete).length;
   } else if(level===4){
     const p=dialogueProgress(state);title=courseName(level);count=Number(p.completed);lessons=[{title:'따뜻한 커피를 포장해요',image:assets.cafe.src,ready:true,complete:p.completed,current:!p.completed,status:p.completed?'학습 완료':p.started?'이어하기':'시작하기',action:'dialogue'}];
   } else {
-    const levels=level===5?[5,6]:[7];title=courseName(level,level===7);lessons=levels.map((id,i)=>{const p=readingProgress(state,id);return {id,title:id===5?'안내·메시지에서 정보 찾기':id===6?'조건과 이유를 연결해 판단하기':'専門記事・論説を読む',ready:true,complete:p.completed,current:id===selectedLevel(state)&&!p.completed,status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'reading'};});count=lessons.filter(l=>l.complete).length;
+    title=courseName(level);lessons=[5,6].map(id=>{const p=readingProgress(state,id);return {id,title:id===5?'안내·메시지에서 정보 찾기':'조건과 이유를 연결해 판단하기',ready:true,complete:p.completed,current:id===selectedLevel(state)&&!p.completed,status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'reading'};});count=lessons.filter(l=>l.complete).length;
   }
+
+  const addition=scenarioLessons.find(l=>l.level===level);
+  if(addition&&level!==7){const p=scenarioProgress(state,addition.id);lessons.push({id:addition.id,title:scenarioTitle(state,addition),ready:true,complete:p.completed,current:p.started&&!p.completed,detail:'',status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'scenario'});count+=Number(p.completed);}
+
+  const video=videoLesson(state);
+  if(video){const p=videoProgress(state);lessons.push({title:video.title,ready:true,complete:p.completed,current:p.started&&!p.completed,status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'video'});count+=Number(p.completed);}
 
   // A single destination mirrors the home resume card, including direct dev entry.
   const active=state.courseDirection==='ko-ja'&&state.basics?.active;
   let current=[0,2].includes(level)&&active&&(active===6?2:0)===level&&basicUnlocked(state,active)&&!basicProgress(state,active).completed?lessons.findIndex(l=>l.action==='basic'&&l.id===active):lessons.findIndex(l=>l.current);
+  if(video&&videoProgress(state).started&&!videoProgress(state).completed)current=lessons.findIndex(l=>l.action==='video');
   if(current<0)current=lessons.findIndex(l=>l.ready&&!l.complete);
   lessons=lessons.map((l,i)=>({...l,current:i===current}));
   const progress=lessons.length?Math.round(count/lessons.length*100):0;
@@ -68,5 +79,5 @@ export function renderLearningMap(state,{resumeCard=''}={}) {
   const routeStops=level===0?lessons:[...lessons,null];
   const comingSoon=level===0?'':`<li class="map-stop map-coming-soon is-locked" style="--stop-x:${routePosition(lessons.length)}%"><div class="map-choice"><span class="map-node" aria-hidden="true">?</span><span class="map-title">Coming Soon</span></div></li>`;
   const mapStops=lessons.map((lesson,index)=>stop(lesson,index,routeStops,index===recommendedEnd)+(index===recommendedEnd?'<li class="map-study-note"><h2>기본 추천 학습은 여기까지예요</h2><p>1~9번에서 히라가나와 기본 발음을 익혀요.</p><p>10번부터는 발음 보충과 가타카나를 배우는 추가 학습이에요. 레벨 2로 먼저 넘어가고 필요할 때 돌아와도 좋아요.</p></li>':'')).join('');
-  return `<section class="learning-map" aria-label="${title}${state.courseDirection==='ja-ko'&&!koreanImmersion(state)?'の学習マップ':' 학습 지도'}"><div class="map-overview"><div class="map-heading"><h1>${title}</h1><span>${count}/${lessons.length}</span></div>${current>=0?`<button class="map-locate" data-action="map-locate" aria-label="${t('현재 위치로 이동')}">${icon('locate')}</button>`:''}<div class="map-progress" aria-hidden="true"><span style="width:${progress}%"></span></div>${resumeCard}</div><div class="map-layout"><ol class="map-grid">${mapStops}${comingSoon}</ol></div></section>`;
+  return `<section class="learning-map" aria-label="${title}${japaneseLessonUI(state)?'の学習マップ':' 학습 지도'}"><div class="map-overview"><div class="map-heading"><h1>${title}</h1><span>${count}/${lessons.length}</span></div>${current>=0?`<button class="map-locate" data-action="map-locate" aria-label="${t('현재 위치로 이동')}">${icon('locate')}</button>`:''}<div class="map-progress" aria-hidden="true"><span style="width:${progress}%"></span></div>${resumeCard}</div><div class="map-layout"><ol class="map-grid">${mapStops}${comingSoon}</ol></div></section>`;
 }

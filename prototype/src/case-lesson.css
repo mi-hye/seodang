@@ -1,0 +1,26 @@
+.case-lesson{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:12px;padding-top:12px;padding-bottom:24px;text-align:left;word-break:keep-all;overflow-wrap:anywhere}
+.case-lesson>*{min-width:0;max-width:100%;flex:none}
+.case-lesson-count{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.case-lesson-image{display:block;width:100%;height:clamp(88px,16svh,140px);object-fit:cover;border-radius:16px}
+.case-lesson-content{display:flex;flex-direction:column;gap:8px}
+.case-lesson p{font-size:calc(17px * var(--text-scale));line-height:1.75;margin:0;white-space:pre-line}
+.case-lesson .audio-text-row{gap:8px}
+.case-lesson .audio-text-row .icon-button{flex:none;width:44px;min-height:44px}
+.case-lesson-meaning{color:var(--muted)}
+.case-lesson .case-words{margin:0;padding-top:16px}
+.case-lesson .case-words h2{font-size:16px;margin:0 0 8px;color:var(--text)}
+.case-lesson .case-words dl{display:flex;flex-flow:row wrap;gap:10px 20px;margin:0}
+.case-lesson .case-words dl>div{display:flex;justify-content:flex-start;gap:8px}
+.case-lesson .case-words dd{margin:0;color:var(--muted);text-align:left}
+.case-lesson .button-pair{margin-top:8px}
+.case-lesson.lesson-top,.case-lesson.lesson-centered{display:flex!important;justify-content:flex-start!important;align-items:stretch!important;padding-top:12px!important}
+
+.case-lesson h1{font-size:calc(23px * var(--text-scale));line-height:1.5;margin:0}
+.case-lesson .korean-scene-image{width:100%;height:clamp(88px,16svh,140px);object-fit:cover;border-radius:16px;margin:0}
+.case-lesson-choices{display:grid;gap:10px}
+.case-lesson-choices button{display:block;min-width:0;max-width:100%;min-height:48px;margin:0;text-align:left;white-space:normal;line-height:1.6;overflow-wrap:anywhere}
+.case-lesson-choices .selected{outline:2px solid var(--text);outline-offset:-2px}
+
+.case-lesson .case-lesson-cue{display:flex;flex-flow:row wrap;gap:0 6px;align-items:baseline}
+.case-lesson-cue>span{display:block;max-width:100%;word-break:keep-all;overflow-wrap:anywhere}
+.case-lesson-cue>span[lang=ja]{color:var(--muted);word-break:normal;line-break:strict}

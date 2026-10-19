@@ -1,3 +1,4 @@
+import {feedbackText} from './feedback-text.js';
 import {renderTokenBuilder,renderTokenSelection} from './token-builder.js';
 import {japaneseLessonUI} from './curriculum.js';
 import {phraseText, button} from './ui.js';
@@ -21,7 +22,8 @@ export function mountCasePractice(root,s,task,{advance,stop,onAnswer=()=>{}}){
    if(checked){busy=true;update();await advance();return;}
    const correct=task.type==='order'?tokens.every((id,i)=>id===i):selected===task.answer;
    onAnswer(correct);
-   feedback.textContent=`${correct?c.correct:c.retry} ${task.hint}`;
+   const reason=task.type==='order'?task.orderFeedback:task.wrongFeedback?.[task.options[selected]];
+   feedback.innerHTML=feedbackText(correct?`${c.correct} ${task.hint}`:(reason||`${c.retry} ${task.hint}`));
    if(correct){checked=true;confirm.textContent=c.next;for(const x of root.querySelectorAll('[data-case-choice]'))x.disabled=true;}update();
   }
  };

@@ -64,3 +64,12 @@ jobs:
           cache-dependency-path: seodang-local-prototype/package-lock.json
       - run: npm ci
       - run: npm run typecheck && npm run lint && npm test && npm run build
+
+  community-functions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: deno check --config supabase/functions/deno.json supabase/functions/community-delete-account/index.ts supabase/functions/community-photo-cleanup/index.ts

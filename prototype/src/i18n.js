@@ -1,8 +1,8 @@
-import {courseLevels,courseName,displayLevel,koreanImmersion} from './curriculum.js';
+import {courseLevels,courseName,displayLevel,japaneseLessonUI} from './curriculum.js';
 // Interface language follows the learning direction; lesson text keeps its own language.
 let locale='ko';
 export const isJapaneseUI=()=>locale==='ja';
-export function setUILanguage(state){locale=state?.courseDirection==='ja-ko'&&!koreanImmersion(state)?'ja':'ko';if(globalThis.document){document.documentElement.lang=locale;document.title=locale==='ja'?'ソダン':'서당';}}
+export function setUILanguage(state){locale=japaneseLessonUI(state)?'ja':'ko';if(globalThis.document){document.documentElement.lang=locale;document.title=locale==='ja'?'ソダン':'서당';}}
 let ja={},japaneseTranslations;
 export async function loadUILanguage(state){if(state?.courseDirection==='ja-ko'){japaneseTranslations ||= import('./i18n-ja.js').then(module=>{ja=module.default;}).catch(error=>{japaneseTranslations=null;throw error;});await japaneseTranslations;}}
 

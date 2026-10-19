@@ -10,7 +10,7 @@ const phases = ['intro','learn','arrange','solve','summary'];
 const tokenCounts = [3,3,2];
 export function validSentence(s,id=0) {
   const counts=id===3?[2,3,2,2,2,2]:id===1?[3,3,3]:tokenCounts;
-  return s?.version === 1 && phases.includes(s.phase) && Number.isInteger(s.index) && s.index >= 0 && s.index < counts.length &&
+  return s?.version === 1 && (phases.includes(s.phase)||s.phase==='speak') && Number.isInteger(s.index) && s.index >= 0 && s.index < counts.length &&
     ['started','checked','completed'].every(k=>typeof s[k] === 'boolean') && typeof s.feedback === 'string' &&
     Number.isInteger(s.attempts) && s.attempts >= 0 && [null,...(id===0?['window-red','door-blue','window-blue']:['0','1','2'])].includes(s.selected) &&
     Array.isArray(s.learned) && s.learned.every(i=>Number.isInteger(i)&&i>=0&&i<counts.length) && new Set(s.learned).size===s.learned.length &&
@@ -27,24 +27,25 @@ export function reduceSentence(progress, action,id=0) {
     if(s.phase==='intro') s.phase='learn';
     else if(s.phase==='learn') {s.phase='arrange';clear();}
     else if(s.phase==='arrange' && s.checked) {
-      s.learned=[...new Set([...s.learned,s.index])];
-      if(s.index<counts.length-1) {s.index++;s.phase='learn';} else s.phase='solve';
+      s.phase='speak';
       clear();
     }
   }
   if(action.type==='sentence-previous') {
     if(s.phase==='learn' && s.index===0) s.phase='intro';
     else if(s.phase==='learn') {s.index--;s.phase='learn';}
+    else if(s.phase==='speak') {s.phase='arrange';s.selected=null;}
     else if(s.phase==='arrange') s.phase='learn';
     else if(s.phase==='solve') {s.index=counts.length-1;s.phase='learn';}
     clear();
   }
+  if(s.phase==='speak'&&action.type==='sentence-speak-next'){s.learned=[...new Set([...s.learned,s.index])];if(s.index<counts.length-1){s.index++;s.phase='learn';}else if(id===3){s.completed=true;s.phase='summary';}else s.phase='solve';clear();}
   if(id===3&&s.phase==='arrange'){
     if(action.type==='sentence-select'&&['0','1','2'].includes(action.id)){s.selected=action.id;s.feedback='';}
     if(action.type==='sentence-check'&&s.selected!==null){
       s.attempts++;
       if(Number(s.selected)!==s.index%3)s.feedback='다시 골라 주세요.';
-      else{s.learned=[...new Set([...s.learned,s.index])];if(s.index<counts.length-1){s.index++;s.phase='learn';}else{s.completed=true;s.phase='summary';}s.selected=null;clear();}
+      else{s.phase='speak';s.selected=null;clear();}
     }
     return s;
   }
