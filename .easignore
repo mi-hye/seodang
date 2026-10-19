@@ -84,3 +84,8 @@ yarn-error.*
 /prototype/references/*.md
 **/credentials.json
 **/*.keystore
+
+# Local outputs and independently managed Sites are not release inputs.
+/_workspace/
+/test-results/
+/sites/
