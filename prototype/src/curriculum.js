@@ -7,5 +7,4 @@ export const courseNames={ko:['글자와 발음 익히기','짧은 문장으로 
 export const courseName=(level,jp=false)=>courseNames[jp?'ja':'ko'][displayLevel(level)-1];
 export const retiredPractice=key=>/^(ko-ja:(labels|listening|play):|ko-ja:basic:6$|ja-ko:korean:(1-11|2-1)$)/.test(key);
 
-export const koreanImmersion=s=>s?.courseDirection==='ja-ko'&&Number(s.onboardingLevel)>=7;
-export const japaneseLessonUI=s=>s?.courseDirection==='ja-ko'&&!koreanImmersion(s);
+export const japaneseLessonUI=s=>s?.courseDirection==='ja-ko';

@@ -13,3 +13,5 @@
 .word-memory[open]>summary::after{transform:rotate(225deg)}
 
 .word-memory-scene{display:block;width:100%;max-width:280px;height:auto;aspect-ratio:2;object-fit:contain;margin:4px auto 14px;border-radius:14px}
+
+.word-memory-body:lang(ja){word-break:normal;line-break:strict}

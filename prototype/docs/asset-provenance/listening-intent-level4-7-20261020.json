@@ -1,0 +1,43 @@
+{
+  "lesson": "scenario:10",
+  "visibleLevel": "4-7",
+  "date": "2026-10-20",
+  "voices": {
+    "ja": "VOICEVOX Nemo 男声1",
+    "ko": "Supertonic 3 M1"
+  },
+  "catalogVersion": "a5a17219e00b7173",
+  "verification": "All six generated clips transcribed using mlx-whisper large-v3-turbo; speech matches text apart from punctuation and numeral/kanji notation. Public audio SHA-256 verified during publishing.",
+  "transcriptions": [
+    {
+      "file": "assets/audio/scenarios/ko-ja.10.0.wav",
+      "expected": "お誘いはうれしいんですが、今回は遠慮しておきます。",
+      "heard": "お誘いは嬉しいんですが、今回は遠慮しておきます。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.10.1.wav",
+      "expected": "六時以降でしたら、お手伝いできます。",
+      "heard": "6時以降でしたらお手伝いできます。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.10.2.wav",
+      "expected": "予定を確認してから、改めてご連絡してもいいですか。",
+      "heard": "予定を確認してから改めてご連絡してもいいですか"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.10.0.wav",
+      "expected": "초대해 주셔서 감사하지만, 이번에는 참석하기 어려울 것 같아요.",
+      "heard": " 초대해 주셔서 감사하지만 이번에는 참석하기 어려울 것 같아요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.10.1.wav",
+      "expected": "여섯 시 이후라면 도와드릴 수 있어요.",
+      "heard": " 6시 이후라면 도와드릴 수 있어요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.10.2.wav",
+      "expected": "일정을 확인한 뒤에 다시 연락드려도 될까요?",
+      "heard": " 일정을 확인한 뒤에 다시 연락드려도 될까요?"
+    }
+  ]
+}

@@ -8,6 +8,9 @@ export const esc = (s) =>
         c
       ],
   );
+// Treat short Japanese corner-bracket quotations as one unit without changing copied text.
+export const quotedText = text => String(text).split(/(「[^「」\n]*」)/u)
+  .map(part => /^「[^「」\n]*」$/u.test(part) ? `<span class="quoted-text">${esc(part)}</span>` : esc(part)).join('');
 // Keep pedagogical phrases together; whitespace remains identical for copying and speech.
 export const phraseText = (text, phrases = text.split(/(\s+)/)) => phrases
   .map(part => /^\s+$/.test(part) ? esc(part) : `<span class="text-phrase">${esc(part)}</span>`)

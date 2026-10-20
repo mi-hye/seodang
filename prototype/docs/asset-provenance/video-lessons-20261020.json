@@ -1,0 +1,24 @@
+[
+  {
+    "lesson": "frieren-wait",
+    "source": "https://www.youtube.com/watch?v=DddirskV5Vo",
+    "channel": "TOHO animation",
+    "language": "ja",
+    "startSeconds": 48,
+    "endSeconds": 51,
+    "quote": "ちょっと待ってください。",
+    "verification": "Official channel confirmed through YouTube oEmbed on 2026-10-20. Existing original-audio transcript and independent isolated-crop ASR checked; no YouTube captions used. Opening hesitation in the Japanese line omitted from the learning quote.",
+    "mediaBundled": false
+  },
+  {
+    "lesson": "hospital-effort",
+    "source": "https://www.youtube.com/watch?v=sczKFlBP1Y4",
+    "channel": "tvN DRAMA",
+    "language": "ko",
+    "startSeconds": 24,
+    "endSeconds": 26,
+    "quote": "네, 최선을 다할게요.",
+    "verification": "Official channel confirmed through YouTube oEmbed on 2026-10-20. Existing original-audio transcript and independent isolated-crop ASR checked; no YouTube captions used. Opening hesitation in the Japanese line omitted from the learning quote.",
+    "mediaBundled": false
+  }
+]

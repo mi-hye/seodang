@@ -1,0 +1,73 @@
+{
+  "lesson": "scenario:11",
+  "visibleLevel": "5-7",
+  "date": "2026-10-20",
+  "voices": {
+    "ja": "VOICEVOX Nemo 男声1",
+    "ko": "Supertonic 3 M1"
+  },
+  "catalogVersion": "534c6a8469ad4175",
+  "verification": "Twelve original and repaired reply clips transcribed using mlx-whisper large-v3-turbo. Final audio matches text apart from punctuation and kana/kanji notation; revised final Japanese reply after initial unclear transcription. All public audio SHA-256 values verified during publishing.",
+  "transcriptions": [
+    {
+      "file": "assets/audio/scenarios/ko-ja.11.0.wav",
+      "expected": "その案は難しいと思います。",
+      "heard": "その案は難しいと思います"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.11.speak.0.wav",
+      "expected": "案に反対しているわけではなく、準備の時間が気になっています。",
+      "heard": "案に反対しているわけではなく準備の時間が気になっています"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.11.1.wav",
+      "expected": "返事はあとでします。",
+      "heard": "返事は後でします"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.11.speak.1.wav",
+      "expected": "話したくないわけじゃなくて、落ち着いてからちゃんと返したいんだ。",
+      "heard": "話したくないわけじゃなくて落ち着いてからちゃんと返したいんだ"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.11.2.wav",
+      "expected": "全部は無理です。",
+      "heard": "全部は無理です"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.11.speak.2.wav",
+      "expected": "全部を見る時間はありませんが、結論の部分だけなら確認できます。",
+      "heard": "全部を見る時間はありませんが、結論の部分だけなら確認できます。"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.11.0.wav",
+      "expected": "그 방법은 어려울 것 같아요.",
+      "heard": " 그 방법은 어려울 것 같아요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.11.speak.0.wav",
+      "expected": "그 방법에 반대한다는 게 아니라, 준비할 시간이 부족할까 봐 걱정돼요.",
+      "heard": " 그 방법에 반대한다는 게 아니라 준비할 시간이 부족할까 봐 걱정돼요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.11.1.wav",
+      "expected": "답장은 나중에 할게.",
+      "heard": " 답장은 나중에 할게"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.11.speak.1.wav",
+      "expected": "얘기하기 싫다는 게 아니라, 여유가 생기면 제대로 답하고 싶어서 그래.",
+      "heard": " 얘기하기 싫다는 게 아니라 여유가 생기면 제대로 답하고 싶어서 그래."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.11.2.wav",
+      "expected": "전부는 어려워요.",
+      "heard": " 전부는 어려워요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.11.speak.2.wav",
+      "expected": "오늘 안에 전부 보기는 어렵지만, 결론 부분만이라면 확인해 드릴 수 있어요.",
+      "heard": " 오늘 안에 전부 보기는 어렵지만 결론 부분만이라면 확인해 드릴 수 있어요."
+    }
+  ]
+}

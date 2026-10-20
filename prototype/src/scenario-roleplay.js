@@ -1,0 +1,14 @@
+import {button,icon,esc,phraseText,quotedText} from './ui.js';
+import {lessonExplanation} from './lesson-explanation.js';
+import {lessonNumberWithVideo} from './video-lesson-state.js';
+import {scenarioProgress,scenarioTitle} from './scenario-state.js';
+export function renderRoleplay(s,top,l,c){
+ const p=scenarioProgress(s),x=c.items[p.index],jp=s.courseDirection==='ja-ko',ui=jp?'ja':'ko',lang=jp?'ko':'ja',label=(ko,ja)=>jp?ja:ko;
+ const progress=p.phase==='intro'?0:Math.round((p.index+(p.checked?1:0))/3*100);
+ const heading=top(`${lessonNumberWithVideo(s,l.number[s.courseDirection])}. ${scenarioTitle(s,l)}`);
+ const bar=`<div class="lesson-progress" role="progressbar" aria-label="${label('학습 진행률','学習の進み具合')}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}"><span style="width:${progress}%"></span></div>`;
+ if(p.phase==='intro')return `${heading}${bar}<main class="page scenario-page roleplay-intro" lang="${ui}"><h1>${esc(scenarioTitle(s,l))}</h1><p>${quotedText(c.scene)}</p>${button(label('대화 시작하기','会話を始める'),'scenario-next')}</main>`;
+ const bubble=(line,parts,part,who,translation='')=>`<article class="roleplay-bubble ${part==='answer'?'roleplay-self':''}"><small>${who}</small><div class="audio-text-row"><p lang="${lang}">${phraseText(line,parts)}</p>${button(icon('sound'),'scenario-audio','icon-button',`data-id="${part}" aria-label="${label('다시 듣기','もう一度聞く')}"`)}</div>${translation?`<details><summary>${label('뜻 보기','意味を見る')}</summary><p lang="${ui}">${quotedText(translation)}</p></details>`:''}</article>`;
+ const choices=[...x.others];choices.splice(p.index,0,x.answer);
+ return `${heading}${bar}<main class="page scenario-page roleplay-page" lang="${ui}"><div class="roleplay-scene"><span>${p.index+1} / 3</span><p>${quotedText(x.prompt)}</p></div><section class="roleplay-conversation" aria-label="${label('대화','会話')}">${bubble(x.text,x.phrases,'prompt',label('직원','スタッフ'),x.meaning)}${p.checked?`${bubble(x.answer,x.answerParts||undefined,'answer',label('나','自分'))}<div role="status">${bubble(x.reply,x.replyParts,'reply',label('직원','スタッフ'),x.replyMeaning)}</div>`:''}</section>${!p.checked?`<div class="scenario-choices">${choices.map((o,i)=>button(phraseText(o,o===x.answer?x.answerParts||undefined:undefined),'scenario-select',`secondary${p.selected===i?' selected':''}`,`data-id="${i}" lang="${lang}" aria-pressed="${p.selected===i}"`)).join('')}</div>${p.retry?`<p class="scenario-feedback" role="status">${label('다시 골라 보세요.','もう一度選んでみましょう。')} ${quotedText(x.hint)}</p>`:''}${lessonExplanation(x.hint,jp)}`:''}<div class="button-pair">${button(label('이전','戻る'),'scenario-previous','secondary')}${p.checked?button(p.index===2?label('학습 마치기','学習を終える'):label('계속하기','続ける'),'scenario-next'):button(label('답하기','答える'),'scenario-check','primary',p.selected===null?'disabled':'')}</div></main>`;
+}

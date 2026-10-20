@@ -9,3 +9,8 @@
 - 한국어 UI 문구를 쓰거나 다듬을 때 사용자가 요청한 `humanize-korean` 스킬을 적용한다. 설명은 짧고 구체적으로 쓰고, 이미 자연스러운 문장은 억지로 바꾸지 않는다. 학습 내용과 의미, 수치, 기존 해요체를 보존한다.
 
 - 서당 UI 변경에는 `/Users/kangmihye/.codex/skills/seodang-design/SKILL.md`의 사용자 지정 디자인 규칙을 적용한다. 모든 재생 스피커는 해당 글씨 오른쪽 같은 가로 행에 배치한다. 공유 `.audio-text-row` 또는 동등한 기존 행을 사용하고, 좁은 화면에서도 스피커를 아래로 내리지 않는다.
+
+## Local device builds
+
+- Use `npm run ios:sync:dev` when installing a local development build on the connected iPhone. This keeps the learning-language selector available in settings. Do not use the production `ios:sync` command for local device updates unless the user explicitly requests a production build.
+- Keep production builds unchanged; `npm run build` and `npm run ios:sync` must retain production settings.

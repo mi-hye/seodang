@@ -109,9 +109,9 @@ html[data-motion=off] .practice-fireworks>i{animation:none}
 /* Completion owns its alignment instead of inheriting lesson stretching. */
 #app .shell.lesson-complete-shell{display:flex;flex-direction:column;min-height:100dvh;height:auto}
 #app .lesson-complete-shell>.app-header,#app .lesson-complete-shell>.lesson-progress{flex:none}
-#app .lesson-complete-shell>main.practice-complete{flex:1;min-height:0;width:100%;margin:0;padding:16px 20px max(24px,env(safe-area-inset-bottom));align-items:center;justify-content:center}
-#app .lesson-complete-shell .practice-fireworks{flex:none;width:min(240px,100%);height:clamp(140px,24dvh,200px)}
-#app .lesson-complete-shell .practice-complete h1{width:100%;margin:12px 0 24px;text-align:center}
+#app .lesson-complete-shell>main.practice-complete{flex:1;min-height:0;width:100%;margin:0;padding:24px 20px calc(24px + env(safe-area-inset-bottom));align-items:center;justify-content:center}
+#app .lesson-complete-shell .practice-fireworks{flex:none;width:min(240px,100%);height:84px}
+#app .lesson-complete-shell .practice-complete h1{width:100%;margin:28px 0 24px;text-align:center}
 #app .lesson-complete-shell .practice-complete>.primary{flex:none}
 
 .practice-fireworks>span svg{fill:currentColor;stroke:none}

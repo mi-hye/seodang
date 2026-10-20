@@ -42,7 +42,7 @@ for(const direction of ['ko-ja','ja-ko'])for(const width of [320,390])test(`comm
  await page.locator('[data-community=compose]').click();await expect(page.locator('[name=body]')).toHaveValue('今日は友達とコーヒーを飲みました。');
  await page.locator('[data-community-form=post] button[type=submit]').click();
  await expect.poll(()=>writes.filter(x=>x.table==='posts').length).toBe(1);expect(writes.find(x=>x.table==='posts').body.wants_correction).toBe(true);
- await page.locator('[data-community=post]').click();await expect(page.locator('[name=correction]')).toHaveCount(0);await page.locator('[data-community=select-correction]').first().click();await page.locator('[name=correction]').fill('오늘');await page.locator('[name=body]').fill('이렇게 말해도 자연스러워요.');await page.locator('[data-community-form=reply] button[type=submit]').click();
+ await page.locator('[data-community=post]').click();await page.screenshot({path:`output/community-detail-${direction}-${width}-${test.info().project.name}.png`,fullPage:true});await expect(page.locator('[name=correction]')).toHaveCount(0);await page.locator('[data-community=reply-correction]').click();await page.locator('[data-community=select-correction]').first().click();await page.locator('[name=correction]').fill('오늘');await page.locator('[name=body]').fill('이렇게 말해도 자연스러워요.');await page.locator('[data-community-form=reply] button[type=submit]').click();
  await expect.poll(()=>writes.filter(x=>x.table==='replies').length).toBe(1);expect(errors).toEqual([]);
 });
 test('request acceptance gates composer and message delivery',async({page})=>{
@@ -90,17 +90,18 @@ test('sentence selection preserves other sentences and can be cleared',async({pa
  const writes=await setup(page,{posts:[{...post,body:'오늘은 커피를 마셨어요. 내일은 차를 마실 거예요.'}]});await page.locator('[data-action=community]').click();await page.locator('[data-community=post]').click();
  await page.locator('[name=body]').fill('이 표현이 자연스러워요.');
  await expect(page.locator('[data-community-form=reply] [data-community=select-correction]')).toHaveCount(0);
- await page.locator('[data-post] .community-body [data-community=select-correction]').filter({hasText:'오늘은'}).click();
- await expect(page.locator('.community-correction-selected>span')).toHaveText('오늘은 커피를 마셨어요.');
+ await page.locator('[data-community=reply-correction]').click();await page.locator('[data-community-form=reply] [data-community=select-correction]').filter({hasText:'오늘은'}).click();
+ await expect(page.locator('.community-sentence[aria-pressed=true]')).toHaveText('오늘은 커피를 마셨어요. ');
  await page.locator('[name=correction]').fill('어제는 차를 마셨어요.');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:`output/community-correction-${test.info().project.name}.png`,fullPage:true});await page.locator('[data-community-form=reply] button[type=submit]').click();
  await expect.poll(()=>writes.filter(x=>x.table==='replies').length).toBe(1);expect(writes.find(x=>x.table==='replies').body.correction).toBe('어제는 차를 마셨어요. 내일은 차를 마실 거예요.');
- await page.locator('[data-community=select-correction]').first().click();await page.locator('[data-community=clear-correction]').click();await expect(page.locator('[name=correction]')).toHaveCount(0);
+ await expect(page.locator('.community-help-sheet')).toHaveCount(0);await page.locator('[data-community=reply-correction]').click();await page.locator('[data-community=select-correction]').first().click();await page.locator('[data-community=clear-correction]').click();await expect(page.locator('[name=correction]')).toHaveCount(0);
 });
 for(const width of [320,390])test(`correction comparison and selectable body ${width}`,async({page})=>{
  await setup(page,{width,posts:[{...post,body:'안녕하세요. 오늘은 커피를 먹었어요. 내일 또 만나요.'}]});
  await page.route('**/rest/v1/community_replies?**',r=>r.fulfill({json:[{id:'66666666-6666-4666-8666-666666666666',author_id:other,profile:friend,body:'음료에는 마시다를 써요.',correction:'안녕하세요. 오늘은 커피를 마셨어요. <img src=x onerror=alert(1)> 내일 또 만나요.'}]}));
  await page.locator('[data-action=community]').click();await page.locator('[data-community=post]').click();
  const comparison=page.locator('.community-correction-comparison');await expect(comparison.locator('del')).toContainText('먹었');await expect(comparison.locator('ins')).toHaveCount(2);await expect(comparison.locator('img')).toHaveCount(0);
+ await page.locator('[data-community=reply-correction]').click();
  expect(await page.locator('.community-sentence').first().evaluate(el=>getComputedStyle(el).textDecorationLine)).toBe('underline');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.screenshot({path:`output/community-diff-${width}-${test.info().project.name}.png`,fullPage:true});
@@ -114,8 +115,8 @@ test('reply comparison omits unchanged sentences',async({page})=>{
 });
 test('correction grows with text and can be submitted without explanation',async({page})=>{
  const writes=await setup(page,{width:320,posts:[{...post,body:'커피를 먹었어요.'}]});await page.locator('[data-action=community]').click();await page.locator('[data-community=post]').click();
- await expect(page.locator('[name=body]')).not.toHaveAttribute('required');
- await page.locator('[data-community-form=reply] button[type=submit]').click();await expect(page.locator('[role=alert]')).toContainText('고친 표현이나 답글');expect(writes.filter(x=>x.table==='replies')).toHaveLength(0);
+ await page.locator('[data-community=reply-correction]').click();await expect(page.locator('[name=body]')).not.toHaveAttribute('required');
+ await page.locator('[data-community-form=reply] button[type=submit]').click();await expect(page.locator('[role=alert]')).toContainText('문장을 선택하고 고친 표현');expect(writes.filter(x=>x.table==='replies')).toHaveLength(0);
  await page.locator('[data-community=select-correction]').click();const field=page.locator('[name=correction]');const short=(await field.boundingBox()).height;
  await field.fill('오늘은 친구와 함께 카페에 가서 따뜻한 커피를 마시면서 이야기를 나눴어요. '.repeat(3));expect((await field.boundingBox()).height).toBeGreaterThan(short);
  await field.fill('커피를 마셨어요.');expect((await field.boundingBox()).height).toBeLessThanOrEqual(short+1);
@@ -126,7 +127,7 @@ test('reply explanation grows and shrinks with its content',async({page})=>{
  await setup(page,{width:320});await page.locator('[data-action=community]').click();await page.locator('[data-community=post]').click();
  const field=page.locator('[data-community-form=reply] [name=body]'),initial=(await field.boundingBox()).height;
  await field.fill('이 표현은 친구와 이야기할 때 자연스럽게 쓸 수 있어요. '.repeat(5));expect((await field.boundingBox()).height).toBeGreaterThan(initial);
- expect(await field.evaluate(el=>el.scrollHeight<=el.clientHeight+1)).toBe(true);
+ expect((await field.boundingBox()).height).toBeLessThanOrEqual(144);expect(await field.evaluate(el=>getComputedStyle(el).overflowY)).toBe('auto');
  await field.fill('짧은 답글');expect((await field.boundingBox()).height).toBeLessThanOrEqual(initial+1);
  await field.fill('');expect((await field.boundingBox()).height).toBeLessThanOrEqual(initial+1);
 });
@@ -157,4 +158,47 @@ test('failed photo upload preserves text and previews for retry',async({page})=>
  await page.locator('[data-action=community]').click();await page.locator('[data-community=compose]').click();await page.locator('[name=body]').fill('사진과 함께 남겨요.');
  await page.locator('[data-photo-input]').setInputFiles({name:'photo.png',mimeType:'image/png',buffer:png});await expect(page.locator('.community-photo-previews img')).toHaveCount(1);
  await page.locator('[data-community-form=post] button[type=submit]').click();await expect(page.locator('[role=alert]')).toContainText('업로드');await expect(page.locator('[name=body]')).toHaveValue('사진과 함께 남겨요.');await expect(page.locator('.community-photo-previews img')).toHaveCount(1);
+});
+
+test('whole post opens by pointer or keyboard and returns to the same feed position',async({page})=>{
+ const posts=Array.from({length:18},(_,i)=>({...post,id:`33333333-3333-4333-8333-${String(i).padStart(12,'0')}`,body:`게시물 ${i}입니다.\n읽던 위치를 유지해요.\n세 번째 줄이에요.`}));
+ await setup(page,{posts});await page.locator('[data-action=community]').click();
+ const card=page.locator('[data-post]').nth(10);await card.scrollIntoViewIfNeeded();const before=await page.evaluate(()=>scrollY);expect(before).toBeGreaterThan(500);
+ await card.locator('.community-body').click();await expect(page.locator('.community-post-detail')).toContainText('게시물 10');await page.locator('[data-community-header-back]').click();await expect(page.locator('[data-post]')).toHaveCount(18);await expect.poll(()=>page.evaluate(()=>scrollY)).toBeCloseTo(before,0);
+ await card.focus();await card.press('Enter');await expect(page.locator('.community-post-detail')).toBeVisible();await page.locator('[data-community-header-back]').click();
+ await card.locator('summary').click();await expect(page.locator('.community-post-detail')).toHaveCount(0);await card.locator('summary').click();
+ await card.locator('[data-community=person]').click();await expect(page.locator('.community-post-detail')).toHaveCount(0);await expect(page.locator('[data-community=request]')).toBeVisible();
+});
+
+test('draft text language correction setting and photos survive navigation and reload, then clear after publish',async({page})=>{
+ const writes=await setup(page);await page.locator('[data-action=community]').click();await page.locator('[data-community=compose]').click();
+ await page.locator('[name=body]').fill('앱을 닫아도 남는 글 <script>');await page.locator('[name=language]').selectOption('ko');await page.locator('[name=wants_correction]').uncheck();
+ await page.locator('[data-photo-input]').setInputFiles({name:'photo.png',mimeType:'image/png',buffer:readFileSync('assets/brand/seodang-language-favicon-v1.png')});
+ await expect(page.locator('.community-photo-previews img')).toHaveCount(1);await expect(page.locator('[data-draft-status]')).toHaveText('이 기기에 초안을 저장했어요.');await page.locator('[data-action=home]').click();await page.reload();await page.locator('[data-action=community]').click();await page.locator('[data-community=compose]').click();
+ await expect(page.locator('[name=body]')).toHaveValue('앱을 닫아도 남는 글 <script>');await expect(page.locator('[name=language]')).toHaveValue('ko');await expect(page.locator('[name=wants_correction]')).not.toBeChecked();await expect(page.locator('.community-photo-previews img')).toHaveCount(1);expect(writes.filter(x=>x.table==='posts')).toHaveLength(0);
+ await page.locator('[data-community=remove-photo]').click();await page.locator('[data-community-form=post] button[type=submit]').click();await expect.poll(()=>writes.filter(x=>x.table==='posts').length).toBe(1);
+ await page.reload();await page.locator('[data-action=community]').click();await page.locator('[data-community=compose]').click();await expect(page.locator('[name=body]')).toHaveValue('');await expect(page.locator('.community-photo-previews img')).toHaveCount(0);
+});
+
+test('switching back to a comment never sends a hidden correction',async({page})=>{
+ const writes=await setup(page);await page.locator('[data-action=community]').click();await page.locator('.community-body').click();
+ await expect(page.locator('[data-community=select-correction]')).toHaveCount(0);await page.locator('[data-community=reply-correction]').click();await page.locator('[data-community=select-correction]').first().click();await page.locator('[name=correction]').fill('커피를 마셨어요.');await page.locator('[data-community=reply-comment]').click();
+ await expect(page.locator('[name=correction]')).toHaveCount(0);await page.locator('[name=body]').fill('반가워요!');await page.locator('[data-community-form=reply] button[type=submit]').click();await expect.poll(()=>writes.filter(x=>x.table==='replies').length).toBe(1);expect(writes.find(x=>x.table==='replies').body.correction).toBe('');
+});
+
+test('draft store isolates accounts and languages and coalesces rapid writes',async({page})=>{
+ await setup(page);const result=await page.evaluate(async()=>{const {draftKey,saveDraft,readDraft,clearDraft}=await import('/src/community-draft.js');const a=draftKey('a','ko-ja'),b=draftKey('a','ja-ko'),c=draftKey('b','ko-ja');await Promise.all(Array.from({length:20},(_,i)=>saveDraft(a,{body:String(i),language:'ja',wants_correction:true,photos:[]})));const last=await readDraft(a),otherLanguage=await readDraft(b),otherAccount=await readDraft(c);await clearDraft(a);return {last:last.body,otherLanguage,otherAccount,cleared:await readDraft(a)};});expect(result).toEqual({last:'19',otherLanguage:null,otherAccount:null,cleared:null});
+});
+
+test('a late publish cannot erase a newer draft',async({page})=>{
+ await setup(page);const result=await page.evaluate(async()=>{const {saveDraft,readDraft,clearDraft}=await import('/src/community-draft.js');const key='late:ko-ja',sent={id:'old',body:'보낸 글',language:'ja',wants_correction:true,photos:[]};await saveDraft(key,sent);await saveDraft(key,{...sent,id:'new',body:'새 초안'});await clearDraft(key,sent);const next=await readDraft(key);await clearDraft(key,next);return {next:next.body,cleared:await readDraft(key)};});expect(result).toEqual({next:'새 초안',cleared:null});
+});
+test('storage failure is visible without clearing the composer',async({page})=>{
+ await setup(page);await page.evaluate(()=>{Object.defineProperty(window,'indexedDB',{value:{open(){throw Error('blocked');}},configurable:true});});await page.locator('[data-action=community]').click();await page.locator('[data-community=compose]').click();await page.locator('[name=body]').fill('지우면 안 되는 글');await expect(page.locator('[data-draft-status]')).toContainText('저장할 수 없어요');await expect(page.locator('[name=body]')).toHaveValue('지우면 안 되는 글');
+});
+
+test('correction sheet traps focus, closes with Escape, and retains input',async({page})=>{
+ await setup(page,{width:320});await page.locator('[data-action=community]').click();await page.locator('[data-community=post]').click();
+ const dock=page.locator('.community-comment-dock');await expect(dock).toBeVisible();const box=await dock.boundingBox(),tabs=await page.locator('.tabs').boundingBox();expect(box.y+box.height).toBeLessThanOrEqual(tabs.y+1);
+ await page.locator('[data-community=reply-correction]').click();await expect(page.getByRole('dialog')).toBeVisible();await page.locator('[data-community=select-correction]').first().click();await page.locator('[name=correction]').fill('커피를 마셨어요.');await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);await expect(dock).toBeVisible();await expect(page.locator('[data-community=reply-correction]')).toBeFocused();await page.locator('[data-community=reply-correction]').click();await expect(page.locator('[name=correction]')).toHaveValue('커피를 마셨어요.');
 });

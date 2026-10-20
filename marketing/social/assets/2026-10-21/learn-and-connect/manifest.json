@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-21",
+  "status": "authorized_scheduled_via_heartbeat",
+  "topic": "배운 말을 써보는 교류",
+  "format": "one_post_two_images_bilingual_caption",
+  "channels": [
+    "instagram",
+    "threads",
+    "x"
+  ],
+  "images": [
+    {
+      "path": "marketing/social/assets/2026-10-21/learn-and-connect/01-ko-v2.png",
+      "width": 1122,
+      "height": 1402,
+      "sha256": "30f0abce4d54ae86a8122cca499c040465bdbb7f5509bd8da183cb55c05141f6"
+    },
+    {
+      "path": "marketing/social/assets/2026-10-21/learn-and-connect/02-ja-v2.png",
+      "width": 1122,
+      "height": 1402,
+      "sha256": "dea7a1e237fe689bb3f04845f55a8dc99f5541c8f80ae5318f131da529c8d75d"
+    }
+  ],
+  "captions": {
+    "instagram_threads": "marketing/social/assets/2026-10-21/learn-and-connect/instagram-threads-caption.txt",
+    "x": "marketing/social/assets/2026-10-21/learn-and-connect/x-caption.txt"
+  },
+  "validation": "Both images visually checked for correct target language, demo draft, compose controls and expression-help label. Captions unchanged. Prepared only.",
+  "generation": "built-in image_gen; prompts saved in image-prompts.txt",
+  "revision": "v2: real community renderer demo compose captures incorporated with image_gen; not device-store screenshots",
+  "scheduled_for": "2026-10-21T10:00:00+09:00",
+  "automation_id": "sns",
+  "authorization": "2026-10-20 user approved v2 screenshots and existing captions, each channel one post tomorrow; previous v1 rejected",
+  "rejected_images": [
+    "01-ko.png",
+    "02-ja.png"
+  ]
+}

@@ -24,6 +24,7 @@ export function validHistory(h) {
 export function recordLearning(before, after, action, now=new Date()) {
  const today=localDateKey(now);
  if(action.type.startsWith('video-')){
+  if(action.type==='video-start')return after;
   const a=videoProgress(before),b=videoProgress(after),learned=action.type==='video-next'&&a.phase==='learn'&&(a.index!==b.index||b.phase==='done'),finished=!a.completed&&b.completed;
   if(!learned&&!finished)return after;
   after=structuredClone(after);let host=after;if(after.courseDirection==='ja-ko')host=after.korean ||= {version:4,active:'1-1',lessons:{}};

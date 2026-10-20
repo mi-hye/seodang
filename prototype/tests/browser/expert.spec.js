@@ -37,5 +37,5 @@ for(const direction of ['ko-ja','ja-ko'])test(`expert ${direction} legacy first 
  else s.korean={version:4,active:'7-1',lessons:{'7-1':{phase:'learn',index:0,selected:null,retry:false,started:true,completed:false}}};
  await page.addInitScript(s=>{localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},s);
  await page.route('**/assets/audio/catalog.json',async r=>{const response=await r.fetch(),c=await response.json();await r.fulfill({json:{...c,packs:{}}});});
- await page.goto('/playable.html');await page.locator('[data-action="expert"][data-id="0"]').first().click();await expect(page.locator('.reading-intro')).toBeVisible();await page.locator('[data-action="expert-next"]').click();await expect(page.locator('.expert-discussion h1')).toHaveText('새 맛집이 궁금한 친구');
+ await page.goto('/playable.html');await page.locator('[data-action="expert"][data-id="0"]').first().click();await expect(page.locator('.reading-intro')).toBeVisible();await page.locator('[data-action="expert-next"]').click();await expect(page.locator('.expert-discussion h1')).toHaveText(direction==='ja-ko'?'新しいお店が気になる友達':'새 맛집이 궁금한 친구');
 });

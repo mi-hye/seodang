@@ -12,3 +12,5 @@
 .speaking-dog[data-speaking-mood=listening]{background-position:50% 0}
 .speaking-dog[data-speaking-mood=happy]{background-position:100% 0}
 .speaking-dog[data-speaking-mood=retry]{background-position:50% 100%}
+
+.korean-speaking h2:lang(ja),.korean-speaking h2:lang(ja) .text-phrase{word-break:normal;line-break:strict}

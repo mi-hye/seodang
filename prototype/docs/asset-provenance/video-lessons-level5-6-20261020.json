@@ -1,0 +1,24 @@
+[
+  {
+    "lesson": "frieren-inference",
+    "source": "https://www.youtube.com/watch?v=DddirskV5Vo",
+    "channel": "TOHO animation",
+    "availability": "public",
+    "playable_in_embed": true,
+    "startSeconds": 25,
+    "endSeconds": 31,
+    "quote": "例えば外見は俺でも中身は師匠ってことだろ。ちょっとやってみたいけどな。",
+    "verification": "Original audio isolated crop transcribed with mlx-whisper large-v3-turbo and compared to existing full audio transcription. Punctuation normalized for display. No YouTube captions accessed. Official source metadata refreshed 2026-10-20. Media not bundled or hosted."
+  },
+  {
+    "lesson": "blackdog-nuance",
+    "source": "https://www.youtube.com/watch?v=JPZfvT5zTBE",
+    "channel": "디글 :Diggle",
+    "availability": "public",
+    "playable_in_embed": true,
+    "startSeconds": 2,
+    "endSeconds": 8,
+    "quote": "그렇다고 김이분 선생이 하는 말이 다 틀리다는 건 아니에요.",
+    "verification": "Original audio isolated crop transcribed with mlx-whisper large-v3-turbo and compared to existing full audio transcription. Punctuation normalized for display. No YouTube captions accessed. Official source metadata refreshed 2026-10-20. Media not bundled or hosted."
+  }
+]

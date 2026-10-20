@@ -43,3 +43,25 @@ test('all eight level-five packs use the approved Kore voice with matching text'
   for(const line of lines){const clip=catalog.files[line.audioFile];assert.equal(clip.voice,'Google Cloud Chirp 3 HD Kore');assert.equal(clip.text,line.text);assert.equal(clip.locale,direction==='ko-ja'?'ja-JP':'ko-KR');}
  }
 });
+
+test('hotel speaking packs include target-only example audio in both languages',async()=>{
+ const {scenarioContent,scenarioAudio}=await import('../src/scenario-content.js');
+ for(const id of ['6','7','9','11'])for(const direction of ['ko-ja','ja-ko'])for(const [i,item]of scenarioContent[direction][id].items.entries()){
+  const audio=scenarioAudio(direction,id,i,true);
+  assert.ok(catalog.packs[`${direction}:scenario:${id}`].files.includes(audio.audioFile));
+  assert.equal(catalog.files[audio.audioFile].text,item.answer);
+  assert.notEqual(audio.audioFile,scenarioAudio(direction,id,i).audioFile);
+ }
+});
+
+test('roleplay packs provide separate staff, learner and response recordings',async()=>{
+ const {scenarioRoleAudio}=await import('../src/scenario-content.js');
+ for(const direction of ['ko-ja','ja-ko'])for(let i=0;i<3;i++)for(const part of ['prompt','answer','reply']){
+  const a=scenarioRoleAudio(direction,i,part);assert.ok(catalog.packs[`${direction}:scenario:8`].files.includes(a.audioFile));assert.equal(catalog.files[a.audioFile].text,a.text);
+ }
+});
+
+test('level 4-7 listening packs include the exact prompt audio for both languages',async()=>{
+ const {scenarioAudio}=await import('../src/scenario-content.js');
+ for(const direction of ['ko-ja','ja-ko']){const pack=catalog.packs[`${direction}:scenario:10`];assert.equal(pack.files.length,3);for(let i=0;i<3;i++){const a=scenarioAudio(direction,'10',i);assert.ok(pack.files.includes(a.audioFile));assert.equal(catalog.files[a.audioFile].text,a.text);assert.equal(catalog.files[a.audioFile].locale,a.locale);}}
+});

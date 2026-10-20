@@ -1,3 +1,4 @@
+import {validStudy} from './study-state.js';
 import {validVideoLessons} from './video-lesson-state.js';
 import {validExperts} from './expert-state.js';
 import {validScenarios} from './scenario-state.js';
@@ -24,7 +25,7 @@ const steps = [
 ];
 export function valid(s) {
   return (
-    s?.schemaVersion === 1 && validVideoLessons(s) && validScenarios(s) && validExperts(s) && validPractices(s.practices) &&
+    s?.schemaVersion === 1 && validStudy(s.studyTools) && validVideoLessons(s) && validScenarios(s) && validExperts(s) && validPractices(s.practices) &&
     (s.koreanGuideSeenVersion===undefined||s.koreanGuideSeenVersion===1) &&
     validKorean(s.korean) &&
     (s.courseLevels===undefined||(s.courseLevels&&typeof s.courseLevels==='object'&&!Array.isArray(s.courseLevels)&&Object.entries(s.courseLevels).every(([key,value])=>['ko-ja','ja-ko'].includes(key)&&Number.isInteger(value)&&value>=0&&value<=7))) &&

@@ -3,8 +3,8 @@ Generate ja/ko manifests in output/scenario-voices first. No existing clip is re
 """
 import argparse, hashlib, json, urllib.request, urllib.error
 from pathlib import Path
-p=argparse.ArgumentParser();p.add_argument('--env',required=True);args=p.parse_args()
-root=Path(__file__).resolve().parents[1];out=root/'output/scenario-voices';path=root/'assets/audio/catalog.json';before=path.read_bytes();catalog=json.loads(before)
+p=argparse.ArgumentParser();p.add_argument('--env',required=True);p.add_argument('--output',type=Path);args=p.parse_args()
+root=Path(__file__).resolve().parents[1];out=args.output.resolve() if args.output else root/'output/scenario-voices';path=root/'assets/audio/catalog.json';before=path.read_bytes();catalog=json.loads(before)
 env=dict(l.split('=',1) for l in Path(args.env).read_text().splitlines() if '=' in l and not l.startswith('#'))
 base=env['EXPO_PUBLIC_SUPABASE_URL'].strip('"\' ').rstrip('/');api_key=env['SUPABASE_SERVICE_ROLE_KEY'].strip('"\' ')
 assert base=='https://jrmtfhmhcbkdzqzhbgfv.supabase.co'
@@ -17,7 +17,7 @@ def request(path,data=None,method=None,headers=None,public=False):
   raise
 entries=sum([json.loads((out/f'{lang}-manifest.json').read_text()) for lang in ['ja','ko']],[])
 expected={e['file']:(e['text'],e['locale']) for e in json.loads((out/'jobs.json').read_text())}
-assert len(entries)==len(expected)==30 and {e['file']:(e['text'],e['locale']) for e in entries}==expected
+assert len(entries)==len(expected)>0 and {e['file']:(e['text'],e['locale']) for e in entries}==expected
 for e in entries:
  data=(out/e['source']).read_bytes();assert hashlib.sha256(data).hexdigest()==e['sha256'] and len(data)==e['bytes']
  remote=f'/storage/v1/object/seodang-audio/voices-v1/{e["sha256"]}.m4a'
@@ -42,4 +42,4 @@ except urllib.error.HTTPError as error:
 assert request(remote.replace('/object/','/object/public/'),public=True)==payload
 assert path.read_bytes()==before,'Catalogue changed concurrently'
 path.write_bytes(payload)
-print('Appended 30 clips and 10 packs:',catalog['version'])
+print(f'Appended {len(entries)} clips:',catalog['version'])

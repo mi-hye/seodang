@@ -37,7 +37,7 @@ test('every daily lesson has paired content, a photo and matching map titles',()
  const {renderDiscussion}=await import('../src/expert-discussion.js');
  for(const level of [0,2,4,5,6,7])assert.equal(japaneseLessonUI({courseDirection:'ko-ja',onboardingLevel:level}),false);
  assert.equal(japaneseLessonUI({courseDirection:'ja-ko',onboardingLevel:4}),true);
- assert.equal(japaneseLessonUI({courseDirection:'ja-ko',onboardingLevel:7}),false);
+ assert.equal(japaneseLessonUI({courseDirection:'ja-ko',onboardingLevel:7}),true);
  const content=JSON.parse(readFileSync('src/expert-content.json'));
  for(let id=0;id<4;id++){
   let s={...freshState(),onboardingLevel:7,courseDirection:'ko-ja'};

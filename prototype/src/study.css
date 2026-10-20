@@ -1,0 +1,10 @@
+.study-page{max-width:640px;margin-inline:auto;padding-bottom:32px;word-break:keep-all;overflow-wrap:anywhere}
+.study-card{margin:18px 0;padding:22px;border:1px solid var(--line);border-radius:18px;background:var(--stage-raised)}
+.study-card h2{font-size:calc(21px * var(--text-scale,1));line-height:1.65;margin:0}
+html[lang=ja] .study-page{word-break:normal;line-break:strict}
+.study-card p{line-height:1.7}
+.study-source{font-size:14px;color:var(--muted);margin-top:8px}
+.study-card>.primary{width:100%;margin-top:18px}
+.study-empty{padding:42px 0;text-align:center}.study-empty h1{font-size:24px;line-height:1.6}
+.study-empty>p{color:var(--muted);line-height:1.7;margin:16px 0}
+.study-page details p{margin-top:12px;color:var(--muted);font-size:14px}

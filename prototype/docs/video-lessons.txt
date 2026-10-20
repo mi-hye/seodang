@@ -124,3 +124,22 @@ iOS 허용 영상 목록에 여섯 개의 공식 ID를 추가했습니다.
 본문·영상·수업 스타일의 지연 로딩 경계 유지. 공유 체크아웃의 동시 변경이 포함될 수 있습니다.
 humanize-korean light / 변경률 0.2% / 자체검증 6/6 / 게이트 OK.
 실제 아이폰의 모든 새 영상 재생 화면은 직접 관찰하지 못했습니다. 스토어 배포는 하지 않았습니다.
+
+2026-10-20: Added Japanese frieren-wait and Korean hospital-effort at 2-6. Existing scenario moves to 2-7; two independent video records per level 2. Clips: DddirskV5Vo 48–51 seconds; sczKFlBP1Y4 24–26 seconds.
+
+2026-10-20 · 3-6 영상 수업
+일본어: 프리렌 미니 애니메이션 1화, TOHO animation
+https://www.youtube.com/watch?v=X3Y9esqDspY&t=22s
+22~25초 (3초): 試しにヒンメルに使ってみていい？
+〜てみていい？로 시도할 허락을 구하고, 정중한 〜てみてもいいですか？와 비교합니다.
+한국어: 블랙독 2화, 디글 :Diggle
+https://www.youtube.com/watch?v=JPZfvT5zTBE&t=8s
+8~12초 (4초): 그 수업 50분 안에 할 수 있는 거 맞아요?
+가능한지 다시 확인하는 ~할 수 있는 거 맞아요?를 배우고 따지는 억양과 부드러운 질문의 차이를 설명합니다.
+원음 전체 인식 결과와 새로 자른 구간을 mlx-whisper로 독립 대조했습니다. 유튜브 자막은 조회하지 않았습니다.
+공식 채널, 공개 상태, playable_in_embed=true를 다시 확인했습니다. 앱에는 원본 미디어를 포함하지 않습니다.
+기존 자막 끄기·구간 종료 제어·출처 접기·공통 학습 완료 컴포넌트를 그대로 사용합니다.
+
+2026-10-20: Added both level 4-6 video lessons: frieren-realization (24–27s) and queen-belief (94–98s). Original audio ASR; no YouTube captions. Existing bounded iframe/native player and collapsed source notes reused. Provenance: asset-provenance/video-lessons-level4-6-20261020.json.
+
+2026-10-20: Added level 5-6 in both directions. frieren-inference: 25–31s, understanding confirmation; blackdog-nuance: 2–8s, partial negation. Original audio checked, no captions used; shared bounded embed, folded source notes and completion reused.

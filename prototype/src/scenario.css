@@ -23,3 +23,47 @@
 .scenario-illustrated .scenario-count{line-height:1;margin:0}
 .scenario-illustrated .token-builder-answer{margin:12px 0;min-height:96px}
 .scenario-illustrated .token-builder-choices{margin:12px 0}
+
+.scenario-feedback:lang(ja){word-break:normal;line-break:strict;overflow-wrap:break-word}
+
+.roleplay-page{justify-content:flex-start;gap:16px}
+.roleplay-scene{display:flex;align-items:flex-start;gap:12px}.roleplay-scene>span{flex:none;color:var(--muted);font-size:14px;line-height:1.75}.roleplay-scene>p{flex:1;min-width:0;font-size:calc(15px * var(--text-scale))}
+.roleplay-conversation{display:flex;flex-direction:column;gap:14px}
+.roleplay-bubble{padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--stage-raised);margin-right:16px}
+.roleplay-bubble>small{display:block;color:var(--muted);margin-bottom:6px}
+.roleplay-bubble .audio-text-row>p{flex:1;min-width:0}.roleplay-bubble details{margin-top:8px;color:var(--muted)}.roleplay-bubble summary{cursor:pointer;min-height:44px;display:flex;align-items:center}.roleplay-bubble details p{font-size:calc(15px * var(--text-scale))}
+.roleplay-self{margin-left:16px;margin-right:0;border-color:var(--amber)}
+.roleplay-page :lang(ja){word-break:normal;line-break:strict}.roleplay-page .text-phrase:lang(ja){word-break:normal;line-break:strict}
+
+.message-builder-page{justify-content:flex-start;gap:14px}
+.message-received,.message-finished{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--stage-raised)}
+.message-builder-page h2{font-size:calc(14px * var(--text-scale));color:var(--muted);margin:0 0 10px;font-weight:500}
+.message-builder-page .audio-text-row>p{flex:1;min-width:0}
+.message-builder-page .message-task{font-size:calc(16px * var(--text-scale))}
+.message-meaning{color:var(--muted);margin-top:8px}.message-meaning summary{cursor:pointer;min-height:44px;align-content:center}.message-meaning p{font-size:calc(15px * var(--text-scale))}
+.message-reply .token-builder-answer{margin:0 0 12px;min-height:96px}.message-reply .token-builder-choices{margin:0;gap:8px}.message-reply .token-builder-chip{font-size:calc(16px * var(--text-scale));text-align:left;padding:9px 12px}
+.message-reply>.text-button{margin:8px 0 0;min-height:44px}.message-finished{border-color:var(--amber)}
+.message-builder-page :lang(ja){word-break:normal;line-break:strict}.message-builder-page .text-phrase:lang(ja){word-break:normal;line-break:strict}
+
+.intent-page{justify-content:flex-start;gap:16px}
+.intent-page h2{font-size:1.15em;margin:0}
+.intent-context{margin:0;color:var(--muted)}
+.intent-listen,.intent-result{padding:16px;border:1px solid var(--line);border-radius:16px}
+.intent-listen .audio-text-row p,.intent-result .audio-text-row p{margin:0;line-height:1.6}
+.intent-transcript{margin-top:12px}
+.intent-transcript summary{color:var(--muted);cursor:pointer}
+.intent-transcript>.audio-text-row{margin-top:12px}
+.intent-result h3{font-size:.9em;color:var(--muted);margin:18px 0 10px}
+.intent-answer{margin:0;font-weight:700}
+.intent-result .scenario-feedback{margin-bottom:0}
+.intent-page>.button-pair{margin-top:auto}
+.intent-page[lang=ja]{word-break:normal;line-break:strict}
+
+.repair-page{justify-content:flex-start}
+.repair-original,.repair-result{padding:16px;border:1px solid var(--line);border-radius:16px}
+.repair-page h2,.repair-page h3{font-size:calc(16px * var(--text-scale));line-height:1.6;margin:0 0 10px}
+.repair-original h2,.repair-result h3{color:var(--muted)}
+.repair-result h3{margin-top:18px}
+.repair-page .audio-text-row p{margin:0}
+.repair-page .repair-task{margin:0}
+.repair-page[lang=ja]{word-break:normal;line-break:strict}
