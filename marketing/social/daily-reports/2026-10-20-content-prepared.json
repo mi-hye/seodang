@@ -1,6 +1,6 @@
 {
   "date": "2026-10-20",
-  "status": "authorized_scheduled_via_heartbeat",
+  "status": "published_verified",
   "format": "one_post_two_images_bilingual_caption",
   "topic": "여행을 준비하는 글자 입문자",
   "supersedes": "station-meeting videos held; travel-install rejected",
@@ -27,5 +27,6 @@
   "generation": "built-in image_gen; prompts saved in image-prompts.txt",
   "scheduled_for": "2026-10-20T10:00:00+09:00",
   "automation_id": "sns",
-  "authorization": "User explicitly approved 2 photos and prepared captions, one post per Instagram, Threads, X; not yet published."
+  "authorization": "User explicitly approved 2 photos and prepared captions, one post per Instagram, Threads, X; not yet published.",
+  "publication_record": "2026-10-20-published.json"
 }

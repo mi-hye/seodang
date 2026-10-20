@@ -1,0 +1,18 @@
+{
+  "checked_at": "2026-10-20T01:07:40.183Z",
+  "project_id": 650471,
+  "filter": "client=seodang-capacitor AND environment=production",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "day|event|events|installation_ids\n2026-10-16|analytics_enabled|1|1\n2026-10-16|app_opened|1|1\n2026-10-18|analytics_enabled|1|1\n2026-10-18|answer_checked|3|1\n2026-10-18|app_opened|1|1\n2026-10-18|audio_playback|4|1\n2026-10-18|learning_progress|5|1\n2026-10-18|lesson_exited|1|1\n2026-10-18|lesson_started|2|1\n2026-10-18|step_time|149|1\n2026-10-19|analytics_enabled|1|1\n2026-10-19|app_opened|4|2\n2026-10-19|audio_playback|6|1\n2026-10-19|learning_progress|2|1\n2026-10-19|lesson_exited|2|1\n2026-10-19|lesson_started|3|1\n2026-10-19|step_time|72|1"
+      },
+      {
+        "type": "text",
+        "text": "{\"conversation_id\":\"01a156d9-332f-759b-bd6b-f7d2e0f67a12\"}"
+      }
+    ],
+    "isError": false
+  }
+}

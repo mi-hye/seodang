@@ -1,0 +1,7 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="/prototype/"><link rel="stylesheet" href="src/style.css"><link rel="stylesheet" href="src/header.css"><link rel="stylesheet" href="src/community.css"><style>body{margin:0;background:#121019}.shell{width:390px;min-height:844px;margin:0 auto}header{height:60px;display:flex;align-items:center;padding:20px;gap:16px}.app-header-title{font-size:22px;font-weight:700}</style></head><body class="learning-app"><div class="shell"><header class="app-header"><button data-action="community-inbox">↔</button><span class="app-header-title"></span></header><main class="community" id="community"></main></div><script type="module">
+import{mountCommunity}from'/prototype/src/community.js';
+const ja=new URLSearchParams(location.search).get('lang')==='ja';const state={courseDirection:ja?'ja-ko':'ko-ja'};document.querySelector('.app-header-title').textContent=ja?'交流':'교류';
+const profile={id:'demo-only',nickname:ja?'ソダン':'서당',native_language:ja?'ja':'ko',learning_language:ja?'ko':'ja'};
+const api={session:{user:{id:'demo-only'}},ensureDeviceSession:async()=>{},verify:async()=>{},profile:async()=>profile,feed:async()=>[]};
+mountCommunity(document.querySelector('#community'),state,{api,initialScreen:'compose'});
+</script></body></html>

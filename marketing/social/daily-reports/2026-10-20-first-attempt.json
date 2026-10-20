@@ -1,0 +1,18 @@
+{
+  "checked_at": "2026-10-20T01:07:40.210Z",
+  "project_id": 650471,
+  "filter": "client=seodang-capacitor AND environment=production",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "day|first_observed_learners|pending_24h|mature_starts|mature_completed\n2026-10-18|1|0|1|0"
+      },
+      {
+        "type": "text",
+        "text": "{\"conversation_id\":\"01a156d9-88b3-7bab-bd8c-517767a8fb37\"}"
+      }
+    ],
+    "isError": false
+  }
+}

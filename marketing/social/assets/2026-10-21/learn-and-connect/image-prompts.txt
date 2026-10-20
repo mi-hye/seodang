@@ -1,0 +1,26 @@
+KO
+Use case: ads-marketing. Create one finished premium Korean social media poster, portrait 4:5, for 서당 language learning app. NEW topic learning plus community. Not travel, no alphabet lessons, no phone UI, no fake screenshots. Cozy editorial paper illustration with soft tactile textures, sage green dominant background, cream note cards and small amber accents, dark brown crisp large typography. A cute cream puppy mascot with floppy caramel ears and sage scarf sits at a shared study table with notebooks, two illustrated speech cards float above it connected by a subtle handdrawn line. Friendly warm study-club atmosphere, spacious polished composition with strong text hierarchy, generous safe margins. No real people/testimonials or invented numbers. 
+Exact Korean text only, verbatim:
+small top brand: "서당 · 일본어 학습"
+big headline: "배운 일본어,"
+"써볼 곳이 생겼어요"
+subhead: "공부도 하고, 교류도 하고"
+central cream note labelled "자기소개 예시" with Japanese sentence "日本語を勉強しています。"
+three tidy feature labels: "글·사진 공유" / "댓글로 교류" / "표현 도움 요청"
+bottom copy: "앱에서 ‘교류’를 열고"
+"짧은 자기소개부터 남겨보세요"
+CTA pill: "다운로드는 프로필 링크에서"
+Create beautiful original finished art, not a template, no extraneous text. Large legible exact lettering. Puppy must be small supporting character, main message central.
+
+JA
+Use case: text-localization / ads-marketing. Create the Japanese companion poster to the attached Korean poster. Keep exact composition, tactile sage-green study-room background, same cute cream puppy with floppy caramel ears and sage scarf, cream note cards, typography scale and quality, 4:5 portrait. Target Japanese speakers learning KOREAN with ソダン. Replace ALL poster text with following exact text, do not mix up learning language. No app UI, no testimonials. Change distant wall postcards to subtle Korean hanok pictures instead of Japanese pagodas, leave small and decorative.
+Top: "ソダン · 韓国語学習"
+Headline, two lines: "学んだ韓国語、" / "使ってみよう"
+Subhead: "勉強しながら、交流も。"
+Central note label: "自己紹介の例"
+Central note Korean sentence: "한국어를 공부하고 있어요."
+Three feature cards: "文章・写真を投稿" / "コメントで交流" / "添削をお願い"
+Bottom: "アプリの「交流」を開いて" / "短い自己紹介から始めよう"
+CTA: "ダウンロードはプロフィールから"
+Perfect Japanese and Korean lettering, clear legible at mobile size. Preserve generous margins, no extra slogans or text. This is conceptual marketing illustration, not actual app screenshot.
+

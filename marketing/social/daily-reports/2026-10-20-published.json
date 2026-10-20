@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-20",
+  "checked_at": "2026-10-20T10:42:54.115671+09:00",
+  "status": "published_verified",
+  "published_count": 3,
+  "channels": {
+    "instagram": {
+      "status": "published_verified",
+      "url": "https://www.instagram.com/p/DesrQNNj5g7/",
+      "verification": "공유 완료, 공개 프로필 14개, 게시물 본문 및 이미지 두 장 확인"
+    },
+    "threads": {
+      "status": "published_verified",
+      "url": "https://www.threads.com/@seodang_app/post/DesrQ9bD1JZ",
+      "method": "Instagram 이번 게시물만 동시 공유",
+      "verification": "공개 프로필에서 승인 본문 전체와 이미지 두 장 확인. 별도 게시 없음"
+    },
+    "x": {
+      "status": "published_verified",
+      "url": "https://x.com/seodang_app/status/2112358732646777122",
+      "verification": "Your post was sent. 공개 프로필 18개 및 본문/사진1·2 링크 확인"
+    }
+  },
+  "duplicate_check": {
+    "instagram": "@seodang_app 확인, 기존 13개 게시물, 오늘 콘텐츠 없음",
+    "threads": "@seodang_app 확인, 최근 DerC3SoD2Sd, 오늘 콘텐츠 없음",
+    "x": "@seodang_app 및 기존 최근 편의점 게시물 확인 후 오늘 콘텐츠 한 건 발행"
+  },
+  "upload_issue": "해결: 파일 선택창 모든 파일 필터로 승인 PNG 두 장 업로드 완료",
+  "authorization": "2026-10-20 letters-start 01-ko.png + 02-ja.png 및 승인 본문 각 채널 한 건. 추가 승인 불필요."
+}
