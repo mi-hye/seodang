@@ -1,3 +1,4 @@
+import {recordStudyCompletion} from './study-state.js';
 import {videoLesson,videoProgress,resumeVideoLesson,lessonNumberWithVideo} from './video-lesson-state.js';
 import {expertCatalog,expertProgress} from './expert-state.js';
 import {scenarioProgress,scenarioLessons,scenarioTitle} from './scenario-state.js';
@@ -101,6 +102,7 @@ function commit(action) {
   const analyticsBefore=learningSnapshot(state,view);
   const next=reduce(state,action);
   state=practiceModule&&practiceKinds.includes(view)?practiceModule.interceptCompletion(state,next,view,action):next;
+  state=recordStudyCompletion(state,analyticsBefore,learningSnapshot(state,view));
   learningTracker.transition(analyticsBefore,learningSnapshot(state,view),action.type,learningSnapshot(next,view));
   if (!blocked) storageError = save(storage, state);
 }
@@ -290,6 +292,13 @@ async function loadBasics(){
 function basic(){return basicModule.renderBasic(state,top);}
 function speakBasic(){if(pendingPractice()||basicProgress(state,state.basics.active).phase==='intro')return;void player.play(basicModule.basicAudio(state),state.settings.sound,message=>{toast=message;render();});}
 
+let studyModule,studyStyles,studyItems=[];
+async function loadStudy(){
+ studyModule ||= await import('./study.js');
+ if(!studyStyles)studyStyles=new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href='src/study.css';link.onload=resolve;link.onerror=()=>{link.remove();studyStyles=null;reject(Error('Study styles unavailable'));};document.head.append(link);});
+ await studyStyles;studyItems=await studyModule.studyCatalog(state);
+}
+function study(){return studyModule.renderStudy(state,studyItems,title=>renderHeader(title,{backAction:'my',backLabel:'학습 기록'}));}
 function home() {
   return `${top("서당", false)}<main class="page home">${renderLearningMap(state,{resumeCard:caseCard()})}</main>${tabs()}`;
 }
@@ -389,7 +398,7 @@ function render(scroll = false) {
   );
   document.documentElement.dataset.motion = state.settings.motion;
   document.documentElement.classList.toggle("library-theme", ["home", "my", "community"].includes(view));
-  app.innerHTML = `<div class="shell view-${view}">${storageError ? `<aside class="storage-warning" role="status">${esc(t(storageError))}</aside>` : ""}${completedKind?(completedKind==='korean'&&state.korean.active==='1-10'?koreanModule.renderKoreanLettersComplete(top):practiceModule.renderPracticeComplete(state,top,hasNextLesson(completedKind))):pendingPractice()?practiceModule.renderPractice(state,view,top):{ home, community, video, expert, scenario, korean, basic, review, my, play, kana, sentence, labels, listening, dialogue, reading }[view]()}${toast ? `<div class="toast" role="status">${esc(t(toast))}</div>` : ""}</div>`;
+  app.innerHTML = `<div class="shell view-${view}">${storageError ? `<aside class="storage-warning" role="status">${esc(t(storageError))}</aside>` : ""}${completedKind?(completedKind==='korean'&&state.korean.active==='1-10'?koreanModule.renderKoreanLettersComplete(top):practiceModule.renderPracticeComplete(state,top,hasNextLesson(completedKind))):pendingPractice()?practiceModule.renderPractice(state,view,top):{ home, study, community, video, expert, scenario, korean, basic, review, my, play, kana, sentence, labels, listening, dialogue, reading }[view]()}${toast ? `<div class="toast" role="status">${esc(t(toast))}</div>` : ""}</div>`;
   if(!completedKind&&lessonSession&&practiceKinds.includes(view))app.querySelector('.app-header')?.insertAdjacentHTML('afterend',lessonSession.progressBar(state,view));
   if(!completedKind&&developmentMode&&devLessonTools&&practiceKinds.includes(view))app.querySelector('.lesson-progress, .app-header')?.insertAdjacentHTML('afterend',devLessonTools.renderDevLessonTools(state,view));
   if(lessonSession&&practiceKinds.includes(view))lessonSession.centerLesson(app,state,view,Boolean(completedKind));
@@ -447,6 +456,7 @@ async function finishPracticeStep(){
  player.stop();const progress=advancePractice(previous,practiceRoundCount(key),practiceHasWriting(key)),kind=view;
  if(progress){state={...state,practices:{...state.practices,[key]:progress}};learningTracker.transition(analyticsBefore,learningSnapshot(state,view));if(!blocked)storageError=save(storage,state);render(true);return;}
  const practices={...state.practices};delete practices[key];state=reduce({...state,practices},previous.action);
+ state=recordStudyCompletion(state,analyticsBefore,learningSnapshot(state,view));
  learningTracker.transition(analyticsBefore,learningSnapshot(state,view));
  if(!blocked)storageError=save(storage,state);
  completedKind=kind;render(true);
@@ -484,6 +494,18 @@ async function handle(event) {
   }
   const a = el.dataset.action,
     id = el.dataset.id;
+  if(a==='study-review'){
+    if(entryBusy)return;entryBusy=true;el.disabled=true;
+    try{await loadStudy();navigate('study');}
+    catch{toast=t('복습을 불러오지 못했어요. 다시 눌러 주세요.');render();}finally{entryBusy=false;if(el.isConnected)el.disabled=false;}return;
+  }
+  if(a==='study-lesson'){
+    if(view!=='study'||entryBusy)return;
+    const lesson=studyItems.find(l=>l.key===id);if(!lesson?.completed)return;
+    commit({type:'level',value:lesson.level});
+    const target=document.createElement('button');target.dataset.action=lesson.kind;target.dataset.id=lesson.id;
+    await handle({target});return;
+  }
   if(a==='video'){
     if(entryBusy||!videoLesson(state,id))return;entryBusy=true;el.disabled=true;
     try{await loadVideo();commit({type:'video-start',id});navigate('video');}catch{toast='학습을 불러오지 못했어요. 다시 눌러 주세요.';render();}finally{entryBusy=false;if(el.isConnected)el.disabled=false;}return;
