@@ -1,0 +1,13 @@
+import {button,icon,esc,phraseText,quotedText} from './ui.js';
+import {lessonNumberWithVideo} from './video-lesson-state.js';
+import {scenarioProgress,scenarioTitle} from './scenario-state.js';
+export function renderListeningIntent(s,top,l,c){
+ const p=scenarioProgress(s),x=c.items[p.index],jp=s.courseDirection==='ja-ko',ui=jp?'ja':'ko',lang=jp?'ko':'ja',label=(ko,ja)=>jp?ja:ko;
+ const ratio=p.phase==='intro'?0:Math.round((p.index+(p.checked?1:0))/l.count*100),header=top(`${lessonNumberWithVideo(s,l.number[s.courseDirection])}. ${scenarioTitle(s,l)}`);
+ const progress=`<div class="lesson-progress" role="progressbar" aria-label="${label('학습 진행률','学習の進み具合')}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${ratio}"><span style="width:${ratio}%"></span></div>`;
+ if(p.phase==='intro')return `${header}${progress}<main class="page scenario-page lesson-top" lang="${ui}"><h1>${esc(scenarioTitle(s,l))}</h1><p>${quotedText(c.scene)}</p>${button(label('듣고 고르기','聞いて選ぶ'),'scenario-next')}</main>`;
+ const audio=()=>button(icon('sound'),'scenario-audio','icon-button',`aria-label="${label('다시 듣기','もう一度聞く')}"`);
+ const transcript=`<div class="audio-text-row"><p lang="${lang}">${phraseText(x.text,x.phrases||undefined)}</p>${audio()}</div><details class="message-meaning"><summary>${label('뜻 보기','意味を見る')}</summary><p>${quotedText(x.meaning)}</p></details>`;
+ const choices=[...x.others];choices.splice(p.index,0,x.answer);
+ return `${header}${progress}<main class="page scenario-page intent-page" lang="${ui}"><div class="scenario-count">${p.index+1} / ${l.count}</div><p class="intent-context">${quotedText(x.context)}</p>${p.checked?'':`<section class="intent-listen"><div class="audio-text-row"><p>${label('상대의 답을 들어 보세요.','相手の返事を聞きましょう。')}</p>${audio()}</div><details class="intent-transcript"><summary>${label('문장 보기','文を見る')}</summary>${transcript}</details></section>`}<h2>${quotedText(x.prompt)}</h2>${p.checked?`<section class="intent-result" role="status"><p class="intent-answer">${quotedText(x.answer)}</p><h3>${label('이 말이 단서예요.','この言葉が手がかりです。')}</h3>${transcript}<p class="scenario-feedback">${quotedText(x.hint)}</p></section>`:`<div class="scenario-choices">${choices.map((o,i)=>button(quotedText(o),'scenario-select',`secondary${p.selected===i?' selected':''}`,`data-id="${i}" aria-pressed="${p.selected===i}"`)).join('')}</div>${p.retry?`<p class="scenario-feedback" role="status">${label('다시 듣고 골라 보세요.','もう一度聞いて選びましょう。')}</p>`:''}`}<div class="button-pair">${button(label('이전','戻る'),'scenario-previous','secondary')}${p.checked?button(p.index===l.count-1?label('학습 마치기','学習を終える'):label('다음','次へ'),'scenario-next'):button(label('확인','確認'),'scenario-check','primary',p.selected===null?'disabled':'')}</div></main>`;
+}

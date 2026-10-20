@@ -2034,3 +2034,6 @@ dialog :focus-visible {
 .home-start-card>.primary{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:46px;margin:0;padding:10px 14px;font-size:calc(16px * var(--text-scale))}
 .tabs{display:flex;flex-direction:row;flex-wrap:nowrap}
 .tabs>.tab{flex:1 1 0;min-width:0}
+
+/* Short quoted expressions move together; oversized quotations still fit the viewport. */
+.quoted-text{display:inline-block;max-width:100%;vertical-align:baseline;white-space:normal;word-break:normal;line-break:strict;overflow-wrap:break-word}

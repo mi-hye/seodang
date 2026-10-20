@@ -1,0 +1,24 @@
+[
+  {
+    "lesson": "frieren-realization",
+    "source": "https://www.youtube.com/watch?v=r5m1bfVUfSQ",
+    "channel": "TOHO animation",
+    "availability": "public",
+    "playable_in_embed": true,
+    "startSeconds": 24,
+    "endSeconds": 27,
+    "quote": "考えたこともなかったな。",
+    "verification": "Original audio isolated crops transcribed with mlx-whisper large-v3-turbo. Korean full-audio ASR used 널, isolated crop used 너를; display follows isolated crop. Japanese elongated なぁ normalized to な。 No YouTube captions accessed. Metadata refreshed 2026-10-20. Media not bundled or hosted."
+  },
+  {
+    "lesson": "queen-belief",
+    "source": "https://www.youtube.com/watch?v=sst8SX32Yhw",
+    "channel": "tvN DRAMA",
+    "availability": "public",
+    "playable_in_embed": true,
+    "startSeconds": 94,
+    "endSeconds": 98,
+    "quote": "그 사람이 정말 너를 사랑한다고 믿는구나.",
+    "verification": "Original audio isolated crops transcribed with mlx-whisper large-v3-turbo. Korean full-audio ASR used 널, isolated crop used 너를; display follows isolated crop. Japanese elongated なぁ normalized to な。 No YouTube captions accessed. Metadata refreshed 2026-10-20. Media not bundled or hosted."
+  }
+]

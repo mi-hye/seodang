@@ -1,8 +1,12 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {freshState,reduce} from '../src/engine.js';import {valid,load,STORAGE_KEY} from '../src/storage.js';import {videoLessons,videoLesson,videoProgress} from '../src/video-lesson-state.js';import {renderLearningMap} from '../src/learning-map.js';import {renderVideoLesson} from '../src/video-lesson.js';
-for(const {direction,level,count,number} of videoLessons)test(`video course ${direction} ${level}: map, progress, reload, restart`,()=>{
- let s={...freshState(),courseDirection:direction,onboardingLevel:level};assert.equal(videoLesson(s).number,number);
- const map=renderLearningMap(s);assert.match(map,new RegExp(`${number}\\. ${videoLesson(s).title}`));
+import {freshState,reduce} from '../src/engine.js';import {valid,load,STORAGE_KEY} from '../src/storage.js';import {videoLessons,videoLesson,videoProgress,lessonNumberWithVideo,videosForCourse} from '../src/video-lesson-state.js';import {renderLearningMap} from '../src/learning-map.js';import {renderVideoLesson} from '../src/video-lesson.js';
+for(const {id,direction,level,count,number} of videoLessons)test(`video course ${direction} ${level}: map, progress, reload, restart`,()=>{
+ let s={...freshState(),courseDirection:direction,onboardingLevel:level,videoActive:id};assert.equal(videoLesson(s).number,number);
+ const map=renderLearningMap(s);
+ const stops=[...map.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"/g)].map(m=>m[1]);
+ assert.equal(number%3,0);assert.equal(stops[number-1],'video');assert.equal(stops.filter(x=>x==='video').length,videosForCourse(s).length);
+ assert.equal(lessonNumberWithVideo(s,2),2);assert.equal(lessonNumberWithVideo(s,3),4);
+assert.match(map.replace(/<[^>]*>/g,''),new RegExp(`${number}\\. ${videoLesson(s).title}`));
  s=reduce(s,{type:'video-start'});assert.equal(valid(s),true);assert.match(renderLearningMap(s),/data-action="video"[^>]*aria-current="step"/);
  for(let i=0;i<count;i++){
   assert.equal(videoProgress(s).index,i);assert.equal(videoProgress(s).phase,'watch');const html=renderVideoLesson(s,()=> '');assert.match(html,/https:\/\/www.youtube.com\/embed\//);assert.match(html,/autoplay=0/);assert.doesNotMatch(html,/<video|<audio/);
@@ -38,9 +42,31 @@ test('previous from the next clip returns to the preceding expression',()=>{
  assert.equal(videoProgress(s).phase,'learn');assert.equal(videoProgress(s).index,0);
 });
 
-test('each direction has exactly one video lesson for every level from 2 to 5',()=>{
+test('each direction has two videos at every level from 2 through 5',()=>{
  for(const direction of ['ko-ja','ja-ko']){
-  for(const level of [2,4,5,7])assert.equal(videoLessons.filter(l=>l.direction===direction&&l.level===level).length,1);
+  for(const level of [2,4,5,7])assert.equal(videoLessons.filter(l=>l.direction===direction&&l.level===level).length,2);
   assert.equal(videoLesson({...freshState(),courseDirection:direction,onboardingLevel:6}).level,5);
  }
+});
+
+for(const direction of ['ko-ja','ja-ko'])test(`${direction} two video lessons keep separate progress and completion history`,()=>{
+ let s={...freshState(),courseDirection:direction,onboardingLevel:2};const [first,second]=videosForCourse(s);
+ assert.deepEqual([first.number,second.number],[3,6]);assert.equal(lessonNumberWithVideo(s,5),7);
+ s=reduce(s,{type:'video-start',id:first.id});s=reduce(s,{type:'video-next'});
+ const saved=structuredClone(videoProgress(s));s=reduce(s,{type:'video-start',id:second.id});assert.equal(videoProgress(s).phase,'watch');assert.deepEqual(videoProgress(s,first.id),saved);
+ s=reduce(s,{type:'video-next'});s=reduce(s,{type:'video-next'});
+ const host=x=>direction==='ko-ja'?x:x.korean;assert.equal(Object.values(host(s).history.days)[0].cases,1);
+ s=reduce(s,{type:'video-start',id:first.id});assert.equal(videoProgress(s).phase,'learn');
+ s=reduce(s,{type:'video-start',id:second.id});assert.equal(Object.values(host(s).history.days)[0].cases,1);
+ s=reduce(s,{type:'video-start',id:first.id});s=reduce(s,{type:'video-next'});assert.equal(Object.values(host(s).history.days)[0].cases,2);
+ const loaded=load({getItem:k=>k===STORAGE_KEY?JSON.stringify(s):null,setItem(){}});assert.equal(loaded.blocked,false);assert.equal(videoProgress(loaded.state,second.id).completed,true);
+ assert.deepEqual(reduce(s,{type:'video-start',id:'misaeng'}),s);assert.equal(valid({...s,videoActive:'not-a-lesson'}),false);
+});
+
+for(const level of [4,5,7])for(const direction of ['ko-ja','ja-ko'])test(`${direction} internal level ${level} lesson 6 preserves lesson 3 resume`,()=>{
+ let s={...freshState(),courseDirection:direction,onboardingLevel:level};const [first,second]=videosForCourse(s);
+ assert.deepEqual([first.number,second.number],[3,6]);s=reduce(s,{type:'video-start',id:first.id});s=reduce(s,{type:'video-next'});const saved=structuredClone(videoProgress(s));
+ s=reduce(s,{type:'video-start',id:second.id});s=reduce(s,{type:'video-next'});s=reduce(s,{type:'video-next'});
+ assert.equal(videoProgress(s).completed,true);assert.deepEqual(videoProgress(s,first.id),saved);
+ s=load({getItem:k=>k===STORAGE_KEY?JSON.stringify(s):null}).state;s=reduce(s,{type:'video-start',id:first.id});assert.deepEqual(videoProgress(s),saved);
 });

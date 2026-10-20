@@ -1,0 +1,20 @@
+import {test,expect} from '@playwright/test';import {freshState} from '../../src/engine.js';import {scenarioContent} from '../../src/scenario-content.js';
+for(const direction of ['ko-ja','ja-ko'])for(const width of [320,390])test(`level 4-5 builds replies with retry resume and completion ${direction} ${width}`,async({page})=>{
+ await page.setViewportSize({width,height:width===320?640:844});await page.addInitScript(s=>{if(!localStorage.getItem('seodang.web-prototype.v1'))localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},{...freshState(),onboarded:true,courseDirection:direction,onboardingLevel:5,koreanGuideSeenVersion:1,settings:{sound:false,motion:'off',textScale:1.2,audioRate:1}});
+ await page.route('**/assets/audio/catalog.json',async r=>{const response=await r.fetch(),c=await response.json();await r.fulfill({json:{...c,packs:{}}});});
+ const enter=()=>page.locator('.map-choice[data-id="9"][data-action="scenario"]').first().click();await page.goto('/playable.html');await enter();await expect(page.locator('.app-header-title')).toContainText('5.');await page.locator('[data-action="scenario-next"]').click();
+ const token=i=>page.locator(`.token-builder-choices [data-id="${i}"]`).click();
+ const checkLayout=async()=>{expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);for(const row of await page.locator('.message-builder-page .audio-text-row').all()){const bounds=await row.evaluate(el=>({text:el.querySelector('p').getBoundingClientRect().right,speaker:el.querySelector('button').getBoundingClientRect().left}));expect(bounds.speaker).toBeGreaterThanOrEqual(bounds.text-1);}const tops=await page.locator('.message-builder-page>.button-pair>button').evaluateAll(xs=>xs.map(x=>x.getBoundingClientRect().top));expect(Math.abs(tops[0]-tops[1])).toBeLessThan(2);};
+ for(let i=0;i<3;i++){
+  const x=scenarioContent[direction]['9'].items[i];await expect(page.locator('.message-received .audio-text-row p')).toHaveText(x.text);await expect(page.locator('[data-action="scenario-check"]')).toBeDisabled();await checkLayout();await page.locator('.lesson-explanation summary').click();await expect(page.locator('.lesson-explanation p')).toHaveText(x.hint);
+  if(i===0){await page.locator('.lesson-explanation summary').click();await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:`output/message-builder-draft-${direction}-${width}-${test.info().project.name}.png`,fullPage:true});}
+  await token(2);await token(0);
+  if(i===0){await page.reload();await enter();await page.locator('[data-choice="resume"]').click();await expect(page.locator('.token-builder-answer button')).toHaveCount(2);}
+  await token(1);await page.locator('[data-action="scenario-check"]').click();await expect(page.locator('.scenario-feedback')).toBeVisible();await expect(page.locator('.message-finished')).toHaveCount(0);
+  await page.locator('[data-action="scenario-clear"]').click();await expect(page.locator('.token-builder-answer button')).toHaveCount(0);for(const n of [0,1,2])await token(n);
+  await page.locator('[data-action="scenario-check"]').click();await expect(page.locator('.message-finished .audio-text-row p')).toHaveText(x.answer);await page.locator('.message-finished summary').click();await expect(page.locator('.message-finished details p')).toHaveText(x.answerMeaning);await checkLayout();
+  if(i===0){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:`output/message-builder-${direction}-${width}-${test.info().project.name}.png`,fullPage:true});}
+  await page.locator('[data-action="scenario-next"]').click();
+ }
+ await expect(page.locator('.practice-complete')).toBeVisible();await expect(page.locator('.practice-fireworks svg')).toBeVisible();await page.locator('[data-action="completed-next"]').click();await expect(page.locator('.view-home')).toBeVisible();
+});

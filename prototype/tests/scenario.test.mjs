@@ -4,15 +4,15 @@ import {scenarioLessons,scenarioKey,scenarioProgress} from '../src/scenario-stat
 const act=(s,type,id)=>reduce(s,{type,id},new Date('2026-10-19T12:00:00'));
 for(const direction of ['ko-ja','ja-ko'])for(const l of scenarioLessons)test(`${direction}/${l.id}: map, learn, retry, resume, finish and replay preserve other progress`,()=>{
  let s={...freshState(),courseDirection:direction,onboardingLevel:l.level};
- assert.equal((renderLearningMap(s).match(/data-action="scenario"/g)||[]).length,l.id==='5'?0:1);
+ assert.equal((renderLearningMap(s).match(/data-action="scenario"/g)||[]).length,l.level===4?4:l.level===5?3:1);
  s=act(s,'scenario-start',l.id);assert.equal(scenarioProgress(s).phase,'intro');s=act(s,'scenario-next');
  for(let i=0;i<3;i++){
-  assert.equal(scenarioProgress(s).phase,'learn');s=act(s,'scenario-next');const untouched=act(s,'scenario-next');assert.equal(scenarioProgress(untouched).phase,'quiz');
-  if(l.id==='2'){for(const n of [2,1,0])s=act(s,'scenario-token',n);}else s=act(s,'scenario-select',(i+1)%3);
+  assert.equal(scenarioProgress(s).phase,['8','9','10','11'].includes(l.id)?'quiz':'learn');if(!['8','9','10','11'].includes(l.id))s=act(s,'scenario-next');const untouched=act(s,'scenario-next');assert.equal(scenarioProgress(untouched).phase,'quiz');
+  if(['2','9'].includes(l.id)){for(const n of [2,1,0])s=act(s,'scenario-token',n);}else s=act(s,'scenario-select',(i+1)%3);
   const b=learningSnapshot(s,'scenario');s=act(s,'scenario-check');assert.equal(checkedAnswer(b,learningSnapshot(s,'scenario'),'scenario-check'),false);assert.equal(scenarioProgress(s).retry,true);
   const restored=load({getItem:()=>JSON.stringify(s)});assert.equal(restored.blocked,false);assert.deepEqual(scenarioProgress(restored.state),scenarioProgress(s));
-  if(l.id==='2'){s=act(s,'scenario-clear');for(const n of [0,1,2])s=act(s,'scenario-token',n);}else s=act(s,'scenario-select',i);
-  s=act(s,'scenario-check');assert.equal(scenarioProgress(s).checked,true);s=act(s,'scenario-next');if(l.id==='2'){assert.equal(scenarioProgress(s).phase,'speak');assert.equal(load({getItem:()=>JSON.stringify(s)}).blocked,false);s=act(s,'scenario-speak-next');}assert.ok(valid(s));
+  if(['2','9'].includes(l.id)){s=act(s,'scenario-clear');for(const n of [0,1,2])s=act(s,'scenario-token',n);}else s=act(s,'scenario-select',i);
+  s=act(s,'scenario-check');assert.equal(scenarioProgress(s).checked,true);s=act(s,'scenario-next');if(['2','6','7'].includes(l.id)){assert.equal(scenarioProgress(s).phase,'speak');assert.equal(load({getItem:()=>JSON.stringify(s)}).blocked,false);s=act(s,'scenario-speak-next');}assert.ok(valid(s));
  }
  assert.equal(scenarioProgress(s).completed,true);assert.equal(learningSnapshot(s,'scenario').done,true);
  const h=direction==='ja-ko'?s.korean.history:s.history;assert.equal(h.days['2026-10-19'].cases,1);
@@ -22,8 +22,8 @@ for(const direction of ['ko-ja','ja-ko'])for(const l of scenarioLessons)test(`${
 test('new content teaches exact short answers and token builders before questions',()=>{
  for(const [direction,lessons]of Object.entries(scenarioContent))for(const [id,l]of Object.entries(lessons)){
   assert.equal(l.items.length,3);for(const [i,x]of l.items.entries()){
-   assert.equal(scenarioAudio(direction,id,i).text,x.text);assert.ok(x.hint&&x.prompt);
-   if(id==='2'){assert.equal(x.parts.length,3);assert.equal(x.parts.join('').replaceAll(' ',''),x.text.replaceAll(' ',''));}
+   assert.equal(scenarioAudio(direction,id,i).text,x.text);assert.ok(x.hint&&x.prompt);if(x.answerParts)assert.equal(x.answerParts.join(''),x.answer);
+   if(['2','9'].includes(id)){assert.equal(x.parts.length,3);assert.equal(x.parts.join('').replaceAll('|','').replaceAll(' ',''),(id==='9'?x.answer:x.text).replaceAll(' ',''));}
    else{assert.equal(x.others.length,2);assert.equal(new Set([x.answer,...x.others]).size,3);if(Number(id)<=3)assert.ok(x.text.includes(x.answer));}
   }
  }
@@ -68,4 +68,57 @@ test('dialogue phrase boundaries preserve line order and original audio text',()
   assert.equal(x.phrases.join(''),x.text);
   assert.ok(x.phrases.every(p=>p==='\n'||!p.includes('\n')));
  }
+});
+
+test('level three adds through lesson 3-7 and keeps the video at 3-3',()=>{
+ for(const courseDirection of ['ko-ja','ja-ko']){
+  const s={...freshState(),courseDirection,onboardingLevel:4};const html=renderLearningMap(s);
+  const stops=[...html.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"(?: data-id="([^"]+)")?/g)];
+  assert.equal(stops.length,7);assert.equal(stops[2][1],'video');assert.deepEqual(stops[3].slice(1),['scenario','6']);
+  assert.deepEqual(stops[4].slice(1),['scenario','7']);assert.equal(stops[5][1],'video');assert.deepEqual(stops[6].slice(1),['scenario','8']);assert.match(html,/5\. /);assert.equal(scenarioLessons.filter(l=>l.level===4).length,4);
+ }
+});
+
+for(const direction of ['ko-ja','ja-ko'])test(`${direction} hotel requests resume speaking and only finish after the last speaking step`,async()=>{
+ const {renderScenario,currentScenarioAudio}=await import('../src/scenario.js');
+ let s={...freshState(),courseDirection:direction,onboardingLevel:4};s=act(s,'scenario-start','6');s=act(s,'scenario-next');
+ for(let i=0;i<3;i++){
+  s=act(s,'scenario-next');s=act(s,'scenario-select',i);s=act(s,'scenario-check');s=act(s,'scenario-next');
+  assert.equal(scenarioProgress(s).phase,'speak');assert.equal(scenarioProgress(s).completed,false);
+  const x=scenarioContent[direction]['6'].items[i],audio=currentScenarioAudio(s);assert.equal(audio.text,x.answer);assert.equal(audio.audioFile,x.speaking.audioFile);assert.notEqual(audio.audioFile,scenarioAudio(direction,'6',i).audioFile);
+  assert.equal(load({getItem:()=>JSON.stringify(s)}).state.scenarios[scenarioKey(s)].phase,'speak');
+  const html=renderScenario(s,t=>t);assert.match(html,/data-speaking-record/);assert.ok(html.includes('data-speaking-spoken="'+x.answer+'"'));
+  const previous=act(s,'scenario-previous');assert.equal(scenarioProgress(previous).phase,'quiz');assert.equal(scenarioProgress(previous).completed,false);
+  s=act(s,'scenario-speak-next');
+ }
+ assert.equal(scenarioProgress(s).phase,'done');assert.equal((direction==='ko-ja'?s.history:s.korean.history).days['2026-10-19'].cases,1);
+});
+
+for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} roleplay starts with the staff and reveals reply audio only after an answer`,async()=>{
+ const {currentScenarioAudio}=await import('../src/scenario.js');let s={...freshState(),courseDirection,onboardingLevel:4};s=act(s,'scenario-start','8');assert.equal(currentScenarioAudio(s),null);s=act(s,'scenario-next');assert.equal(scenarioProgress(s).phase,'quiz');
+ const x=scenarioContent[courseDirection]['8'].items[0];assert.equal(currentScenarioAudio(s,'reply').text,x.text);s=act(s,'scenario-select',1);s=act(s,'scenario-check');assert.equal(currentScenarioAudio(s,'reply').text,x.text);
+ s=act(s,'scenario-select',0);s=act(s,'scenario-check');assert.equal(currentScenarioAudio(s,'reply').text,x.reply);assert.equal(currentScenarioAudio(s,'answer').text,x.answer);assert.equal(currentScenarioAudio(s,'prompt').text,x.text);
+ s=act(s,'scenario-next');assert.equal(scenarioProgress(s).index,1);s=act(s,'scenario-previous');assert.equal(scenarioProgress(s).index,0);assert.equal(scenarioProgress(s).checked,false);assert.equal(currentScenarioAudio(s,'reply').text,x.text);
+});
+
+for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} level 4-5 reply builder preserves a draft and gates answer audio`,async()=>{
+ const {currentScenarioAudio}=await import('../src/scenario.js');let s={...freshState(),courseDirection,onboardingLevel:5};const html=renderLearningMap(s);const stops=[...html.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"(?: data-id="([^"]+)")?/g)];assert.equal(stops.length,7);assert.equal(stops[5][1],'video');assert.deepEqual(stops[4].slice(1),['scenario','9']);assert.equal(stops[2][1],'video');
+ s=act(s,'scenario-start','9');s=act(s,'scenario-next');assert.equal(scenarioProgress(s).phase,'quiz');const x=scenarioContent[courseDirection]['9'].items[0];assert.equal(currentScenarioAudio(s,'answer').text,x.text);
+ s=act(s,'scenario-token',0);s=act(s,'scenario-token',2);const draft=load({getItem:()=>JSON.stringify(s)});assert.equal(draft.blocked,false);assert.deepEqual(scenarioProgress(draft.state).tokens,[0,2]);assert.equal(scenarioProgress(act(s,'scenario-check')).checked,false);
+ s=act(s,'scenario-token',2);s=act(s,'scenario-token',1);s=act(s,'scenario-token',2);s=act(s,'scenario-check');assert.equal(scenarioProgress(s).checked,true);assert.equal(currentScenarioAudio(s,'answer').text,x.answer);assert.deepEqual(scenarioProgress(act(s,'scenario-token',0)).tokens,[0,1,2]);
+ s=act(s,'scenario-next');assert.equal(scenarioProgress(s).index,1);s=act(s,'scenario-previous');assert.equal(scenarioProgress(s).index,0);assert.deepEqual(scenarioProgress(s).tokens,[]);
+});
+
+for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} level 4-7 listens before revealing intent and restores selected answer`,async()=>{
+ const {renderScenario,currentScenarioAudio}=await import('../src/scenario.js');let s={...freshState(),courseDirection,onboardingLevel:5};const map=renderLearningMap(s);const stops=[...map.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"(?: data-id="([^"]+)")?/g)];assert.equal(stops.length,7);assert.deepEqual(stops[6].slice(1),['scenario','10']);
+ s=act(s,'scenario-start','10');assert.equal(currentScenarioAudio(s),null);s=act(s,'scenario-next');assert.equal(scenarioProgress(s).phase,'quiz');assert.equal(currentScenarioAudio(s).text,scenarioContent[courseDirection]['10'].items[0].text);assert.match(renderScenario(s,()=>''),/intent-transcript/);assert.doesNotMatch(renderScenario(s,()=>''),/intent-result/);
+ s=act(s,'scenario-select',1);s=load({getItem:()=>JSON.stringify(s)}).state;assert.equal(scenarioProgress(s).selected,1);s=act(s,'scenario-check');assert.equal(scenarioProgress(s).retry,true);assert.equal(scenarioProgress(act(s,'scenario-next')).index,0);
+ s=act(s,'scenario-select',0);s=act(s,'scenario-check');assert.match(renderScenario(s,()=>''),/intent-result/);s=act(s,'scenario-next');assert.equal(scenarioProgress(s).index,1);s=act(s,'scenario-previous');assert.equal(scenarioProgress(s).index,0);assert.equal(scenarioProgress(s).checked,false);
+});
+
+for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} level 5-7 keeps expert/video order and gates rewritten audio`,async()=>{
+ const {currentScenarioAudio,renderScenario}=await import('../src/scenario.js');let s={...freshState(),courseDirection,onboardingLevel:7};const map=renderLearningMap(s),stops=[...map.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"(?: data-id="([^"]+)")?/g)];assert.equal(stops.length,7);assert.deepEqual(stops[6].slice(1),['scenario','11']);assert.equal(stops[4][1],'expert');assert.equal(stops[5][1],'video');assert.doesNotMatch(map,/data-action="scenario" data-id="5"/);
+ s=act(s,'scenario-start','11');assert.equal(currentScenarioAudio(s),null);s=act(s,'scenario-next');const x=scenarioContent[courseDirection]['11'].items[0];assert.equal(currentScenarioAudio(s,'answer').text,x.text);
+ s=act(s,'scenario-select',1);s=load({getItem:()=>JSON.stringify(s)}).state;assert.equal(scenarioProgress(s).selected,1);s=act(s,'scenario-check');assert.match(renderScenario(s,()=>''),/role="status"/);assert.equal(scenarioProgress(s).retry,true);assert.equal(scenarioProgress(act(s,'scenario-next')).index,0);
+ s=act(s,'scenario-select',0);s=act(s,'scenario-check');assert.equal(currentScenarioAudio(s,'answer').text,x.answer);assert.equal(currentScenarioAudio(s,'prompt').text,x.text);assert.notEqual(currentScenarioAudio(s,'answer').audioFile,currentScenarioAudio(s,'prompt').audioFile);s=act(s,'scenario-next');s=act(s,'scenario-previous');assert.equal(scenarioProgress(s).checked,false);assert.equal(currentScenarioAudio(s,'answer').text,x.text);
 });

@@ -1,0 +1,24 @@
+[
+  {
+    "lesson": "frieren-permission",
+    "source": "https://www.youtube.com/watch?v=X3Y9esqDspY",
+    "channel": "TOHO animation",
+    "availability": "public",
+    "playable_in_embed": true,
+    "startSeconds": 22,
+    "endSeconds": 25,
+    "quote": "試しにヒンメルに使ってみていい？",
+    "verification": "Existing full original-audio transcription compared with a new isolated crop using mlx-whisper large-v3-turbo. No YouTube captions accessed. Metadata refreshed 2026-10-20. Media not bundled or hosted."
+  },
+  {
+    "lesson": "blackdog-confirmation",
+    "source": "https://www.youtube.com/watch?v=JPZfvT5zTBE",
+    "channel": "디글 :Diggle",
+    "availability": "public",
+    "playable_in_embed": true,
+    "startSeconds": 8,
+    "endSeconds": 12,
+    "quote": "그 수업 50분 안에 할 수 있는 거 맞아요?",
+    "verification": "Existing full original-audio transcription compared with a new isolated crop using mlx-whisper large-v3-turbo. No YouTube captions accessed. Metadata refreshed 2026-10-20. Media not bundled or hosted."
+  }
+]

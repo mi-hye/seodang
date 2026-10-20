@@ -1,3 +1,4 @@
+import {lessonNumberWithVideo} from './video-lesson-state.js';
 import {sentenceLessons,sentenceId} from './sentence-state.js';
 import {kanaLessons} from './kana-state.js';
 import {basicLessons} from './basics-state.js';
@@ -13,5 +14,5 @@ export function lessonTitle(s,kind,fallback=''){
  else if(kind==='sentence'||kind==='sentence-review'){number=sentenceLessons.findIndex(l=>l.id===sentenceId(s))+1;title=sentenceLessons[number-1].title;}
  else if(kind==='dialogue')title='따뜻한 커피를 포장해요';
  else if(kind==='reading'){number=Number(s.onboardingLevel)===6?2:1;title=Number(s.onboardingLevel)===7?'생각 나누기':Number(s.onboardingLevel)===6?'조건과 이유를 연결해 판단하기':'안내·메시지에서 정보 찾기';}
- return `${number}. ${title}`;
+ return `${lessonNumberWithVideo(s,number)}. ${title}`;
 }

@@ -1,4 +1,4 @@
-import {videoLesson,videoProgress} from './video-lesson-state.js';
+import {videosForCourse,resumeVideoLesson,videoProgress} from './video-lesson-state.js';
 import {expertCatalog,expertProgress} from './expert-state.js';
 import {scenarioLessons,scenarioProgress,scenarioTitle} from './scenario-state.js';
 import {courseName,courseGroup,japaneseLessonUI} from './curriculum.js';
@@ -8,7 +8,7 @@ import {basicLessons,basicProgress,basicUnlocked,nextBasic} from './basics-state
 import {readingProgress} from './reading-state.js';
 import {dialogueProgress} from './dialogue-state.js';
 import { sentenceProgress,sentenceLessons,nextSentence } from "./sentence-state.js";
-import { icon, esc } from './ui.js';
+import { icon, esc, quotedText } from './ui.js';
 import { assets } from './media.js';
 import { selectedLevel, kanaLessons, normalizeKana, kanaUnlocked } from './kana-state.js';
 const routePosition=index=>index%2===0?28:72;
@@ -32,13 +32,13 @@ function scenery(index){
 function stop({title, symbol='book', ready, complete, current, detail='', status, action, id}, index, lessons, sectionEnd=false) {
   const x=routePosition(index),nextX=routePosition(index+1);
   const route=!sectionEnd&&index<lessons.length-1?`<svg class="map-trail${complete?' is-travelled':''}" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="map-trail-edge" d="M${x} 0 C${x} 50 ${nextX} 50 ${nextX} 100"/><path class="map-trail-fill" d="M${x} 0 C${x} 50 ${nextX} 50 ${nextX} 100"/></svg>`:'';
-  return `<li style="--stop-x:${x}%" class="map-stop${current ? ' is-current' : ''}${complete ? ' is-complete' : ''}${!ready ? ' is-locked' : ''}">${route}${scenery(index)}<button class="map-choice" ${ready ? `data-action="${action}"${id !== undefined ? ` data-id="${id}"` : ''}` : 'disabled'} aria-label="${index + 1}${t('번째')}, ${esc(title)}, ${esc(detail)}, ${esc(status)}"${current ? ' aria-current="step"' : ''}><span class="map-node" aria-hidden="true"><span class="map-number">${index+1}</span>${icon(complete?'check':!ready?'lock':current?'play':symbol)}${current?currentMascot(index):''}</span><span class="map-title">${index+1}. ${esc(title)}</span>${current||complete?`<span class="map-status">${esc(t(status))}${current?icon('arrow'):''}</span>`:''}</button></li>`;
+  return `<li style="--stop-x:${x}%" class="map-stop${current ? ' is-current' : ''}${complete ? ' is-complete' : ''}${!ready ? ' is-locked' : ''}">${route}${scenery(index)}<button class="map-choice" ${ready ? `data-action="${action}"${id !== undefined ? ` data-id="${id}"` : ''}` : 'disabled'} aria-label="${index + 1}${t('번째')}, ${esc(title)}, ${esc(detail)}, ${esc(status)}"${current ? ' aria-current="step"' : ''}><span class="map-node" aria-hidden="true"><span class="map-number">${index+1}</span>${icon(complete?'check':!ready?'lock':current?'play':symbol)}${current?currentMascot(index):''}</span><span class="map-title">${index+1}. ${quotedText(title)}</span>${current||complete?`<span class="map-status">${esc(t(status))}${current?icon('arrow'):''}</span>`:''}</button></li>`;
 }
 export function renderLearningMap(state,{resumeCard=''}={}) {
   const level = courseGroup(selectedLevel(state));
   if (level > 7) return `<section class="map-empty"><span aria-hidden="true">${icon('lock')}</span><h1>${level}단계 학습을 준비하고 있어요</h1></section>`;
   let lessons, title, count;
-  if(level===7){title=courseName(level);lessons=expertCatalog[state.courseDirection].map((l,id)=>{const p=expertProgress(state,id);return {id,title:l.title,ready:true,complete:p.completed,current:p.started&&!p.completed,status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'expert'};});count=lessons.filter(l=>l.complete).length;
+  if(level===7){title=courseName(level,japaneseLessonUI(state));lessons=expertCatalog[state.courseDirection].map((l,id)=>{const p=expertProgress(state,id);return {id,title:t(l.title),ready:true,complete:p.completed,current:p.started&&!p.completed,status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'expert'};});count=lessons.filter(l=>l.complete).length;
   } else if(state.courseDirection==='ja-ko'){
     title=courseName(level,true);const active=nextKorean(state);lessons=koreanLessons.filter(l=>!l.retired&&l.level===level).map(l=>{const p=koreanProgress(state,l.id),ready=koreanUnlocked(state,l.id);return {title:l.title,ready,complete:p.completed,current:active.id===l.id,detail:'',status:p.completed?'完了':ready?p.started?'続きから':'開始':'前の学習を終えると開きます',action:'korean',id:l.id};});count=lessons.filter(l=>l.complete).length;
   } else if (level === 0) {
@@ -62,16 +62,17 @@ export function renderLearningMap(state,{resumeCard=''}={}) {
     title=courseName(level);lessons=[5,6].map(id=>{const p=readingProgress(state,id);return {id,title:id===5?'안내·메시지에서 정보 찾기':'조건과 이유를 연결해 판단하기',ready:true,complete:p.completed,current:id===selectedLevel(state)&&!p.completed,status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'reading'};});count=lessons.filter(l=>l.complete).length;
   }
 
-  const addition=scenarioLessons.find(l=>l.level===level);
-  if(addition&&level!==7){const p=scenarioProgress(state,addition.id);lessons.push({id:addition.id,title:scenarioTitle(state,addition),ready:true,complete:p.completed,current:p.started&&!p.completed,detail:'',status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'scenario'});count+=Number(p.completed);}
+  const additions=scenarioLessons.filter(l=>l.level===level&&l.id!=='5').sort((a,b)=>a.number[state.courseDirection]-b.number[state.courseDirection]);
+  for(const addition of additions){const p=scenarioProgress(state,addition.id);lessons.push({id:addition.id,title:scenarioTitle(state,addition),ready:true,complete:p.completed,current:p.started&&!p.completed,detail:'',status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'scenario'});count+=Number(p.completed);}
 
-  const video=videoLesson(state);
-  if(video){const p=videoProgress(state);lessons.push({title:video.title,ready:true,complete:p.completed,current:p.started&&!p.completed,status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'video'});count+=Number(p.completed);}
+  const videos=videosForCourse(state);
+  for(const video of videos){const p=videoProgress(state,video.id);lessons.splice(video.number-1,0,{id:video.id,title:t(video.title),ready:true,complete:p.completed,current:p.started&&!p.completed,status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'video'});count+=Number(p.completed);}
 
   // A single destination mirrors the home resume card, including direct dev entry.
   const active=state.courseDirection==='ko-ja'&&state.basics?.active;
   let current=[0,2].includes(level)&&active&&(active===6?2:0)===level&&basicUnlocked(state,active)&&!basicProgress(state,active).completed?lessons.findIndex(l=>l.action==='basic'&&l.id===active):lessons.findIndex(l=>l.current);
-  if(video&&videoProgress(state).started&&!videoProgress(state).completed)current=lessons.findIndex(l=>l.action==='video');
+  const resumedVideo=resumeVideoLesson(state);
+  if(resumedVideo)current=lessons.findIndex(l=>l.action==='video'&&l.id===resumedVideo.id);
   if(current<0)current=lessons.findIndex(l=>l.ready&&!l.complete);
   lessons=lessons.map((l,i)=>({...l,current:i===current}));
   const progress=lessons.length?Math.round(count/lessons.length*100):0;
