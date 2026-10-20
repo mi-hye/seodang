@@ -1,6 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {freshState} from '../../src/engine.js';import {scenarioLessons} from '../../src/scenario-state.js';
-for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])for(const lesson of scenarioLessons.filter(l=>!['5','8','9'].includes(l.id)))test(`${direction} new level ${lesson.id} at ${width}px`,async({page})=>{
+// Interactive roleplay, message, listening-intent and reply-repair flows have dedicated specs.
+for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])for(const lesson of scenarioLessons.filter(l=>['2','3','4','6','7'].includes(l.id)))test(`${direction} new level ${lesson.id} at ${width}px`,async({page})=>{
  await page.setViewportSize({width,height:width===320?640:844});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  const state={...freshState(),onboarded:true,koreanGuideSeenVersion:1,courseDirection:direction,onboardingLevel:lesson.level,settings:{sound:false,motion:'off',textScale:1.2,audioRate:1}};
