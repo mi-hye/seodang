@@ -3,7 +3,7 @@
     "name": "서당",
     "slug": "seodang",
     "owner": "mihye0713",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "ios": {
       "bundleIdentifier": "com.mihye.seodang"
     },
