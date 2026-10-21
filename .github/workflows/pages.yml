@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - docs/**
+      - prototype/quiz.html
+      - prototype/src/share-quiz*
+      - scripts/build-share-quiz.mjs
       - .github/workflows/pages.yml
   workflow_dispatch:
 
@@ -27,6 +30,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Stage public expression quiz
+        run: node scripts/build-share-quiz.mjs
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
