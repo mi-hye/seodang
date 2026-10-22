@@ -1,4 +1,5 @@
 import {videoProgress} from './video-lesson-state.js';
+import {songProgress} from './song-state.js';
 import {expertProgress} from './expert-state.js';
 import {scenarioProgress,scenarioLessons} from './scenario-state.js';
 import {sentenceProgress} from './sentence-state.js';
@@ -23,9 +24,18 @@ export function validHistory(h) {
 }
 export function recordLearning(before, after, action, now=new Date()) {
  const today=localDateKey(now);
+ if(action.type.startsWith('song-')){
+  const a=songProgress(before),b=songProgress(after);
+  const learned=action.type==='song-next'&&a.phase==='encore'&&b.phase==='done';
+  if(!learned)return after;
+  after=structuredClone(after);let host=after;if(after.courseDirection==='ja-ko')host=after.korean ||= {version:4,active:'1-1',lessons:{}};
+  const h=host.history ||= {version:1,startedOn:today,days:{},...(after.courseDirection==='ko-ja'?{completed:completedCases(before)}:{})};
+  h.startedOn=h.startedOn<today?h.startedOn:today;const d=h.days[today] ||= {letters:0,expressions:0,sentences:0,cases:0};
+  d.expressions++;if(!a.completed&&b.completed)d.cases++;return after;
+ }
  if(action.type.startsWith('video-')){
   if(action.type==='video-start')return after;
-  const a=videoProgress(before),b=videoProgress(after),learned=action.type==='video-next'&&a.phase==='learn'&&(a.index!==b.index||b.phase==='done'),finished=!a.completed&&b.completed;
+  const a=videoProgress(before),b=videoProgress(after),learned=action.type==='video-next'&&(a.phase==='learn'&&(a.index!==b.index||b.phase==='done')||a.phase==='use'&&b.phase==='done'),finished=!a.completed&&b.completed;
   if(!learned&&!finished)return after;
   after=structuredClone(after);let host=after;if(after.courseDirection==='ja-ko')host=after.korean ||= {version:4,active:'1-1',lessons:{}};
   const h=host.history ||= {version:1,startedOn:today,days:{},...(after.courseDirection==='ko-ja'?{completed:completedCases(before)}:{})};
@@ -48,8 +58,8 @@ export function recordLearning(before, after, action, now=new Date()) {
   const finished=learned&&!p.completed&&q.completed;
   if(before.courseDirection==='ja-ko'){
    if(learned||finished){
-    after.korean ||= {version:4,active:'1-1',lessons:{}};
-    const h=after.korean.history ||= {version:1,startedOn:today,days:{}};
+    after={...after,korean:{...(after.korean||{version:4,active:'1-1',lessons:{}}),history:structuredClone(after.korean?.history||{version:1,startedOn:today,days:{}})}};
+    const h=after.korean.history;
     h.startedOn=h.startedOn<today?h.startedOn:today;
     const d=h.days[today] ||= {letters:0,expressions:0,sentences:0,cases:0};
     if(learned)d[id==='1'?'letters':id==='2'?'expressions':'sentences']++;
@@ -59,7 +69,10 @@ export function recordLearning(before, after, action, now=new Date()) {
   }
  }
 
- const h=after.history ||= {version:1,startedOn:today,days:{},completed:completedCases(before)};
+ // Scenario reducers share unrelated state. Keep the source history untouched so
+ // a pending review can defer the final lesson action without recording it early.
+ after={...after,history:structuredClone(after.history||{version:1,startedOn:today,days:{},completed:completedCases(before)})};
+ const h=after.history;
  const oldCompleted=completedCases(before), allCompleted=completedCases(after);
  h.completed=[...new Set([...oldCompleted,...allCompleted])];
  let kind;

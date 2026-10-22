@@ -17,7 +17,7 @@ test('exchange explains all twelve original distractors in the selected answer o
  }
 });
 test('exchange practice has explanations for every wrong choice and both reversed orders',async()=>{
- await prepareContent('korean');const tasks=caseTasks({...freshState(),courseDirection:'ja-ko',onboardingLevel:2,korean:{active:'3-1'}},'korean');
+ await prepareContent('korean');const tasks=caseTasks({...freshState(),courseDirection:'ja-ko',onboardingLevel:2,korean:{active:'3-1'}},'korean').filter(t=>t.stage===2);
  assert.equal(tasks.length,6);
  for(const t of tasks)if(t.type==='order')assert.ok(t.orderFeedback);else{
   assert.equal(t.wrongFeedback[t.options[t.answer]],undefined);

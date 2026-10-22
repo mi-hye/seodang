@@ -1,9 +1,14 @@
-import {lessonNumberWithVideo} from './video-lesson-state.js';
+import {scenarioLessons,scenarioTitle} from './scenario-state.js';
+import {videoLesson,lessonNumberWithVideo} from './video-lesson-state.js';
+import {songsForCourse} from './song-state.js';
 import {sentenceLessons,sentenceId} from './sentence-state.js';
 import {kanaLessons} from './kana-state.js';
 import {basicLessons} from './basics-state.js';
 import {koreanLessons} from './korean-state.js';
 export function lessonTitle(s,kind,fallback=''){
+ if(kind==='song'){const l=songsForCourse(s).find(l=>l.id===s.songActive);return l?`${l.number}. ${l.title}`:fallback;}
+ if(kind==='video'){const l=videoLesson(s);return l?`${l.number}. ${l.title}`:fallback;}
+ if(kind==='scenario'){const l=scenarioLessons.find(l=>l.id===s.scenarioActive);return l?`${lessonNumberWithVideo(s,l.number[s.courseDirection])}. ${scenarioTitle(s,l)}`:fallback;}
  let number=1,title=fallback.replace(/^\d+-\d+ · /,'');
  if(kind==='kana'){number=(s.kana?.active||0)+1;title=kanaLessons[number-1].caseTitle;}
  else if(kind==='basic'){const id=s.basics?.active||6;number=id===6?3:kanaLessons.length+basicLessons.filter(l=>l.id!==6).findIndex(l=>l.id===id)+1;title=basicLessons.find(l=>l.id===id)?.title||title;}

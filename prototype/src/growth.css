@@ -1,0 +1,25 @@
+/* Growth comparison and daily mission (loaded with their screens only). */
+.growth-page{display:flex;flex-direction:column;gap:12px}
+.growth-page h1{margin:0;font-size:calc(24px * var(--text-scale));line-height:1.35}
+.growth-page p{margin:0}
+.growth-eyebrow,.growth-label{font-size:calc(13px * var(--text-scale));line-height:1.4;color:var(--muted)}
+.growth-situation,.growth-answer{display:grid;gap:6px;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:var(--stage-raised)}
+.growth-situation p:not(.growth-label){font-size:calc(16px * var(--text-scale));line-height:1.6}
+.growth-text{font-size:calc(18px * var(--text-scale));line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.growth-text:lang(ja){word-break:normal;line-break:strict}
+.growth-fact,.growth-count{font-size:calc(13px * var(--text-scale));color:var(--muted)}
+.growth-count{text-align:right;font-variant-numeric:tabular-nums}
+.growth-compare{display:grid;gap:10px}
+.growth-note{font-size:calc(15px * var(--text-scale));line-height:1.6;color:var(--muted)}
+.growth-field{font-size:calc(15px * var(--text-scale));font-weight:600}
+.growth-input{width:100%;min-height:120px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--stage);color:var(--text);font:inherit;font-size:calc(17px * var(--text-scale));line-height:1.6;resize:vertical}
+.growth-input:focus-visible{outline:2px solid var(--amber);outline-offset:1px}
+.growth-status:empty{display:none}
+.growth-status{font-size:calc(14px * var(--text-scale));line-height:1.6;color:var(--muted)}
+.growth-status.is-error{padding:12px 14px;border-left:2px solid var(--rose);border-radius:0 8px 8px 0;background:#3a2830;color:#f1cfcc}
+.growth-page>.text-button{align-self:flex-start;min-height:44px;margin:0;padding:4px 0;color:var(--muted)}
+.growth-page>.button-pair{margin-top:8px}
+.growth-page>.secondary:only-of-type{min-height:52px}
+.mission-lesson{font-weight:600}
+.growth-page [lang=ko],.growth-page:lang(ko){word-break:keep-all}
+.growth-page:lang(ja),.growth-page [lang=ja]{word-break:normal;line-break:strict;overflow-wrap:break-word}

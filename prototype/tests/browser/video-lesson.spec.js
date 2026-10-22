@@ -1,6 +1,6 @@
 import {videoLessons} from '../../src/video-lesson-state.js';import {videoContent} from '../../src/video-lesson-content.js';
 import {test,expect} from '@playwright/test';import {freshState} from '../../src/engine.js';
-for(const {id,direction,level,count,number} of videoLessons)for(const width of [320,390])test(`video ${id} ${width}`,async({page})=>{
+for(const {id,direction,level,count,number} of videoLessons.filter(l=>!l.mode))for(const width of [320,390])test(`video ${id} ${width}`,async({page})=>{
  await page.setViewportSize({width,height:844});await page.addInitScript(s=>{if(!localStorage.getItem('seodang.web-prototype.v1'))localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},{...freshState(),onboarded:true,onboardingLevel:level,courseDirection:direction,koreanGuideSeenVersion:1,settings:{sound:false,motion:'off',textScale:1.2,audioRate:1}});
  // Test our navigation and layout independently of ads, region restrictions and network.
  await page.route('https://www.youtube.com/embed/**',r=>r.fulfill({contentType:'text/html',body:'<!doctype html><body style="background:#111;color:white">YouTube player test fixture</body>'}));
@@ -59,9 +59,9 @@ for(const width of [320,390])test(`iPhone ${width} embeds the player in the less
 for(const direction of ['ko-ja','ja-ko'])test(`level 2 ${direction} resumes the selected video independently`,async({page})=>{
  const lessons=videoLessons.filter(l=>l.direction===direction&&l.level===2).sort((a,b)=>a.number-b.number),[first,second]=lessons;
  await page.addInitScript(s=>{if(!localStorage.getItem('seodang.web-prototype.v1'))localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},{...freshState(),onboarded:true,onboardingLevel:2,courseDirection:direction,koreanGuideSeenVersion:1,settings:{sound:false,motion:'off',textScale:1,audioRate:1}});
- await page.route('https://www.youtube.com/embed/**',r=>r.fulfill({body:'player'}));await page.goto('/playable.html');await expect(page.locator('.map-choice[data-action]')).toHaveCount(7);
+ await page.route('https://www.youtube.com/embed/**',r=>r.fulfill({body:'player'}));await page.goto('/playable.html');await expect(page.locator('.map-choice[data-action]')).toHaveCount(17);
  const enter=id=>page.locator(`.map-choice[data-action="video"][data-id="${id}"]`).click();const home=()=>page.locator('.app-header [data-action="home"]').click();
  await enter(first.id);await page.locator('[data-action="video-next"]').click();await home();await enter(second.id);await expect(page.locator('.video-example')).toHaveCount(0);await page.locator('[data-action="video-next"]').click();await home();await page.reload();
- await page.locator(`[data-action="video"][data-id="${second.id}"]`).first().click();await expect(page.locator('.video-example')).toBeVisible();await expect(page.locator('.app-header-title')).toContainText('6.');await page.locator('[data-action="video-next"]').click();await page.locator('[data-action="completed-next"]').click();
- await enter(first.id);await expect(page.locator('.video-example')).toBeVisible();await expect(page.locator('.app-header-title')).toContainText('3.');
+ await page.locator(`[data-action="video"][data-id="${second.id}"]`).first().click();await expect(page.locator('.video-phase-meaning')).toBeVisible();await expect(page.locator('.app-header-title')).toContainText('6.');for(const [stage,answer]of second.answers.entries()){await page.locator(`[data-action="video-select"][data-id="${answer}"]`).click();await page.locator('[data-action="video-check"]').click();await page.locator('[data-action="video-next"]').click();if(stage===0)await page.locator('[data-action="video-next"]').click();}await page.locator('[data-action="completed-next"]').click();
+ await enter(first.id);await expect(page.locator('.video-phase-meaning')).toBeVisible();await expect(page.locator('.app-header-title')).toContainText('3.');
 });

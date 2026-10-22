@@ -1,6 +1,8 @@
 import {courseLevels,displayLevel} from './curriculum.js';
 import {scenarioLessons,scenarioProgress,scenarioTitle} from './scenario-state.js';
 import {videosForCourse,videoProgress} from './video-lesson-state.js';
+import {songsForCourse,songProgress} from './song-state.js';
+import {orderLessons} from './lesson-order.js';
 import {expertCatalog,expertProgress} from './expert-state.js';
 import {basicLessons,basicProgress} from './basics-state.js';
 import {koreanLessons,koreanProgress} from './korean-state.js';
@@ -21,7 +23,9 @@ export function studyCatalog(state){
   else if(level===4)add('dialogue',0,'따뜻한 커피를 포장해요',dialogueProgress(s).completed);
   else [5,6].forEach(id=>add('reading',id,id===5?'안내·메시지에서 정보 찾기':'조건과 이유를 연결해 판단하기',readingProgress(s,id).completed,id));
   scenarioLessons.filter(l=>l.level===level&&l.id!=='5').sort((a,b)=>a.number[direction]-b.number[direction]).forEach(l=>add('scenario',l.id,scenarioTitle(s,l),scenarioProgress(s,l.id).completed));
-  for(const l of videosForCourse(s))lessons.splice(l.number-1,0,{kind:'video',id:l.id,title:l.title,completed:videoProgress(s,l.id).completed,level,key:`${direction}:video:${l.id}`});
+  const specialLessons=videosForCourse(s).map(l=>({kind:'video',id:l.id,number:l.number,title:l.title,completed:videoProgress(s,l.id).completed,level,key:`${direction}:video:${l.id}`}));
+  specialLessons.push(...songsForCourse(s).map(l=>({kind:'song',id:l.id,number:l.number,title:l.title,completed:songProgress(s,l.id).completed,level,key:`${direction}:song:${l.id}`})));
+  lessons=orderLessons(lessons,specialLessons);
   result.push(...lessons.map((l,i)=>({...l,position:`${displayLevel(level)}-${i+1}`})));
  }
  return result;

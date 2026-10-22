@@ -4,3 +4,5 @@
 
 .record-review{margin-bottom:24px}.record-review-button{display:flex;align-items:center;gap:12px;width:100%;min-height:60px;padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--stage-raised);text-align:left}.record-review-button span{flex:1;min-width:0}.record-review-button small{color:var(--muted);white-space:nowrap}.record-review-button svg{flex:none}
 .calendar-day{padding-inline:0;white-space:nowrap}
+
+.record-review{margin-bottom:12px}

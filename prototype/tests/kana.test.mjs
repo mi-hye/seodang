@@ -30,7 +30,7 @@ test('five lessons contain all 46 letters once in standard order, with row bound
  for(let i=0;i<5;i++){s=finishLesson(reduce(s,{type:'kana-start',lesson:i}));assert.equal(kanaSolvedCount(s.kana),i+1);}
  assert.equal(s.kana.learned.length,46);assert.deepEqual(s.episode,original);
  assert.deepEqual(completedCases(s),['kana-v9-0','kana-v9-1','kana-v9-2','kana-v9-3','kana-v9-4']);
- assert.match(renderKana(s,()=>''),/5\/5 学習|5\/5 학습/);
+ assert.match(renderKana(s,()=>''),/학습을 마쳤어요/);
 });
 test('each row must finish writing then reading before matching; save and reload preserve each phase',()=>{
  let s=reduce(freshState(),{type:'kana-start'});

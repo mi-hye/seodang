@@ -1,0 +1,1378 @@
+{
+  "purpose": "Both directions level 2 lessons 3 through 14 review expansion",
+  "catalog": "a5991770b3332c16",
+  "lessons": [
+    {
+      "key": "ko-ja:sentence:1",
+      "number": 4,
+      "wordTargets": [
+        "水",
+        "二本",
+        "袋"
+      ],
+      "expressionCount": 3,
+      "reviewCount": 12
+    },
+    {
+      "key": "ko-ja:sentence:2",
+      "number": 5,
+      "wordTargets": [
+        "駅",
+        "改札",
+        "三時"
+      ],
+      "expressionCount": 3,
+      "reviewCount": 12
+    },
+    {
+      "key": "ja-ko:korean:3-2",
+      "number": 4,
+      "wordTargets": [
+        "물",
+        "두 병",
+        "봉투"
+      ],
+      "expressionCount": 3,
+      "reviewCount": 12
+    },
+    {
+      "key": "ja-ko:korean:3-3",
+      "number": 5,
+      "wordTargets": [
+        "역",
+        "출구",
+        "세 시"
+      ],
+      "expressionCount": 3,
+      "reviewCount": 12
+    },
+    {
+      "key": "ko-ja:scenario:2",
+      "number": 7,
+      "wordTargets": [
+        "窓",
+        "席",
+        "メニュー"
+      ],
+      "expressionCount": 3,
+      "reviewCount": 12
+    },
+    {
+      "key": "ko-ja:scenario:13",
+      "number": 8,
+      "wordTargets": [
+        "ノート",
+        "赤い",
+        "青い"
+      ],
+      "expressionCount": 3,
+      "reviewCount": 12
+    },
+    {
+      "key": "ko-ja:scenario:14",
+      "number": 10,
+      "wordTargets": [
+        "明日",
+        "公園",
+        "入口"
+      ],
+      "expressionCount": 3,
+      "reviewCount": 12
+    },
+    {
+      "key": "ko-ja:scenario:15",
+      "number": 11,
+      "wordTargets": [
+        "お茶",
+        "冷たい",
+        "持ち帰り"
+      ],
+      "expressionCount": 3,
+      "reviewCount": 12
+    },
+    {
+      "key": "ko-ja:scenario:16",
+      "number": 13,
+      "wordTargets": [
+        "傘",
+        "上着",
+        "水"
+      ],
+      "expressionCount": 3,
+      "reviewCount": 12
+    },
+    {
+      "key": "ko-ja:scenario:17",
+      "number": 14,
+      "wordTargets": [
+        "傘",
+        "黒い",
+        "カフェ"
+      ],
+      "expressionCount": 3,
+      "reviewCount": 12
+    },
+    {
+      "key": "ja-ko:scenario:2",
+      "number": 7,
+      "wordTargets": [
+        "창문",
+        "자리",
+        "메뉴"
+      ],
+      "expressionCount": 3,
+      "reviewCount": 12
+    },
+    {
+      "key": "ja-ko:scenario:13",
+      "number": 8,
+      "wordTargets": [
+        "공책",
+        "빨간",
+        "파란"
+      ],
+      "expressionCount": 3,
+      "reviewCount": 12
+    },
+    {
+      "key": "ja-ko:scenario:14",
+      "number": 10,
+      "wordTargets": [
+        "내일",
+        "공원",
+        "입구"
+      ],
+      "expressionCount": 3,
+      "reviewCount": 12
+    },
+    {
+      "key": "ja-ko:scenario:15",
+      "number": 11,
+      "wordTargets": [
+        "차",
+        "차가운",
+        "포장"
+      ],
+      "expressionCount": 3,
+      "reviewCount": 12
+    },
+    {
+      "key": "ja-ko:scenario:16",
+      "number": 13,
+      "wordTargets": [
+        "우산",
+        "겉옷",
+        "물"
+      ],
+      "expressionCount": 3,
+      "reviewCount": 12
+    },
+    {
+      "key": "ja-ko:scenario:17",
+      "number": 14,
+      "wordTargets": [
+        "우산",
+        "검은",
+        "카페"
+      ],
+      "expressionCount": 3,
+      "reviewCount": 12
+    },
+    {
+      "key": "ko-ja:video:frieren-reaction",
+      "number": 3,
+      "wordTargets": [
+        "明日",
+        "休み"
+      ],
+      "expressionCount": 2,
+      "reviewCount": 8
+    },
+    {
+      "key": "ja-ko:video:hospital-reassurance",
+      "number": 3,
+      "wordTargets": [
+        "괜찮아요"
+      ],
+      "expressionCount": 2,
+      "reviewCount": 7
+    },
+    {
+      "key": "ko-ja:video:frieren-wait",
+      "number": 6,
+      "wordTargets": [
+        "待ってください"
+      ],
+      "expressionCount": 2,
+      "reviewCount": 7
+    },
+    {
+      "key": "ja-ko:video:hospital-effort",
+      "number": 6,
+      "wordTargets": [
+        "최선을 다할게요"
+      ],
+      "expressionCount": 2,
+      "reviewCount": 7
+    },
+    {
+      "key": "ko-ja:video:frieren-just-right",
+      "number": 9,
+      "wordTargets": [
+        "作る",
+        "行く"
+      ],
+      "expressionCount": 2,
+      "reviewCount": 8
+    },
+    {
+      "key": "ja-ko:video:hospital-appreciation",
+      "number": 9,
+      "wordTargets": [
+        "오늘"
+      ],
+      "expressionCount": 2,
+      "reviewCount": 7
+    },
+    {
+      "key": "ko-ja:video:chiikawa-offer",
+      "number": 12,
+      "wordTargets": [
+        "おにぎり",
+        "食べる"
+      ],
+      "expressionCount": 2,
+      "reviewCount": 8
+    },
+    {
+      "key": "ja-ko:video:hospital-thanks",
+      "number": 12,
+      "wordTargets": [
+        "감사합니다",
+        "도와주다"
+      ],
+      "expressionCount": 2,
+      "reviewCount": 8
+    }
+  ],
+  "pictures": {
+    "method": "Original code-authored SVG; existing word pictures reused",
+    "files": [
+      "assets/word-pictures/water.svg",
+      "assets/word-pictures/two-bottles.svg",
+      "assets/word-pictures/shopping-bag.svg",
+      "assets/word-pictures/coffee.svg",
+      "assets/word-pictures/station.svg",
+      "assets/word-pictures/gate.svg",
+      "assets/word-pictures/exit.svg",
+      "assets/word-pictures/clock-three.svg",
+      "assets/word-pictures/window.svg",
+      "assets/word-pictures/seat.svg",
+      "assets/word-pictures/menu.svg",
+      "assets/word-pictures/notebook.svg",
+      "assets/word-pictures/red.svg",
+      "assets/word-pictures/blue.svg",
+      "assets/word-pictures/tomorrow.svg",
+      "assets/word-pictures/park.svg",
+      "assets/word-pictures/entrance.svg",
+      "assets/word-pictures/tea.svg",
+      "assets/word-pictures/cold.svg",
+      "assets/word-pictures/takeaway.svg",
+      "assets/word-pictures/umbrella.svg",
+      "assets/word-pictures/jacket.svg",
+      "assets/word-pictures/black.svg",
+      "assets/word-pictures/cafe.svg",
+      "assets/word-pictures/rest.svg",
+      "assets/word-pictures/okay.svg",
+      "assets/word-pictures/wait.svg",
+      "assets/word-pictures/effort.svg",
+      "assets/word-pictures/make.svg",
+      "assets/word-pictures/go.svg",
+      "assets/word-pictures/today.svg",
+      "assets/word-pictures/rice-ball.svg",
+      "assets/word-pictures/eat.svg",
+      "assets/word-pictures/thanks.svg",
+      "assets/word-pictures/help.svg"
+    ],
+    "notes": [
+      "Entrance shows open building doors.",
+      "Today and tomorrow do not appear together in the same newly added question.",
+      "Tea and cold/ice are visually distinct; a one-cup distractor was removed."
+    ]
+  },
+  "audio": {
+    "newClips": 62,
+    "totalReferenced": 121,
+    "method": "VOICEVOX Nemo 男声1 and Supertonic 3 M1; original YouTube audio was not extracted",
+    "clips": [
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.bottle.wav",
+        "text": "二本",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "84cd33701b61ad58894ce2b27e99c099ce1f446af2f15b200579edb0b666a1dc.m4a",
+        "sha256": "44a3225dbc0960bb2f0e3b44b30cf6cf0d3710cabd7e5d293d989069c7d079fc",
+        "bytes": 8492,
+        "duration": 0.523,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.shopping-bag.wav",
+        "text": "袋",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "afe0a342c8b21000b0e96c302dd8c436699d8b4ffd6b81bdaa9cab9759f5b021.m4a",
+        "sha256": "6b0ff7c78b5b63827b6a4b33686c63858a90ecacbb1e77cdd0eedc99aec09725",
+        "bytes": 9177,
+        "duration": 0.555,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.station.wav",
+        "text": "駅",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "2965e1739dedeb91a907aa09a269b5983e6cdb87c59c909f11fcf47cbe92d876.m4a",
+        "sha256": "765bddf273b211b0363df5fd4ed5455b4dce8282d3ef25ca4fd6ea1936f8bdc4",
+        "bytes": 8318,
+        "duration": 0.48,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.gate.wav",
+        "text": "改札",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "41b911c92f839f30eb605233de89b5d7dd9d8c59368d440eae176609bc4bcb5b.m4a",
+        "sha256": "963c380bead2dd2bf71e333d7b27715a7062685c9ae647fc12decf2839f0aaa7",
+        "bytes": 9546,
+        "duration": 0.672,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.three.wav",
+        "text": "三時",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "eb09998e3632b48df5b05da50cfb88f6328befe42151f0667c0e4f23214adca5.m4a",
+        "sha256": "577941075c963d2aead445ba65554fd4e9b329c3800951b59f43f194778886e0",
+        "bytes": 9082,
+        "duration": 0.608,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.window.wav",
+        "text": "窓",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "5bc9624f429c5fd52817261ecfb33b6fda8958f774ba08e313dd3a0f2eb57940.m4a",
+        "sha256": "9b31a9ea97abdb2f3ad3bbabf82c92dcd7658609b99434794ce1af3bbcd92472",
+        "bytes": 8141,
+        "duration": 0.491,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.seat.wav",
+        "text": "席",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "851c5a340b6877948479a990d8f50332e9894848e0156b3d7ed8e51d0fc92122.m4a",
+        "sha256": "521c05d65b2380d598db552ff0fd13065ce7a7150cb2b2e55cc132698ca6eae5",
+        "bytes": 8611,
+        "duration": 0.523,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.menu.wav",
+        "text": "メニュー",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "c1cc3b36c469b777f03c87e8345b2684617594457e13dfbc17e8d93713594e69.m4a",
+        "sha256": "d674c77edb94a4b08476add8e025ef51458ecb6dc684a62b399156e7088069ce",
+        "bytes": 8924,
+        "duration": 0.565,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.notebook.wav",
+        "text": "ノート",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "9c7342409a731ce1740ab8273714e39b241a1c656a9ba93250371dfc7b872c80.m4a",
+        "sha256": "8e1d0a9f26f63ec09805c5293ed10a800bde3da66786b5de318fc61d0b476020",
+        "bytes": 9324,
+        "duration": 0.597,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.red.wav",
+        "text": "赤い",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "5791b767708d4ca5722fe7835da14973048f370d168586dbec79548bd8ed2a1b.m4a",
+        "sha256": "379821631356eaab119cfefc84f8dbb7053661e8d954c03a5541325424a676cd",
+        "bytes": 8552,
+        "duration": 0.533,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.blue.wav",
+        "text": "青い",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "8fbaf80f2a478522e49e74f8c65bd8f71dd724abb88be83d3f63402f9145b532.m4a",
+        "sha256": "05b5449b0acb4e63afbcfac76e19bbe0623f190ea6e909418292cab0608458ae",
+        "bytes": 9199,
+        "duration": 0.619,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.park.wav",
+        "text": "公園",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "84fe1ad920ca6bd46fce161f2b21e93419d5a20db86a720e42f2e89e89482b59.m4a",
+        "sha256": "d49488977dcf42312be493aa11e9b6dda5568a9f68ac2a3cd5a4c496664036aa",
+        "bytes": 9713,
+        "duration": 0.672,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.entrance.wav",
+        "text": "入口",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "783149d06c765356ae9bf523d2d35c2b17eb269079df2da1a9db58fad00c4f60.m4a",
+        "sha256": "2dfe6483825ac2bf57bde7aa4759eac38cf07ba64f416fe9877721bb4895f5fa",
+        "bytes": 9756,
+        "duration": 0.672,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.tea.wav",
+        "text": "お茶",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "verified-tea-final.m4a",
+        "sha256": "dc9e11c06fc9981304cb1e91f35c78b80046804bfb9434300f9e1c2fd74a2078",
+        "bytes": 9212,
+        "duration": 0.555,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.cold.wav",
+        "text": "冷たい",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "e2def7382b64e18498e5e6ec15d6a96d03af150412a9eef672885a955c2a63ae.m4a",
+        "sha256": "347a53f624f51c8988ddc10b20e690013ff8b0879cc9330999bc1c99ab87140c",
+        "bytes": 9320,
+        "duration": 0.64,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.takeaway.wav",
+        "text": "持ち帰り",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "8d96422fefb3c50520c7f4f5d2c72254c7b900b7686643d0fbceb96c70aa5589.m4a",
+        "sha256": "91efe20da96cc8247078b0b3610957f237f60a44180fe4773f15078e5b4b4a2b",
+        "bytes": 10878,
+        "duration": 0.747,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.jacket.wav",
+        "text": "上着",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "ed6a1a78b66e43fc4ef5dc582e7510ae8c5adbf26033f3e35600dffea62d1dbc.m4a",
+        "sha256": "23713b54bcd793704d2b6fc259bfc771571e4b9ab19a028d1925330dfacc1938",
+        "bytes": 9411,
+        "duration": 0.576,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.black.wav",
+        "text": "黒い",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "7405cfcaa83df638108ddaab3f65e3db147b05d9ff8cf016db7b9462a71b7779.m4a",
+        "sha256": "a8bb2ff937c51bd1c2517aab4804caa3b51a7f0f0919e93f5120d2dd6f823c7a",
+        "bytes": 8114,
+        "duration": 0.48,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.cafe.wav",
+        "text": "カフェ",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "fbbbda5463b336d6cd7221717a61e3def0c37cec34ef3fd45b239ab541b5e7bf.m4a",
+        "sha256": "ec4641f31441b83143b4c4bc2f8016449236292738620aa42372547f052c1c43",
+        "bytes": 8120,
+        "duration": 0.501,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.video.frieren-reaction.0.wav",
+        "text": "そうなの？",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "b5c9557fe3a19ecc12d9dc07e18596bc402129aad8f1e7088b6e6667bb3d9fdc.m4a",
+        "sha256": "ebbde1f4669d0b9f3e3348ecb7bb1910282b8386513309cb2b1fe3adb488fdc5",
+        "bytes": 10867,
+        "duration": 0.821,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.video.frieren-reaction.1.wav",
+        "text": "明日は休みだよ。— そうなの？",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "e4df3b5c1cf09ae8e64b04730b042b7ca30860000e0e301ee9b4a89d40b556d3.m4a",
+        "sha256": "20bce967d454518fcc3ffcce7e1011cab2c1ab6ca40fc179785c9b8fae493de1",
+        "bytes": 20196,
+        "duration": 1.952,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.rest.wav",
+        "text": "休み",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "9792d131b8deda6f3efb27c422e417fc915ad58c8bef936051b6e3a6b784fb67.m4a",
+        "sha256": "abc66598dab67c1d0b74e10d1c36c3bc4f177df4165c82943330752efad5f3d2",
+        "bytes": 9572,
+        "duration": 0.587,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.video.frieren-wait.0.wav",
+        "text": "ちょっと待ってください。",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "df4c33fb041a405f126c83803d687e0f92e1cefb904d15ee3381dc7a92db50e0.m4a",
+        "sha256": "bd54dbec423fc67b895be58df0c34319ee9cacadb83563051bdedbe37f686b28",
+        "bytes": 13870,
+        "duration": 1.141,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.video.frieren-wait.1.wav",
+        "text": "ここで待ってください。",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "30ad1601210f89e267b1cc6c1854879d089e4fc294e01e1f369123494648bac8.m4a",
+        "sha256": "9b9416d7e274541773f29156be629fa2b930e4331397963d56b840a5bb183962",
+        "bytes": 13862,
+        "duration": 1.152,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.wait.wav",
+        "text": "待ってください",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "04c64d4c3a8c2517869032786e42c4c088de0b6641bf50a151f6d327e9a8fcc8.m4a",
+        "sha256": "acbeb93e35fb25d2153e0ad3e142b6d9bf9b56106e8a18004b73de6ae742280a",
+        "bytes": 12007,
+        "duration": 0.907,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.video.frieren-just-right.0.wav",
+        "text": "作るね。",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "ab75d54125870d9483881b5092e008a0a1caa00c59ed7dfa42b07750ca109bf8.m4a",
+        "sha256": "c48b1c30041f562084a23e703aa4f4302e0c3a15541e29b508773e44df100924",
+        "bytes": 9497,
+        "duration": 0.619,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.video.frieren-just-right.1.wav",
+        "text": "先に行くね。",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "833fbdac46e194617a3b4de2b181e9e9bc5b28c2e8602d613ce9c271dce4c14c.m4a",
+        "sha256": "cd4a44065a757b9c64033412c16c6b0695a850a01abf80085ba69fd6ff635f71",
+        "bytes": 11429,
+        "duration": 0.832,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.make.wav",
+        "text": "作る",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "ce6a9fa2427acfedffb7470193011d8cf67d37708d8eabd2e1df1579caa4d7f8.m4a",
+        "sha256": "b2e867e8e92eb4c03cb5be6c6b5eed42c3c56d70ec7cc3f4134888c491f6b504",
+        "bytes": 8388,
+        "duration": 0.512,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.go.wav",
+        "text": "行く",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "a4801fd6639b1ac580e8dc0fb7bf292a488faba20f2dcc75c05dced98c9926e9.m4a",
+        "sha256": "660b11ccf1168624f0f6bf7d7a940c9d6f63303acd62231ff0c052ff7d249010",
+        "bytes": 8144,
+        "duration": 0.469,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.video.chiikawa-offer.0.wav",
+        "text": "チャリメラ食べる？",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "verified-chari-final.m4a",
+        "sha256": "2b8eb6499a9916fd58b7a4cc2edbd493bf2e9450e238eb6b7a1fc753bf6fa6d1",
+        "bytes": 15129,
+        "duration": 1.291,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.video.chiikawa-offer.1.wav",
+        "text": "おにぎり食べる？",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "197ccdcee39ca9e6cace0750c3e21ba40210ce977b971d4bf42b9fd4b0b72459.m4a",
+        "sha256": "c51058dbbdd760d2823f12d538ee5688774fdd8bc7d1ee6a95045d9efc059148",
+        "bytes": 13103,
+        "duration": 1.045,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.rice-ball.wav",
+        "text": "おにぎり",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "cc1e0fc473b04355bcf66ea3e032641fb41ea884953a1cb64e81e56d40e31887.m4a",
+        "sha256": "461f0c19871bdda177c533b9253680ff7e9224c4a5ebd72f76c0579258ae721e",
+        "bytes": 10140,
+        "duration": 0.651,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ko-ja.word.eat.wav",
+        "text": "食べる",
+        "locale": "ja-JP",
+        "pronunciation": null,
+        "source": "a86e99246eadacceb2614a3c3fe9ac7c525fd0e6215a3c7334d558b4b92baaa4.m4a",
+        "sha256": "59059ae0a6fdfffe3d65640a76a7e4d67bfe20ebbbc9e82c02171018853cce05",
+        "bytes": 8664,
+        "duration": 0.565,
+        "voice": "VOICEVOX Nemo 男声1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.bottle.wav",
+        "text": "두 병",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "b4e72d607aaac488711f141b17e888cf21059947e2cbf200a57c5234287d7c81.m4a",
+        "sha256": "a931270d66928e4c4d67699d31f48a02f8be6a1caba044d546d969cb2a1f019e",
+        "bytes": 14361,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.station.wav",
+        "text": "역",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "7e819d69e313de6b6d15e61034117dc53e31366b9975c4d9169eab323f692f2f.m4a",
+        "sha256": "2d21fa73b9d7819fa36b5a1fb52c3e05ab796050f163b065d47b7cf958b2529e",
+        "bytes": 13851,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.gate.wav",
+        "text": "출구",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "9c414d4e159700ff826624e7800d2bae2220c75719a28ff256cff5a2298254de.m4a",
+        "sha256": "f123aec1d0bd3c2d8c455fb3218fe4a9c7aa5aeb9bbd87349988490eea087390",
+        "bytes": 14002,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.three.wav",
+        "text": "세 시",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "8d3255d3c3675c88ef2ee69d4d91e707ee7138aae179c29e4a946861912c1883.m4a",
+        "sha256": "f34079d735dff465233485f3b9111ef4713d65c48365bead307cec9c2de3358f",
+        "bytes": 14419,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.seat.wav",
+        "text": "자리",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "ccdccf23d6eb7dadea119413bf0b3019b155aa522ecd28ec04d2c8f9cfe6e89c.m4a",
+        "sha256": "8f5c3456c7c2e6c6e6c24c56e877a78c176be9f48cba0f1db4d33297dad50cb1",
+        "bytes": 13876,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.menu.wav",
+        "text": "메뉴",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "a092d7374113a77d54d2f4fb201354c4f9925d27a13349cc1a987b4f08ab6fea.m4a",
+        "sha256": "8b352a07daa01522cfd8fb7ce93b990f769f75aaeb0dede2e0dd077385f6c910",
+        "bytes": 14144,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.notebook.wav",
+        "text": "공책",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "29de502e4251c358de78bfc0c8ad30217ee13fa546214894cd84b164aca59682.m4a",
+        "sha256": "c95afa426d7fc089737fb3c5d913ba486b7f5ffa1dd94e0b13b87a3b8feed079",
+        "bytes": 14279,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.red.wav",
+        "text": "빨간",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "669579705f492cc972cea9123b1f70da7db4ecb8b1cfc31502a7a340f3d7ba21.m4a",
+        "sha256": "69fd101d92053a0a992175b5dbc69d082c60f66118e7301033e575d74aef9b2d",
+        "bytes": 14055,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.blue.wav",
+        "text": "파란",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "88e75f76f76b981dd4c2d9212396fc2c255dd5c6ada7fd870866d795ee805249.m4a",
+        "sha256": "e6789287bc71864df60bc3720e3ea02f6eeaf939dbe356a43fa54b7693a410ac",
+        "bytes": 14491,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.park.wav",
+        "text": "공원",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "220697b16b9b03859889e65d375edbfd45a9ea22894828252141e44ac6ad2552.m4a",
+        "sha256": "d5f6ff68e052154a6b48f1ee4f57dae0d98d20b94da649c86980f3dd80740da3",
+        "bytes": 14425,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.entrance.wav",
+        "text": "입구",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "e61190a5742079c3672e46e01d855a9b11bdd58d7e9d934652d08158863d6424.m4a",
+        "sha256": "3d52471543ebdd4acf89f65160bc1ef8aaa40c6c6c985c8240cf21ee7b2dafb5",
+        "bytes": 14036,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.cold.wav",
+        "text": "차가운",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "0203c6efa2fafa96ff504107b6f58dad985bd06f77a90c45b12534ccc01f2da5.m4a",
+        "sha256": "073660c01d6667eec0224bfb7202bdb2472a41bac51f1a03feada3220cba7128",
+        "bytes": 13946,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.takeaway.wav",
+        "text": "포장",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "83593c700fc0541f8eb351af94efa1d1e8bc68d96b4cceca748b2948e11b6901.m4a",
+        "sha256": "63646ba184d89c074ade2596cd0bc87e424dc1696055ef995bc73a8d0942007b",
+        "bytes": 14126,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.umbrella.wav",
+        "text": "우산",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "bc396e860c92c23071055f523ac70a49925df00363202be67511b78916f32c65.m4a",
+        "sha256": "0c619b2374d4c2b894c2554c74aa44d3889d0dce548574c39270b6a51bd5100b",
+        "bytes": 14470,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.jacket.wav",
+        "text": "겉옷",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "ba3ac66503f35d33923562bc2a3e192ae28ba39a93501adcc84fb34d799831f0.m4a",
+        "sha256": "d04161840e7e11bd393bce73454bc0541ac94ed835bc3a11e0e816bb3330ead0",
+        "bytes": 14293,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.black.wav",
+        "text": "검은",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "verified-b2e7e0308d40216b9be68c2eb7c88abced8cee5e181a50b2e363924e9356c587.m4a",
+        "sha256": "08cbdc0b3f7c1c1bf3421ce2fcb045fbb39339c07d955c508a624c0f5ef2ca56",
+        "bytes": 14177,
+        "duration": 1.602,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.cafe.wav",
+        "text": "카페",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "6909f32a9122cdaff749e5f31746f6de92ca62ea390fad789f769cfc0c6cca99.m4a",
+        "sha256": "6ba243d7eb90878b8b1c66b0456fd706f859dfca86a708366082735c996a11c5",
+        "bytes": 13860,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.video.hospital-reassurance.0.wav",
+        "text": "괜찮아요.",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "c44be8dfe66852ea39e687207581096c520d15eff23d07989e539051cdd8aff0.m4a",
+        "sha256": "48a42b5e5e1db99293e64b2fa92c76edae8e81c0cfd53ca4312b01bab9b02d7a",
+        "bytes": 15918,
+        "duration": 1.463,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.video.hospital-reassurance.1.wav",
+        "text": "저는 괜찮아요.",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "14b747e0b7a8c364dbf2d07b9feec6eacc21a3057d2cb3ac98e48e5bb701b043.m4a",
+        "sha256": "f0217ae9e5babb263a97360c60a84900e573af181070b64dcdc208f4974d82b8",
+        "bytes": 17647,
+        "duration": 1.672,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.video.hospital-effort.0.wav",
+        "text": "네, 최선을 다할게요.",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "d40997497fe312d103731f71c70ec30e8c655c7e12766cb20c8350f3c01916b3.m4a",
+        "sha256": "f3c7d842394786024d3c121697462979d65935db7b5283bd47c92c971170523e",
+        "bytes": 20172,
+        "duration": 2.229,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.video.hospital-effort.1.wav",
+        "text": "저도 최선을 다할게요.",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "9516348e52287ed0b79e9eb26fc45594069e68000c6481d6c5f0ec694bdcc560.m4a",
+        "sha256": "a2c7aaf9f0767b43cd77ecea1a86f864e9de4ee195e0826955664526d9466a3c",
+        "bytes": 21328,
+        "duration": 2.09,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.effort.wav",
+        "text": "최선을 다할게요",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "bbac91a88b3401eebda4287c932b1a23792f9c826d9ae02d301b1e01dfca96dc.m4a",
+        "sha256": "53b6593a73c4345254b596a11e3293864458ed6a01f24c30f3afac6a3c709c0f",
+        "bytes": 19547,
+        "duration": 1.811,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.video.hospital-appreciation.0.wav",
+        "text": "고생 많으셨어요.",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "4b77583a79cf73eb32db53d319ef67dda0e03e808625b2b6f34bf2f904d0ba15.m4a",
+        "sha256": "12f8525e37c6c0415a0ff7bfcef326b00b72324701932063cbf77d386073d8b4",
+        "bytes": 18746,
+        "duration": 1.741,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.video.hospital-appreciation.1.wav",
+        "text": "오늘도 고생 많으셨어요.",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "a7814094a0eaf110031900d2ff5e190cbda6acc208c1830dd4fe8d4c53c14e59.m4a",
+        "sha256": "46bfab4fbbed0cfa9e5ee70045a45c063561eae532c3886df40869cd283b9e26",
+        "bytes": 23705,
+        "duration": 2.229,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.today.wav",
+        "text": "오늘",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "c2d5296d87fd927dd61b0219e30d0c631706ec057c21055290d8468a205d0c9e.m4a",
+        "sha256": "d78893cadd4e526cadd6647323b407716ec8fea6d34e66e6fe8312e12625d447",
+        "bytes": 14436,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.video.hospital-thanks.0.wav",
+        "text": "기회 주셔서 감사합니다.",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "ebd907ba457cc2210b54d5cdb1badc11ab80c99994f59c164b4e74e96b594a1a.m4a",
+        "sha256": "55ad5cd8b5b9ef634a482629680060fdc64411902610bf2488255ed7a38eaa0d",
+        "bytes": 22035,
+        "duration": 2.159,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.video.hospital-thanks.1.wav",
+        "text": "도와주셔서 감사합니다.",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "bff1c7a038c631540ac556c7f0f5fec11ae186c1e80d19cb49c8acc4ee8765fe.m4a",
+        "sha256": "714b49fb92aa6b891f08822bdadab774a4be2a35dc6b5a9fb2e98b7020ad9d58",
+        "bytes": 22952,
+        "duration": 2.159,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.thanks.wav",
+        "text": "감사합니다",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "f6d3895e2e7e01b47a198c52d3342b508280a7083bfb2998ec0861746698f2af.m4a",
+        "sha256": "a091eb3794c89ed99122268cb20fb24e88299785372be7dd16b42343a323c2d9",
+        "bytes": 15298,
+        "duration": 1.533,
+        "voice": "Supertonic 3 M1"
+      },
+      {
+        "file": "assets/audio/level-two-reviews/ja-ko.word.help.wav",
+        "text": "도와주다",
+        "locale": "ko-KR",
+        "pronunciation": null,
+        "source": "990e113d666593347aba61a2eb3c48c023b6b49a02e748d4c5f97434a4c4d060.m4a",
+        "sha256": "92582c435302f85d4c5aca2ef37afc7eba1e61fb80c3bf3fdb9f361543ea958b",
+        "bytes": 14746,
+        "duration": 1.393,
+        "voice": "Supertonic 3 M1"
+      }
+    ],
+    "verification": {
+      "humanListening": false,
+      "downloadAndOfflineWebKitDecode": 121,
+      "firstPass": [
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.bottle.wav",
+          "expected": "二本",
+          "heard": "日本"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.shopping-bag.wav",
+          "expected": "袋",
+          "heard": "ふくろう"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.station.wav",
+          "expected": "駅",
+          "heard": "駅"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.gate.wav",
+          "expected": "改札",
+          "heard": "改札"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.three.wav",
+          "expected": "三時",
+          "heard": "3時"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.window.wav",
+          "expected": "窓",
+          "heard": "窓"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.seat.wav",
+          "expected": "席",
+          "heard": "席"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.menu.wav",
+          "expected": "メニュー",
+          "heard": "メニュー"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.notebook.wav",
+          "expected": "ノート",
+          "heard": "ノート"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.red.wav",
+          "expected": "赤い",
+          "heard": "赤い"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.blue.wav",
+          "expected": "青い",
+          "heard": "あおい"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.park.wav",
+          "expected": "公園",
+          "heard": "公演"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.entrance.wav",
+          "expected": "入口",
+          "heard": "入り口"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.tea.wav",
+          "expected": "お茶",
+          "heard": "おじゃ"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.one-cup.wav",
+          "expected": "一杯",
+          "heard": "いっぱい"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.takeaway.wav",
+          "expected": "持ち帰り",
+          "heard": "持ち帰り"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.jacket.wav",
+          "expected": "上着",
+          "heard": "上着"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.black.wav",
+          "expected": "黒い",
+          "heard": "黒い"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.cafe.wav",
+          "expected": "カフェ",
+          "heard": "カフェ"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.video.frieren-reaction.0.wav",
+          "expected": "そうなの？",
+          "heard": "そうなの?"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.video.frieren-reaction.1.wav",
+          "expected": "明日は休みだよ。— そうなの？",
+          "heard": "明日は休みだよそうなの?"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.rest.wav",
+          "expected": "休み",
+          "heard": "休み"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.video.frieren-wait.0.wav",
+          "expected": "ちょっと待ってください。",
+          "heard": "ちょっと待ってください"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.video.frieren-wait.1.wav",
+          "expected": "ここで待ってください。",
+          "heard": "ここで待ってください。"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.wait.wav",
+          "expected": "待ってください",
+          "heard": "待ってください"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.video.frieren-just-right.0.wav",
+          "expected": "作るね。",
+          "heard": "作るね"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.video.frieren-just-right.1.wav",
+          "expected": "先に行くね。",
+          "heard": "先に行くね"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.make.wav",
+          "expected": "作る",
+          "heard": "作る"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.go.wav",
+          "expected": "行く",
+          "heard": "行く。"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.video.chiikawa-offer.0.wav",
+          "expected": "チャリメラ食べる？",
+          "heard": "砂利メラ食べる?"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.video.chiikawa-offer.1.wav",
+          "expected": "おにぎり食べる？",
+          "heard": "おにぎり食べる?"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.rice-ball.wav",
+          "expected": "おにぎり",
+          "heard": "おにぎり"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.eat.wav",
+          "expected": "食べる",
+          "heard": "食べる"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.bottle.wav",
+          "expected": "두 병",
+          "heard": " 두 병"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.station.wav",
+          "expected": "역",
+          "heard": " 역"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.gate.wav",
+          "expected": "출구",
+          "heard": " 출구"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.three.wav",
+          "expected": "세 시",
+          "heard": " 3시"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.seat.wav",
+          "expected": "자리",
+          "heard": " 자리"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.menu.wav",
+          "expected": "메뉴",
+          "heard": " 메뉴"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.notebook.wav",
+          "expected": "공책",
+          "heard": " 공책"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.red.wav",
+          "expected": "빨간",
+          "heard": " 빨간"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.blue.wav",
+          "expected": "파란",
+          "heard": " 파란"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.park.wav",
+          "expected": "공원",
+          "heard": " 공원"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.entrance.wav",
+          "expected": "입구",
+          "heard": " 입구"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.one-cup.wav",
+          "expected": "한 잔",
+          "heard": " 한잔"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.takeaway.wav",
+          "expected": "포장",
+          "heard": " 포장"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.umbrella.wav",
+          "expected": "우산",
+          "heard": " 우산"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.jacket.wav",
+          "expected": "겉옷",
+          "heard": " 거돗"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.black.wav",
+          "expected": "검은",
+          "heard": " Common"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.cafe.wav",
+          "expected": "카페",
+          "heard": " 카페"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.video.hospital-reassurance.0.wav",
+          "expected": "괜찮아요.",
+          "heard": " 괜찮아요."
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.video.hospital-reassurance.1.wav",
+          "expected": "저는 괜찮아요.",
+          "heard": " 저는 괜찮아요."
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.video.hospital-effort.0.wav",
+          "expected": "네, 최선을 다할게요.",
+          "heard": " 네, 최선을 다할게요."
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.video.hospital-effort.1.wav",
+          "expected": "저도 최선을 다할게요.",
+          "heard": " 저도 최선을 다할게요."
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.effort.wav",
+          "expected": "최선을 다할게요",
+          "heard": " 최선을 다할게요."
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.video.hospital-appreciation.0.wav",
+          "expected": "고생 많으셨어요.",
+          "heard": " 고생 많으셨어요."
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.video.hospital-appreciation.1.wav",
+          "expected": "오늘도 고생 많으셨어요.",
+          "heard": " 오늘도 고생 많으셨어요."
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.today.wav",
+          "expected": "오늘",
+          "heard": " 오늘"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.video.hospital-thanks.0.wav",
+          "expected": "기회 주셔서 감사합니다.",
+          "heard": " 기회 주셔서 감사합니다."
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.video.hospital-thanks.1.wav",
+          "expected": "도와주셔서 감사합니다.",
+          "heard": " 도와주셔서 감사합니다."
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.thanks.wav",
+          "expected": "감사합니다",
+          "heard": " 감사합니다."
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.help.wav",
+          "expected": "도와주다",
+          "heard": " 도와주다"
+        }
+      ],
+      "repeatedFirstPass": [
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.shopping-bag.wav",
+          "expected": "袋",
+          "repeated": "袋 袋 袋"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.tea.wav",
+          "expected": "お茶",
+          "repeated": "おじゃ おじゃ おじゃ"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.jacket.wav",
+          "expected": "上着",
+          "repeated": "上着、上着、上着"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.word.black.wav",
+          "expected": "黒い",
+          "repeated": "黒い 黒い 黒い"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ko-ja.video.chiikawa-offer.0.wav",
+          "expected": "チャリメラ食べる？",
+          "repeated": "砂利メラ食べる?砂利メラ食べる?砂利メラ食べる?"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.jacket.wav",
+          "expected": "겉옷",
+          "repeated": " 거돋"
+        },
+        {
+          "file": "assets/audio/level-two-reviews/ja-ko.word.black.wav",
+          "expected": "검은",
+          "repeated": " common"
+        }
+      ],
+      "finalJapaneseAndCold": [
+        {
+          "text": "お茶",
+          "file": "/Users/kangmihye/Desktop/study/seodang/prototype/output/level-two-review-repair/tea-final.wav",
+          "single": "お茶",
+          "repeated": "お茶お茶お茶"
+        },
+        {
+          "text": "チャリメラ食べる？",
+          "file": "/Users/kangmihye/Desktop/study/seodang/prototype/output/level-two-review-repair/chari-final.wav",
+          "single": "ジャリメラ食べる?",
+          "repeated": "チャリメラ食べる?チャリメラ食べる?チャリメラ食べる?"
+        },
+        {
+          "text": "冷たい",
+          "file": "assets/audio/level-two-reviews/ko-ja.word.cold.wav",
+          "single": "冷たい"
+        },
+        {
+          "text": "차가운",
+          "file": "assets/audio/level-two-reviews/ja-ko.word.cold.wav",
+          "single": " 차가운"
+        }
+      ],
+      "notes": [
+        "袋 final audio matches repeated ASR; original single-clip ASR added a vowel.",
+        "二本/日本 and 公園/公演 are homophones; their synthesis queries retain the intended word.",
+        "お茶 uses original query with ch length .12 and vowel .12, o .07, pitch 4.8/5.1, speed .9; final single and repeated ASR match.",
+        "チャリメラ食べる？ uses ch length .12 and vowel .12, speed .9. Final single ASR says ジャリメラ; repeated ASR matches three times.",
+        "겉옷 is transcribed phonetically as 거돋, not an orthographic match.",
+        "검은 was regenerated with punctuation at speed .85; final ASR matches.",
+        "Unused initial 一杯/한 잔 generation is not referenced by any added review; cold clips replace it."
+      ]
+    }
+  }
+}

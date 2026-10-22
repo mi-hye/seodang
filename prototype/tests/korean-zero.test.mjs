@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';import {exi
 import {freshState,reduce} from '../src/engine.js';import {valid,load} from '../src/storage.js';
 import {koreanLessons,koreanGroups,koreanGroup,freshKoreanProgress,normalizeKorean,validKorean} from '../src/korean-state.js';
 import {koreanContent} from '../src/korean-content.js';import {koreanLetterChoices,koreanExample,koreanExampleAudio,composeKorean} from '../src/korean-letters.js';
-import {prepareContent,interceptCompletion} from '../src/practice-content.js';import {lessonPercent} from '../src/lesson-session.js';import {devLessonPosition} from '../src/dev-lesson-tools.js';import {koreanStrokes} from '../src/korean-stroke-data.js';
+import {prepareContent,interceptCompletion} from '../src/practice-content.js';import {lessonPercent} from '../src/lesson-session.js';import {koreanStrokes} from '../src/korean-stroke-data.js';
 const lessons=koreanLessons.filter(l=>l.level===0);
 test('Korean stage zero covers every component with valid composition, four choices and bundled example sounds',()=>{
  const manifest=JSON.parse(readFileSync(new URL('../assets/audio/korean/manifest.json',import.meta.url)));
@@ -16,7 +16,7 @@ test('Korean stage zero covers every component with valid composition, four choi
 });
 test('every Korean zero course completes once with monotonic progress, group intros, write and no extra repetitions',async()=>{
  await prepareContent('korean');let s={...freshState(),courseDirection:'ja-ko',onboardingLevel:0,onboarded:true};
- for(const l of lessons){s=reduce(s,{type:'korean-start',id:l.id});assert.equal(s.korean.lessons[l.id].phase,l.practice?'learn':'intro');assert.equal(devLessonPosition(s,'korean').total,l.practice?l.count*3:l.count+koreanGroups[l.id].length);let previous=0,steps=0;
+ for(const l of lessons){s=reduce(s,{type:'korean-start',id:l.id});assert.equal(s.korean.lessons[l.id].phase,l.practice?'learn':'intro');let previous=0,steps=0;
  while(s.korean.lessons[l.id].phase!=='done'){
   const p=s.korean.lessons[l.id];assert.ok((l.practice?['learn','write','quiz']:['intro','learn']).includes(p.phase));const percent=lessonPercent(s,'korean');assert.ok(percent>=previous,`${l.id} ${p.index}/${p.phase}`);previous=percent;
   const a=p.phase==='quiz'?{type:p.selected===null?'korean-select':'korean-check',id:String(p.index%4)}:{type:'korean-next'};

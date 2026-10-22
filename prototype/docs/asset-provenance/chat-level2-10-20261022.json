@@ -1,0 +1,168 @@
+{
+  "lesson": "scenario:14",
+  "visibleLevel": "2-10",
+  "date": "2026-10-22",
+  "voices": {
+    "ja": "VOICEVOX Nemo 男声1",
+    "ko": "Supertonic 3 M1"
+  },
+  "verification": "All 18 generated prompt/answer/reply clips transcribed with mlx-whisper large-v3-turbo. Wording matches, with punctuation, whitespace, kanji/kana and numeral notation differences only. Not independent human listening. Public media SHA-256 verified by publishing script.",
+  "transcriptions": [
+    {
+      "file": "assets/audio/scenarios/ko-ja.14.0.wav",
+      "expected": "明日、一緒に散歩しませんか。",
+      "heard": "明日一緒に散歩しませんか"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.14.answer.0.wav",
+      "expected": "いいですね。一緒に行きましょう。",
+      "heard": "いいですね。一緒に行きましょう。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.14.reply.0.wav",
+      "expected": "うれしいです。時間を決めましょう。",
+      "heard": "嬉しいです。時間を決めましょう。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.14.1.wav",
+      "expected": "午前十時はどうですか。",
+      "heard": "午前10時はどうですか"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.14.answer.1.wav",
+      "expected": "午後三時はどうですか。",
+      "heard": "午後3時はどうですか?"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.14.reply.1.wav",
+      "expected": "午後三時ですね。大丈夫です。",
+      "heard": "午後3時ですね。大丈夫です。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.14.2.wav",
+      "expected": "どこで会いましょうか。",
+      "heard": "どこで会いましょうか。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.14.answer.2.wav",
+      "expected": "公園の入口で会いましょう。",
+      "heard": "公園の入り口で会いましょう。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.14.reply.2.wav",
+      "expected": "わかりました。では、また明日。",
+      "heard": "わかりました。では、また明日。"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.14.0.wav",
+      "expected": "내일 같이 산책할까요?",
+      "heard": " 내일 같이 산책할까요?"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.14.answer.0.wav",
+      "expected": "좋아요. 같이 가요.",
+      "heard": " 좋아요. 같이 가요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.14.reply.0.wav",
+      "expected": "좋아요. 시간을 정해요.",
+      "heard": " 좋아요. 시간을 정해요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.14.1.wav",
+      "expected": "오전 열 시는 어때요?",
+      "heard": " 오전 10시는 어때요?"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.14.answer.1.wav",
+      "expected": "오후 세 시는 어때요?",
+      "heard": " 오후 3시는 어때요?"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.14.reply.1.wav",
+      "expected": "오후 세 시요? 괜찮아요.",
+      "heard": " 오후 3시요? 괜찮아요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.14.2.wav",
+      "expected": "어디서 만날까요?",
+      "heard": " 어디서 만날까요?"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.14.answer.2.wav",
+      "expected": "공원 입구에서 만나요.",
+      "heard": " 공원 입구에서 만나요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.14.reply.2.wav",
+      "expected": "알겠어요. 그럼 내일 봐요.",
+      "heard": " 알겠어요 그럼 내일 봐요"
+    }
+  ],
+  "choiceAudio": {
+    "count": 12,
+    "verification": "ASR matches wording with whitespace, punctuation, kana/kanji and numeral notation differences only. Not independent human listening.",
+    "transcriptions": [
+      {
+        "file": "assets/audio/scenarios/ko-ja.14.choice.0.1.wav",
+        "expected": "明日は行けません。",
+        "heard": "明日はいけません"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.14.choice.0.2.wav",
+        "expected": "今日は一人で行きます。",
+        "heard": "今日は一人で行きます。"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.14.choice.1.1.wav",
+        "expected": "午前十時で大丈夫です。",
+        "heard": "午前10時で大丈夫です"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.14.choice.1.2.wav",
+        "expected": "明日は行けません。",
+        "heard": "明日はいけません"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.14.choice.2.1.wav",
+        "expected": "駅の前で会いましょう。",
+        "heard": "駅の前で会いましょう。"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.14.choice.2.2.wav",
+        "expected": "午後三時に会いましょう。",
+        "heard": "午後3時に会いましょう"
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.14.choice.0.1.wav",
+        "expected": "내일은 못 가요.",
+        "heard": " 내일은 못가요."
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.14.choice.0.2.wav",
+        "expected": "오늘은 혼자 갈게요.",
+        "heard": " 오늘은 혼자 갈게요."
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.14.choice.1.1.wav",
+        "expected": "오전 열 시 괜찮아요.",
+        "heard": " 오전 10시 괜찮아요."
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.14.choice.1.2.wav",
+        "expected": "내일은 못 가요.",
+        "heard": " 내일은 못가요."
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.14.choice.2.1.wav",
+        "expected": "역 앞에서 만나요.",
+        "heard": " 역 앞에서 만나요"
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.14.choice.2.2.wav",
+        "expected": "오후 세 시에 만나요.",
+        "heard": " 오후 3시에 만나요."
+      }
+    ]
+  }
+}

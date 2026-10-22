@@ -5,7 +5,6 @@ import { selectedLevel } from "./kana-state.js";
 import { episode, expressions } from "./content.js";
 import { icon, button, expressionCard } from "./ui.js";
 export function renderPanel(kind, state, id) {
-  const e = state.episode;
   let title = "",
     body = "";
   if (kind === "settings") {
@@ -20,15 +19,6 @@ export function renderPanel(kind, state, id) {
       expressions.find((x) => x.id === c.expressionId),
       { sound: state.settings.sound, compactAudio: true },
     )}${button("가방 고르기", "close")}`;
-  }
-  if (kind === "hint") {
-    title = "단계별 힌트";
-    body = `<ol class="hints">${episode.hints
-      .slice(0, e.hintLevel)
-      .map((h) => `<li>${h}</li>`)
-      .join(
-        "",
-      )}</ol><div class="button-pair">${button(e.hintLevel < 3 ? "힌트 더 보기" : "마지막 힌트", "more-hint", "secondary", e.hintLevel >= 3 ? "disabled" : "")}${button("학습으로 돌아가기", "close")}</div>`;
   }
   if (kind === "restart") {
     title = "처음부터 할까요?";

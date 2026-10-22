@@ -1,0 +1,38 @@
+[
+  {
+    "lesson": "frieren-subtext",
+    "revision": 2,
+    "source": "https://www.youtube.com/watch?v=cE8wVmwY7VY",
+    "sourceTitle": "【公式】『ちいかわ』第5話「チャリメラ／チャルメラ」",
+    "channel": "めざましテレビチャンネル",
+    "channelId": "UCrrsHarrLoiLTqu1LHxDJpw",
+    "startSeconds": 35,
+    "endSeconds": 54,
+    "quote": "あれさ、チャリメラじゃなくて、チャルメラなんだって。",
+    "date": "2026-10-21",
+    "availability": "public",
+    "playable_in_embed": true,
+    "verification": "Official metadata checked; original audio and isolated selected passage transcribed with mlx-whisper large-v3-turbo. No YouTube captions requested or used. Punctuation normalized. Media is not bundled or rehosted; the app uses the original YouTube embed.",
+    "transcriptionNotes": "The selected quote agrees across full-audio and isolated-clip ASR; non-dialogue ending hallucinations excluded.",
+    "interpretation": "Subtext is presented as a contextual reading; contrast example distinguishes the same phrase in a neutral situation.",
+    "rights": "Official embeddable source, not a blanket copyright or transcript reuse license."
+  },
+  {
+    "lesson": "misaeng-subtext",
+    "revision": 2,
+    "source": "https://www.youtube.com/watch?v=F50dzv9H9sU",
+    "sourceTitle": "김지원×이정은, 손현주 앞에서 계약서 보여주며 야근×회진×회식 가차 없이 거부♨",
+    "channel": "SBS 스브스 Drama",
+    "channelId": "UC6erIDuvbOaAO-OT5rB2Xew",
+    "startSeconds": 37,
+    "endSeconds": 48,
+    "quote": "교수님께서도 저희 소개소로 오시죠.",
+    "date": "2026-10-21",
+    "availability": "public",
+    "playable_in_embed": true,
+    "verification": "Official metadata checked; original audio and isolated selected passage transcribed with mlx-whisper large-v3-turbo. No YouTube captions requested or used. Punctuation normalized. Media is not bundled or rehosted; the app uses the original YouTube embed.",
+    "transcriptionNotes": "The Korean ASR rendered 소개소 as 소개서; normalized to 소개소 using the agency context. This is a contextual correction, not an independent human listening confirmation.",
+    "interpretation": "Subtext is presented as a contextual reading; contrast example distinguishes the same phrase in a neutral situation.",
+    "rights": "Official embeddable source, not a blanket copyright or transcript reuse license."
+  }
+]

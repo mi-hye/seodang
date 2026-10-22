@@ -1,0 +1,139 @@
+{
+  "lesson": "scenario:16",
+  "visibleLevel": "2-13",
+  "date": "2026-10-22",
+  "voices": {
+    "ja": "VOICEVOX Nemo 男声1",
+    "ko": "Supertonic 3 M1"
+  },
+  "audioVerification": "All 24 entries transcribed with mlx-whisper large-v3-turbo; exact wording with punctuation/whitespace differences only. Not independent human listening.",
+  "transcriptions": [
+    {
+      "file": "assets/audio/scenarios/ko-ja.16.0.wav",
+      "expected": "今日は雨です。傘を持ってきてください。",
+      "heard": "今日は雨です。傘を持ってきてください。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.16.speak.0.wav",
+      "expected": "傘を持っていきます。",
+      "heard": "傘を持っていきます"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.16.choice.0.1.wav",
+      "expected": "上着を着ます。",
+      "heard": "上着を着ます"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.16.choice.0.2.wav",
+      "expected": "水を持っていきます。",
+      "heard": "水を持っていきます"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.16.1.wav",
+      "expected": "今日は寒いです。上着を着てきてください。",
+      "heard": "今日は寒いです。上着を着てきてください。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.16.speak.1.wav",
+      "expected": "上着を着ます。",
+      "heard": "上着を着ます"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.16.choice.1.1.wav",
+      "expected": "傘を持っていきます。",
+      "heard": "傘を持っていきます"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.16.choice.1.2.wav",
+      "expected": "水を持っていきます。",
+      "heard": "水を持っていきます"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.16.2.wav",
+      "expected": "今日は暑いです。水を持ってきてください。",
+      "heard": "今日は暑いです。水を持ってきてください。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.16.speak.2.wav",
+      "expected": "水を持っていきます。",
+      "heard": "水を持っていきます"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.16.choice.2.1.wav",
+      "expected": "傘を持っていきます。",
+      "heard": "傘を持っていきます"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.16.choice.2.2.wav",
+      "expected": "上着を着ます。",
+      "heard": "上着を着ます"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.16.0.wav",
+      "expected": "오늘은 비가 와요. 우산을 가져오세요.",
+      "heard": " 오늘은 비가 와요. 우산을 가져오세요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.16.speak.0.wav",
+      "expected": "우산을 가져가요.",
+      "heard": " 우산을 가져가요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.16.choice.0.1.wav",
+      "expected": "겉옷을 입어요.",
+      "heard": " 겉옷을 입어요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.16.choice.0.2.wav",
+      "expected": "물을 가져가요.",
+      "heard": " 물을 가져가요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.16.1.wav",
+      "expected": "오늘은 추워요. 겉옷을 입고 오세요.",
+      "heard": " 오늘은 추워요. 겉옷을 입고 오세요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.16.speak.1.wav",
+      "expected": "겉옷을 입어요.",
+      "heard": " 겉옷을 입어요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.16.choice.1.1.wav",
+      "expected": "우산을 가져가요.",
+      "heard": " 우산을 가져가요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.16.choice.1.2.wav",
+      "expected": "물을 가져가요.",
+      "heard": " 물을 가져가요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.16.2.wav",
+      "expected": "오늘은 더워요. 물을 가져오세요.",
+      "heard": " 오늘은 더워요. 물을 가져오세요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.16.speak.2.wav",
+      "expected": "물을 가져가요.",
+      "heard": " 물을 가져가요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.16.choice.2.1.wav",
+      "expected": "우산을 가져가요.",
+      "heard": " 우산을 가져가요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.16.choice.2.2.wav",
+      "expected": "겉옷을 입어요.",
+      "heard": " 겉옷을 입어요."
+    }
+  ],
+  "image": {
+    "path": "prototype/assets/lesson-scenes/weather-bag-v1.jpg",
+    "source": "OpenAI built-in image_gen",
+    "kind": "AI-generated photo-style image, not a photograph of a real place",
+    "prompt": "A single photorealistic natural editorial photograph for a beginner language lesson about preparing to go outside based on the weather. Wide landscape composition of a tidy home entryway: on a wooden bench next to a canvas day bag, a neatly folded light jacket, a closed compact umbrella, and a reusable water bottle. All three objects equally visible and recognizable in the central horizontal band, arranged naturally not as icons. Neutral soft indoor daylight, no view of outdoor weather, no people. Warm calm natural textures. No writing, labels, logos, diagrams, collage or UI. Suitable as a short cropped mobile lesson header.",
+    "sha256": "0db7865039132f6772dc8dccbd33692395ede1a52097c15d09d7a4d76b8a3945"
+  }
+}

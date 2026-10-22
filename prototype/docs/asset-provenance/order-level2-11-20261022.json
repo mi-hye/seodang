@@ -1,0 +1,132 @@
+{
+  "lesson": "scenario:15",
+  "visibleLevel": "2-11",
+  "date": "2026-10-22",
+  "voices": {
+    "ja": "VOICEVOX Nemo 男声1",
+    "ko": "Supertonic 3 M1"
+  },
+  "verification": "All 24 final clips transcribed with mlx-whisper large-v3-turbo. Wording agrees apart from whitespace/punctuation/numeral notation and homophonous 三杯/3倍. The count prompt was simplified to 二杯ですね。 and regenerated after ambiguous ASR; final transcription matches. Not independent human listening.",
+  "transcriptions": [
+    {
+      "file": "assets/audio/scenarios/ko-ja.15.0.wav",
+      "expected": "温かいお茶ですね。",
+      "heard": "温かいお茶ですね"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.15.speak.0.wav",
+      "expected": "冷たいお茶をください。",
+      "heard": "冷たいお茶をください。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.15.choice.0.1.wav",
+      "expected": "温かいお茶をください。",
+      "heard": "温かいお茶をください"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.15.choice.0.2.wav",
+      "expected": "お水をください。",
+      "heard": "お水をください"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.15.1.wav",
+      "expected": "二杯ですね。",
+      "heard": "2杯ですね"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.15.speak.1.wav",
+      "expected": "一杯だけください。",
+      "heard": "一杯だけください"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.15.choice.1.1.wav",
+      "expected": "二杯ください。",
+      "heard": "2杯ください"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.15.choice.1.2.wav",
+      "expected": "三杯ください。",
+      "heard": "3倍ください"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.15.2.wav",
+      "expected": "店内でお飲みになりますか。",
+      "heard": "店内でお飲みになりますか"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.15.speak.2.wav",
+      "expected": "持ち帰りでお願いします。",
+      "heard": "持ち帰りでお願いします"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.15.choice.2.1.wav",
+      "expected": "ここで飲みます。",
+      "heard": "ここで飲みます"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.15.choice.2.2.wav",
+      "expected": "お茶は要りません。",
+      "heard": "お茶はいりません。"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.15.0.wav",
+      "expected": "따뜻한 차 맞으세요?",
+      "heard": " 따뜻한 차 맞으세요?"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.15.speak.0.wav",
+      "expected": "차가운 차 주세요.",
+      "heard": " 차가운 차 주세요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.15.choice.0.1.wav",
+      "expected": "따뜻한 차 주세요.",
+      "heard": " 따뜻한 차 주세요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.15.choice.0.2.wav",
+      "expected": "물 주세요.",
+      "heard": " 물 주세요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.15.1.wav",
+      "expected": "차 두 잔 맞으세요?",
+      "heard": " 차 두 잔 맞으세요?"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.15.speak.1.wav",
+      "expected": "한 잔만 주세요.",
+      "heard": " 한 잔만 주세요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.15.choice.1.1.wav",
+      "expected": "두 잔 주세요.",
+      "heard": " 두 잔 주세요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.15.choice.1.2.wav",
+      "expected": "세 잔 주세요.",
+      "heard": " 세 잔 주세요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.15.2.wav",
+      "expected": "매장에서 드시나요?",
+      "heard": " 매장에서 드시나요?"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.15.speak.2.wav",
+      "expected": "포장해 주세요.",
+      "heard": " 포장해 주세요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.15.choice.2.1.wav",
+      "expected": "여기서 마실게요.",
+      "heard": " 여기서 마실게요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.15.choice.2.2.wav",
+      "expected": "차는 필요 없어요.",
+      "heard": " 차는 필요 없어요."
+    }
+  ]
+}

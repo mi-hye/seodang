@@ -1,0 +1,43 @@
+[
+  {
+    "lesson": "frieren-just-right",
+    "visibleLevel": "2-9",
+    "date": "2026-10-22",
+    "source": {
+      "id": "r5m1bfVUfSQ",
+      "title": "葬送のフリーレン ミニアニメ「●●の魔法」第14回：「大体なんでも切る魔法」",
+      "channel": "TOHO animation",
+      "channel_id": "UC14Yc2Qv92DMuyNRlHvpo2Q",
+      "channel_url": "https://www.youtube.com/channel/UC14Yc2Qv92DMuyNRlHvpo2Q",
+      "duration": 97,
+      "availability": "public",
+      "playable_in_embed": true
+    },
+    "startSeconds": 53,
+    "endSeconds": 59,
+    "quote": "すごいな。こんなに早く、大きさも形もちょうどいい。",
+    "cropTranscription": "すごいなこんなに早く大きさも形もちょうどいい",
+    "verification": "Official source metadata rechecked. Existing full-original-audio transcript compared with new isolated whole-second crop using mlx-whisper large-v3-turbo; wording agrees. No YouTube captions used. ASR validation, not independent human listening. App embeds original official video; media is not bundled or rehosted.",
+    "supersededBy": "video-lessons-level2-9-chiikawa-20261022.json"
+  },
+  {
+    "lesson": "hospital-appreciation",
+    "visibleLevel": "2-9",
+    "date": "2026-10-22",
+    "source": {
+      "id": "sczKFlBP1Y4",
+      "title": "[종합 예고] '괜찮아요' 당신에게 건네는 작은 위로의 한마디! | 슬기로운 의사생활 Hospital Playlist EP.0",
+      "channel": "tvN DRAMA",
+      "channel_id": "UC9w-h_ciMmX64TcLRcb1xPg",
+      "channel_url": "https://www.youtube.com/channel/UC9w-h_ciMmX64TcLRcb1xPg",
+      "duration": 30,
+      "availability": "public",
+      "playable_in_embed": true
+    },
+    "startSeconds": 14,
+    "endSeconds": 16,
+    "quote": "고생 많으셨어요.",
+    "cropTranscription": " 고생 많으셨어요.",
+    "verification": "Official source metadata rechecked. Existing full-original-audio transcript compared with new isolated whole-second crop using mlx-whisper large-v3-turbo; wording agrees. No YouTube captions used. ASR validation, not independent human listening. App embeds original official video; media is not bundled or rehosted."
+  }
+]

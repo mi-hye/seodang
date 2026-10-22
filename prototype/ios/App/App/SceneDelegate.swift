@@ -170,7 +170,19 @@ class SeodangSpeechPlugin: CAPPlugin, CAPBridgedPlugin, AVSpeechSynthesizerDeleg
 class SeodangUIPlugin: CAPPlugin, CAPBridgedPlugin {
     let identifier = "SeodangUIPlugin"
     let jsName = "SeodangUI"
-    let pluginMethods: [CAPPluginMethod] = [CAPPluginMethod(name: "confirmDelete", returnType: CAPPluginReturnPromise)]
+    let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "confirmDelete", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "correctAnswer", returnType: CAPPluginReturnPromise)
+    ]
+    @objc func correctAnswer(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            guard UIApplication.shared.applicationState == .active else { call.resolve(); return }
+            let feedback = UIImpactFeedbackGenerator(style: .medium)
+            feedback.prepare()
+            feedback.impactOccurred(intensity: 0.65)
+            call.resolve()
+        }
+    }
     @objc func confirmDelete(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
             guard let controller = self.bridge?.viewController else { call.resolve(["confirmed": false]); return }
@@ -357,7 +369,7 @@ class SeodangVideoPlugin: CAPPlugin, CAPBridgedPlugin, WKUIDelegate, WKNavigatio
 
     @objc func mount(_ call: CAPPluginCall) {
         guard let videoID = call.getString("videoId"), let token = call.getString("token"),
-              ["xRlcrGXwtrA", "PZGxO0qCKRg", "pQ8lfI_W2To", "X3Y9esqDspY", "r5m1bfVUfSQ", "DddirskV5Vo", "sczKFlBP1Y4", "JPZfvT5zTBE", "sst8SX32Yhw"].contains(videoID) else {
+              ["xRlcrGXwtrA", "PZGxO0qCKRg", "pQ8lfI_W2To", "X3Y9esqDspY", "r5m1bfVUfSQ", "DddirskV5Vo", "sczKFlBP1Y4", "JPZfvT5zTBE", "sst8SX32Yhw", "cE8wVmwY7VY", "F50dzv9H9sU", "VZBU8LvZ91Q", "Eze6-eHmtJg", "0xSiBpUdW4E", "BzYnNdJhZQw", "xRbPAVnqtcs", "EIz09kLzN9k"].contains(videoID) else {
             call.reject("Unknown lesson video"); return
         }
         let start = call.getInt("startSeconds") ?? 0

@@ -5,10 +5,13 @@ on:
     branches:
       - main
     paths:
-      - docs/**
+      - docs/privacy-policy.html
+      - docs/privacy-policy-legacy.html
+      - docs/third-party-notices.html
       - prototype/quiz.html
       - prototype/src/share-quiz*
       - scripts/build-share-quiz.mjs
+      - scripts/build-public-site.mjs
       - .github/workflows/pages.yml
   workflow_dispatch:
 
@@ -36,16 +39,16 @@ jobs:
         with:
           node-version: 22
 
-      - name: Stage public expression quiz
-        run: node scripts/build-share-quiz.mjs
+      - name: Stage public pages and expression quiz
+        run: node scripts/build-public-site.mjs
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload static docs
+      - name: Upload public site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs
+          path: dist/public-site
 
       - name: Deploy to GitHub Pages
         id: deployment

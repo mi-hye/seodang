@@ -15,7 +15,7 @@ try{for(const width of [320,390]){
  await page.goto('https://seodang.test/playable.html');await page.locator('.home-start-card button').click();
  const check=async()=>{await page.waitForTimeout(470);await page.locator('[data-action=korean-check]').click();};
  await page.locator('[data-action=korean-select][data-id="0"]').click();await check();
- await expect(page.locator('.korean-assembly')).toBeVisible();await expect(page.locator('.korean-count')).toHaveText('1/10');
+ await expect(page.locator('.korean-assembly')).toBeVisible();await expect(page.locator('.korean-count')).toHaveCount(0);
  await page.locator('[data-action=korean-select][data-id="1"]').click();await expect(page.locator('.korean-assembly strong')).toHaveText('어');await check();await expect(page.locator('.korean-feedback')).not.toBeEmpty();
  await page.locator('[data-action=korean-select][data-id="0"]').click();await expect(page.locator('.korean-assembly strong')).toHaveText('아');
  await page.reload();await page.locator('.home-start-card button').click();await expect(page.locator('.korean-assembly strong')).toHaveText('아');await check();

@@ -1,0 +1,125 @@
+{
+  "purpose": "2-2 picture word review in both learning directions",
+  "targets": {
+    "ja": [
+      "かばん",
+      "まど",
+      "ドア"
+    ],
+    "ko": [
+      "가방",
+      "창문",
+      "문"
+    ]
+  },
+  "distractor": "coffee; existing audio/picture reused",
+  "pictures": {
+    "method": "original code-authored SVG",
+    "files": [
+      "assets/word-pictures/bag.svg",
+      "assets/word-pictures/window.svg",
+      "assets/word-pictures/door.svg"
+    ]
+  },
+  "voices": {
+    "ja": "VOICEVOX Nemo 男声1, speed .8, sentence punctuation for synthesis",
+    "ko": "Supertonic 3 M1, seed42, steps12"
+  },
+  "verification": {
+    "human_listening_review": false,
+    "single_clip_asr": "Other four clips match reading; isolated ドア was transcribed as どうも by Whisper turbo.",
+    "repeated_clip_asr": "Unprompted ASR of the same final clip repeated three times with 0.4s silence: ドアドアドア.",
+    "phonemes": "VOICEVOX query どあ: d/o + a; vowel lengths .14/.16 seconds, speed .9, original query pitches retained.",
+    "door_audio": "Only the single word plays in the app, never the repeated verification sequence."
+  },
+  "clips": [
+    {
+      "file": "assets/audio/bag-review-words/ja.0.wav",
+      "text": "かばん",
+      "locale": "ja-JP",
+      "pronunciation": null,
+      "source": "d251de55f6ce3f9d0e6a67419d17bfb74bb1315879308619b46679b9f4f7773d.m4a",
+      "sha256": "902abc568221ba04c02901e00481f1d79d630fd68edd653ab3fec61cb2a70dcd",
+      "bytes": 9254,
+      "duration": 0.64,
+      "voice": "VOICEVOX Nemo 男声1"
+    },
+    {
+      "file": "assets/audio/bag-review-words/ja.1.wav",
+      "text": "まど",
+      "locale": "ja-JP",
+      "pronunciation": null,
+      "source": "690ab6d534957ea241fbe693bcfbe35dbab04a2b9f4640777a3b897f1b0f6160.m4a",
+      "sha256": "1b9b59bf141b5506e0a0cdd90b71f05d12410fa09c881170c4a3090b9a0d3c37",
+      "bytes": 9542,
+      "duration": 0.608,
+      "voice": "VOICEVOX Nemo 男声1"
+    },
+    {
+      "file": "assets/audio/bag-review-words/ja.door.v2.wav",
+      "text": "ドア",
+      "locale": "ja-JP",
+      "pronunciation": null,
+      "source": "door-hira.m4a",
+      "sha256": "1481e0340cf54cf8c5e781c5e8fdcb148220e2f3168c77e28f59f8638c6786a9",
+      "bytes": 9285,
+      "duration": 0.629,
+      "voice": "VOICEVOX Nemo 男声1"
+    },
+    {
+      "file": "assets/audio/bag-review-words/ko.0.wav",
+      "text": "가방",
+      "locale": "ko-KR",
+      "pronunciation": null,
+      "source": "197e222739fee189d8456e483d6325e9443ebaafc785cdd07f432e7bceeb5649.m4a",
+      "sha256": "f47c4859688c4313d1ae83da630500f81ea21861c8946bc552974b151bd8587d",
+      "bytes": 14403,
+      "duration": 1.393,
+      "voice": "Supertonic 3 M1"
+    },
+    {
+      "file": "assets/audio/bag-review-words/ko.1.wav",
+      "text": "창문",
+      "locale": "ko-KR",
+      "pronunciation": null,
+      "source": "dd842dfc7cbb585c60489fa806550367dcfecf6c4578c81699a1f08a42cb5c68.m4a",
+      "sha256": "c2ef40f5b84b4265e57860802c919c8c67206d9ad51ff0ed750a3bdeea6e3452",
+      "bytes": 13747,
+      "duration": 1.393,
+      "voice": "Supertonic 3 M1"
+    }
+  ],
+  "transcriptions": [
+    {
+      "file": "assets/audio/bag-review-words/ja.0.wav",
+      "expected": "かばん",
+      "heard": "カバン"
+    },
+    {
+      "file": "assets/audio/bag-review-words/ja.1.wav",
+      "expected": "まど",
+      "heard": "窓"
+    },
+    {
+      "file": "assets/audio/bag-review-words/ja.door.v2.wav",
+      "expected": "ドア",
+      "heard": "どうも"
+    },
+    {
+      "file": "assets/audio/bag-review-words/ko.0.wav",
+      "expected": "가방",
+      "heard": " 가방"
+    },
+    {
+      "file": "assets/audio/bag-review-words/ko.1.wav",
+      "expected": "창문",
+      "heard": " 창문"
+    }
+  ],
+  "superseded": {
+    "text": "とびら",
+    "file": "assets/audio/bag-review-words/ja.2.wav",
+    "supersededBy": "assets/audio/bag-review-words/ja.door.v2.wav",
+    "reason": "User requested original word ドア; do not change vocabulary to solve synthesis validation issues."
+  }
+}

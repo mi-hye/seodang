@@ -1,9 +1,15 @@
 import {videoLesson,videoProgress} from './video-lesson-state.js';
+import {songLessons,songProgress} from './song-state.js';
 import {expertProgress,expertKey} from './expert-state.js';
 import {displayLevel} from './curriculum.js';
 // Pure snapshots keep analytics independent of large lesson/content modules.
 export function learningSnapshot(s,kind){
- if(kind==='video'){const p=videoProgress(s);return {lesson_id:`${s.courseDirection}:video:${videoLesson(s)?.id}`,course_direction:s.courseDirection,level:displayLevel(s.onboardingLevel),phase:p.phase,item_index:p.index,round_index:0,mode_index:0,match_count:0,_selected:false,_attempts:0,_retry:false,_checked:false,done:p.phase==='done',position:JSON.stringify([p.phase,p.index]),practice:false};}
+ if(kind==='song'){
+  const l=songLessons.find(l=>l.id===s.songActive&&l.direction===s.courseDirection);if(!l)return null;
+  const p=songProgress(s),key=`${l.direction}:song:${l.id}`;
+  return {lesson_id:key,course_direction:l.direction,level:displayLevel(l.level),phase:p.phase,item_index:0,round_index:0,mode_index:0,match_count:0,_selected:p.selected!==null,_attempts:0,_retry:Boolean(p.retry),_checked:Boolean(p.checked),done:p.phase==='done',position:JSON.stringify([p.phase,p.resume]),practice:false};
+ }
+ if(kind==='video'){const p=videoProgress(s),key=`${s.courseDirection}:video:${videoLesson(s)?.id}`,r=s.practices?.[key];return {lesson_id:key,course_direction:s.courseDirection,level:displayLevel(s.onboardingLevel),phase:r?'practice':p.phase,item_index:r?.index??p.index,round_index:0,mode_index:0,match_count:0,_selected:p.selected!=null,_attempts:0,_retry:Boolean(p.retry),_checked:Boolean(p.checked),done:!r&&p.phase==='done',position:JSON.stringify(r?['practice',r.index]:[p.phase,p.index]),practice:Boolean(r)};}
  if(kind==='expert'){const p=expertProgress(s);return {lesson_id:expertKey(s),course_direction:s.courseDirection,level:5,phase:p.phase,item_index:p.discussionVersion?p.part:p.phase==='review'?p.sentence:p.index,round_index:0,mode_index:0,match_count:0,_selected:p.selected!==null,_attempts:p.attempts,_retry:p.retry,_checked:p.checked,done:p.phase==='done',position:JSON.stringify([p.phase,p.index,p.sentence,p.part]),practice:false};}
  if(!['scenario','kana','basic','korean','sentence','reading','dialogue','labels','listening','play'].includes(kind))return null;
  const id=kind==='scenario'?s.scenarioActive:kind==='basic'?s.basics?.active:kind==='korean'?s.korean?.active:kind==='kana'?s.kana?.active:kind==='reading'?s.onboardingLevel:kind==='sentence'?(s.sentenceActive??0):0;
@@ -17,6 +23,8 @@ export function learningSnapshot(s,kind){
 export function checkedAnswer(before,after,action=''){
  if(!before||!after||before.practice||before.done)return null;
  if(after._attempts>before._attempts)return !after._retry;
+ if(action==='video-check'&&before._selected&&!before._checked&&['meaning','use','infer','clue'].includes(before.phase))return after._checked;
+ if(action==='song-check'&&before._selected&&!before._checked&&['gap','apply'].includes(before.phase)&&before.phase===after.phase&&before.lesson_id===after.lesson_id)return after._checked;
  const checks={'basic-check':'quiz','korean-check':'quiz','reading-check':'read','dialogue-check':'practice'};
  if(checks[action]===before.phase&&before._selected)return !after._retry;
  if(action==='listening-answer'&&before.phase==='listen')return after.item_index>before.item_index;

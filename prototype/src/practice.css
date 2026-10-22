@@ -67,7 +67,7 @@ html[data-motion=off] .practice-fireworks>i{animation:none}
 #app main.lesson-centered>.basic-learn{padding-bottom:12px}
 #app main.lesson-centered>.korean-zero-intro{margin-block:0}
 #app main.lesson-centered>.button-pair,#app main.lesson-centered>.kana-letter-nav{margin-top:12px;margin-bottom:0}
-#app main.lesson-centered>.korean-count{margin-bottom:12px}
+#app main.lesson-centered>
 #app main.lesson-centered .korean-learn{margin-top:0;margin-bottom:16px}
 #app main.lesson-centered>.practice-feedback:empty{min-height:0;margin:4px 0}
 #app main.lesson-centered.korean-zero-finish>p{margin-block:4px}
@@ -93,7 +93,7 @@ html[data-motion=off] .practice-fireworks>i{animation:none}
 
 .case-practice h1{font-size:calc(23px * var(--text-scale));margin:6px 0 12px}
 .case-practice h2{font-size:calc(18px * var(--text-scale));line-height:1.6;margin:14px 0 10px;white-space:pre-line}
-.case-task-count{font-size:14px;text-align:right;color:var(--muted)}
+
 .case-task-scene{line-height:1.65;white-space:pre-line;margin:10px 0}
 .case-task-passage{padding:12px;background:var(--stage-raised);border-radius:12px;line-height:1.7}
 .case-task-passage p{margin:0 0 8px}.case-task-passage p:last-child{margin-bottom:0}
@@ -128,3 +128,64 @@ html[lang=ja] .lesson-explanation .word-memory-body p{word-break:normal;line-bre
 /* Leave space above the iPhone home-indicator cover after the final action row. */
 #app main:is(.reading-page,.scenario-page,.practice-page){padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 #app main:is(.reading-page,.scenario-page,.practice-page)>.button-pair{flex-shrink:0}
+
+/* 2-1 review stays inside the lazy practice stylesheet. */
+.introduction-review{display:flex;flex-direction:column;gap:0;word-break:keep-all;height:auto}
+.introduction-review>*{flex-shrink:0}
+.introduction-review h2,.introduction-review .case-task-scene{margin:0}
+.introduction-review h1{margin:0;font-size:calc(22px * var(--text-scale))}
+.introduction-review h2,.introduction-review .case-task-scene{font-size:calc(18px * var(--text-scale));line-height:1.6}
+.introduction-review .audio-text-row p{flex:1;min-width:0;margin:0;line-height:1.6}
+.introduction-review .review-result{border-top:1px solid var(--line);padding-top:16px}
+.introduction-review .review-result[hidden]{display:none}
+.introduction-review .review-result>.audio-text-row{font-size:calc(20px * var(--text-scale));font-weight:600}
+.introduction-review .review-result>p{margin:8px 0 0;color:var(--muted)}
+.introduction-review .practice-feedback:empty{display:none}
+.introduction-review :lang(ja){word-break:normal;line-break:strict}
+
+.introduction-review .review-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.introduction-review .review-head h1{flex:1;min-width:0}
+.introduction-review .review-listen,.introduction-review .case-task-scene{margin-top:16px}
+.introduction-review h2{margin-top:8px}
+.introduction-review .review-listen+details{margin-top:4px}
+.introduction-review details p{margin-bottom:0}
+.introduction-review .case-task-options,.introduction-review .token-builder{margin-top:16px}
+.introduction-review .token-builder-answer{margin:0 0 12px;min-height:96px}
+.introduction-review .token-builder-choices{margin:0}
+.introduction-review .practice-feedback{margin:16px 0 0}
+.introduction-review .review-result{margin-top:16px;padding-top:12px}
+.introduction-review>.button-pair.button-pair,.introduction-review>[data-review-confirm]{margin-top:16px}
+
+.introduction-review .review-build-meaning{color:var(--text);font-size:calc(20px * var(--text-scale));font-weight:700;margin-top:8px}
+
+/* A small, local correct-answer cue; no layout shift or full-screen overlay. */
+.introduction-review .review-correct{display:flex;align-items:center;gap:10px}
+.review-correct-mark{position:relative;display:inline-grid;place-items:center;flex:none;width:26px;height:26px;border-radius:50%;background:var(--jade);color:var(--stage)}
+.review-correct-mark svg{width:18px;height:18px}
+.review-correct-mark i{display:none;position:absolute;left:11px;top:11px;width:4px;height:4px;border-radius:50%;background:var(--jade);pointer-events:none}
+.review-correct-mark i:nth-of-type(1){--x:-20px;--y:-12px}
+.review-correct-mark i:nth-of-type(2){--x:20px;--y:-12px}
+.review-correct-mark i:nth-of-type(3){--x:-18px;--y:15px}
+.review-correct-mark i:nth-of-type(4){--x:18px;--y:15px}
+.review-correct-motion .review-correct-mark{animation:review-correct-pop 350ms ease-out}
+.review-correct-motion .review-correct-mark i{display:block;animation:review-correct-dot 350ms ease-out both}
+@keyframes review-correct-pop{0%{transform:scale(.8)}55%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes review-correct-dot{0%{transform:translate(0,0);opacity:.8}100%{transform:translate(var(--x),var(--y));opacity:0}}
+html[data-motion=off] .review-correct-mark{animation:none}
+html[data-motion=off] .review-correct-mark i{display:none}
+@media(prefers-reduced-motion:reduce){.review-correct-mark{animation:none!important}.review-correct-mark i{display:none!important}}
+
+.introduction-review .review-result>.review-audio-error{color:var(--rose)}
+
+/* Four picture choices remain two columns on narrow phones. */
+.introduction-review .review-word-prompt{margin-top:8px}
+.introduction-review .review-word-prompt h2{flex:1;min-width:0;margin:0}
+.introduction-review .review-word-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.introduction-review .review-word-grid>button{position:relative;display:grid;place-items:center;min-width:0;height:120px;padding:8px;margin:0;border:2px solid var(--line);background:#faf3e6;border-radius:16px}
+.introduction-review .review-word-grid img{display:block;width:100%;height:100%;max-width:160px;object-fit:contain;pointer-events:none}
+.introduction-review .review-word-grid>button[aria-pressed=true]{border-color:var(--amber);box-shadow:0 0 0 2px var(--amber)}
+.introduction-review .review-word-grid>button:disabled[aria-pressed=true]{border-color:var(--jade);box-shadow:0 0 0 2px var(--jade)}
+.introduction-review .review-word-grid>button:disabled[aria-pressed=true]::after{content:'✓';position:absolute;right:6px;top:6px;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--jade);color:var(--stage);font-size:16px;font-weight:700}
+.introduction-review .review-word-grid>button:disabled{opacity:1}
+
+.introduction-review .review-word-grid>button:focus-visible{outline:3px solid var(--text);outline-offset:5px}

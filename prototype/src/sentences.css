@@ -6,7 +6,7 @@
 .sentence-page>.primary,.sentence-page>.secondary{width:100%;margin-top:14px}
 .sentence-page>.text-button{display:block;margin:10px auto;min-height:44px}
 .sentence-image{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:16px;margin-bottom:20px}
-.sentence-step{font-size:calc(16px * var(--text-scale));color:var(--muted);margin:0 0 14px;text-align:right;font-variant-numeric:tabular-nums}
+
 .sentence-heading{display:flex;align-items:center;gap:8px}
 .sentence-heading h2{flex:1;min-width:0;font-size:calc(20px * var(--text-scale));line-height:1.65;overflow-wrap:break-word}
 .sentence-heading .icon-button{flex:none;width:44px;min-height:44px;padding:10px;color:var(--amber-light)}
@@ -38,7 +38,6 @@
 .sentence-learn .sentence-image{height:110px;max-height:110px;margin-bottom:8px}
 .sentence-learn .sentence-bag{height:110px;margin:0 0 8px}
 .sentence-learn .sentence-bag svg{height:100px;width:100px}
-.sentence-learn .sentence-step{margin-bottom:6px}
 .sentence-learn .sentence-heading h2{margin:4px 0}
 .sentence-learn .sentence-meaning{margin:6px 0}
 .sentence-learn .case-words{margin:10px 0}

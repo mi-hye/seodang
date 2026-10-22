@@ -32,7 +32,7 @@ async function layerBytes(includeVariants){
  })().catch(error=>{delete layerBytePromises[includeVariants];throw error;});
 }
 export function mountOnboardingCharacter(host,{state='idle',pose='standing',reducedMotion=false}={}){
- let disposed=false,instance,observer,transition,readyFrame;const decoded=[],assets={},images={};
+ let disposed=false,instance,observer,transition,readyFrame,observeFrame,resizeFrame;const decoded=[],assets={},images={};
  let activePose=pose;
  const machine=()=>activePose==='sitting'?'Sitting':activePose==='happy'?'Happy':state==='greeting'?'Welcome':state==='talking'?'Speaking':'Rest';
  const doc=host.ownerDocument,media=window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -68,15 +68,23 @@ export function mountOnboardingCharacter(host,{state='idle',pose='standing',redu
     host.dataset.riveAnimations=instance.animationNames.join(',');host.dataset.riveMachines=instance.stateMachineNames.join(',');
     if(still()||doc.hidden)instance.pause();
     observer=new ResizeObserver(()=>{
-     const ratio=window.devicePixelRatio||1;
-     if(canvas.width!==Math.round(canvas.clientWidth*ratio)||canvas.height!==Math.round(canvas.clientHeight*ratio))instance?.resizeDrawingSurfaceToCanvas();
-    });observer.observe(canvas);
+     if(disposed||resizeFrame!==undefined)return;
+     // Canvas backing-size writes must run outside ResizeObserver delivery.
+     resizeFrame=requestAnimationFrame(()=>{
+      resizeFrame=undefined;if(disposed||!instance)return;
+      const ratio=window.devicePixelRatio||1,{width,height}=canvas.getBoundingClientRect();
+      // Match Rive's bounding-rect sizing and the canvas integer attributes.
+      if(canvas.width!==Math.floor(width*ratio)||canvas.height!==Math.floor(height*ratio))instance.resizeDrawingSurfaceToCanvas();
+     });
+    });
+    // Start observing on a frame boundary after Rive's initial surface setup.
+    observeFrame=requestAnimationFrame(()=>{observeFrame=undefined;if(!disposed)observer.observe(canvas);});
    },
    onLoadError:()=>{host.dataset.renderer='fallback';instance?.cleanup();instance=null;}
   });
  })().catch(()=>{if(!disposed)host.dataset.renderer='fallback';});
  doc.addEventListener('visibilitychange',visibility);media.addEventListener('change',motion);
- const dispose=()=>{if(disposed)return;disposed=true;cancelAnimationFrame(readyFrame);transition?.remove();observer?.disconnect();doc.removeEventListener('visibilitychange',visibility);media.removeEventListener('change',motion);instance?.cleanup();instance=null;for(const image of decoded)image.unref();canvas.remove();};
+ const dispose=()=>{if(disposed)return;disposed=true;cancelAnimationFrame(readyFrame);cancelAnimationFrame(observeFrame);cancelAnimationFrame(resizeFrame);transition?.remove();observer?.disconnect();doc.removeEventListener('visibilitychange',visibility);media.removeEventListener('change',motion);instance?.cleanup();instance=null;for(const image of decoded)image.unref();canvas.remove();};
  dispose.replay=()=>{if(disposed||!instance||still())return;instance.stop();activeMachine=activePose==='sitting'?'Listening':activePose==='happy'?'Happy':'Welcome';instance.play(activeMachine);host.dataset.riveAnimation=activeMachine;};
  dispose.setPose=next=>{
   if(disposed||!['standing','sitting','happy'].includes(next)||next===activePose)return;

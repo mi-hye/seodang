@@ -1,0 +1,258 @@
+{
+  "date": "2026-10-22",
+  "change": "Replace generic picture/listening/sentence-building video reviews with scene meaning and everyday-use checks for both-language level 2 lessons 3, 6, 9, 12.",
+  "catalogCleanup": {
+    "beforeVersion": "a5991770b3332c16",
+    "afterVersion": "bae908412b237ed9",
+    "method": "Local manifest pruning only; version recomputed using the existing publisher hash algorithm. No new audio, remote publication, remote deletion, or device-cache deletion.",
+    "removedPackCount": 8,
+    "removedPackKeys": [
+      "ja-ko:video:hospital-effort",
+      "ja-ko:video:hospital-appreciation",
+      "ko-ja:video:frieren-reaction",
+      "ko-ja:video:chiikawa-offer",
+      "ja-ko:video:hospital-thanks",
+      "ko-ja:video:frieren-wait",
+      "ja-ko:video:hospital-reassurance",
+      "ko-ja:video:frieren-just-right"
+    ],
+    "removedFileCount": 26,
+    "removedFiles": [
+      "assets/audio/level-two-reviews/ja-ko.video.hospital-appreciation.0.wav",
+      "assets/audio/level-two-reviews/ja-ko.video.hospital-appreciation.1.wav",
+      "assets/audio/level-two-reviews/ja-ko.video.hospital-effort.0.wav",
+      "assets/audio/level-two-reviews/ja-ko.video.hospital-effort.1.wav",
+      "assets/audio/level-two-reviews/ja-ko.video.hospital-reassurance.0.wav",
+      "assets/audio/level-two-reviews/ja-ko.video.hospital-reassurance.1.wav",
+      "assets/audio/level-two-reviews/ja-ko.video.hospital-thanks.0.wav",
+      "assets/audio/level-two-reviews/ja-ko.video.hospital-thanks.1.wav",
+      "assets/audio/level-two-reviews/ja-ko.word.effort.wav",
+      "assets/audio/level-two-reviews/ja-ko.word.help.wav",
+      "assets/audio/level-two-reviews/ja-ko.word.thanks.wav",
+      "assets/audio/level-two-reviews/ja-ko.word.today.wav",
+      "assets/audio/level-two-reviews/ko-ja.video.chiikawa-offer.0.wav",
+      "assets/audio/level-two-reviews/ko-ja.video.chiikawa-offer.1.wav",
+      "assets/audio/level-two-reviews/ko-ja.video.frieren-just-right.0.wav",
+      "assets/audio/level-two-reviews/ko-ja.video.frieren-just-right.1.wav",
+      "assets/audio/level-two-reviews/ko-ja.video.frieren-reaction.0.wav",
+      "assets/audio/level-two-reviews/ko-ja.video.frieren-reaction.1.wav",
+      "assets/audio/level-two-reviews/ko-ja.video.frieren-wait.0.wav",
+      "assets/audio/level-two-reviews/ko-ja.video.frieren-wait.1.wav",
+      "assets/audio/level-two-reviews/ko-ja.word.eat.wav",
+      "assets/audio/level-two-reviews/ko-ja.word.go.wav",
+      "assets/audio/level-two-reviews/ko-ja.word.make.wav",
+      "assets/audio/level-two-reviews/ko-ja.word.rest.wav",
+      "assets/audio/level-two-reviews/ko-ja.word.rice-ball.wav",
+      "assets/audio/level-two-reviews/ko-ja.word.wait.wav"
+    ],
+    "removedLogicalBytes": 391398,
+    "retainedPackCount": 104,
+    "retainedFileCount": 935,
+    "checks": [
+      "Removed files absent from every retained pack.",
+      "Removed file paths absent from current JavaScript and JSON source.",
+      "Every retained pack reference resolves in the retained catalog.",
+      "Shared immutable clip metadata remains unchanged."
+    ],
+    "reason": "Settings download-all uses catalog.files, so removing obsolete packs alone would still download retired review clips.",
+    "runtime": "Catalog is bundled and fetched locally; runtime does not use catalog.version for lookup or cache keys. Audio cache keys remain SHA-256 hashes."
+  },
+  "copyVerification": {
+    "method": "Independent humanize-korean monolith role and deterministic common gates.",
+    "route": "light",
+    "changeRatePercent": 0,
+    "grade": "B",
+    "selfChecksPassed": 6,
+    "gateExitCode": 0,
+    "warnings": [],
+    "scope": "Korean questions, options, explanations and three new UI labels. Japanese copy was reviewed against the existing lesson usage notes.",
+    "runFromRepositoryRoot": "_workspace/2026-10-22-012-a231",
+    "finalFromRepositoryRoot": "_workspace/2026-10-22-012-a231/final.md"
+  },
+  "pedagogy": {
+    "structure": [
+      "watch",
+      "meaning",
+      "learn",
+      "use",
+      "done"
+    ],
+    "checksPerLesson": 2,
+    "optionsPerCheck": 3,
+    "correctPositions": [
+      5,
+      6,
+      5
+    ],
+    "sourcePolicy": "Use the existing verified clip metadata and exact dialogue. Everyday situations are original hypothetical exercises, not claims about unseen plot details.",
+    "newAudioGenerated": false,
+    "videoOrDialogueChanged": false,
+    "freshClipListeningPerformed": false
+  },
+  "validation": {
+    "audioCatalogTest": {
+      "command": "node --test tests/audio-catalog.test.mjs",
+      "passed": 9,
+      "failed": 0
+    },
+    "contentSchema": {
+      "lessons": 8,
+      "checks": 16,
+      "uniqueOptionsPerCheck": 3,
+      "correctPositions": [
+        5,
+        6,
+        5
+      ],
+      "exactJapanesePhraseReconstruction": true
+    },
+    "visualScope": "Source inspection only; parent task owns browser layout and iPhone verification."
+  },
+  "clips": [
+    {
+      "lesson": "frieren-reaction",
+      "direction": "ko-ja",
+      "visibleLevel": "2-3",
+      "videoId": "X3Y9esqDspY",
+      "startSeconds": 15,
+      "endSeconds": 17,
+      "work": "프리렌 미니 애니메이션 · 1화",
+      "channel": "TOHO animation",
+      "quote": "そうなの？",
+      "sourceUrl": "https://www.youtube.com/watch?v=X3Y9esqDspY&t=15s",
+      "answerPositions": [
+        1,
+        2
+      ]
+    },
+    {
+      "lesson": "hospital-reassurance",
+      "direction": "ja-ko",
+      "visibleLevel": "2-3",
+      "videoId": "sczKFlBP1Y4",
+      "startSeconds": 21,
+      "endSeconds": 23,
+      "work": "슬기로운 의사생활 · 공식 예고",
+      "channel": "tvN DRAMA",
+      "quote": "괜찮아요.",
+      "sourceUrl": "https://www.youtube.com/watch?v=sczKFlBP1Y4&t=21s",
+      "answerPositions": [
+        0,
+        1
+      ]
+    },
+    {
+      "lesson": "frieren-wait",
+      "direction": "ko-ja",
+      "visibleLevel": "2-6",
+      "videoId": "DddirskV5Vo",
+      "startSeconds": 48,
+      "endSeconds": 51,
+      "work": "프리렌 미니 애니메이션 · 20화",
+      "channel": "TOHO animation",
+      "quote": "ちょっと待ってください。",
+      "sourceUrl": "https://www.youtube.com/watch?v=DddirskV5Vo&t=48s",
+      "answerPositions": [
+        2,
+        0
+      ]
+    },
+    {
+      "lesson": "hospital-effort",
+      "direction": "ja-ko",
+      "visibleLevel": "2-6",
+      "videoId": "sczKFlBP1Y4",
+      "startSeconds": 24,
+      "endSeconds": 26,
+      "work": "슬기로운 의사생활 · 공식 예고",
+      "channel": "tvN DRAMA",
+      "quote": "네, 최선을 다할게요.",
+      "sourceUrl": "https://www.youtube.com/watch?v=sczKFlBP1Y4&t=24s",
+      "answerPositions": [
+        1,
+        2
+      ]
+    },
+    {
+      "lesson": "frieren-just-right",
+      "direction": "ko-ja",
+      "visibleLevel": "2-9",
+      "videoId": "cE8wVmwY7VY",
+      "startSeconds": 17,
+      "endSeconds": 19,
+      "work": "치이카와 · 5화",
+      "channel": "めざましテレビチャンネル",
+      "quote": "作るね。",
+      "sourceUrl": "https://www.youtube.com/watch?v=cE8wVmwY7VY&t=17s",
+      "answerPositions": [
+        0,
+        1
+      ]
+    },
+    {
+      "lesson": "hospital-appreciation",
+      "direction": "ja-ko",
+      "visibleLevel": "2-9",
+      "videoId": "sczKFlBP1Y4",
+      "startSeconds": 14,
+      "endSeconds": 16,
+      "work": "슬기로운 의사생활 · 공식 예고",
+      "channel": "tvN DRAMA",
+      "quote": "고생 많으셨어요.",
+      "sourceUrl": "https://www.youtube.com/watch?v=sczKFlBP1Y4&t=14s",
+      "answerPositions": [
+        2,
+        0
+      ]
+    },
+    {
+      "lesson": "chiikawa-offer",
+      "direction": "ko-ja",
+      "visibleLevel": "2-12",
+      "videoId": "cE8wVmwY7VY",
+      "startSeconds": 5,
+      "endSeconds": 8,
+      "work": "치이카와 · 5화",
+      "channel": "めざましテレビチャンネル",
+      "quote": "チャリメラ食べる？",
+      "sourceUrl": "https://www.youtube.com/watch?v=cE8wVmwY7VY&t=5s",
+      "answerPositions": [
+        1,
+        2
+      ]
+    },
+    {
+      "lesson": "hospital-thanks",
+      "direction": "ja-ko",
+      "visibleLevel": "2-12",
+      "videoId": "sczKFlBP1Y4",
+      "startSeconds": 17,
+      "endSeconds": 19,
+      "work": "슬기로운 의사생활 · 공식 예고",
+      "channel": "tvN DRAMA",
+      "quote": "기회 주셔서 감사합니다.",
+      "sourceUrl": "https://www.youtube.com/watch?v=sczKFlBP1Y4&t=17s",
+      "answerPositions": [
+        0,
+        1
+      ]
+    }
+  ],
+  "unusedPictureAudit": {
+    "unusedFiles": [
+      "assets/word-pictures/eat.svg",
+      "assets/word-pictures/effort.svg",
+      "assets/word-pictures/go.svg",
+      "assets/word-pictures/help.svg",
+      "assets/word-pictures/make.svg",
+      "assets/word-pictures/okay.svg",
+      "assets/word-pictures/rest.svg",
+      "assets/word-pictures/rice-ball.svg",
+      "assets/word-pictures/thanks.svg",
+      "assets/word-pictures/today.svg",
+      "assets/word-pictures/wait.svg"
+    ],
+    "deleted": true,
+    "scope": "Removed original SVGs used exclusively by the retired generic video review; all source code and live lesson references were checked before removal."
+  }
+}
