@@ -1,0 +1,73 @@
+{
+  "lesson": "scenario:12",
+  "visibleLevel": "5-8",
+  "date": "2026-10-21",
+  "voices": {
+    "ja": "VOICEVOX Nemo 男声1",
+    "ko": "Supertonic 3 M1"
+  },
+  "verification": "Twelve prompt and proposal clips transcribed with mlx-whisper large-v3-turbo. Text matches apart from punctuation, spacing, kana/kanji and numeral notation. Public media hashes verified by the publishing script.",
+  "transcriptions": [
+    {
+      "file": "assets/audio/scenarios/ko-ja.12.0.wav",
+      "expected": "費用を抑えるために、会場を小さくしませんか。",
+      "heard": "費用を抑えるために会場を小さくしませんか?"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.12.speak.0.wav",
+      "expected": "費用を抑えることには賛成ですが、席が足りなくなるおそれがあるので、まず参加人数を確認しませんか。",
+      "heard": "費用を抑えることには賛成ですが、席が足りなくなる恐れがあるので、まず参加人数を確認しませんか。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.12.1.wav",
+      "expected": "週末の作業は、どこまでお願いできますか。",
+      "heard": "週末の作業はどこまでお願いできますか?"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.12.speak.1.wav",
+      "expected": "土曜日の午前中に限りますが、それでもよろしければ、資料の整理を引き受けます。",
+      "heard": "土曜日の午前中に限りますが、それでもよろしければ資料の整理を引き受けます。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.12.2.wav",
+      "expected": "この案で進めるか、今日決めましょう。",
+      "heard": "この案で進めるか今日決めましょう。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.12.speak.2.wav",
+      "expected": "今日結論を出すのはいったん見送って、一週間試してみた上で、改めて判断してはどうでしょうか。",
+      "heard": "今日結論を出すのは一旦見送って、1週間試してみた上で、改めて判断してはどうでしょうか。"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.12.0.wav",
+      "expected": "비용을 줄이려면 행사장을 작은 곳으로 바꾸는 게 어떨까요?",
+      "heard": " 비용을 줄이려면 행사장을 작은 곳으로 바꾸는 게 어떨까요?"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.12.speak.0.wav",
+      "expected": "비용을 줄이는 데는 찬성하지만, 자리가 부족해질 우려가 있으니 먼저 참가 인원을 확인하는 게 어떨까요?",
+      "heard": " 비용을 줄이는 데는 찬성하지만 자리가 부족해질 우려가 있으니 먼저 참가 인원을 확인하는 게 어떨까요?"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.12.1.wav",
+      "expected": "주말 작업은 어디까지 부탁드릴 수 있을까요?",
+      "heard": " 주말 작업은 어디까지 부탁드릴 수 있을까요?"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.12.speak.1.wav",
+      "expected": "토요일 오전에 한해서만 가능하지만, 그래도 괜찮으시다면 자료 정리는 제가 맡겠습니다.",
+      "heard": " 토요일 오전에 한해서만 가능하지만 그래도 괜찮으시다면 자료 정리는 제가 맡겠습니다."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.12.2.wav",
+      "expected": "이 안으로 진행할지 오늘 결정해요.",
+      "heard": " 이 안으로 진행할지 오늘 결정해요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.12.speak.2.wav",
+      "expected": "오늘 결론을 내리는 건 일단 보류하고, 일주일 동안 시험해 본 뒤에 다시 판단하면 어떨까요?",
+      "heard": " 오늘 결론을 내리는 건 일단 보류하고 일주일 동안 시험해 본 뒤에 다시 판단하면 어떨까요?"
+    }
+  ],
+  "catalogVersion": "d47fe3044fc65b64"
+}

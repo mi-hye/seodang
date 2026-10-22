@@ -1,0 +1,72 @@
+{
+  "lesson": "scenario:13",
+  "visibleLevel": "2-8",
+  "date": "2026-10-22",
+  "voices": {
+    "ja": "VOICEVOX Nemo 男声1",
+    "ko": "Supertonic 3 M1"
+  },
+  "verification": "All 12 generated clips transcribed with mlx-whisper large-v3-turbo. Words match; differences only in punctuation and whitespace. No independent human listening review. Storage upload verifies public media SHA-256.",
+  "transcriptions": [
+    {
+      "file": "assets/audio/scenarios/ko-ja.13.0.wav",
+      "expected": "すみません、ノートはありますか。\nはい、こちらです。",
+      "heard": "すみませんノートはありますかはいこちらです"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.13.speak.0.wav",
+      "expected": "ノートはありますか。",
+      "heard": "ノートはありますか?"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.13.1.wav",
+      "expected": "赤いノートはこちらです。\n青いノートもありますか。",
+      "heard": "赤いノートはこちらです。青いノートもありますか。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.13.speak.1.wav",
+      "expected": "青いノートもありますか。",
+      "heard": "青いノートもありますか?"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.13.2.wav",
+      "expected": "こちらのノートはいかがですか。\nじゃあ、これをください。",
+      "heard": "こちらのノートはいかがですか。じゃあ、これをください。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.13.speak.2.wav",
+      "expected": "じゃあ、これをください。",
+      "heard": "じゃあこれをください"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.13.0.wav",
+      "expected": "저기요, 공책 있어요?\n네, 여기 있어요.",
+      "heard": " 저기요 공책 있어요? 네 여기 있어요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.13.speak.0.wav",
+      "expected": "공책 있어요?",
+      "heard": " 공책 있어요?"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.13.1.wav",
+      "expected": "빨간 공책은 여기 있어요.\n파란 공책도 있어요?",
+      "heard": " 빨간 공책은 여기 있어요. 파란 공책도 있어요?"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.13.speak.1.wav",
+      "expected": "파란 공책도 있어요?",
+      "heard": " 파란 공책도 있어요?"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.13.2.wav",
+      "expected": "이 공책은 어때요?\n그럼 이걸로 주세요.",
+      "heard": " 이 공책은 어때요? 그럼 이걸로 주세요."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.13.speak.2.wav",
+      "expected": "그럼 이걸로 주세요.",
+      "heard": " 그럼 이걸로 주세요."
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "lesson": "chiikawa-offer",
+    "visibleLevel": "2-12",
+    "date": "2026-10-22",
+    "source": {
+      "id": "cE8wVmwY7VY",
+      "title": "【公式】『ちいかわ』第5話「チャリメラ／チャルメラ」",
+      "channel": "めざましテレビチャンネル",
+      "channel_id": "UCrrsHarrLoiLTqu1LHxDJpw",
+      "channel_url": "https://www.youtube.com/channel/UCrrsHarrLoiLTqu1LHxDJpw",
+      "duration": 90,
+      "availability": "public",
+      "playable_in_embed": true
+    },
+    "startSeconds": 5,
+    "endSeconds": 8,
+    "quote": "チャリメラ食べる？",
+    "cropTranscription": "ん?チャリメラ食べる?",
+    "verification": "Original audio crop transcribed with mlx-whisper large-v3-turbo, target wording agrees. Japanese crop includes a preceding short reaction. No YouTube captions used. ASR verification, not independent human listening. Official metadata public and embed permitted. Original media embedded only, not bundled or rehosted."
+  },
+  {
+    "lesson": "hospital-thanks",
+    "visibleLevel": "2-12",
+    "date": "2026-10-22",
+    "source": {
+      "id": "sczKFlBP1Y4",
+      "title": "[종합 예고] '괜찮아요' 당신에게 건네는 작은 위로의 한마디! | 슬기로운 의사생활 Hospital Playlist EP.0",
+      "channel": "tvN DRAMA",
+      "channel_id": "UC9w-h_ciMmX64TcLRcb1xPg",
+      "channel_url": "https://www.youtube.com/channel/UC9w-h_ciMmX64TcLRcb1xPg",
+      "duration": 30,
+      "availability": "public",
+      "playable_in_embed": true
+    },
+    "startSeconds": 17,
+    "endSeconds": 19,
+    "quote": "기회 주셔서 감사합니다.",
+    "cropTranscription": " 기회 주셔서 감사합니다.",
+    "verification": "Original audio crop transcribed with mlx-whisper large-v3-turbo, target wording agrees. Japanese crop includes a preceding short reaction. No YouTube captions used. ASR verification, not independent human listening. Official metadata public and embed permitted. Original media embedded only, not bundled or rehosted."
+  }
+]

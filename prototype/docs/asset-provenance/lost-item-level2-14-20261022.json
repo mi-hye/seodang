@@ -1,0 +1,175 @@
+{
+  "lesson": "2-14",
+  "scenario": "17",
+  "directions": [
+    "ko-ja",
+    "ja-ko"
+  ],
+  "origin": "Original lesson text; generated photo-style image, not a real cafe photograph.",
+  "image": {
+    "path": "assets/lesson-scenes/cafe-lost-umbrella-v1.jpg",
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Asset type: wide scene photo for a beginner language lesson in a warm minimalist mobile learning app. One small CLOSED BLACK folding umbrella with wrist loop accidentally left on an empty wooden cafe chair beside a simple cafe table. No bags. Warm daylight, natural realistic textures, calm neighborhood cafe, eye level medium shot, umbrella clearly visible in central crop, 2:1 landscape composition. No people, no text, no logos, no watermark. A believable ordinary forgotten umbrella scene, not a product advertisement.",
+    "source": "/Users/kangmihye/.codex/generated_images/01a153b1-12b6-7700-a6ae-e960523fb276/exec-e8012c91-fdfb-41da-af6e-108506f297ed.png",
+    "sha256": "022627a57945c1a1115d6a3936844edaf2e118bf630b0a8731858fd5ba300b07"
+  },
+  "audio": {
+    "voices": [
+      "VOICEVOX Nemo 男声1",
+      "Supertonic 3 M1"
+    ],
+    "validation": "30 entries checked by ASR. Punctuation, spacing and Japanese orthography differences only. Not independent human listening.",
+    "transcriptions": [
+      {
+        "file": "assets/audio/scenarios/ko-ja.17.0.wav",
+        "expected": "何を忘れましたか。",
+        "heard": "何を忘れましたか?"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.17.1.wav",
+        "expected": "何色の傘ですか。",
+        "heard": "何色の傘ですか"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.17.2.wav",
+        "expected": "持っていきましょうか。",
+        "heard": "持っていきましょうか"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.17.answer.0.wav",
+        "expected": "傘を忘れました。",
+        "heard": "傘を忘れました"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.17.reply.0.wav",
+        "expected": "傘ですね。探してみます。",
+        "heard": "傘ですね探してみます"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.17.answer.1.wav",
+        "expected": "黒い傘です。",
+        "heard": "黒い傘です。"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.17.reply.1.wav",
+        "expected": "黒い傘がありました。",
+        "heard": "黒い傘がありました。"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.17.answer.2.wav",
+        "expected": "お願いします。ありがとうございます。",
+        "heard": "お願いします。ありがとうございます。"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.17.reply.2.wav",
+        "expected": "わかりました。あとで持っていきます。",
+        "heard": "わかりました。後で持っていきます。"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.17.choice.0.1.wav",
+        "expected": "本を忘れました。",
+        "heard": "本を忘れました"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.17.choice.0.2.wav",
+        "expected": "財布を忘れました。",
+        "heard": "財布を忘れました。"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.17.choice.1.1.wav",
+        "expected": "赤い傘です。",
+        "heard": "赤い傘です"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.17.choice.1.2.wav",
+        "expected": "白い傘です。",
+        "heard": "白い傘です"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.17.choice.2.1.wav",
+        "expected": "それは私の傘ではありません。",
+        "heard": "それは私の傘ではありません。"
+      },
+      {
+        "file": "assets/audio/scenarios/ko-ja.17.choice.2.2.wav",
+        "expected": "今日は要りません。",
+        "heard": "今日はいりません。"
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.17.0.wav",
+        "expected": "뭘 두고 왔어요?",
+        "heard": " 뭘 두고 왔어요?"
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.17.1.wav",
+        "expected": "무슨 색 우산이에요?",
+        "heard": " 무슨 색 우산이에요?"
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.17.2.wav",
+        "expected": "우산을 가져다줄까요?",
+        "heard": " 우산을 가져다 줄까요?"
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.17.answer.0.wav",
+        "expected": "우산을 두고 왔어요.",
+        "heard": " 우산을 두고 왔어요."
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.17.reply.0.wav",
+        "expected": "우산이요? 찾아볼게요.",
+        "heard": " 우산이요? 찾아볼게요."
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.17.answer.1.wav",
+        "expected": "검은 우산이에요.",
+        "heard": " 검은 우산이에요."
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.17.reply.1.wav",
+        "expected": "검은 우산을 찾았어요.",
+        "heard": " 검은 우산을 찾았어요."
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.17.answer.2.wav",
+        "expected": "부탁해요. 고마워요.",
+        "heard": " 부탁해요. 고마워요."
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.17.reply.2.wav",
+        "expected": "알겠어요. 이따 가져다줄게요.",
+        "heard": " 알겠어요. 이따 가져다 줄게요."
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.17.choice.0.1.wav",
+        "expected": "책을 두고 왔어요.",
+        "heard": " 책을 두고 왔어요."
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.17.choice.0.2.wav",
+        "expected": "지갑을 두고 왔어요.",
+        "heard": " 지갑을 두고 왔어요."
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.17.choice.1.1.wav",
+        "expected": "빨간 우산이에요.",
+        "heard": " 빨간 우산이에요."
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.17.choice.1.2.wav",
+        "expected": "흰 우산이에요.",
+        "heard": " 흰 우산이에요."
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.17.choice.2.1.wav",
+        "expected": "제 우산이 아니에요.",
+        "heard": " 제 우산이 아니에요."
+      },
+      {
+        "file": "assets/audio/scenarios/ja-ko.17.choice.2.2.wav",
+        "expected": "오늘은 필요 없어요.",
+        "heard": " 오늘은 필요 없어요."
+      }
+    ]
+  }
+}

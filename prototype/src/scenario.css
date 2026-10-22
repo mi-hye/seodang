@@ -7,7 +7,7 @@
 .scenario-page h1{font-size:calc(23px * var(--text-scale));line-height:1.5;margin:0}
 .scenario-page p{font-size:calc(17px * var(--text-scale));line-height:1.75;margin:0}
 .scenario-text{flex:1;min-width:0}.scenario-text p{white-space:pre-line}.scenario-page .audio-text-row{display:flex;flex-flow:row nowrap;align-items:center;gap:8px}.scenario-page .audio-text-row .icon-button{flex:none;width:44px;min-height:44px}
-.scenario-image{height:140px;width:100%;object-fit:cover;border-radius:16px}.scenario-meaning,.scenario-count{color:var(--muted)}.scenario-count{text-align:right}.scenario-words h2{font-size:16px;margin:0 0 8px}.scenario-words dl{display:flex;flex-flow:row wrap;gap:10px 20px;margin:0}.scenario-words dl div{display:flex;gap:8px}.scenario-words dd{margin:0;color:var(--muted)}
+.scenario-image{height:140px;width:100%;object-fit:cover;border-radius:16px}.scenario-meaning,.scenario-words h2{font-size:16px;margin:0 0 8px}.scenario-words dl{display:flex;flex-flow:row wrap;gap:10px 20px;margin:0}.scenario-words dl div{display:flex;gap:8px}.scenario-words dd{margin:0;color:var(--muted)}
 .scenario-choices{display:grid;gap:10px}.scenario-choices button{text-align:left;white-space:normal;line-height:1.6;min-height:48px;margin:0}.scenario-choices .selected{outline:2px solid var(--text);outline-offset:-2px}
 .scenario-progress{height:4px;background:var(--line)}.scenario-progress span{display:block;height:100%;background:var(--text)}.scenario-page .button-pair{margin-top:8px}
 
@@ -20,7 +20,6 @@
 
 .scenario-page.scenario-illustrated{justify-content:flex-start;gap:12px;padding-top:12px}
 .scenario-illustrated .scenario-image{flex:none;height:clamp(88px,16svh,140px)}
-.scenario-illustrated .scenario-count{line-height:1;margin:0}
 .scenario-illustrated .token-builder-answer{margin:12px 0;min-height:96px}
 .scenario-illustrated .token-builder-choices{margin:12px 0}
 
@@ -67,3 +66,22 @@
 .repair-page .audio-text-row p{margin:0}
 .repair-page .repair-task{margin:0}
 .repair-page[lang=ja]{word-break:normal;line-break:strict}
+
+/* Short message lessons use existing bubbles and color tokens. */
+.roleplay-intro{justify-content:flex-start}
+.chat-page .roleplay-bubble{margin-right:28px;border-radius:16px 16px 16px 4px}
+.chat-page .roleplay-self{margin-right:0;margin-left:28px;border-radius:16px 16px 4px 16px}
+.chat-history>summary,.chat-choice-meanings>summary{min-height:44px;display:flex;align-items:center;cursor:pointer;color:var(--muted)}
+.chat-history[open]>.roleplay-conversation{margin-top:10px}
+.chat-choice-meanings ol{margin:8px 0;padding-left:24px;line-height:1.7}
+.chat-page[lang=ja]{word-break:normal;line-break:strict}
+.chat-page :lang(ko){word-break:keep-all;overflow-wrap:break-word}
+
+.chat-page .roleplay-scene>p{font-size:calc(18px * var(--text-scale));font-weight:600;line-height:1.6}
+
+.order-repair-page .repair-context{font-size:calc(18px * var(--text-scale));font-weight:600;line-height:1.6}
+.order-repair-page :lang(ko){word-break:keep-all;overflow-wrap:break-word}
+
+.weather-page>h2{font-size:calc(18px * var(--text-scale));font-weight:600;line-height:1.6}
+.weather-page .scenario-image{max-height:120px}
+.weather-page :lang(ko){word-break:keep-all;overflow-wrap:break-word}

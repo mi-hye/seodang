@@ -14,12 +14,22 @@ export async function preparePhoto(file){
   return {id:crypto.randomUUID(),blob,preview:URL.createObjectURL(blob)};
  }finally{URL.revokeObjectURL(source);image.src='';}
 }
-// Fetch private images only near the viewport; never persist authenticated image URLs.
+// Keep decoded nodes across redraws; transfer their object URLs to the next mount.
+const photoScope=api=>`${api.session?.user?.id||''}:${api.photoCacheVersion||0}`;
+export function retainPostPhotos(host,api){
+ const images=new Map([...host.querySelectorAll('[data-post-photo].ready')].filter(image=>image.dataset.photoScope===photoScope(api)).map(image=>[image.dataset.postPhoto,image]));
+ return ()=>host.querySelectorAll('[data-post-photo]').forEach(next=>{const old=images.get(next.dataset.postPhoto);if(old){next.replaceWith(old);images.delete(next.dataset.postPhoto);}});
+}
 export function mountPostPhotos(host,api,failureLabel){
- let live=true;const urls=new Set();
+ let live=true;const urls=new Map();
  const observer=new IntersectionObserver(entries=>{for(const entry of entries){if(!entry.isIntersecting)continue;const image=entry.target;observer.unobserve(image);
-  void api.downloadPhoto(image.dataset.postPhoto).then(blob=>{if(!live||!image.isConnected)return;const url=URL.createObjectURL(blob);urls.add(url);image.src=url;image.classList.add('ready');}).catch(()=>{if(live&&image.isConnected){image.alt=failureLabel;image.classList.add('failed');}});
+  void api.downloadPhoto(image.dataset.postPhoto).then(async blob=>{
+   if(!live||!image.isConnected)return;
+   const url=URL.createObjectURL(blob);urls.set(url,image);image.loading='eager';image.src=url;
+   try{await image.decode();}catch(error){if(!image.complete||!image.naturalWidth)throw error;}
+   if(live&&image.isConnected){image.classList.add('ready');image.closest('.community-photo-frame')?.setAttribute('aria-busy','false');}
+  }).catch(()=>{if(live&&image.isConnected){api.discardPhoto?.(image.dataset.postPhoto);const url=image.getAttribute('src');if(url&&urls.has(url)){URL.revokeObjectURL(url);urls.delete(url);}image.removeAttribute('src');image.alt=failureLabel;image.classList.add('failed');image.closest('.community-photo-frame')?.setAttribute('aria-busy','false');}});
  }},{rootMargin:'200px'});
- host.querySelectorAll('[data-post-photo]').forEach(image=>observer.observe(image));
- return ()=>{live=false;observer.disconnect();urls.forEach(url=>URL.revokeObjectURL(url));};
+ host.querySelectorAll('[data-post-photo]').forEach(image=>{image.dataset.photoScope=photoScope(api);if(image.classList.contains('ready')&&image.src.startsWith('blob:')){urls.set(image.src,image);image.closest('.community-photo-frame')?.setAttribute('aria-busy','false');}else observer.observe(image);});
+ return (transfer=false)=>{live=false;observer.disconnect();for(const [url,image] of urls)if(!transfer||!image.isConnected)URL.revokeObjectURL(url);};
 }

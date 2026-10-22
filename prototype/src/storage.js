@@ -1,9 +1,10 @@
 import {validStudy} from './study-state.js';
 import {validVideoLessons} from './video-lesson-state.js';
+import {validSongs} from './song-state.js';
 import {validExperts} from './expert-state.js';
 import {validScenarios} from './scenario-state.js';
 import {canonicalLevel,retiredPractice} from './curriculum.js';
-import {normalizeCasePractice,practiceHasWriting,practiceRoundCount,validPractices,normalizePractice} from './practice-state.js';
+import {normalizeCasePractice,practiceHasWriting,practiceRoundCount,validPractices,normalizePractice,isRetiredVideoReview} from './practice-state.js';
 import {validKorean,normalizeKorean,koreanStageZero,koreanExplanation} from './korean-state.js';
 import {validBasics,normalizeBasics} from './basics-state.js';
 import {validReadings} from './reading-state.js';
@@ -14,6 +15,8 @@ import { validHistory } from "./learning-history.js";
 import { validSentence,validSentenceCourses } from "./sentence-state.js";
 import { validKana, normalizeKana } from "./kana-state.js";
 import { freshState } from "./engine.js";
+import {validGrowth} from './growth-state.js';
+import {validMissions} from './mission-state.js';
 export const STORAGE_KEY = "seodang.web-prototype.v1";
 const steps = [
   "intro",
@@ -25,7 +28,7 @@ const steps = [
 ];
 export function valid(s) {
   return (
-    s?.schemaVersion === 1 && validStudy(s.studyTools) && validVideoLessons(s) && validScenarios(s) && validExperts(s) && validPractices(s.practices) &&
+    s?.schemaVersion === 1 && validStudy(s.studyTools) && validGrowth(s.growth) && validMissions(s.missions) && validVideoLessons(s) && validSongs(s) && validScenarios(s) && validExperts(s) && validPractices(s.practices) &&
     (s.koreanGuideSeenVersion===undefined||s.koreanGuideSeenVersion===1) &&
     validKorean(s.korean) &&
     (s.courseLevels===undefined||(s.courseLevels&&typeof s.courseLevels==='object'&&!Array.isArray(s.courseLevels)&&Object.entries(s.courseLevels).every(([key,value])=>['ko-ja','ja-ko'].includes(key)&&Number.isInteger(value)&&value>=0&&value<=7))) &&
@@ -97,6 +100,9 @@ export function load(storage) {
         error:
           "기록을 열 수 없어 임시로 시작했어요. 기존 기록은 보관돼요. 내 기록에서 초기화할 수 있어요.",
       };
+    // Keep the clip progress and completed records. Only the superseded generic
+    // review gate is removed, after validating the complete saved record.
+    if(state.practices)for(const key of Object.keys(state.practices))if(isRetiredVideoReview(key))delete state.practices[key];
     if(state.kana&&state.kana.version!==9&&state.practices){
       const old=Object.entries(state.practices).filter(([key])=>key.startsWith('ko-ja:kana:'));
       if(old.length){state.previousKanaPractices=Object.fromEntries(old);state.practices=Object.fromEntries(Object.entries(state.practices).filter(([key])=>!key.startsWith('ko-ja:kana:')));}

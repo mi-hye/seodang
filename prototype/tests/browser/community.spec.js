@@ -50,7 +50,7 @@ test('request acceptance gates composer and message delivery',async({page})=>{
  await expect(page.locator('[data-community-form=message]')).toHaveCount(0);await page.locator('[data-community=accept]').click();await expect(page.locator('[data-community-form=message]')).toBeVisible();await page.locator('[name=body]').fill('안녕하세요!');await page.locator('[data-community-form=message] button[type=submit]').click();await expect(page.locator('.community-message')).toContainText('안녕하세요!');expect(writes.find(x=>x.table==='rooms').body.status).toBe('accepted');
 });
 test('network error retains draft and navigation still works',async({page})=>{
- await setup(page);await page.locator('[data-action=community]').click();await page.locator('[data-community=compose]').click();await page.locator('[name=body]').fill('失敗しても残る下書き');await page.route('**/rest/v1/community_posts',r=>r.abort());await page.locator('[data-community-form=post] button[type=submit]').click();await expect(page.locator('[role=alert]')).toBeVisible();await expect(page.locator('[name=body]')).toHaveValue('失敗しても残る下書き');await page.locator('[data-action=home]').click();await expect(page.locator('.view-home')).toBeVisible();
+ await setup(page);await page.locator('[data-action=community]').click();await page.locator('[data-community=compose]').click();await page.locator('[name=body]').fill('失敗しても残る下書き');await page.route('**/rest/v1/community_posts',r=>r.abort());await page.locator('[data-community-form=post] button[type=submit]').click();await expect(page.getByRole('alert')).toBeVisible();await expect(page.locator('[name=body]')).toHaveValue('失敗しても残る下書き');await page.locator('[data-action=home]').click();await expect(page.locator('.view-home')).toBeVisible();
 });
 test('first visit automatically authenticates and asks only for a profile',async({page})=>{
  await setup(page,{signed:false,posts:[]});const before=await page.evaluate(()=>localStorage.getItem('seodang.web-prototype.v1'));await page.locator('[data-action=community]').click();await expect(page.locator('[data-community-form=profile]')).toBeVisible();await expect(page.locator('input[type=email],input[type=password]')).toHaveCount(0);await expect(page.locator('[data-community=compose]')).toHaveCount(0);expect(await page.evaluate(()=>Boolean(localStorage.getItem('seodang.community.session.v1')))).toBe(true);expect(await page.evaluate(()=>localStorage.getItem('seodang.web-prototype.v1'))).toBe(before);await page.locator('[name=nickname]').fill('첫 친구');await page.locator('[name=rules]').check();await page.locator('[data-community-form=profile] button[type=submit]').click();await expect(page.locator('[data-community=compose]')).toBeVisible();await expect(page.locator('.community-empty')).toBeVisible();await expect(page.locator('.community-segments')).toHaveCount(0);
@@ -116,7 +116,7 @@ test('reply comparison omits unchanged sentences',async({page})=>{
 test('correction grows with text and can be submitted without explanation',async({page})=>{
  const writes=await setup(page,{width:320,posts:[{...post,body:'커피를 먹었어요.'}]});await page.locator('[data-action=community]').click();await page.locator('[data-community=post]').click();
  await page.locator('[data-community=reply-correction]').click();await expect(page.locator('[name=body]')).not.toHaveAttribute('required');
- await page.locator('[data-community-form=reply] button[type=submit]').click();await expect(page.locator('[role=alert]')).toContainText('문장을 선택하고 고친 표현');expect(writes.filter(x=>x.table==='replies')).toHaveLength(0);
+ await page.locator('[data-community-form=reply] button[type=submit]').click();await expect(page.getByRole('alert')).toContainText('문장을 선택하고 고친 표현');expect(writes.filter(x=>x.table==='replies')).toHaveLength(0);
  await page.locator('[data-community=select-correction]').click();const field=page.locator('[name=correction]');const short=(await field.boundingBox()).height;
  await field.fill('오늘은 친구와 함께 카페에 가서 따뜻한 커피를 마시면서 이야기를 나눴어요. '.repeat(3));expect((await field.boundingBox()).height).toBeGreaterThan(short);
  await field.fill('커피를 마셨어요.');expect((await field.boundingBox()).height).toBeLessThanOrEqual(short+1);
@@ -147,7 +147,7 @@ test('attach up to two photos, remove previews and publish a photo-only post',as
  await page.route('**/rest/v1/community_posts**',r=>{if(r.request().method()==='POST')saved=[{...r.request().postDataJSON(),profile,created_at:new Date().toISOString()}];const wanted=new URL(r.request().url()).searchParams.get('id');return r.fulfill({json:wanted?saved.filter(p=>wanted==='eq.'+p.id):saved});});
  await page.locator('[data-action=community]').click();await page.locator('[data-community=compose]').click();
  await page.locator('[data-photo-input]').setInputFiles([file,file]);await expect(page.locator('.community-photo-previews img')).toHaveCount(2);await expect(page.locator('[data-community=add-photo]')).toBeDisabled();
- await page.locator('[data-photo-input]').setInputFiles(file);await expect(page.locator('[role=alert]')).toContainText('2장');await expect(page.locator('.community-photo-previews img')).toHaveCount(2);
+ await page.locator('[data-photo-input]').setInputFiles(file);await expect(page.getByRole('alert')).toContainText('2장');await expect(page.locator('.community-photo-previews img')).toHaveCount(2);
  await page.screenshot({path:`output/community-photo-compose-${test.info().project.name}.png`,fullPage:true});
  await page.locator('[data-community=remove-photo]').first().click();await expect(page.locator('.community-photo-previews img')).toHaveCount(1);
  await page.locator('[data-community-form=post] button[type=submit]').click();await expect(page.locator('.community-post-photos img.ready')).toHaveCount(1);expect(saved[0].image_paths).toHaveLength(1);expect(saved[0].body).toBe('');expect(saved[0].wants_correction).toBe(false);expect(uploads).toBe(1);
@@ -157,7 +157,7 @@ test('failed photo upload preserves text and previews for retry',async({page})=>
  await page.route('**/storage/v1/**',r=>r.fulfill({status:503,json:{error:'offline'}}));
  await page.locator('[data-action=community]').click();await page.locator('[data-community=compose]').click();await page.locator('[name=body]').fill('사진과 함께 남겨요.');
  await page.locator('[data-photo-input]').setInputFiles({name:'photo.png',mimeType:'image/png',buffer:png});await expect(page.locator('.community-photo-previews img')).toHaveCount(1);
- await page.locator('[data-community-form=post] button[type=submit]').click();await expect(page.locator('[role=alert]')).toContainText('업로드');await expect(page.locator('[name=body]')).toHaveValue('사진과 함께 남겨요.');await expect(page.locator('.community-photo-previews img')).toHaveCount(1);
+ await page.locator('[data-community-form=post] button[type=submit]').click();await expect(page.getByRole('alert')).toContainText('업로드');await expect(page.locator('[name=body]')).toHaveValue('사진과 함께 남겨요.');await expect(page.locator('.community-photo-previews img')).toHaveCount(1);
 });
 
 test('whole post opens by pointer or keyboard and returns to the same feed position',async({page})=>{
@@ -174,7 +174,7 @@ test('draft text language correction setting and photos survive navigation and r
  const writes=await setup(page);await page.locator('[data-action=community]').click();await page.locator('[data-community=compose]').click();
  await page.locator('[name=body]').fill('앱을 닫아도 남는 글 <script>');await page.locator('[name=language]').selectOption('ko');await page.locator('[name=wants_correction]').uncheck();
  await page.locator('[data-photo-input]').setInputFiles({name:'photo.png',mimeType:'image/png',buffer:readFileSync('assets/brand/seodang-language-favicon-v1.png')});
- await expect(page.locator('.community-photo-previews img')).toHaveCount(1);await expect(page.locator('[data-draft-status]')).toHaveText('이 기기에 초안을 저장했어요.');await page.locator('[data-action=home]').click();await page.reload();await page.locator('[data-action=community]').click();await page.locator('[data-community=compose]').click();
+ await expect(page.locator('.community-photo-previews img')).toHaveCount(1);await expect(page.locator('[data-draft-status]')).toHaveText('초안 저장됨');await page.locator('[data-action=home]').click();await page.reload();await page.locator('[data-action=community]').click();await page.locator('[data-community=compose]').click();
  await expect(page.locator('[name=body]')).toHaveValue('앱을 닫아도 남는 글 <script>');await expect(page.locator('[name=language]')).toHaveValue('ko');await expect(page.locator('[name=wants_correction]')).not.toBeChecked();await expect(page.locator('.community-photo-previews img')).toHaveCount(1);expect(writes.filter(x=>x.table==='posts')).toHaveLength(0);
  await page.locator('[data-community=remove-photo]').click();await page.locator('[data-community-form=post] button[type=submit]').click();await expect.poll(()=>writes.filter(x=>x.table==='posts').length).toBe(1);
  await page.reload();await page.locator('[data-action=community]').click();await page.locator('[data-community=compose]').click();await expect(page.locator('[name=body]')).toHaveValue('');await expect(page.locator('.community-photo-previews img')).toHaveCount(0);
@@ -194,11 +194,58 @@ test('a late publish cannot erase a newer draft',async({page})=>{
  await setup(page);const result=await page.evaluate(async()=>{const {saveDraft,readDraft,clearDraft}=await import('/src/community-draft.js');const key='late:ko-ja',sent={id:'old',body:'보낸 글',language:'ja',wants_correction:true,photos:[]};await saveDraft(key,sent);await saveDraft(key,{...sent,id:'new',body:'새 초안'});await clearDraft(key,sent);const next=await readDraft(key);await clearDraft(key,next);return {next:next.body,cleared:await readDraft(key)};});expect(result).toEqual({next:'새 초안',cleared:null});
 });
 test('storage failure is visible without clearing the composer',async({page})=>{
- await setup(page);await page.evaluate(()=>{Object.defineProperty(window,'indexedDB',{value:{open(){throw Error('blocked');}},configurable:true});});await page.locator('[data-action=community]').click();await page.locator('[data-community=compose]').click();await page.locator('[name=body]').fill('지우면 안 되는 글');await expect(page.locator('[data-draft-status]')).toContainText('저장할 수 없어요');await expect(page.locator('[name=body]')).toHaveValue('지우면 안 되는 글');
+ await setup(page);await page.evaluate(()=>{Object.defineProperty(window,'indexedDB',{value:{open(){throw Error('blocked');}},configurable:true});});await page.locator('[data-action=community]').click();await page.locator('[data-community=compose]').click();await page.locator('[name=body]').fill('지우면 안 되는 글');await expect(page.locator('[data-draft-error]')).toContainText('저장할 수 없어요');await expect(page.locator('[name=body]')).toHaveValue('지우면 안 되는 글');
 });
 
 test('correction sheet traps focus, closes with Escape, and retains input',async({page})=>{
  await setup(page,{width:320});await page.locator('[data-action=community]').click();await page.locator('[data-community=post]').click();
  const dock=page.locator('.community-comment-dock');await expect(dock).toBeVisible();const box=await dock.boundingBox(),tabs=await page.locator('.tabs').boundingBox();expect(box.y+box.height).toBeLessThanOrEqual(tabs.y+1);
  await page.locator('[data-community=reply-correction]').click();await expect(page.getByRole('dialog')).toBeVisible();await page.locator('[data-community=select-correction]').first().click();await page.locator('[name=correction]').fill('커피를 마셨어요.');await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);await expect(dock).toBeVisible();await expect(page.locator('[data-community=reply-correction]')).toBeFocused();await page.locator('[data-community=reply-correction]').click();await expect(page.locator('[name=correction]')).toHaveValue('커피를 마셨어요.');
+});
+test('post photos reuse decoded nodes and downloads across detail and tab navigation',async({page})=>{
+ const path=`${other}/${postID}-${id}.jpg`;await setup(page,{posts:[{...post,image_paths:[path]}]});let downloads=0;
+ await page.route('**/storage/v1/object/authenticated/**',r=>{downloads++;return r.fulfill({contentType:'image/png',body:readFileSync('assets/brand/seodang-language-favicon-v1.png')});});
+ await page.locator('[data-action=community]').click();await expect(page.locator('[data-post-photo].ready')).toHaveCount(1);
+ await page.evaluate(()=>window.firstPhoto=document.querySelector('[data-post-photo]'));
+ await page.locator('[data-community=post]').click();await expect(page.locator('[data-community-form=reply]')).toBeVisible();
+ expect(await page.evaluate(()=>window.firstPhoto===document.querySelector('[data-post-photo]'))).toBe(true);
+ expect(await page.locator('[data-post-photo]').evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
+ await page.locator('[data-community-header-back]').click();await expect(page.locator('[data-post]')).toBeVisible();expect(downloads).toBe(1);
+ await page.locator('[data-action=home]').click();await page.locator('[data-action=community]').click();await expect(page.locator('[data-post-photo].ready')).toHaveCount(1);expect(downloads).toBe(1);
+});
+for(const corrupt of [false,true])test(`failed photo ${corrupt?'decode':'request'} can recover on the next redraw`,async({page})=>{
+ const path=`${other}/${postID}-${id}.jpg`;await setup(page,{posts:[{...post,image_paths:[path]}]});let downloads=0;
+ await page.route('**/storage/v1/object/authenticated/**',r=>{downloads++;return downloads===1?r.fulfill({status:corrupt?200:503,contentType:'image/png',body:'invalid image'}):r.fulfill({contentType:'image/png',body:readFileSync('assets/brand/seodang-language-favicon-v1.png')});});
+ await page.locator('[data-action=community]').click();await expect(page.locator('[data-post-photo].failed')).toHaveCount(1);
+ await page.locator('[data-community=post]').click();await expect(page.locator('[data-post-photo].ready')).toHaveCount(1);expect(downloads).toBe(2);
+});
+test('a decoded photo node is not reused after account or cache scope changes',async({page})=>{
+ await setup(page);const result=await page.evaluate(async()=>{
+  const {retainPostPhotos}=await import('/src/community-photos.js');const host=document.createElement('div');document.body.append(host);host.innerHTML='<img data-post-photo="same" class="ready" data-photo-scope="old:0">';const old=host.firstChild;
+  const restore=retainPostPhotos(host,{session:{user:{id:'new'}},photoCacheVersion:0});host.innerHTML='<img data-post-photo="same">';restore();const reused=host.firstChild===old;host.remove();return reused;
+ });expect(result).toBe(false);
+});
+for(const direction of ['ko-ja','ja-ko'])for(const width of [320,390])test(`composer saving keeps its footer still ${direction} ${width}`,async({page})=>{
+ await setup(page,{direction,width});await page.locator('[data-action=community]').click();await page.locator('[data-community=compose]').click();
+ const field=page.locator('.community-composer-body'),footer=page.locator('.community-composer-footer');
+ await field.focus();const before=await footer.boundingBox();
+ await page.evaluate(()=>{window.draftLabels=[];new MutationObserver(()=>window.draftLabels.push(document.querySelector('[data-draft-status]').textContent)).observe(document.querySelector('[data-draft-status]'),{childList:true,subtree:true});});
+ await field.pressSequentially(direction==='ko-ja'?'今日はいい天気です。':'오늘은 날씨가 좋아요.',{delay:40});
+ await expect(page.locator('[data-draft-status]')).toHaveText(direction==='ko-ja'?'초안 저장됨':'下書き保存済み');
+ const after=await footer.boundingBox();expect(Math.abs(before.y-after.y)).toBeLessThan(1);await expect(field).toBeFocused();
+ expect(await page.evaluate(()=>window.draftLabels.some(x=>x.includes('중')||x.includes('保存中')))).toBe(false);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.screenshot({path:`output/composer-stable-${direction}-${width}-${test.info().project.name}.png`,fullPage:true});
+});
+test('slow photos show a blurred placeholder without moving the layout',async({page})=>{
+ const path=`${other}/${postID}-${id}.jpg`;await setup(page,{width:320,posts:[{...post,image_paths:[path]}]});let release;
+ const gate=new Promise(resolve=>release=resolve);
+ await page.route('**/storage/v1/object/authenticated/**',async r=>{await gate;await r.fulfill({contentType:'image/png',body:readFileSync('assets/brand/seodang-language-favicon-v1.png')});});
+ await page.locator('[data-action=community]').click();const frame=page.locator('.community-photo-frame');await expect(frame).toHaveAttribute('aria-busy','true');
+ const before=await frame.boundingBox();expect(await page.locator('.community-photo-placeholder').evaluate(el=>getComputedStyle(el).filter)).toContain('blur');
+ await page.screenshot({path:`output/community-photo-loading-${test.info().project.name}.png`,fullPage:true});release();
+ await expect(frame).toHaveAttribute('aria-busy','false');await expect(page.locator('[data-post-photo]')).toHaveClass(/ready/);
+ const after=await frame.boundingBox();expect(after.height).toBe(before.height);expect(after.y).toBe(before.y);
+ expect(await page.locator('[data-post-photo]').evaluate(el=>getComputedStyle(el).filter)).toBe('none');
+ await page.screenshot({path:`output/community-photo-loaded-${test.info().project.name}.png`,fullPage:true});
 });

@@ -6,8 +6,8 @@ for(const direction of ['ko-ja','ja-ko'])for(const id of [1,2,3])test(`expert ${
  await page.goto('/playable.html');await expect(page.locator('.map-choice[data-action="expert"]')).toHaveCount(4);
  const enter=()=>page.locator(`[data-action="expert"][data-id="${id}"]`).last().click();await enter();
  const next=async()=>{await page.waitForTimeout(500);await page.locator('[data-action="expert-next"]').click();};
- await next();await next();await expect(page.locator('.reading-count')).toHaveText('2 / 2');
- await page.locator('[data-action="home"]').first().click();await enter();await page.locator('[data-choice="resume"]').click();await expect(page.locator('.reading-count')).toHaveText('2 / 2');expect(errors).toEqual([]);
+ await next();await next();await expect(page.locator('.reading-count')).toHaveCount(0);
+ await page.locator('[data-action="home"]').first().click();await enter();await page.locator('[data-choice="resume"]').click();await expect(page.locator('.reading-count')).toHaveCount(0);expect(errors).toEqual([]);
 });
 test('expert final reflection uses shared completion and returns to map',async({page})=>{
  const p={discussionVersion:2,part:0,phase:'reflection',index:0,sentence:0,selected:null,retry:false,checked:false,attempts:0,started:true,completed:false,solved:[]};

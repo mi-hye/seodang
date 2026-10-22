@@ -1,7 +1,7 @@
 @import './speaking.css';
 .reading-page{max-width:480px;margin:auto;padding-bottom:32px}
 .reading-page h1{font-size:calc(24px * var(--text-scale));line-height:1.6;margin:10px 0 20px}
-.reading-count{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;margin-bottom:14px}
+
 .reading-passage{padding:20px 16px;border-radius:16px;background:var(--stage-raised)}
 .reading-passage h1{font-size:calc(20px * var(--text-scale));margin:0 0 16px}
 .reading-passage p{font-size:calc(18px * var(--text-scale));line-height:1.95;margin:16px 0 0}

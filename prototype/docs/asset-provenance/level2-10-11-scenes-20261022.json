@@ -1,0 +1,22 @@
+{
+  "created": "2026-10-22",
+  "source": "OpenAI built-in image_gen",
+  "assets": [
+    {
+      "asset": "prototype/assets/lesson-scenes/park-meeting-v1.jpg",
+      "use": "Both language directions of 2-10, intro and lesson header",
+      "kind": "AI-generated photo-style scene, not a photograph of a real location",
+      "promptSummary": "Photorealistic natural editorial photograph of two adult friends meeting at a quiet park entrance for a walk. Wide landscape, afternoon daylight, subjects in central horizontal band, no text/logos/UI.",
+      "bytes": 224368,
+      "sha256": "a6df94a06cf54dfbf8da7fd14f52b701e4b58153de704385408193659d8970de"
+    },
+    {
+      "asset": "prototype/assets/lesson-scenes/cafe-tea-order-v1.jpg",
+      "use": "Both language directions of 2-11, intro and lesson header",
+      "kind": "AI-generated photo-style scene, not a photograph of a real location",
+      "promptSummary": "Photorealistic natural editorial photograph of a cafe service counter with one unbranded takeaway cup of iced tea centered and a cafe worker softly out of focus. Wide landscape, warm natural daylight, no text/logos/receipts/additional drinks.",
+      "bytes": 117173,
+      "sha256": "d321975d7ee6f36eb0f8d5851ab8ca26e0a032d46a90b02e4dd4c266b58e2586"
+    }
+  ]
+}

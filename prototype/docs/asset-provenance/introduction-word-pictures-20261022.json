@@ -1,0 +1,7 @@
+{
+  "purpose": "2-1 Japanese/Korean four-card picture matching",
+  "method": "Original code-authored SVG illustrations; no external artwork or raster generation",
+  "assets": ["assets/word-pictures/student.svg", "assets/word-pictures/coffee.svg", "assets/word-pictures/tomorrow.svg", "assets/word-pictures/water.svg"],
+  "audio": "Existing isolated student/coffee/tomorrow plus existing water clips; no new synthesis",
+  "scope": "Three target words, four picture choices per question; 21 review tasks unchanged"
+}

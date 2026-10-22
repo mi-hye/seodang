@@ -45,5 +45,15 @@ test('photo retries use immutable paths and deduplicate an already published pos
 });
 test('photo cap is enforced before network calls',async()=>{let calls=0;const api=createCommunityAPI({config,storage:storage(session()),fetcher:async()=>{calls++;return response([]);}});await assert.rejects(api.publishPhotos({id:user},[{},{},{}]),/photo_limit/);assert.equal(calls,0);});
 test('private photo downloads use authentication and bypass stale browser caches',async()=>{
- let request;const api=createCommunityAPI({config,storage:storage(session()),fetcher:async(url,opts)=>{request={url,opts};return new Response('jpeg');}});await api.downloadPhoto(`${user}/${user}-${user}.jpg`);assert.equal(request.opts.headers.Authorization,'Bearer access');assert.equal(request.opts.cache,'no-store');assert.match(request.url,/\?v=/);await assert.rejects(api.downloadPhoto('../../other'),/invalid_photo_path/);
+ let request;const api=createCommunityAPI({config,storage:storage(session()),fetcher:async(url,opts)=>{request={url,opts};return new Response('jpeg');}});await api.downloadPhoto(`${user}/${user}-${user}.jpg`);assert.equal(request.opts.headers.Authorization,'Bearer access');assert.equal(request.opts.cache,'no-store');assert.ok(!request.url.includes('?v='));await assert.rejects(api.downloadPhoto('../../other'),/invalid_photo_path/);
+});
+test('private photo cache is reused and cleared by blocks, removal and account deletion',async()=>{
+ let downloads=0;const api=createCommunityAPI({config,storage:storage(session()),fetcher:async(url,opts)=>{
+  if(url.includes('/object/authenticated/')){downloads++;return new Response('jpeg');}
+  return response([{}]);
+ }}),path=`${user}/${user}-${user}.jpg`;
+ await Promise.all([api.downloadPhoto(path),api.downloadPhoto(path)]);await api.downloadPhoto(path);assert.equal(downloads,1);
+ await api.block(user);await api.downloadPhoto(path);assert.equal(downloads,2);
+ await api.removePhotos([path]);await api.downloadPhoto(path);assert.equal(downloads,3);
+ await api.deleteAccount();await assert.rejects(api.downloadPhoto(path),/device_session_required/);assert.equal(downloads,3);
 });

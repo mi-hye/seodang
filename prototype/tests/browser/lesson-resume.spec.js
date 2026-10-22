@@ -7,9 +7,12 @@ for(const direction of ['ko-ja','ja-ko'])for(const lesson of scenarioLessons.fil
  const enter=async()=>{await page.locator(`[data-action="scenario"][data-id="${lesson.id}"]`).first().click();await expect(page.locator('.view-scenario, .lesson-resume')).toBeVisible();};const home=async()=>{await page.locator('[data-action="home"]').first().click();await expect(page.locator('.view-home')).toBeVisible();};
  await page.goto('/playable.html');await enter();await expect(page.locator('.lesson-resume')).toHaveCount(0);
  await home();await enter();await expect(page.locator('.lesson-resume')).toHaveCount(0);
- await page.locator('[data-action="scenario-next"]').click();await page.locator('[data-action="scenario-next"]').click();
  const state=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('seodang.web-prototype.v1')));
- const key=`${direction}:scenario:${lesson.id}`,saved=(await state()).scenarios[key];expect(saved.phase).toBe('quiz');
+ const key=`${direction}:scenario:${lesson.id}`;
+ // Lessons 8-12 go straight from intro to quiz; earlier lessons pass through learn first.
+ const phase=async()=>(await state()).scenarios?.[key]?.phase;
+ for(let i=0;i<2&&await phase()!=='quiz';i++){const before=await phase();await page.locator('[data-action="scenario-next"]').click();await expect.poll(phase).not.toBe(before);}
+ const saved=(await state()).scenarios[key];expect(saved.phase).toBe('quiz');
  await home();await enter();await expect(page.locator('.lesson-resume')).toBeVisible();await page.keyboard.press('Escape');await expect(page.locator('.view-home')).toBeVisible();
  await enter();await page.locator('[data-choice="resume"]').click();await expect(page.locator('.view-scenario')).toBeVisible();await expect.poll(async()=>(await state()).scenarios[key]).toEqual(saved);
  await home();await enter();await page.locator('[data-choice="restart"]').click();await expect(page.locator('.view-scenario')).toBeVisible();await expect.poll(async()=>(await state()).scenarios[key].phase).toBe('intro');

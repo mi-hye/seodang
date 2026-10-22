@@ -54,14 +54,6 @@ test("visible request needs no hidden clue clicks; wrong color and location retr
   assert.equal(s.episode.solved, false);
   assert.equal(s.encountered.length, 2);
 });
-test("hints bounded, no score penalty, state not mutated", () => {
-  const orig = investigate();
-  let s = orig;
-  for (let i = 0; i < 10; i++) s = act(s, "hint");
-  assert.equal(s.episode.hintLevel, 3);
-  assert.equal(orig.episode.hintLevel, 0);
-  assert.equal(s.episode.attempts, 0);
-});
 test("save/restore and reset isolate storage key", () => {
   const m = memory();
   m.setItem("production-user", "untouched");

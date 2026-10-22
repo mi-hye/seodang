@@ -1,4 +1,6 @@
 import {videosForCourse,resumeVideoLesson,videoProgress} from './video-lesson-state.js';
+import {songsForCourse,resumeSongLesson,songProgress} from './song-state.js';
+import {orderLessons} from './lesson-order.js';
 import {expertCatalog,expertProgress} from './expert-state.js';
 import {scenarioLessons,scenarioProgress,scenarioTitle} from './scenario-state.js';
 import {courseName,courseGroup,japaneseLessonUI} from './curriculum.js';
@@ -65,14 +67,18 @@ export function renderLearningMap(state,{resumeCard=''}={}) {
   const additions=scenarioLessons.filter(l=>l.level===level&&l.id!=='5').sort((a,b)=>a.number[state.courseDirection]-b.number[state.courseDirection]);
   for(const addition of additions){const p=scenarioProgress(state,addition.id);lessons.push({id:addition.id,title:scenarioTitle(state,addition),ready:true,complete:p.completed,current:p.started&&!p.completed,detail:'',status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'scenario'});count+=Number(p.completed);}
 
-  const videos=videosForCourse(state);
-  for(const video of videos){const p=videoProgress(state,video.id);lessons.splice(video.number-1,0,{id:video.id,title:t(video.title),ready:true,complete:p.completed,current:p.started&&!p.completed,status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'video'});count+=Number(p.completed);}
+  const specialLessons=videosForCourse(state).map(video=>{const p=videoProgress(state,video.id);return {id:video.id,number:video.number,title:t(video.title),ready:true,complete:p.completed,current:p.started&&!p.completed,status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'video'};});
+  specialLessons.push(...songsForCourse(state).map(song=>{const p=songProgress(state,song.id);return {id:song.id,number:song.number,title:t(song.title),symbol:'music',ready:true,complete:p.completed,current:p.started&&!p.completed,status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'song'};}));
+  lessons=orderLessons(lessons,specialLessons);
+  count=lessons.filter(l=>l.complete).length;
 
   // A single destination mirrors the home resume card, including direct dev entry.
   const active=state.courseDirection==='ko-ja'&&state.basics?.active;
   let current=[0,2].includes(level)&&active&&(active===6?2:0)===level&&basicUnlocked(state,active)&&!basicProgress(state,active).completed?lessons.findIndex(l=>l.action==='basic'&&l.id===active):lessons.findIndex(l=>l.current);
   const resumedVideo=resumeVideoLesson(state);
   if(resumedVideo)current=lessons.findIndex(l=>l.action==='video'&&l.id===resumedVideo.id);
+  const resumedSong=resumeSongLesson(state);
+  if(resumedSong)current=lessons.findIndex(l=>l.action==='song'&&l.id===resumedSong.id);
   if(current<0)current=lessons.findIndex(l=>l.ready&&!l.complete);
   lessons=lessons.map((l,i)=>({...l,current:i===current}));
   const progress=lessons.length?Math.round(count/lessons.length*100):0;

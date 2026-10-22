@@ -1,3 +1,9 @@
+import {lostItemChat} from './scenario-lost-item-content.js';
+import {weatherPreparation} from './scenario-weather-content.js';
+import {orderRepair} from './scenario-order-content.js';
+import {invitationChat} from './scenario-chat-content.js';
+import {shopConversation} from './scenario-shop-content.js';
+import {proposalMessages} from './scenario-proposal-content.js';
 import {replyRepair} from './scenario-repair-content.js';
 import {listeningIntent} from './scenario-intent-content.js';
 import {scheduleMessages} from './scenario-message-content.js';
@@ -8,12 +14,18 @@ import {hotelHelp} from './scenario-hotel-help.js';
 const item=(text,meaning,prompt,answer,others,hint,words=[],parts)=>({text:text.replaceAll('|',''),phrases:text.includes('|')?text.split(/\||(?=\n)|(?<=\n)/):undefined,meaning,prompt,answer,others,hint,words,parts});
 export const scenarioContent={
  'ko-ja':{
+ '17':lostItemChat['ko-ja'],
+ '16':weatherPreparation['ko-ja'],
+ '15':orderRepair['ko-ja'],
+ '14':invitationChat['ko-ja'],
+ '13':shopConversation['ko-ja'],
  '6':hotelHelp['ko-ja'],
  '7':hotelCheckout['ko-ja'],
  '8':hotelRoleplay['ko-ja'],
  '9':scheduleMessages['ko-ja'],
  '10':listeningIntent['ko-ja'],
  '11':replyRepair['ko-ja'],
+ '12':proposalMessages['ko-ja'],
  '2':{scene:'친구와 식당에 왔어요. 두 명이라고 말하고 창가 자리와 메뉴를 부탁해 보세요.',image:'assets/cafe-dusk-v2.jpg',items:[
  item('私たちは|二人です。','저희는 두 명이에요.','두 명이 왔다고 말해요.','',[],'私たちは 뒤에 인원수 二人와 です를 붙여요.',[['私たち','우리'],['二人','두 명']],['私たちは','二人','です。']),
  item('窓の近くの|席を|お願いします。','창문 가까운 자리를 부탁해요.','창가 자리를 부탁해요.','',[],'원하는 자리 뒤에 をお願いします를 붙여요.',[['窓','창문'],['近く','가까운 곳'],['席','자리']],['窓の近くの','席を','お願いします。']),
@@ -36,12 +48,18 @@ export const scenarioContent={
  ]}
  },
  'ja-ko':{
+ '17':lostItemChat['ja-ko'],
+ '16':weatherPreparation['ja-ko'],
+ '15':orderRepair['ja-ko'],
+ '14':invitationChat['ja-ko'],
+ '13':shopConversation['ja-ko'],
  '6':hotelHelp['ja-ko'],
  '7':hotelCheckout['ja-ko'],
  '8':hotelRoleplay['ja-ko'],
  '9':scheduleMessages['ja-ko'],
  '10':listeningIntent['ja-ko'],
  '11':replyRepair['ja-ko'],
+ '12':proposalMessages['ja-ko'],
  '2':{scene:'友達とお店に来ました。二人だと伝え、窓の近くの席とメニューをお願いしましょう。',image:'assets/cafe-dusk-v2.jpg',items:[
  item('저희는 두 명이에요.','私たちは二人です。','二人で来たと伝えましょう。','',[],'「저희는」の後に人数を置きます。',[['저희','私たち'],['두 명','二人']],['저희는','두','명이에요.']),
  item('창문 근처 자리로 부탁해요.','窓の近くの席をお願いします。','窓の近くの席をお願いしましょう。','',[],'「자리로 부탁해요」で席をお願いします。',[['창문','窓'],['근처','近く'],['자리','席']],['창문 근처','자리로','부탁해요.']),
@@ -66,4 +84,11 @@ export const scenarioContent={
 };
 export const scenarioAudio=(direction,id,index,speaking=false)=>{const x=scenarioContent[direction][id].items[index];if(speaking&&x.speaking)return {id:`scenario.${direction}.${id}.speak.${index}`,text:x.answer,locale:direction==='ko-ja'?'ja-JP':'ko-KR',audioFile:x.speaking.audioFile,status:'ready',playbackRate:1};return ({id:`scenario.${direction}.${id}.${index}`,text:scenarioContent[direction][id].items[index].text,locale:direction==='ko-ja'?'ja-JP':'ko-KR',audioFile:`assets/audio/scenarios/${direction}.${id}.${index}.wav`,status:'ready',playbackRate:id==='2'?0.8:1});};
 
-export const scenarioRoleAudio=(direction,index,part='prompt')=>{const x=scenarioContent[direction]['8'].items[index];return part==='prompt'?scenarioAudio(direction,'8',index):{id:`scenario.${direction}.8.${part}.${index}`,text:part==='answer'?x.answer:x.reply,locale:direction==='ko-ja'?'ja-JP':'ko-KR',audioFile:`assets/audio/scenarios/${direction}.8.${part}.${index}.wav`,status:'ready',playbackRate:1};};
+export const scenarioRoleAudio=(direction,index,part='prompt',id='8')=>{const x=scenarioContent[direction][id].items[index];return part==='prompt'?scenarioAudio(direction,id,index):{id:`scenario.${direction}.${id}.${part}.${index}`,text:part==='answer'?x.answer:x.reply,locale:direction==='ko-ja'?'ja-JP':'ko-KR',audioFile:`assets/audio/scenarios/${direction}.${id}.${part}.${index}.wav`,status:'ready',playbackRate:1};};
+
+export const scenarioTokenAudio=(direction,id,index,token)=>{
+ const part=id==='12'&&scenarioContent[direction]?.[id]?.items[index]?.parts?.[token];
+ return part?{id:`scenario.${direction}.${id}.token.${index}.${token}`,text:part.replaceAll('|','').trim(),locale:direction==='ko-ja'?'ja-JP':'ko-KR',audioFile:`assets/audio/scenarios/${direction}.${id}.token.${index}.${token}.wav`,status:'ready',playbackRate:1}:null;
+};
+
+export const scenarioChoiceAudio=(direction,id,index,choice)=>{const x=scenarioContent[direction]?.[id]?.items[index];if(!['14','15','16','17'].includes(id)||!x||!Number.isInteger(choice)||choice<0||choice>2)return null;if(choice===0)return ['15','16'].includes(id)?scenarioAudio(direction,id,index,true):scenarioRoleAudio(direction,index,'answer',id);return {id:`scenario.${direction}.${id}.choice.${index}.${choice}`,text:x.others[choice-1],locale:direction==='ko-ja'?'ja-JP':'ko-KR',audioFile:`assets/audio/scenarios/${direction}.${id}.choice.${index}.${choice}.wav`,status:'ready',playbackRate:1};};

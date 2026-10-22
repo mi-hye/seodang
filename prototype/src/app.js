@@ -1,4 +1,6 @@
+import {songLesson,songProgress,resumeSongLesson} from './song-state.js';
 import {recordStudyCompletion} from './study-state.js';
+import {missionForCommunity} from './mission-state.js';
 import {videoLesson,videoProgress,resumeVideoLesson,lessonNumberWithVideo} from './video-lesson-state.js';
 import {expertCatalog,expertProgress} from './expert-state.js';
 import {scenarioProgress,scenarioLessons,scenarioTitle} from './scenario-state.js';
@@ -82,32 +84,30 @@ async function loadScenario(){
  await Promise.all([scenarioStyles,loadPractice('scenario')]);
 }
 function scenario(){return scenarioProgress(state).phase==='done'?practiceModule.renderPracticeComplete(state,top,false):scenarioModule.renderScenario(state,top);}
-function speakScenario(part){const sequence=scenarioModule?.scenarioIntroAudio(state);if(sequence){void player.playSequence(sequence,state.settings.sound,message=>{toast=message;render();},{rate:0.8*(state.settings.audioRate??1)});return;}const entry=scenarioModule?.currentScenarioAudio(state,part);if(entry)void player.play(entry,state.settings.sound,message=>{toast=message;render();},{rate:entry.playbackRate*(state.settings.audioRate??1)});}
-let practiceModule,practiceStyles,disposePractice,lessonSession,entryBusy=false,devLessonTools,devLessonStyles,disposeDevLessonTools;
+function speakScenario(part){if(pendingPractice())return;const sequence=scenarioModule?.scenarioIntroAudio(state);if(sequence){void player.playSequence(sequence,state.settings.sound,message=>{toast=message;render();},{rate:0.8*(state.settings.audioRate??1)});return;}const entry=scenarioModule?.currentScenarioAudio(state,part);if(entry)void player.play(entry,state.settings.sound,message=>{toast=message;render();},{rate:entry.playbackRate*(state.settings.audioRate??1)});}
+let practiceModule,practiceStyles,disposePractice,lessonSession,entryBusy=false;
 const practiceKinds=['kana','basic','labels','listening','play','sentence','dialogue','reading','korean'];
+const reviewKinds=[...practiceKinds,'scenario','video'];
 async function loadPractice(kind){
  practiceModule ||= await import('./practice.js');
  lessonSession ||= await import('./lesson-session.js');
  practiceStyles ||= new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href='src/practice.css';link.onload=resolve;link.onerror=()=>{link.remove();practiceStyles=null;reject(Error('Practice styles unavailable'));};document.head.append(link);});
  await Promise.all([practiceStyles,kind?practiceModule.prepareContent(kind):Promise.resolve()]);
- if(developmentMode){
-  devLessonTools ||= await import('./dev-lesson-tools.js');
-  devLessonStyles ||= new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href='src/dev-lesson-tools.css';link.onload=resolve;link.onerror=()=>{link.remove();devLessonStyles=null;reject(Error('Dev styles unavailable'));};document.head.append(link);});
-  await devLessonStyles;
- }
+
 }
-function pendingPractice(){return practiceModule?.practiceState(state,view);}
+function pendingPractice(){return reviewKinds.includes(view)?practiceModule?.practiceState(state,view):undefined;}
 function commit(action) {
   if(['kana-restart','labels-restart','sentence-restart','restart'].includes(action.type)&&pendingPractice()){const entries={...state.practices};delete entries[practiceModule.practiceKey(state,view)];state={...state,practices:entries};}
+  if(action.type==='video-start'&&action.restart&&state.practices){const entries={...state.practices};delete entries[`${state.courseDirection}:video:${action.id??state.videoActive}`];state={...state,practices:entries};}
   const analyticsBefore=learningSnapshot(state,view);
   const next=reduce(state,action);
-  state=practiceModule&&practiceKinds.includes(view)?practiceModule.interceptCompletion(state,next,view,action):next;
+  state=practiceModule&&reviewKinds.includes(view)?practiceModule.interceptCompletion(state,next,view,action):next;
   state=recordStudyCompletion(state,analyticsBefore,learningSnapshot(state,view));
   learningTracker.transition(analyticsBefore,learningSnapshot(state,view),action.type,learningSnapshot(next,view));
   if (!blocked) storageError = save(storage, state);
 }
 function navigate(next) {
-  if(next==='expert'||next==='scenario'||practiceKinds.includes(next))void import('./audio-download-ui.js').then(m=>m.prefetchLesson(state,next,message=>{toast=message;render();}));
+  if(next==='expert'||next!=='video'&&reviewKinds.includes(next))void import('./audio-download-ui.js').then(m=>m.prefetchLesson(state,next,message=>{toast=message;render();}));
   else void import('./audio-download-ui.js').then(m=>m.cancelLessonDownload());
   completedKind=null;
   player.stop();
@@ -137,7 +137,7 @@ function speakEpisodeAudio() {
   });
 }
 function top(title, back = true) {
-  if(!completedKind&&practiceKinds.includes(view))title=lessonTitle(state,view,title);
+  if(!completedKind&&reviewKinds.includes(view))title=lessonTitle(state,view,title);
   return renderHeader(title || "서당", { backAction: "home", backLabel: "학습 홈으로", backDisabled: !back, backHidden: !back });
 }
 let communityModule,communityStyles,disposeCommunity,communityScreen='feed';
@@ -165,7 +165,7 @@ function currentPracticeKey(){
 }
 function homeCaseCard(props){
  let kind=props.action,s=state;
- if(kind==='practice-resume'){const key=currentPracticeKey();if(key){const [,k,id]=key.split(':');kind=k;if(k==='kana')s={...state,kana:{...state.kana,active:Number(id)}};if(k==='basic')s={...state,basics:{...state.basics,active:Number(id)}};if(k==='korean')s={...state,korean:{...state.korean,active:id}};if(k==='reading')s={...state,onboardingLevel:Number(id)};if(k==='sentence')s={...state,sentenceActive:Number(id)};}}
+ if(kind==='practice-resume'){const key=currentPracticeKey();if(key){const [,k,id]=key.split(':');kind=k;if(k==='kana')s={...state,kana:{...state.kana,active:Number(id)}};if(k==='basic')s={...state,basics:{...state.basics,active:Number(id)}};if(k==='korean')s={...state,korean:{...state.korean,active:id}};if(k==='reading')s={...state,onboardingLevel:Number(id)};if(k==='sentence')s={...state,sentenceActive:Number(id)};if(k==='scenario')s={...state,scenarioActive:id};if(k==='video')s={...state,videoActive:id};}}
  else if(kind==='sentence')s={...state,sentenceActive:Number(props.id??nextSentence(state))};
  else if(kind==='reading'&&props.id!==undefined)s={...state,onboardingLevel:props.id};
  else if(kind==='kana'){const k=normalizeKana(state.kana),active=k.lessons[k.active].phase==='summary'?Math.max(0,k.lessons.findIndex(l=>!l.caseSolved)):k.active;s={...state,kana:{...k,active}};}
@@ -175,6 +175,7 @@ function homeCaseCard(props){
  return renderHomeCaseCard({...props,title:prefix+lessonTitle(s,kind,parts.join(' · '))});
 }
 function caseCard() {
+  const music=resumeSongLesson(state);if(music)return renderHomeCaseCard({title:`${music.number}. ${music.title}`,action:'song',id:music.id,actionLabel:t('학습 이어하기')});
   const v=resumeVideoLesson(state);if(v)return renderHomeCaseCard({title:`${v.number}. ${t(v.title)}`,action:'video',id:v.id,actionLabel:t('학습 이어하기')});
   if(selectedLevel(state)===7){const list=expertCatalog[state.courseDirection];let id=list.findIndex((_,i)=>expertProgress(state,i).started&&!expertProgress(state,i).completed);if(id<0)id=list.findIndex((_,i)=>!expertProgress(state,i).completed);if(id<0)id=0;const p=expertProgress(state,id);return renderHomeCaseCard({title:`${lessonNumberWithVideo(state,id+1)}. ${t(list[id].title)}`,action:'expert',id,actionLabel:t(p.completed?'다시 학습하기':p.started?'학습 이어하기':'학습 시작하기')});}
   const extra=scenarioLessons.find(l=>l.level===courseGroup(selectedLevel(state))&&scenarioProgress(state,l.id).started&&!scenarioProgress(state,l.id).completed);
@@ -182,7 +183,7 @@ function caseCard() {
   const pendingKey=currentPracticeKey();
   if(pendingKey){
     const [,kind,id]=pendingKey.split(':');
-    const title=kind==='korean'?koreanLessons.find(l=>l.id===id)?.title:kind==='kana'?kanaLessons[Number(id)]?.caseTitle:kind==='basic'?basicLessons.find(l=>l.id===Number(id))?.title:kind==='sentence'?sentenceLessons.find(l=>l.id===Number(id))?.title:({labels:'그림에 이름표 붙이기',listening:'듣고 사진 고르기',play:'카페에 남겨진 가방',sentence:'가방 주인을 찾아요',dialogue:'카페에서 주문하기',reading:selectedLevel(state)===7?'생각 나누기':selectedLevel(state)===6?'조건과 이유를 읽고 판단하기':'글을 읽고 핵심 찾기'}[kind]);
+    const title=kind==='scenario'?scenarioTitle(state,scenarioLessons.find(l=>l.id===id)):kind==='korean'?koreanLessons.find(l=>l.id===id)?.title:kind==='kana'?kanaLessons[Number(id)]?.caseTitle:kind==='basic'?basicLessons.find(l=>l.id===Number(id))?.title:kind==='sentence'?sentenceLessons.find(l=>l.id===Number(id))?.title:({labels:'그림에 이름표 붙이기',listening:'듣고 사진 고르기',play:'카페에 남겨진 가방',sentence:'가방 주인을 찾아요',dialogue:'카페에서 주문하기',reading:selectedLevel(state)===7?'생각 나누기':selectedLevel(state)===6?'조건과 이유를 읽고 판단하기':'글을 읽고 핵심 찾기'}[kind]);
     return homeCaseCard({title,action:'practice-resume',actionLabel:japaneseLessonUI(state)?'学習を続ける':'학습 이어하기'});
   }
   if(state.courseDirection==='ja-ko'){const l=nextKorean(state),p=koreanProgress(state,l.id);return homeCaseCard({title:`レベル${displayLevel(l.level)} · ${l.title}`,action:'korean',actionLabel:(p.completed?'もう一度学ぶ':p.started?'学習を続ける':'学習を始める')});}
@@ -227,9 +228,16 @@ let videoModule,videoStyles,disposeVideo;
 async function loadVideo(){
  videoModule ||= await import('./video-lesson.js');
  videoStyles ||= new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href='src/video-lesson.css';link.onload=resolve;link.onerror=()=>{link.remove();videoStyles=null;reject(Error('Video lesson styles unavailable'));};document.head.append(link);});
- await Promise.all([videoStyles,loadPractice()]);
+ await Promise.all([videoStyles,loadPractice('video')]);
 }
 function video(){return videoProgress(state).phase==='done'?practiceModule.renderPracticeComplete(state,top,false):videoModule.renderVideoLesson(state,title=>renderHeader(title,{backLabel:t('학습 홈으로')}));}
+let songModule,songStyles;
+async function loadSong(){
+ songModule ||= await import('./song-lesson.js');
+ songStyles ||= Promise.all(['video-lesson.css','song-lesson.css'].map(name=>new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href=`src/${name}`;link.onload=resolve;link.onerror=()=>{link.remove();songStyles=null;reject(Error('Song lesson styles unavailable'));};document.head.append(link);})));
+ await Promise.all([songStyles,loadPractice()]);
+}
+function song(){return songProgress(state).phase==='done'?practiceModule.renderPracticeComplete(state,top,false):songModule.renderSongLesson(state,title=>renderHeader(title,{backLabel:t('학습 홈으로')}));}
 let expertModule;
 async function loadExpert(){expertModule ||= await import('./expert.js');await Promise.all([loadReading(),loadPractice('reading'),expertModule.prepareExpert()]);}
 function expert(){return expertProgress(state).phase==='done'?practiceModule.renderPracticeComplete(state,top,false):expertModule.renderExpert(state,title=>renderHeader(title,{backLabel:t('학습 홈으로')}));}
@@ -316,6 +324,36 @@ function review() {
   }${state.episode.step === "summary" ? button("다시 학습하기", "restart", "secondary") : button(learned.length ? "학습 이어하기" : "학습 시작하기", "play")}</main>${tabs()}`;
 }
 
+// Growth comparison and daily mission screens load on demand from the records page.
+let growthModule,missionModule,growthStyles,growthScreen='overview',growthNotice='',growthError='',growthPending,missionError='',missionPending,draftTimer=null;
+const uiText=(ko,ja)=>japaneseLessonUI(state)?ja:ko;
+async function loadGrowthStyles(){
+ growthStyles ||= new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href='src/growth.css';link.onload=resolve;link.onerror=()=>{link.remove();growthStyles=null;reject(Error('Growth styles unavailable'));};document.head.append(link);});
+ await growthStyles;
+}
+async function loadGrowth(kind){
+ await loadRecords();
+ if(kind==='growth')growthModule ||= await import('./growth-view.js');else missionModule ||= await import('./mission-view.js');
+ await loadGrowthStyles();
+}
+const growthHeader=title=>renderHeader(title,{backAction:'my',backLabel:'학습 기록'});
+function growth(){return growthModule.renderGrowth(state,growthHeader,{screen:growthScreen,notice:growthNotice,error:growthError,pendingText:growthPending});}
+function mission(){return missionModule.renderMission(state,growthHeader,{error:missionError,pendingText:missionPending});}
+// Typing saves a draft shortly after input stops, and before any other action or page hide.
+function flushDraft(){
+ if(draftTimer===null)return;
+ clearTimeout(draftTimer);draftTimer=null;
+ const field=app.querySelector('[data-growth-draft],[data-mission-draft]');if(!field)return;
+ if(field.matches('[data-growth-draft]'))commit({type:'growth-draft',text:field.value});
+ else commit({type:'mission-draft',text:field.value,lessonKey:field.dataset.lessonKey,lessonOn:field.dataset.lessonOn});
+}
+// Save failures keep the typed text on screen and leave the stored record unchanged.
+function saveWriting(action,{onSaved,onFailed}){
+ const before=state;commit(action);
+ if(state===before)return onFailed('empty');
+ if(blocked||storageError){state=before;return onFailed('storage');}
+ onSaved();
+}
 let recordsModule, recordsStyles, recordOffset=0, recordSelected;
 function my() { return recordsModule.renderRecords(state,top,tabs,{offset:recordOffset,selected:recordSelected}); }
 async function loadRecords() {
@@ -354,9 +392,9 @@ function play() {
   if (e.step === "intro")
     body = `${scene()}<section class="reading dialogue-slab"><span class="speaker">${episode.intro[0].speaker}</span><h2>색과 위치 표현을 배워요</h2>${button(`표현 익히기 ${icon("arrow")}`, "next")}</section>`;
   if (e.step === "learn")
-    body = `<section class="reading learning-sheet"><span class="eyebrow">표현 익히기 · ${e.lesson + 1} / 2</span><h1>${e.lesson ? "어디에 있을까요?" : "어떤 가방일까요?"}</h1>${expressionCard(expressions[e.lesson], { meaning: true, picture: true, compactAudio: true, showReading: true, sound: state.settings.sound, beginner: state.support === "beginner" })}<div class="button-pair">${button("이전", "previous-lesson", "secondary")}${button(e.lesson ? "메모 보기" : "다음", "next")}</div></section>`;
+    body = `<section class="reading learning-sheet"><span class="eyebrow">표현 익히기</span><h1>${e.lesson ? "어디에 있을까요?" : "어떤 가방일까요?"}</h1>${expressionCard(expressions[e.lesson], { meaning: true, picture: true, compactAudio: true, showReading: true, sound: state.settings.sound, beginner: state.support === "beginner" })}<div class="button-pair">${button("이전", "previous-lesson", "secondary")}${button(e.lesson ? "메모 보기" : "다음", "next")}</div></section>`;
   if (e.step === "investigate")
-    body = `${investigation()}<section class="reading investigation-slab"><div class="section-row"><h2>${e.selected?'선택한 가방을 확인해 주세요':'메모와 같은 가방을 골라요'}</h2>${button(icon('help'),'hint','icon-button','aria-label="표현 도움 보기"')}</div>${e.feedback?`<div class="feedback" role="status">${esc(e.feedback)}</div>`:''}${button('확인하기','submit','primary',e.selected?'':'disabled')}</section>`;
+    body = `${investigation()}<section class="reading investigation-slab"><div class="section-row"><h2>${e.selected?'선택한 가방을 확인해 주세요':'메모와 같은 가방을 골라요'}</h2></div>${e.feedback?`<div class="feedback" role="status">${esc(e.feedback)}</div>`:''}${button('확인하기','submit','primary',e.selected?'':'disabled')}</section>`;
   if (e.step === "solved")
     body = `${scene()}<section class="reading solved-slab"><span class="eyebrow">${icon("check")} 사건 해결</span><h1>창문 옆 파란 가방이에요</h1><div class="solution-explanation"><p><b lang="ja">あおい かばん</b> · 파란 가방<br><b lang="ja">まどの そば</b> · 창문 옆</p></div>${button(`다음 문제 ${icon("arrow")}`, "next")}</section>`;
   if (e.step === "transfer")
@@ -365,7 +403,7 @@ function play() {
     body = `<section class="reading summary"><div class="summary-top"><span class="completion">${icon("check")}</span><h1>학습 완료</h1></div><div class="summary-scroll"><h2>배운 표현</h2><div class="summary-expressions">${expressions.map((x, i) => `<div><span class="expression-index">0${i + 1}</span><b lang="ja">${x.text}</b><span>${x.meaning}</span></div>`).join("")}</div></div><div class="case-complete-actions button-pair">${button("다시 풀기", "restart", "secondary")}${button("다음 사건으로", "stories", "primary", 'disabled aria-label="다음 사건으로, 준비 중입니다" title="다음 사건을 준비 중이에요"')}</div></section>`;
   return `${top("카페에 남겨진 가방")}<main class="play play-${e.step}">${e.step !== "intro" ? "" : `<div class="play-heading">${audioButton(episode.intro[0].audioId, state.settings.sound, "직원 말 다시 듣기")}</div>`}<div class="progress-heading"><span>${labels[progress()]}</span><ol class="steps" aria-label="사건 진행">${labels.map((l, i) => `<li class="${i <= progress() ? "filled" : ""}" ${i === progress() ? 'aria-current="step"' : ""}><span class="sr-only">${l}</span></li>`).join("")}</ol></div>${body}</main>`;
 }
-let disposeSpeaking,disposeWriting,disposeMatching,completedKind=null;
+let disposeSpeaking,disposeWriting,disposeMatching,disposeCompletionSound,completedKind=null;
 let disposeMapCharacter,mapCharacterRequest=0;
 function clearMapCharacter(){mapCharacterRequest++;disposeMapCharacter?.();disposeMapCharacter=null;}
 async function mountMapCharacter(){
@@ -378,10 +416,10 @@ async function mountMapCharacter(){
   }catch{/* The original pose remains visible if the optional renderer is unavailable. */}
 }
 function render(scroll = false) {
+  disposeCompletionSound?.();disposeCompletionSound=null;
   disposeVideo?.();disposeVideo=null;
   disposeCommunity?.();disposeCommunity=null;
   clearMapCharacter();
-  disposeDevLessonTools?.();disposeDevLessonTools=null;
   disposePractice?.();disposePractice=null;
 
   setUILanguage(state);
@@ -397,24 +435,25 @@ function render(scroll = false) {
     state.settings.textScale,
   );
   document.documentElement.dataset.motion = state.settings.motion;
-  document.documentElement.classList.toggle("library-theme", ["home", "my", "community"].includes(view));
-  app.innerHTML = `<div class="shell view-${view}">${storageError ? `<aside class="storage-warning" role="status">${esc(t(storageError))}</aside>` : ""}${completedKind?(completedKind==='korean'&&state.korean.active==='1-10'?koreanModule.renderKoreanLettersComplete(top):practiceModule.renderPracticeComplete(state,top,hasNextLesson(completedKind))):pendingPractice()?practiceModule.renderPractice(state,view,top):{ home, study, community, video, expert, scenario, korean, basic, review, my, play, kana, sentence, labels, listening, dialogue, reading }[view]()}${toast ? `<div class="toast" role="status">${esc(t(toast))}</div>` : ""}</div>`;
+  document.documentElement.classList.toggle("library-theme", ["home", "my", "community", "growth", "mission"].includes(view));
+  app.innerHTML = `<div class="shell view-${view}">${storageError ? `<aside class="storage-warning" role="status">${esc(t(storageError))}</aside>` : ""}${completedKind?(completedKind==='korean'&&state.korean.active==='1-10'?koreanModule.renderKoreanLettersComplete(top):practiceModule.renderPracticeComplete(state,top,hasNextLesson(completedKind))):pendingPractice()?practiceModule.renderPractice(state,view,top):{ home, study, community, growth, mission, video, song, expert, scenario, korean, basic, review, my, play, kana, sentence, labels, listening, dialogue, reading }[view]()}${toast ? `<div class="toast" role="status">${esc(t(toast))}</div>` : ""}</div>`;
+  if(lessonSession&&['scenario','video'].includes(view)&&practiceModule?.caseTasksForReview?.(state,view)&&!completedKind){app.querySelector('.lesson-progress,.scenario-progress')?.remove();app.querySelector('.app-header')?.insertAdjacentHTML('afterend',lessonSession.progressBar(state,view));}
   if(!completedKind&&lessonSession&&practiceKinds.includes(view))app.querySelector('.app-header')?.insertAdjacentHTML('afterend',lessonSession.progressBar(state,view));
-  if(!completedKind&&developmentMode&&devLessonTools&&practiceKinds.includes(view))app.querySelector('.lesson-progress, .app-header')?.insertAdjacentHTML('afterend',devLessonTools.renderDevLessonTools(state,view));
-  if(lessonSession&&practiceKinds.includes(view))lessonSession.centerLesson(app,state,view,Boolean(completedKind));
+  if(lessonSession&&(practiceKinds.includes(view)||pendingPractice()))lessonSession.centerLesson(app,state,view,Boolean(completedKind));
   if(view==='expert'&&expertProgress(state).phase==='done'){lessonSession.centerLesson(app,state,view,true);app.querySelector('.practice-complete h1')?.focus({preventScroll:true});}
   if(view==='scenario'&&scenarioProgress(state).phase==='done'){lessonSession.centerLesson(app,state,view,true);app.querySelector('.practice-complete h1')?.focus({preventScroll:true});}
   if(view==='video'){disposeVideo=videoModule.mountVideoPlayer(app,state);if(videoProgress(state).phase==='done'){lessonSession.centerLesson(app,state,view,true);app.querySelector('.practice-complete h1')?.focus({preventScroll:true});}}
-  if(view==='community')disposeCommunity=communityModule.mountCommunity(app.querySelector('[data-community-root]'),state,{initialScreen:communityScreen});
+  if(view==='song'){disposeVideo=songModule.mountSongPlayer(app,state);if(songProgress(state).phase==='done'){lessonSession.centerLesson(app,state,view,true);app.querySelector('.practice-complete h1')?.focus({preventScroll:true});}}
+  if(view==='community')disposeCommunity=communityModule.mountCommunity(app.querySelector('[data-community-root]'),state,{initialScreen:communityScreen,mission:missionForCommunity(state),onMissionUsed:()=>commit({type:'mission-shared'})});
   void mountMapCharacter();
   updatePassagePlayback();
   if(pendingPractice())disposePractice=practiceModule.mountPractice(app,state,view,{play:(entry,onError)=>player.play(entry,true,onError),stop:()=>player.stop(),onAnswer:correct=>learningTracker.answer(correct),advance:finishPracticeStep});
   if(!completedKind&&!pendingPractice()&&view==='basic'&&basicProgress(state,state.basics.active).phase==='write')disposePractice=practiceModule.mountPractice(app,basicModule.basicWritingState(state),'basic',{play:(entry,onError)=>player.play(entry,true,onError),stop:()=>player.stop(),advance:()=>{player.stop();commit({type:'basic-next'});if(basicProgress(state,state.basics.active).phase==='done')completedKind='basic';render(true);if(!completedKind&&!pendingPractice())speakBasic();}});
   if(!completedKind&&!pendingPractice()&&view === "korean")disposeKoreanWriting=koreanModule.mountKoreanWriting(app);
   if(view==='expert'&&expertProgress(state).phase==='speak')disposeSpeaking=expertModule.mountExpertSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'expert-next'});render(true);}});
-  if(view==='scenario'&&scenarioProgress(state).phase==='speak')disposeSpeaking=scenarioModule.mountScenarioSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'scenario-speak-next'});render(true);speakScenario();}});
-  if(view==='sentence'&&sentenceProgress(state).phase==='speak')disposeSpeaking=sentenceModule.mountSentenceSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'sentence-speak-next'});render(true);speakSentence();}});
-  if(view==='korean'&&koreanProgress(state,state.korean.active).phase==='speak')disposeSpeaking=koreanModule.mountKoreanSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'korean-speak-next'});render(true);speakKorean();}});
+  if(!pendingPractice()&&view==='scenario'&&scenarioProgress(state).phase==='speak')disposeSpeaking=scenarioModule.mountScenarioSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'scenario-speak-next'});render(true);speakScenario();}});
+  if(!pendingPractice()&&view==='sentence'&&sentenceProgress(state).phase==='speak')disposeSpeaking=sentenceModule.mountSentenceSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'sentence-speak-next'});render(true);speakSentence();}});
+  if(!pendingPractice()&&view==='korean'&&koreanProgress(state,state.korean.active).phase==='speak')disposeSpeaking=koreanModule.mountKoreanSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'korean-speak-next'});render(true);speakKorean();}});
   if (!completedKind&&!pendingPractice()&&view === "kana") {
     disposeWriting = kanaModule.mountWriting(app);
     disposeMatching = kanaModule.mountMatching(app, ({keyboard,...action})=>{
@@ -423,7 +462,6 @@ function render(scroll = false) {
     });
   }
   if(!completedKind&&!pendingPractice()&&view==='labels')disposeMatching=labelsModule.mountMatching(app,({keyboard,...action})=>{commit({...action,type:'labels-match'});if(state.labels.phase==='summary'){navigate('listening');return;}render();if(keyboard)app.querySelector('.kana-match-node:not(:disabled), [data-action="labels-next"]')?.focus({preventScroll:true});});
-  if(!completedKind&&developmentMode&&devLessonTools&&practiceKinds.includes(view))disposeDevLessonTools=devLessonTools.mountDevLessonTools(app);
   if (scroll) window.scrollTo(0, 0);
   else if (focus?.action)
     app
@@ -460,6 +498,7 @@ async function finishPracticeStep(){
  learningTracker.transition(analyticsBefore,learningSnapshot(state,view));
  if(!blocked)storageError=save(storage,state);
  completedKind=kind;render(true);
+ disposeCompletionSound=practiceModule.playIntroductionCompletionSound(state,kind);
  app.querySelector('.practice-complete h1')?.focus({preventScroll:true});
 }
 function hasNextLesson(kind){
@@ -489,11 +528,10 @@ async function nextCompletedLesson(){
 async function handle(event) {
   const el = event.target.closest("[data-action]");
   if (!el || el.disabled) return;
-  if(developmentMode&&devLessonTools&&practiceKinds.includes(view)&&['dev-lesson-previous','dev-lesson-next'].includes(el.dataset.action)){
-    player.stop();state=devLessonTools.seekDevLesson(state,view,el.dataset.action==='dev-lesson-next'?1:-1);navigate(view);return;
-  }
+
   const a = el.dataset.action,
     id = el.dataset.id;
+  flushDraft();
   if(a==='study-review'){
     if(entryBusy)return;entryBusy=true;el.disabled=true;
     try{await loadStudy();navigate('study');}
@@ -506,19 +544,24 @@ async function handle(event) {
     const target=document.createElement('button');target.dataset.action=lesson.kind;target.dataset.id=lesson.id;
     await handle({target});return;
   }
+  if(a==='song'){
+    if(entryBusy||!songLesson(state,id))return;entryBusy=true;el.disabled=true;
+    try{await loadSong();commit({type:'song-start',id});navigate('song');}catch{toast=t('학습을 불러오지 못했어요. 다시 눌러 주세요.');render();}finally{entryBusy=false;if(el.isConnected)el.disabled=false;}return;
+  }
+  if(a.startsWith('song-')){if(view!=='song')return;const before=state;commit(a==='song-restart'?{type:'song-start',restart:true}:{type:a,id});render(a!=='song-select'&&a!=='song-check');disposeCompletionSound=songModule.playSongFeedback(app,before,state);return;}
   if(a==='video'){
     if(entryBusy||!videoLesson(state,id))return;entryBusy=true;el.disabled=true;
     try{await loadVideo();commit({type:'video-start',id});navigate('video');}catch{toast='학습을 불러오지 못했어요. 다시 눌러 주세요.';render();}finally{entryBusy=false;if(el.isConnected)el.disabled=false;}return;
   }
-  if(a.startsWith('video-')){if(view!=='video')return;commit(a==='video-restart'?{type:'video-start',restart:true}:{type:a});render(true);return;}
+  if(a.startsWith('video-')){if(view!=='video')return;const before=state;commit(a==='video-restart'?{type:'video-start',restart:true}:{type:a,id});render(a!=='video-select'&&a!=='video-check');disposeCompletionSound=videoModule.playVideoSceneFeedback(app,before,state);return;}
   if(a==='analytics-consent'){const {askAnalyticsConsent}=await import('./analytics-consent.js');closePanel();await askAnalyticsConsent(state);openAnalytics(state);learningTracker.enter(learningSnapshot(state,view));return;}
   if(a==='audio-downloads'){player.stop();const {openAudioDownloads}=await import('./audio-download-ui.js');await openAudioDownloads(state);return;}
   if(a==='lesson-kanji'){el.disabled=true;player.stop();try{const {openLessonKanji}=await import('./lesson-kanji.js');await openLessonKanji(id,{trigger:el});}catch{toast='한자 학습을 불러오지 못했어요. 다시 눌러 주세요.';render();}finally{if(el.isConnected)el.disabled=false;}return;}
   if(a==='passage-pause'){if(player.state==='paused')void player.resume();else player.pause();return;}
-  if(a==='completed-next'){el.disabled=true;if(view==='video'&&videoProgress(state).phase==='done'||view==='scenario'&&scenarioProgress(state).phase==='done'||view==='expert'&&expertProgress(state).phase==='done'){navigate('home');return;}await nextCompletedLesson();return;}
+  if(a==='completed-next'){el.disabled=true;if(view==='song'&&songProgress(state).phase==='done'||view==='video'&&videoProgress(state).phase==='done'||view==='scenario'&&scenarioProgress(state).phase==='done'||view==='expert'&&expertProgress(state).phase==='done'){navigate('home');return;}await nextCompletedLesson();return;}
   if(a==='practice-resume'){
     const saved=currentPracticeKey();
-    if(!saved)return;const [,kind,lesson]=saved.split(':'),trigger=document.createElement('button');trigger.dataset.action=kind;if(['kana','basic','korean','reading','sentence'].includes(kind))trigger.dataset.id=lesson;await handle({target:trigger});return;
+    if(!saved)return;const [,kind,lesson]=saved.split(':'),trigger=document.createElement('button');trigger.dataset.action=kind;if(['kana','basic','korean','reading','sentence','scenario','video'].includes(kind))trigger.dataset.id=lesson;await handle({target:trigger});return;
   }
   const entryKind=[...practiceKinds,'scenario','expert'].includes(a)?a:a==='kana-continue'||a==='kana-restart'?'kana':a==='labels-restart'?'labels':a==='sentence-restart'?'sentence':null;
   if(entryKind){if(entryBusy)return;el.disabled=true;try{await loadPractice(entryKind==='expert'?'reading':entryKind);}catch{el.disabled=false;toast=t('학습을 불러오지 못했어요. 다시 눌러 주세요.');render();return;}el.disabled=false;}
@@ -563,8 +606,11 @@ async function handle(event) {
   if(a.startsWith('scenario-')){
     if(view!=='scenario')return;
     if(a==='scenario-audio'){if(!state.settings.sound)commit({type:'setting',key:'sound',value:true});speakScenario(id);return;}
+    const choiceAudio=a==='scenario-select'&&el.dataset.choiceAudio?el.dataset.choiceAudio:null;
+    if(choiceAudio&&!state.settings.sound)commit({type:'setting',key:'sound',value:true});
+    const tokenAudio=a==='scenario-token'?scenarioModule?.currentScenarioTokenAudio(state,id):null;
     const moving=['scenario-next','scenario-previous'].includes(a);
-    if(moving)player.stop();commit({type:a,id});render(moving);if(moving&&scenarioProgress(state).phase!=='speak')speakScenario();else if(a==='scenario-check'&&state.scenarioActive==='8'&&scenarioProgress(state).checked)speakScenario('reply');return;
+    if(moving)player.stop();commit({type:a,id});render(moving);if(choiceAudio)speakScenario(choiceAudio);if(tokenAudio)void player.play(tokenAudio,state.settings.sound,message=>{toast=message;render();},{rate:state.settings.audioRate??1});if(moving&&scenarioProgress(state).phase!=='speak')speakScenario();else if(a==='scenario-check'&&state.scenarioActive==='8'&&scenarioProgress(state).checked)speakScenario('reply');return;
   }
   if(a==='korean'){
     const lesson=id||nextKorean(state).id;if(state.courseDirection!=='ja-ko'||!koreanUnlocked(state,lesson))return;
@@ -664,6 +710,42 @@ async function handle(event) {
    commit({type:a,id});if(state.labels.phase==='summary'){navigate('listening');return;}render(advancing);if(advancing)speakLabels();return;
   }
   if(['community','community-profile','community-inbox'].includes(a)){el.disabled=true;try{await loadCommunity();communityScreen=a==='community-profile'?'profile':a==='community-inbox'?'inbox':'feed';if(panel.open)closePanel();navigate('community');}catch{toast=state.courseDirection==='ja-ko'?'交流を読み込めませんでした。':'커뮤니티를 불러오지 못했어요.';render();}return;}
+  if(a==='growth'||a==='mission'){
+    el.disabled=true;
+    try{await loadGrowth(a);}catch{toast=uiText('화면을 불러오지 못했어요. 다시 눌러 주세요.','画面を読み込めませんでした。もう一度押してください。');render();return;}
+    growthScreen='overview';growthNotice='';growthError='';growthPending=undefined;missionError='';missionPending=undefined;
+    navigate(a);return;
+  }
+  if(a==='growth-write'||a==='growth-cancel'){
+    if(view!=='growth')return;
+    growthScreen=a==='growth-write'?'write':'overview';growthNotice='';growthError='';growthPending=undefined;
+    render(true);if(a==='growth-write')app.querySelector('#growth-answer')?.focus({preventScroll:true});return;
+  }
+  if(a==='growth-save'){
+    if(view!=='growth')return;
+    const text=app.querySelector('#growth-answer')?.value??'';
+    saveWriting({type:'growth-save',text,completed:recordsModule.completedLessons(state).length},{
+      onSaved:()=>{growthScreen='overview';growthPending=undefined;growthError='';growthNotice=uiText('답을 저장했어요.','答えを保存しました。');},
+      onFailed:reason=>{growthPending=text;growthError=reason==='empty'?uiText('답을 입력해 주세요.','答えを入力してください。'):uiText('저장하지 못했어요. 쓴 답은 화면에 남아 있어요. 저장 공간을 확인한 뒤 다시 눌러 주세요.','保存できませんでした。書いた答えは画面に残っています。保存領域を確認してから、もう一度押してください。');},
+    });
+    render(true);return;
+  }
+  if(a==='mission-save'||a==='mission-edit'||a==='mission-discard'){
+    if(view!=='mission')return;
+    if(a==='mission-discard'&&!confirm(uiText('쓰던 문장을 지우고 새 미션을 받을까요?','書きかけの文を消して、新しいミッションを受け取りますか？')))return;
+    const text=app.querySelector('#mission-answer')?.value??'';
+    saveWriting(a==='mission-save'?{type:a,text,lessonKey:el.dataset.lessonKey,lessonOn:el.dataset.lessonOn}:{type:a},{
+      onSaved:()=>{missionPending=undefined;missionError='';},
+      onFailed:reason=>{missionPending=a==='mission-save'?text:undefined;missionError=reason==='empty'?uiText('문장을 입력해 주세요.','文を入力してください。'):uiText('저장하지 못했어요. 쓴 문장은 화면에 남아 있어요. 저장 공간을 확인한 뒤 다시 눌러 주세요.','保存できませんでした。書いた文は画面に残っています。保存領域を確認してから、もう一度押してください。');},
+    });
+    render(true);return;
+  }
+  if(a==='mission-community'){
+    if(view!=='mission')return;
+    el.disabled=true;
+    try{await loadCommunity();}catch{toast=uiText('교류를 불러오지 못했어요. 다시 눌러 주세요.','交流を読み込めませんでした。もう一度押してください。');render();return;}
+    communityScreen='compose';navigate('community');return;
+  }
   if(a==='my') {
     el.disabled=true;
     try { await loadRecords(); navigate('my'); }
@@ -803,18 +885,6 @@ async function handle(event) {
     await openPanel(a);
     return;
   }
-  if (a === "hint") {
-    commit({ type: "hint" });
-    await openPanel("hint");
-    return;
-  }
-  if (a === "more-hint") {
-    commit({ type: "hint" });
-    const { renderPanel } = await import("./panels.js");
-    panel.innerHTML = renderPanel("hint", state);
-    panel.querySelector('[data-action="more-hint"]:not(:disabled)')?.focus();
-    return;
-  }
   if (a === "close") {
     closePanel();
     return;
@@ -865,7 +935,21 @@ async function handle(event) {
     });
   }
 }
-app.addEventListener("click", handle);
+// After any answer check, bring the new feedback into view on small screens.
+const checkActions=/-(check|confirm|submit)$/;
+function revealFeedback(){
+  const target=[...app.querySelectorAll('main [role="status"], main .intent-result, main .repair-result')].find(el=>!el.classList.contains('sr-only')&&el.textContent.trim()&&el.getClientRects().length);
+  if(!target)return;
+  const rect=target.getBoundingClientRect(),top=app.querySelector('.app-header')?.getBoundingClientRect().bottom??0;
+  if(rect.top>=top&&rect.bottom<=innerHeight)return;
+  const motion=state.settings.motion!=='off'&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
+  target.scrollIntoView({block:'nearest',behavior:motion?'smooth':'instant'});
+}
+app.addEventListener("click", async event => {
+  const action=event.target.closest?.("[data-action]")?.dataset.action;
+  await handle(event);
+  if(action&&checkActions.test(action))revealFeedback();
+});
 panel.addEventListener("click", event => {
   if (event.target === panel) {
     const rect = panel.getBoundingClientRect();
@@ -924,9 +1008,9 @@ panel.addEventListener("change", async (event) => {
     render();
   }
 });
-window.addEventListener("pagehide", () => {clearMapCharacter();disposeSpeaking?.();disposeDevLessonTools?.();disposePractice?.();player.stop();});
+window.addEventListener("pagehide", () => {flushDraft();clearMapCharacter();disposeSpeaking?.();disposePractice?.();disposeCompletionSound?.();player.stop();});
 window.addEventListener("pageshow",event=>{if(event.persisted){if(pendingPractice())render();else void mountMapCharacter();}});
-document.addEventListener("visibilitychange", () => { if (document.hidden) player.stop(); else openAnalytics(state); });
+document.addEventListener("visibilitychange", () => { if (document.hidden) {flushDraft();player.stop();} else openAnalytics(state); });
 window.addEventListener("storage", (e) => {
   if (e.key === STORAGE_KEY) {
     blocked = true;
@@ -949,6 +1033,14 @@ else if(enteringCase && view==='dialogue')speakDialogue();
 else if (enteringCase && view==='sentence') speakSentence();
 else if (enteringCase && view==='play') speakEpisodeAudio();
 
+app.addEventListener('input',event=>{
+ const field=event.target;if(!field.matches?.('[data-growth-draft],[data-mission-draft]'))return;
+ const growthField=field.matches('[data-growth-draft]');
+ if(growthField)growthPending=field.value;else missionPending=field.value;
+ const count=app.querySelector('[data-growth-count]');if(count)count.textContent=`${field.value.length} / ${field.maxLength}`;
+ const save=app.querySelector(growthField?'[data-action="growth-save"]':'[data-action="mission-save"]');if(save)save.disabled=!field.value.trim();
+ clearTimeout(draftTimer);draftTimer=setTimeout(flushDraft,400);
+});
 app.addEventListener('input',event=>{const input=event.target;if(!input.matches('[data-audio-rate]'))return;const rate=Number(input.value);commit({type:'setting',key:'audioRate',value:rate});player.setRate(rate);const output=input.closest('.passage-speed').querySelector('[data-audio-rate-label]');const label=`${rate===1?output.dataset.normalLabel+' ':''}${rate.toFixed(1)}×`;output.textContent=label;input.setAttribute('aria-valuetext',label);});
 
 if(state.onboarded&&!needsKoreanGuide){

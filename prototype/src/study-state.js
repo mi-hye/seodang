@@ -6,12 +6,13 @@ const object=x=>Boolean(x&&typeof x==='object'&&!Array.isArray(x));
 const date=x=>typeof x==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x)&&studyDay(new Date(`${x}T12:00:00`))===x;
 export function validStudy(data){
  if(data===undefined)return true;
- return object(data)&&Object.entries(data).every(([direction,d])=>['ko-ja','ja-ko'].includes(direction)&&object(d)&&(d.lessons===undefined||object(d.lessons)&&Object.entries(d.lessons).every(([key,r])=>key.startsWith(direction+':')&&key.length<160&&object(r)&&date(r.completedOn))));
+ return object(data)&&Object.entries(data).every(([direction,d])=>['ko-ja','ja-ko'].includes(direction)&&object(d)&&(d.lessons===undefined||object(d.lessons)&&Object.entries(d.lessons).every(([key,r])=>key.startsWith(direction+':')&&key.length<160&&object(r)&&date(r.completedOn)&&(r.at===undefined||Number.isSafeInteger(r.at)&&r.at>0))));
 }
+// `at` keeps the completion order within a day; older records only have the date.
 export function recordStudyCompletion(s,before,after,now=new Date()){
  if(!before||!after||before.lesson_id!==after.lesson_id||before.done||!after.done)return s;
  const direction=after.course_direction,d=s.studyTools?.[direction]||{};
- return {...s,studyTools:{...s.studyTools,[direction]:{...d,lessons:{...d.lessons,[after.lesson_id]:{completedOn:studyDay(now)}}}}};
+ return {...s,studyTools:{...s.studyTools,[direction]:{...d,lessons:{...d.lessons,[after.lesson_id]:{completedOn:studyDay(now),at:now.getTime()}}}}};
 }
 export function reviewDueOn(completedOn){
  if(!date(completedOn))return null;

@@ -1,14 +1,14 @@
 import {practiceCases} from '../scripts/practice-fixtures.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import {existsSync} from 'node:fs';
 import {freshState,reduce} from '../src/engine.js';import {valid,load} from '../src/storage.js';
-import {isCasePractice,practiceRoundCount,advancePractice,practiceHasWriting,validPractices} from '../src/practice-state.js';import {prepareContent,practiceUnits,practiceKey,interceptCompletion} from '../src/practice-content.js';
+import {isCasePractice,expressionReviewCount,practiceRoundCount,advancePractice,practiceHasWriting,validPractices} from '../src/practice-state.js';import {prepareContent,practiceUnits,practiceKey,interceptCompletion} from '../src/practice-content.js';
 import {normalizeKana,kanaLessons,kanaRound} from '../src/kana-state.js';import {freshBasic} from '../src/basics-state.js';import {freshLabels} from '../src/labels-state.js';import {freshListening} from '../src/listening-state.js';import {freshSentence} from '../src/sentence-state.js';import {freshDialogue} from '../src/dialogue-state.js';import {freshReading,readingAnswers} from '../src/reading-state.js';import {freshKoreanProgress} from '../src/korean-state.js';
 const base=()=>({...freshState(),onboarded:true,onboardingLevel:1});
 test('all lesson completions wait for three rounds of level-appropriate practice, with serializable resume and deferred history',async()=>{
  for(const [kind,s,action] of practiceCases()){
   await prepareContent(kind);const candidate=reduce(s,action),gated=interceptCompletion(s,candidate,kind,action),key=practiceKey(s,kind);assert.ok(gated.practices?.[key],kind);assert.deepEqual(gated.history,s.history);assert.deepEqual(gated.korean?.history,s.korean?.history);
   const units=practiceUnits(s,kind);for(const unit of units){assert.ok(unit.text&&unit.meaning&&unit.audio?.audioFile,`${kind}: ${JSON.stringify(unit)}`);assert.ok(existsSync(new URL('../'+unit.audio.audioFile,import.meta.url)),unit.audio.audioFile);}
-  let p=gated.practices[key],steps=0;while(p){assert.ok(validPractices({[key]:p}));p=advancePractice(p,practiceRoundCount(key),practiceHasWriting(key));steps++;}assert.equal(steps,units.length*practiceRoundCount(key)*(practiceHasWriting(key)?2:1),kind);
+  let p=gated.practices[key],steps=0;while(p){assert.ok(validPractices({[key]:p}));p=advancePractice(p,practiceRoundCount(key),practiceHasWriting(key));steps++;}assert.equal(steps,(expressionReviewCount(key)||units.length)*practiceRoundCount(key)*(practiceHasWriting(key)?2:1),kind);
   const restored=load({getItem:()=>JSON.stringify(gated)});assert.equal(restored.blocked,false,kind);assert.deepEqual(restored.state.practices,gated.practices);
   const result=reduce({...gated,practices:{}},action);assert.deepEqual(result,{...candidate,practices:{}},kind);
  }

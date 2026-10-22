@@ -1,8 +1,11 @@
 import {scheduledReviews} from './study-state.js';
 import {studyCatalog} from './study-catalog.js';
-import {localDateKey,completedCases} from './learning-history.js';
+import {localDateKey} from './learning-history.js';
 import {button,icon} from './ui.js';
 import {t,isJapaneseUI} from './i18n.js';
+// Completed active lessons for the current direction (videos and expert talks included, current revisions only).
+// Growth answers store this count as a plain fact.
+export const completedLessons=state=>studyCatalog(state).filter(l=>l.completed);
 export function activityMonth(history,month) {
  const year=month.getFullYear(),index=month.getMonth();
  const days=Array.from({length:new Date(year,index+1,0).getDate()},(_,i)=>{const key=localDateKey(new Date(year,index,i+1));return {key,day:i+1,activity:history?.days[key]};});
@@ -11,7 +14,7 @@ export function activityMonth(history,month) {
 export function renderRecords(state,top,tabs,{offset=0,selected=localDateKey(new Date())}={}) {
  const jp=isJapaneseUI(),history=state.courseDirection==='ja-ko'?state.korean?.history:state.history;
  const now=new Date(),month=new Date(now.getFullYear(),now.getMonth()+offset,1),today=localDateKey(now);
- const {days,leadingBlanks,activeDays}=activityMonth(history,month),complete=state.courseDirection==='ja-ko'?[...Object.values(state.korean?.lessons||{}).filter(l=>l.completed),...Object.entries(state.scenarios||{}).filter(([k,p])=>k.startsWith('ja-ko:')&&p.completed)]:completedCases(state);
+ const {days,leadingBlanks,activeDays}=activityMonth(history,month),complete=completedLessons(state);
  const reviewCount=scheduledReviews(state,studyCatalog(state)).filter(l=>l.due).length;
  const d=history?.days[selected];
  const detail=d?[['letters','글자'],['expressions','표현'],['sentences','문장'],['cases','학습 완료']].filter(([key])=>d[key]).map(([key,label])=>`${t(label)} ${d[key]}${jp?key==='cases'?'件':'回':key==='cases'?'개':'회'}`).join(' · '):t(!history||selected<history.startedOn?'날짜별 기록을 시작하기 전이에요.':'학습 기록이 없어요.');

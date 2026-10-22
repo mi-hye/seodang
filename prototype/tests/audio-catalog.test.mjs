@@ -65,3 +65,15 @@ test('level 4-7 listening packs include the exact prompt audio for both language
  const {scenarioAudio}=await import('../src/scenario-content.js');
  for(const direction of ['ko-ja','ja-ko']){const pack=catalog.packs[`${direction}:scenario:10`];assert.equal(pack.files.length,3);for(let i=0;i<3;i++){const a=scenarioAudio(direction,'10',i);assert.ok(pack.files.includes(a.audioFile));assert.equal(catalog.files[a.audioFile].text,a.text);assert.equal(catalog.files[a.audioFile].locale,a.locale);}}
 });
+
+test('proposal lesson download packs include every tappable clause with matching text',async()=>{
+ const {scenarioTokenAudio}=await import('../src/scenario-content.js');
+ for(const direction of ['ko-ja','ja-ko'])for(let i=0;i<3;i++)for(let token=0;token<3;token++){
+  const a=scenarioTokenAudio(direction,'12',i,token);assert.ok(catalog.packs[`${direction}:scenario:12`].files.includes(a.audioFile));assert.equal(catalog.files[a.audioFile].text,a.text);assert.equal(catalog.files[a.audioFile].locale,a.locale);
+ }
+});
+
+test('choice audio packs contain all selectable sentences for chat and order repair',async()=>{
+ const {scenarioAudio,scenarioChoiceAudio}=await import('../src/scenario-content.js');
+ for(const direction of ['ko-ja','ja-ko'])for(const id of ['14','15','16','17'])for(let i=0;i<3;i++)for(const a of [scenarioAudio(direction,id,i),...[0,1,2].map(c=>scenarioChoiceAudio(direction,id,i,c))]){assert.ok(catalog.packs[`${direction}:scenario:${id}`].files.includes(a.audioFile));assert.equal(catalog.files[a.audioFile].text,a.text);assert.equal(catalog.files[a.audioFile].locale,a.locale);}
+});

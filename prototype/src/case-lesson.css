@@ -1,6 +1,6 @@
 .case-lesson{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:12px;padding-top:12px;padding-bottom:24px;text-align:left;word-break:keep-all;overflow-wrap:anywhere}
 .case-lesson>*{min-width:0;max-width:100%;flex:none}
-.case-lesson-count{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+
 .case-lesson-image{display:block;width:100%;height:clamp(88px,16svh,140px);object-fit:cover;border-radius:16px}
 .case-lesson-content{display:flex;flex-direction:column;gap:8px}
 .case-lesson p{font-size:calc(17px * var(--text-scale));line-height:1.75;margin:0;white-space:pre-line}

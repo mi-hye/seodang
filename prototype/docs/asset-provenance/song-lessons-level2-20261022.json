@@ -1,0 +1,151 @@
+{
+  "date": "2026-10-22",
+  "scope": "Six level-2 song lesson candidates; local development preview only.",
+  "rightsStatus": "unconfirmed",
+  "rightsNote": "Official upload and playable_in_embed metadata are technical/source checks, not permission to reproduce, translate, or distribute lyrics in a commercial app. Production publishing remains blocked pending rights clearance.",
+  "mediaHandling": "Source audio and ASR were retained only in /tmp/seodang-song-review for local timing verification. No source audio, video, captions, or full transcript is included in the repository, lesson assets, offline packs, or hosted media.",
+  "textHandling": "Only a minimal common target fragment is displayed. Explanations, application questions, and everyday examples are original instructional writing. No complete song lyrics or verse translations are included.",
+  "uiCopyReview": {
+    "skill": "humanize-korean",
+    "run": "_workspace/2026-10-22-013-8cc1",
+    "route": "light",
+    "changeRatePercent": 0.0,
+    "grade": "B",
+    "selfCheck": "6/6",
+    "gate": "OK"
+  },
+  "lessons": [
+    {
+      "lesson": "jp-arigatou",
+      "source": "https://www.youtube.com/watch?v=VZBU8LvZ91Q",
+      "sourceTitle": "いきものがかり 『ありがとう』Music Video",
+      "channel": "いきものがかり Official YouTube Channel",
+      "channelId": "UCpS1hrIQnrvEyyUApthDTtQ",
+      "startSeconds": 128,
+      "endSeconds": 133,
+      "sourceDurationSeconds": 377,
+      "availability": "public",
+      "playable_in_embed": true,
+      "targetReference": "src/song-lesson-content.js#jp-arigatou",
+      "verification": {
+        "metadataChecked": "2026-10-22",
+        "method": "Original audio analyzed locally with mlx-community/whisper-large-v3-turbo; selected integer-second crop transcribed independently with word timestamps.",
+        "targetMatched": true,
+        "youtubeCaptionsUsed": false,
+        "humanListeningVerified": false,
+        "devicePlaybackVerified": false,
+        "notes": "Full-song and selected-crop ASR agree on the short target fragment."
+      }
+    },
+    {
+      "lesson": "jp-cherry",
+      "source": "https://www.youtube.com/watch?v=Eze6-eHmtJg",
+      "sourceTitle": "スピッツ / チェリー",
+      "channel": "spitzclips",
+      "channelId": "UCEAOVoVVtVBhcn7vLIQIkDA",
+      "startSeconds": 197,
+      "endSeconds": 202,
+      "sourceDurationSeconds": 263,
+      "availability": "public",
+      "playable_in_embed": true,
+      "targetReference": "src/song-lesson-content.js#jp-cherry",
+      "verification": {
+        "metadataChecked": "2026-10-22",
+        "method": "Original audio analyzed locally with mlx-community/whisper-large-v3-turbo; selected integer-second crop transcribed independently with word timestamps.",
+        "targetMatched": true,
+        "youtubeCaptionsUsed": false,
+        "humanListeningVerified": false,
+        "devicePlaybackVerified": false,
+        "notes": "Full-song and selected-crop ASR agree on the short target fragment."
+      }
+    },
+    {
+      "lesson": "jp-marigold",
+      "source": "https://www.youtube.com/watch?v=0xSiBpUdW4E",
+      "sourceTitle": "あいみょん - マリーゴールド【OFFICIAL MUSIC VIDEO】",
+      "channel": "あいみょん",
+      "channelId": "UCG8MvaPCa2ecKH3GZyFxduA",
+      "startSeconds": 84,
+      "endSeconds": 89,
+      "sourceDurationSeconds": 322,
+      "availability": "public",
+      "playable_in_embed": true,
+      "targetReference": "src/song-lesson-content.js#jp-marigold",
+      "verification": {
+        "metadataChecked": "2026-10-22",
+        "method": "Original audio analyzed locally with mlx-community/whisper-large-v3-turbo; selected integer-second crop transcribed independently with word timestamps.",
+        "targetMatched": true,
+        "youtubeCaptionsUsed": false,
+        "humanListeningVerified": false,
+        "devicePlaybackVerified": false,
+        "notes": "Full-song and selected-crop ASR agree on the short target fragment."
+      }
+    },
+    {
+      "lesson": "ko-night-letter",
+      "source": "https://www.youtube.com/watch?v=BzYnNdJhZQw",
+      "sourceTitle": "[MV] IU(아이유) _ Through the Night(밤편지)",
+      "channel": "1theK (원더케이)",
+      "channelId": "UCweOkPb1wVVH0Q0Tlj4a5Pw",
+      "startSeconds": 255,
+      "endSeconds": 261,
+      "sourceDurationSeconds": 283,
+      "availability": "public",
+      "playable_in_embed": true,
+      "targetReference": "src/song-lesson-content.js#ko-night-letter",
+      "verification": {
+        "metadataChecked": "2026-10-22",
+        "method": "Original audio analyzed locally with mlx-community/whisper-large-v3-turbo; selected integer-second crop transcribed independently with word timestamps.",
+        "targetMatched": true,
+        "youtubeCaptionsUsed": false,
+        "humanListeningVerified": false,
+        "devicePlaybackVerified": false,
+        "notes": "Full-song and selected-crop ASR agree on the short target fragment."
+      }
+    },
+    {
+      "lesson": "ko-travel",
+      "source": "https://www.youtube.com/watch?v=xRbPAVnqtcs",
+      "sourceTitle": "[MV] BOL4(볼빨간사춘기) _ Travel(여행)",
+      "channel": "1theK (원더케이)",
+      "channelId": "UCweOkPb1wVVH0Q0Tlj4a5Pw",
+      "startSeconds": 21,
+      "endSeconds": 25,
+      "sourceDurationSeconds": 257,
+      "availability": "public",
+      "playable_in_embed": true,
+      "targetReference": "src/song-lesson-content.js#ko-travel",
+      "verification": {
+        "metadataChecked": "2026-10-22",
+        "method": "Original audio analyzed locally with mlx-community/whisper-large-v3-turbo; selected integer-second crop transcribed independently with word timestamps.",
+        "targetMatched": true,
+        "youtubeCaptionsUsed": false,
+        "humanListeningVerified": false,
+        "devicePlaybackVerified": false,
+        "notes": "Full-song and selected-crop ASR agree on the short target fragment."
+      }
+    },
+    {
+      "lesson": "ko-love-lee",
+      "source": "https://www.youtube.com/watch?v=EIz09kLzN9k",
+      "sourceTitle": "AKMU - ‘Love Lee’ M/V",
+      "channel": "AKMU",
+      "channelId": "UCIcXK1CI8URMIqNO_1cehiQ",
+      "startSeconds": 27,
+      "endSeconds": 31,
+      "sourceDurationSeconds": 205,
+      "availability": "public",
+      "playable_in_embed": true,
+      "targetReference": "src/song-lesson-content.js#ko-love-lee",
+      "verification": {
+        "metadataChecked": "2026-10-22",
+        "method": "Original audio analyzed locally with mlx-community/whisper-large-v3-turbo; selected integer-second crop transcribed independently with word timestamps.",
+        "targetMatched": true,
+        "youtubeCaptionsUsed": false,
+        "humanListeningVerified": false,
+        "devicePlaybackVerified": false,
+        "notes": "Full-song ASR did not recognize the target. A separate 15–35-second passage recognized it as an exact standalone word at 28.02–28.76 seconds, and the final 27–31-second crop independently recognized the same standalone target. An earlier inflected-word substring was excluded."
+      }
+    }
+  ]
+}

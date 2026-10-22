@@ -1,4 +1,4 @@
-import {webkit} from '@playwright/test';
+import {webkit,expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
 import {freshState} from '../src/engine.js';
@@ -31,12 +31,12 @@ try {
  for(let i=0;i<3;i++) {
   assert.equal((await saved()).sentence.index,i);
   assert.ok(await page.locator('.sentence-learn').count());
-  assert.equal(await page.locator('.sentence-step').innerText(),`${i*2+1}/6`);
-  assert.equal(await page.locator('.sentence-step').evaluate(el=>getComputedStyle(el).textAlign),'right');
+  await expect(page.locator('.sentence-step')).toHaveCount(0);
+  await expect(page.locator('.sentence-step')).toHaveCount(0);
   assert.equal(await page.locator('.sentence-heading h2').count(),1);
   await click('sentence-next');
   assert.equal(await page.locator('[data-action="sentence-check"]').isDisabled(),true);
-  assert.equal(await page.locator('.sentence-step').innerText(),`${i*2+2}/6`);
+  await expect(page.locator('.sentence-step')).toHaveCount(0);
   assert.equal(await page.locator('.sentence-answer').innerText(),'말을 순서대로 골라주세요');
   assert.equal(await page.getByText('말을 순서대로 골라주세요',{exact:true}).count(),1);
   for(const width of [320,390]){

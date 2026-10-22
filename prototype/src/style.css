@@ -1212,6 +1212,25 @@ details small {
   color: #c4e7d4;
   border-color: var(--jade);
 }
+/* Checked-answer feedback in choice lessons: rose = try again, jade = correct. */
+[role=status].lesson-verdict {
+  background: #3a2830;
+  color: #f1cfcc;
+  border: 0;
+  border-left: 2px solid var(--rose);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 14px;
+  scroll-margin: 80px 0 128px;
+}
+[role=status].lesson-verdict.success {
+  background: #213a32;
+  color: #c4e7d4;
+  border-left-color: var(--jade);
+}
+.lesson-verdict > p { margin: 0; }
+.lesson-verdict > p + p { margin-top: 4px; }
+.reading-option.selected.correct { border-color: var(--jade); }
+.scenario-choices .selected.correct { outline-color: var(--jade); }
 .solved-slab > .eyebrow {
   display: flex;
   align-items: center;
@@ -1733,15 +1752,6 @@ dialog::backdrop {
 }
 .learned-line summary {
   font-size: 20px;
-}
-.hints {
-  padding-left: 21px;
-  color: #735d40;
-  line-height: 1.85;
-}
-.hints li {
-  padding: 12px 0;
-  font-size: 15px;
 }
 .storage-warning {
   padding: 12px 22px;

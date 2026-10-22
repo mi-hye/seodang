@@ -1,0 +1,102 @@
+{
+  "lesson": "scenario:12",
+  "purpose": "Tap-to-play clause audio",
+  "voices": {
+    "ja": "VOICEVOX Nemo 男声1",
+    "ko": "Supertonic 3 M1"
+  },
+  "verification": "18 clips checked with mlx-whisper large-v3-turbo. Korean token 1.2 uses the corresponding segment of the existing verified full reply (start 4.24s); full-context transcription reads 맡겠습니다, isolated transcription reads 막겠습니다. This ASR ambiguity remains recorded here.",
+  "transcriptions": [
+    {
+      "file": "assets/audio/scenarios/ko-ja.12.token.0.0.wav",
+      "expected": "費用を抑えることには賛成ですが、",
+      "heard": "費用を抑えることには賛成ですが"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.12.token.0.1.wav",
+      "expected": "席が足りなくなるおそれがあるので、",
+      "heard": "席が足りなくなる恐れがあるので"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.12.token.0.2.wav",
+      "expected": "まず参加人数を確認しませんか。",
+      "heard": "まず参加人数を確認しませんか"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.12.token.1.0.wav",
+      "expected": "土曜日の午前中に限りますが、",
+      "heard": "土曜日の午前中に限りますが"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.12.token.1.1.wav",
+      "expected": "それでもよろしければ、",
+      "heard": "それでもよろしければ。"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.12.token.1.2.wav",
+      "expected": "資料の整理を引き受けます。",
+      "heard": "資料の整理を引き受けます"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.12.token.2.0.wav",
+      "expected": "今日結論を出すのはいったん見送って、",
+      "heard": "今日結論を出すのは一旦見送って"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.12.token.2.1.wav",
+      "expected": "一週間試してみた上で、",
+      "heard": "1週間試してみた上で"
+    },
+    {
+      "file": "assets/audio/scenarios/ko-ja.12.token.2.2.wav",
+      "expected": "改めて判断してはどうでしょうか。",
+      "heard": "改めて判断してはどうでしょうか"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.12.token.0.0.wav",
+      "expected": "비용을 줄이는 데는 찬성하지만,",
+      "heard": " 비용을 줄이는 데는 찬성하지만"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.12.token.0.1.wav",
+      "expected": "자리가 부족해질 우려가 있으니",
+      "heard": " 자리가 부족해질 우려가 있으니"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.12.token.0.2.wav",
+      "expected": "먼저 참가 인원을 확인하는 게 어떨까요?",
+      "heard": " 먼저 참가 인원을 확인하는 게 어떨까요?"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.12.token.1.0.wav",
+      "expected": "토요일 오전에 한해서만 가능하지만,",
+      "heard": " 토요일 오전에 한해서만 가능하지만"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.12.token.1.1.wav",
+      "expected": "그래도 괜찮으시다면",
+      "heard": " 그래도 괜찮으시다면"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.12.token.1.2.wav",
+      "expected": "자료 정리는 제가 맡겠습니다.",
+      "heard": " 자료 정리는 제가 막겠습니다."
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.12.token.2.0.wav",
+      "expected": "오늘 결론을 내리는 건 일단 보류하고,",
+      "heard": " 오늘 결론을 내리는 건 일단 보류하고"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.12.token.2.1.wav",
+      "expected": "일주일 동안 시험해 본 뒤에",
+      "heard": " 일주일 동안 시험해 본 뒤에"
+    },
+    {
+      "file": "assets/audio/scenarios/ja-ko.12.token.2.2.wav",
+      "expected": "다시 판단하면 어떨까요?",
+      "heard": " 다시 판단하면 어떨까요?"
+    }
+  ],
+  "catalogVersion": "c1c35e3a7e5c803e"
+}

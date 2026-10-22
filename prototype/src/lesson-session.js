@@ -1,5 +1,6 @@
+import {videoLesson,videoProgress} from './video-lesson-state.js';
 import {expertProgress,expertKey,freshExpert} from './expert-state.js';
-import {scenarioProgress,scenarioKey,freshScenario} from './scenario-state.js';
+import {scenarioProgress,scenarioKey,freshScenario,scenarioHasSpeaking} from './scenario-state.js';
 import {japaneseLessonUI} from './curriculum.js';
 import {practiceHasWriting,practiceRoundCount,normalizePractice,normalizeCasePractice} from './practice-state.js';
 import {basicLessons,freshBasic,nextBasic,basicSinglePass,basicHasIntro,basicGroup} from './basics-state.js';
@@ -24,6 +25,7 @@ export function entryState(s,kind,id){
  return s;
 }
 export function lessonProgress(s,kind){
+ if(kind==='video')return videoProgress(s);
  if(kind==='expert')return expertProgress(s);
  if(kind==='scenario')return scenarioProgress(s);
  if(kind==='sentence')return sentenceProgress(s);
@@ -34,7 +36,7 @@ export function lessonProgress(s,kind){
  return s[kind==='play'?'episode':kind];
 }
 export function shouldOfferResume(s,kind){
- if(!['expert','scenario'].includes(kind)&&s.practices?.[practiceKey(s,kind)])return true;
+ if(kind!=='expert'&&s.practices?.[practiceKey(s,kind)])return true;
  const p=lessonProgress(s,kind),phase=p?.phase||p?.step;
  if(!p?.started||['summary','done'].includes(phase)||(kind==='listening'&&p.index===4))return false;
  // Opening the first page sets started, but is not progress worth resuming.
@@ -74,6 +76,8 @@ export function lessonPercent(s,kind){
  }else if(kind==='labels'){total=count*3;done=p.phase==='match'?count*2+(p.matches?.length||0):i*2+(p.phase==='build'?1:0);}
  else if(kind==='listening'){total=count;done=i;}
  else if(kind==='sentence'){total=count*3+(sentenceId(s)===3?0:1);done=p.phase==='solve'?count*3:i*3+(p.phase==='arrange'?1:p.phase==='speak'?2:0);}
+ else if(kind==='video'){total=(videoLesson(s)?.count||1)*2;done=i*2+(p.phase==='learn'?1:0);}
+ else if(kind==='scenario'){const steps=scenarioHasSpeaking(s.scenarioActive)?3:1;total=3*steps;done=i*steps+(p.phase==='quiz'&&steps===3?1:p.phase==='speak'?2:0);}
  else if(kind==='dialogue'){done=p.phase==='practice'?count+i:p.phase==='learn'?i:0;}
  else if(kind==='reading'){total=12;done=Math.floor(i/2)*4+(p.phase==='intro'?0:p.phase==='learn'?1:2+i%2);}
  else if(kind==='play'){total=6;done={intro:0,learn:1+(p.lesson||0),investigate:3,solved:4,transfer:5,summary:6}[p.step]||0;}

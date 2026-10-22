@@ -1,4 +1,5 @@
 import {reduceVideo} from './video-lesson-state.js';
+import {reduceSong} from './song-state.js';
 import {reduceExpert} from './expert-state.js';
 import {reduceScenario} from './scenario-state.js';
 import {canonicalLevel} from './curriculum.js';
@@ -12,6 +13,8 @@ import { recordLearning } from "./learning-history.js";
 import { reduceSentence, sentenceId, sentenceProgress, setSentenceProgress } from "./sentence-state.js";
 import { reduceKana } from "./kana-state.js";
 import { episode, expressions } from "./content.js";
+import {reduceGrowth} from './growth-state.js';
+import {reduceMission} from './mission-state.js';
 export const freshEpisode = () => ({
   contentVersion: 1,
   started: false,
@@ -44,7 +47,11 @@ export function episodeAudioId(state) {
   return null;
 }
 export function reduce(state, action, now) {
+  // Growth answers and missions are the learner's own writing; they never count as lesson activity.
+  if(action.type.startsWith("growth-"))return reduceGrowth(state,action,now);
+  if(action.type.startsWith("mission-"))return reduceMission(state,action,now);
   if(action.type.startsWith("video-")){const next=reduceVideo(state,action);return next===state?state:recordLearning(state,next,action,now);}
+  if(action.type.startsWith("song-")){const next=reduceSong(state,action);return next===state?state:recordLearning(state,next,action,now);}
   if(action.type.startsWith("expert-")){const next=reduceExpert(state,action);return next===state?state:recordLearning(state,next,action,now);}
   if(action.type.startsWith("scenario-")){const next=reduceScenario(state,action);return next===state?state:recordLearning(state,next,action,now);}
   if(action.type.startsWith("korean-"))return state.courseDirection==='ja-ko'?{...state,korean:reduceKorean(state,action,now)}:state;
@@ -149,9 +156,6 @@ function reduceCore(state, action) {
         e.step = "solved";
         e.feedback = "";
       }
-      break;
-    case "hint":
-      e.hintLevel = Math.min(3, e.hintLevel + 1);
       break;
     case "transfer":
       if (e.step !== "transfer" || e.transfer === "passed") break;

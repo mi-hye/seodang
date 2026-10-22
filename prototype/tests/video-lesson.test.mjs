@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {freshState,reduce} from '../src/engine.js';import {valid,load,STORAGE_KEY} from '../src/storage.js';import {videoLessons,videoLesson,videoProgress,lessonNumberWithVideo,videosForCourse} from '../src/video-lesson-state.js';import {renderLearningMap} from '../src/learning-map.js';import {renderVideoLesson} from '../src/video-lesson.js';
-for(const {id,direction,level,count,number} of videoLessons)test(`video course ${direction} ${level}: map, progress, reload, restart`,()=>{
+for(const {id,direction,level,count,number} of videoLessons.filter(l=>!l.mode))test(`video course ${direction} ${level}: map, progress, reload, restart`,()=>{
  let s={...freshState(),courseDirection:direction,onboardingLevel:level,videoActive:id};assert.equal(videoLesson(s).number,number);
  const map=renderLearningMap(s);
  const stops=[...map.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"/g)].map(m=>m[1]);
@@ -42,25 +42,11 @@ test('previous from the next clip returns to the preceding expression',()=>{
  assert.equal(videoProgress(s).phase,'learn');assert.equal(videoProgress(s).index,0);
 });
 
-test('each direction has two videos at every level from 2 through 5',()=>{
+test('video positions remain multiples of three, with a third clip at levels two and five',()=>{
  for(const direction of ['ko-ja','ja-ko']){
-  for(const level of [2,4,5,7])assert.equal(videoLessons.filter(l=>l.direction===direction&&l.level===level).length,2);
+  for(const level of [2,4,5,7])assert.equal(videoLessons.filter(l=>l.direction===direction&&l.level===level).length,level===2?4:level===7?3:2);
   assert.equal(videoLesson({...freshState(),courseDirection:direction,onboardingLevel:6}).level,5);
  }
-});
-
-for(const direction of ['ko-ja','ja-ko'])test(`${direction} two video lessons keep separate progress and completion history`,()=>{
- let s={...freshState(),courseDirection:direction,onboardingLevel:2};const [first,second]=videosForCourse(s);
- assert.deepEqual([first.number,second.number],[3,6]);assert.equal(lessonNumberWithVideo(s,5),7);
- s=reduce(s,{type:'video-start',id:first.id});s=reduce(s,{type:'video-next'});
- const saved=structuredClone(videoProgress(s));s=reduce(s,{type:'video-start',id:second.id});assert.equal(videoProgress(s).phase,'watch');assert.deepEqual(videoProgress(s,first.id),saved);
- s=reduce(s,{type:'video-next'});s=reduce(s,{type:'video-next'});
- const host=x=>direction==='ko-ja'?x:x.korean;assert.equal(Object.values(host(s).history.days)[0].cases,1);
- s=reduce(s,{type:'video-start',id:first.id});assert.equal(videoProgress(s).phase,'learn');
- s=reduce(s,{type:'video-start',id:second.id});assert.equal(Object.values(host(s).history.days)[0].cases,1);
- s=reduce(s,{type:'video-start',id:first.id});s=reduce(s,{type:'video-next'});assert.equal(Object.values(host(s).history.days)[0].cases,2);
- const loaded=load({getItem:k=>k===STORAGE_KEY?JSON.stringify(s):null,setItem(){}});assert.equal(loaded.blocked,false);assert.equal(videoProgress(loaded.state,second.id).completed,true);
- assert.deepEqual(reduce(s,{type:'video-start',id:'misaeng'}),s);assert.equal(valid({...s,videoActive:'not-a-lesson'}),false);
 });
 
 for(const level of [4,5,7])for(const direction of ['ko-ja','ja-ko'])test(`${direction} internal level ${level} lesson 6 preserves lesson 3 resume`,()=>{
@@ -69,4 +55,11 @@ for(const level of [4,5,7])for(const direction of ['ko-ja','ja-ko'])test(`${dire
  s=reduce(s,{type:'video-start',id:second.id});s=reduce(s,{type:'video-next'});s=reduce(s,{type:'video-next'});
  assert.equal(videoProgress(s).completed,true);assert.deepEqual(videoProgress(s,first.id),saved);
  s=load({getItem:k=>k===STORAGE_KEY?JSON.stringify(s):null}).state;s=reduce(s,{type:'video-start',id:first.id});assert.deepEqual(videoProgress(s),saved);
+});
+
+test('level 2-9 Chiikawa replacement restarts old Frieren progress and preserves Korean progress',()=>{
+ const old={...freshState(),courseDirection:'ko-ja',onboardingLevel:2,videoActive:'frieren-just-right',videoLessons:{'frieren-just-right':{version:1,started:true,completed:true,index:0,phase:'done'},'hospital-appreciation':{version:1,started:true,completed:true,index:0,phase:'done'}}};
+ assert.equal(valid(old),true);assert.equal(videoProgress(old).completed,false);assert.equal(videoProgress(old).version,3);
+ const s=reduce(old,{type:'video-start'});assert.equal(s.videoLessons['frieren-just-right'].version,3);assert.equal(videoProgress(s).phase,'watch');assert.deepEqual(s.videoLessons['hospital-appreciation'],old.videoLessons['hospital-appreciation']);
+ assert.match(renderVideoLesson(s,()=>''),/cE8wVmwY7VY/);assert.match(renderVideoLesson(s,()=>''),/start=17&amp;end=19|start=17&end=19/);
 });

@@ -1,7 +1,112 @@
+import {detectiveVideoContent} from './video-detective-content.js';
 // Quotes and whole-second clip bounds were checked against original audio and isolated crops.
 // No YouTube captions used; original media is not bundled.
 // Explanations, translations and examples below are authored for this lesson.
 export const videoContent={
+...detectiveVideoContent,
+
+  "chiikawa-offer": [
+    {
+      "videoId": "cE8wVmwY7VY",
+      "startSeconds": 5,
+      "endSeconds": 8,
+      "work": "치이카와 · 5화",
+      "channel": "めざましテレビチャンネル",
+      "title": "친구에게 음식을 권할 때",
+      "quote": "チャリメラ食べる？",
+      "parts": [
+        "チャリメラ",
+        "食べる？"
+      ],
+      "translation": "차리메라 먹을래?",
+      "pattern": "〜食べる？",
+      "patternParts": [
+        "〜食べる？"
+      ],
+      "usage": "음식 이름 뒤에 「食べる？」를 붙여 먹을지 물어요. 장면에서는 하치와레가 라면을 먹겠냐고 권해요.",
+      "note": "친한 사이에서 쓰는 말투예요. 「チャリメラ」는 장면 속에서 라면 이름을 잘못 부른 말이에요. 음식 이름을 바꿔 써 보세요.",
+      "example": "おにぎり食べる？",
+      "exampleParts": [
+        "おにぎり",
+        "食べる？"
+      ],
+      "exampleTranslation": "주먹밥 먹을래?"
+    }
+  ],
+  "hospital-thanks": [
+    {
+      "videoId": "sczKFlBP1Y4",
+      "startSeconds": 17,
+      "endSeconds": 19,
+      "work": "슬기로운 의사생활 · 공식 예고",
+      "channel": "tvN DRAMA",
+      "explanationLang": "ja",
+      "title": "してくれたことに感謝するとき",
+      "titleParts": [
+        "してくれたことに",
+        "感謝するとき"
+      ],
+      "quote": "기회 주셔서 감사합니다.",
+      "translation": "機会をくださってありがとうございます。",
+      "pattern": "주셔서 감사합니다.",
+      "usage": "「기회」は機会です。「주셔서 감사합니다」で、相手がくれたことに丁寧にお礼を伝えます。",
+      "note": "「도와주셔서 감사합니다」は、助けてくれた相手へのお礼です。お礼の理由を添えて伝えたいときに使えます。",
+      "example": "도와주셔서 감사합니다.",
+      "exampleTranslation": "助けてくださってありがとうございます。"
+    }
+  ]
+,
+
+  "frieren-just-right": [
+  {
+    "videoId": "cE8wVmwY7VY",
+    "startSeconds": 17,
+    "endSeconds": 19,
+    "work": "치이카와 · 5화",
+    "channel": "めざましテレビチャンネル",
+    "title": "내가 할 일을 가볍게 알려 줄 때",
+    "quote": "作るね。",
+    "parts": [
+      "作るね。"
+    ],
+    "translation": "만들게.",
+    "pattern": "作るね。",
+    "patternParts": [
+      "作るね。"
+    ],
+    "usage": "친구에게 내가 하려는 일을 알려 줄 때 써요. 하치와레는 라면을 만들겠다고 말해요.",
+    "note": "作る는 ‘만들다’라는 뜻이에요. 끝에 ね를 붙여 부드럽게 말해요. 친한 사이에서 쓰는 말투예요.",
+    "example": "先に行くね。",
+    "exampleParts": [
+      "先に",
+      "行くね。"
+    ],
+    "exampleTranslation": "먼저 갈게."
+  }
+],
+  "hospital-appreciation": [
+    {
+      "videoId": "sczKFlBP1Y4",
+      "startSeconds": 14,
+      "endSeconds": 16,
+      "work": "슬기로운 의사생활 · 공식 예고",
+      "channel": "tvN DRAMA",
+      "explanationLang": "ja",
+      "title": "頑張った相手をねぎらうとき",
+      "titleParts": [
+        "頑張った相手を",
+        "ねぎらうとき"
+      ],
+      "quote": "고생 많으셨어요.",
+      "translation": "本当にお疲れさまでした。",
+      "pattern": "고생 많으셨어요.",
+      "usage": "大変なことを終えた相手に、苦労や頑張りをねぎらう表現です。「고생」は苦労という意味です。",
+      "note": "丁寧な言い方です。友達には「고생 많았어」とも言えます。単に別れのあいさつとして使うのではなく、相手が頑張った場面で使いましょう。",
+      "example": "오늘도 고생 많으셨어요.",
+      "exampleTranslation": "今日も本当にお疲れさまでした。"
+    }
+  ]
+,
 "frieren-inference":[{"videoId": "DddirskV5Vo", "startSeconds": 25, "endSeconds": 31, "work": "프리렌 미니 애니메이션 · 20화", "channel": "TOHO animation", "title": "이해한 내용을 자기 말로 확인할 때", "quote": "例えば外見は俺でも中身は師匠ってことだろ。ちょっとやってみたいけどな。", "parts": ["例えば", "外見は俺でも", "中身は師匠って", "ことだろ。", "ちょっと", "やってみたい", "けどな。"], "translation": "예를 들면 겉모습은 나여도 속은 스승님이라는 거잖아. 좀 해 보고 싶은데.", "pattern": "〜ってことだろ", "patternParts": ["〜って", "ことだろ"], "usage": "들은 말을 자기 말로 정리하며 맞는지 확인해요. 장면에서는 몸과 마음을 바꾸는 마법이 어떤 뜻인지 확인한 뒤 해 보고 싶다고 말해요.", "note": "「ってこと」는 「ということ」를 줄인 말이에요. 「だろ」에는 상대도 동의할 거라는 기대가 담겨 있어요. 친한 사이의 말투라 정중하게 확인할 때는 「〜ということですね」라고 해요.", "example": "つまり、今日は予約しなくてもいいってことだろ。", "exampleParts": ["つまり、", "今日は", "予約しなくても", "いいってことだろ。"], "exampleTranslation": "그러니까 오늘은 예약하지 않아도 된다는 거잖아."}],
 "blackdog-nuance":[{"videoId": "JPZfvT5zTBE", "startSeconds": 2, "endSeconds": 8, "work": "블랙독 · 2화", "channel": "디글 :Diggle", "explanationLang": "ja", "title": "一部を認めつつ言い過ぎを避けるとき", "titleParts": ["一部を認めつつ", "言い過ぎを", "避けるとき"], "quote": "그렇다고 김이분 선생이 하는 말이 다 틀리다는 건 아니에요.", "translation": "だからといって、キム・イブン先生の言うことが全部間違っているわけではありません。", "pattern": "그렇다고 ~ 다 ~다는 건 아니에요", "usage": "「그렇다고」は「だからといって」です。前の話を受け止めつつ、「다 ~다는 건 아니에요」で「全部〜というわけではない」と行き過ぎた結論を避けます。", "note": "「건」は「것은」の縮約です。「全部間違いではない」は「全部正しい」と同じではありません。一部には認められる点がある、という含みです。", "example": "그렇다고 그 방법이 다 틀렸다는 건 아니에요.", "exampleTranslation": "だからといって、その方法が全部間違っていたわけではありません。"}],
 

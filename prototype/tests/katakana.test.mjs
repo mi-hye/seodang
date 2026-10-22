@@ -6,7 +6,7 @@ import {basicContent} from '../src/basics.js';
 import {freshBasic,basicUnlocked,nextBasic} from '../src/basics-state.js';
 import {prepareContent,interceptCompletion} from '../src/practice-content.js';
 import {lessonPercent} from '../src/lesson-session.js';
-import {devLessonPosition} from '../src/dev-lesson-tools.js';
+
 import {valid,load} from '../src/storage.js';
 test('katakana covers 46 letters and foreign sounds in bounded groups',()=>{
  const letters=katakanaLessons.slice(0,5).flatMap(l=>basicContent[l.id].map(([text])=>text));
@@ -22,7 +22,7 @@ test('all katakana lessons unlock, save, progress and finish once without extra 
  assert.equal(nextBasic(s),7);assert.equal(basicUnlocked(s,12),true);
  for(const l of katakanaLessons){
   assert.equal(basicUnlocked(s,l.id),true);s=reduce(s,{type:'basic-start',id:l.id});
-  assert.equal(devLessonPosition(s,'basic').total,l.count*3+Math.ceil(l.count/l.groupSize));
+
   let previous=-1;
   while(s.basics.lessons[l.id].phase!=='done'){
    const p=s.basics.lessons[l.id],percent=lessonPercent(s,'basic');assert.ok(percent>=previous);previous=percent;

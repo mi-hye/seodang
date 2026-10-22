@@ -28,7 +28,7 @@ test('each added Japanese lesson completes its own questions and contextual prac
   }
   s=act(s,'sentence-select',String((c.solve.answer+1)%3));s=act(s,'sentence-submit');assert.equal(sentenceProgress(s).completed,false);
   s=act(s,'sentence-select',String(c.solve.answer));const action={type:'sentence-submit'},finished=reduce(s,action),intercepted=interceptCompletion(s,finished,'sentence',action);
-  assert.equal(practiceKey(s,'sentence'),`ko-ja:sentence:${id}`);assert.equal(caseTasks(s,'sentence').length,3);assert.equal(intercepted.practices[practiceKey(s,'sentence')].count,3);assert.equal(sentenceProgress(intercepted).completed,false);
+  assert.equal(practiceKey(s,'sentence'),`ko-ja:sentence:${id}`);assert.equal(caseTasks(s,'sentence').length,12);assert.equal(intercepted.practices[practiceKey(s,'sentence')].count,12);assert.equal(sentenceProgress(intercepted).completed,false);
   const replay=act(finished,'sentence-start',id);assert.equal(sentenceProgress(replay).phase,'intro');assert.equal(sentenceProgress(replay).completed,true);
   s=finished;assert.ok(valid(s));assert.equal(load({getItem:()=>JSON.stringify(s)}).blocked,false);assert.deepEqual(s.sentence,original);assert.deepEqual(s.sentenceLessons[id===1?2:1],other);
  }
@@ -37,7 +37,7 @@ test('each added Japanese lesson completes its own questions and contextual prac
 test('new clips match lesson text and each Korean case has independent contextual tasks',async()=>{
  const manifest=JSON.parse(readFileSync('assets/audio/level-two/manifest.json'));await prepareContent('korean');
  for(const id of [3,1,2])for(const audio of Object.values(sentenceCourse({sentenceActive:id}).audio))assert.equal(manifest.files[audio.id].text,audio.text);
- for(const id of ['3-2','3-3']){const s={...freshState(),courseDirection:'ja-ko',onboardingLevel:2,korean:{active:id}};assert.equal(caseTasks(s,'korean').length,3);assert.equal(practiceKey(s,'korean'),`ja-ko:korean:${id}`);}
+ for(const id of ['3-2','3-3']){const s={...freshState(),courseDirection:'ja-ko',onboardingLevel:2,korean:{active:id}};assert.equal(caseTasks(s,'korean').length,12);assert.equal(practiceKey(s,'korean'),`ja-ko:korean:${id}`);}
  assert.equal(Object.keys(manifest.files).length,24);
 });
 
@@ -74,12 +74,12 @@ test('Japanese introduction follows the Korean learn-choice sequence and six mat
   ja=act(ja,'sentence-select',String((index+1)%3));ja=act(ja,'sentence-check');assert.ok(sentenceProgress(ja).feedback);
   ja=act(ja,'sentence-select',String(index%3));ko=act(ko,'korean-select',index%3);
   const before=ja;ja=act(ja,'sentence-check');ko=act(ko,'korean-check');assert.ok(valid(ja));assert.equal(ko.korean.lessons['3-1'].phase,'speak');ko=act(ko,'korean-speak-next');ja=act(ja,'sentence-speak-next');
-  if(index===5){const intercepted=interceptCompletion(before,ja,'sentence',{type:'sentence-check'});assert.equal(intercepted.practices['ko-ja:sentence:3'].count,6);assert.ok(valid(intercepted));assert.equal(load({getItem:()=>JSON.stringify(intercepted)}).blocked,false);}
+  if(index===5){const intercepted=interceptCompletion(before,ja,'sentence',{type:'sentence-check'});assert.equal(intercepted.practices['ko-ja:sentence:3'].count,21);assert.ok(valid(intercepted));assert.equal(load({getItem:()=>JSON.stringify(intercepted)}).blocked,false);}
  }
  assert.equal(sentenceProgress(ja).phase,'summary');assert.equal(ko.korean.lessons['3-1'].phase,'done');
  assert.deepEqual(caseTasks(ja,'sentence').map(x=>x.type),caseTasks(ko,'korean').map(x=>x.type));
  assert.deepEqual(caseTasks(ja,'sentence').map(x=>x.answer),caseTasks(ko,'korean').map(x=>x.answer));
- assert.equal(caseTasks(ja,'sentence').length,6);
+ assert.equal(caseTasks(ja,'sentence').length,21);
 });
 test('old introduction solve and three-task practice saves resume in the aligned course',()=>{
  const old={...freshState(),onboardingLevel:2,sentenceActive:3,sentenceLessons:{3:{version:1,started:true,phase:'solve',index:5,learned:[0,1,2,3,4,5],tokens:[],checked:false,selected:'2',feedback:'',completed:false,attempts:6}}};

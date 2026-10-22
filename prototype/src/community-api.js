@@ -1,11 +1,14 @@
+import {createPhotoCache} from './community-photo-cache.js';
 import {communityConfig} from './community-config.js';
 export const SESSION_KEY='seodang.community.session.v1';
 export const validText=(value,max)=>typeof value==='string'&&value.trim().length>0&&[...value.trim()].length<=max;
 export const uuid=value=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value)?value:(()=>{throw Error('invalid_id');})();
 export function createCommunityAPI({storage=globalThis.localStorage,fetcher=globalThis.fetch,config=communityConfig}={}){
  let session=null,refreshing=null,connecting=null;
+ const photoCache=createPhotoCache();let photoCacheVersion=0;
+ const clearPhotos=()=>{photoCache.clear();photoCacheVersion++;};
  try{const saved=JSON.parse(storage.getItem(SESSION_KEY));if(saved&&typeof saved.access_token==='string'&&typeof saved.refresh_token==='string'&&Number.isFinite(saved.expires_at)&&saved.user?.id){uuid(saved.user.id);session=saved;}}catch{}
- const setSession=value=>{session=value;try{value?storage.setItem(SESSION_KEY,JSON.stringify(value)):storage.removeItem(SESSION_KEY);}catch{/* Session remains usable in memory. */}};
+ const setSession=value=>{if(session?.user?.id!==value?.user?.id)clearPhotos();session=value;try{value?storage.setItem(SESSION_KEY,JSON.stringify(value)):storage.removeItem(SESSION_KEY);}catch{/* Session remains usable in memory. */}};
  async function request(path,{method='GET',body,token,headers={}}={}){
   const response=await fetcher(config.url+path,{method,headers:{apikey:config.key,...(token?{Authorization:`Bearer ${token}`} : {}),'Content-Type':'application/json',...headers},...(body===undefined?{}:{body:JSON.stringify(body)}),signal:AbortSignal.timeout(20000)});
   const data=response.status===204?null:await response.json().catch(()=>null);
@@ -27,7 +30,7 @@ export function createCommunityAPI({storage=globalThis.localStorage,fetcher=glob
   const response=await fetcher(config.url+'/storage/v1/object/community-photos/'+photoPath(path),{method:'POST',headers:{apikey:config.key,Authorization:`Bearer ${await access()}`,'Content-Type':'image/jpeg','Cache-Control':'max-age=0','x-upsert':'false'},body:blob,signal:AbortSignal.timeout(60000)});
   if(response.ok)return;const data=await response.json().catch(()=>({}));if(response.status===409||data.error==='Duplicate')return;throw Error('photo_upload');
  }
- async function removePhotos(paths){if(paths.length)await request('/storage/v1/object/community-photos',{method:'DELETE',body:{prefixes:paths.map(photoPath)},token:await access()});}
+ async function removePhotos(paths){for(const path of paths)photoCache.drop(`${session?.user?.id}:${photoPath(path)}`);if(paths.length)await request('/storage/v1/object/community-photos',{method:'DELETE',body:{prefixes:paths.map(photoPath)},token:await access()});}
  async function publishPhotos(body,photos){
   if(photos.length>2)throw Error('photo_limit');
   const found=await rest('posts',`id=eq.${uuid(body.id)}&select=*`);if(found.length)return found[0];
@@ -37,6 +40,7 @@ export function createCommunityAPI({storage=globalThis.localStorage,fetcher=glob
  }
  return {
   get session(){return session;},
+  get photoCacheVersion(){return photoCacheVersion;},
   async ensureDeviceSession(){
    const probe=SESSION_KEY+'.probe';try{storage.setItem(probe,'1');if(storage.getItem(probe)!=='1')throw Error();storage.removeItem(probe);}catch{throw Error('device_storage_unavailable');}
    if(session){try{await access();return session;}catch(e){if(session)throw e;}}
@@ -53,7 +57,15 @@ export function createCommunityAPI({storage=globalThis.localStorage,fetcher=glob
   async deletePost(id){const rows=await rest('posts',`id=eq.${uuid(id)}&select=image_paths`);await remove('posts',id);await removePhotos(rows[0]?.image_paths||[]).catch(()=>{});},
   publishPhotos,
   removePhotos,
-  async downloadPhoto(path){const response=await fetcher(config.url+'/storage/v1/object/authenticated/community-photos/'+photoPath(path)+'?v='+crypto.randomUUID(),{cache:'no-store',headers:{apikey:config.key,Authorization:`Bearer ${await access()}`},signal:AbortSignal.timeout(20000)});if(!response.ok)throw Error('photo_load');return response.blob();},
+  discardPhoto(path){photoCache.drop(`${session?.user?.id}:${photoPath(path)}`);},
+  async downloadPhoto(path){
+   photoPath(path);const token=await access(),owner=session.user.id;
+   return photoCache.get(`${owner}:${path}`,async()=>{
+    const response=await fetcher(config.url+'/storage/v1/object/authenticated/community-photos/'+path,{cache:'no-store',headers:{apikey:config.key,Authorization:`Bearer ${token}`},signal:AbortSignal.timeout(20000)});
+    if(!response.ok){throw Error('photo_load');}
+    return response.blob();
+   });
+  },
   replies:(id,offset=0)=>rest('replies',`post_id=eq.${uuid(id)}&select=${profileSelect}&order=created_at.asc,id.asc&limit=30&offset=${Number(offset)||0}`),
   reply:body=>createOnce('replies',{...body,author_id:session.user.id}),
   deleteReply:id=>remove('replies',id),
@@ -63,7 +75,7 @@ export function createCommunityAPI({storage=globalThis.localStorage,fetcher=glob
   messages:(id,offset=0)=>rest('messages',`room_id=eq.${uuid(id)}&order=created_at.desc,id.desc&limit=50&offset=${Number(offset)||0}`),
   message:body=>createOnce('messages',{...body,author_id:session.user.id}),
   blocks:()=>rest('blocks',`owner_id=eq.${uuid(session.user.id)}&select=blocked_id`),
-  block:id=>insert('blocks',{owner_id:session.user.id,blocked_id:uuid(id)}),
+  async block(id){const result=await insert('blocks',{owner_id:session.user.id,blocked_id:uuid(id)});clearPhotos();return result;},
   unblock:id=>rest('blocks',`owner_id=eq.${uuid(session.user.id)}&blocked_id=eq.${uuid(id)}`,{method:'DELETE'}),
   report:body=>insert('reports',{...body,reporter_id:session.user.id}),
  };

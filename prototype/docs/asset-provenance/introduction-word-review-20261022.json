@@ -1,0 +1,124 @@
+{
+  "purpose": "2-1 isolated word review; both languages",
+  "voices": {
+    "ja": "VOICEVOX Nemo 男声1",
+    "ko": "Supertonic 3 M1"
+  },
+  "generation": {
+    "ja": {
+      "speed_scale": 0.85,
+      "student_synthesis_text": "がくせい",
+      "intonation_scale": 1
+    },
+    "ko": {
+      "speed": 1,
+      "total_steps": 12,
+      "seed": 42
+    }
+  },
+  "verification": {
+    "method": "mlx-whisper large-v3-turbo ASR; whitespace differences only in final clips",
+    "human_listening_review": false,
+    "initial_student_clip": "Rejected after ASR returned 独生; regenerated with kana and slower speed"
+  },
+  "clips": [
+    {
+      "file": "assets/audio/review-words/ja.0.wav",
+      "text": "学生",
+      "locale": "ja-JP",
+      "pronunciation": null,
+      "source": "6d7750b9102bebc8de4c3d3740c07de76a1f0ed73e4956f6173dec43b66cd1b6.m4a",
+      "sha256": "b99d67d04e6777d3ae6c9a721da12712e25cf843eed020ab8d2e2ef05cfcc0b3",
+      "bytes": 10583,
+      "duration": 0.757,
+      "voice": "VOICEVOX Nemo 男声1"
+    },
+    {
+      "file": "assets/audio/review-words/ja.1.wav",
+      "text": "コーヒー",
+      "locale": "ja-JP",
+      "pronunciation": null,
+      "source": "028c4dcd0500969f6df0b943e5693dabacd90612f5c11de95820f54004414e4f.m4a",
+      "sha256": "8a1bafbbcf81a0b6a63a7da7520f7b881dc258b6486e16ef466b3d38abf89e5a",
+      "bytes": 9844,
+      "duration": 0.715,
+      "voice": "VOICEVOX Nemo 男声1"
+    },
+    {
+      "file": "assets/audio/review-words/ja.2.wav",
+      "text": "明日",
+      "locale": "ja-JP",
+      "pronunciation": null,
+      "source": "405ecd972c6dafb3deac1236994f4cab7d6db7b10e2c642c7ec5d249b989c7d1.m4a",
+      "sha256": "aa4456045d837d432b88d2578ab9588e3741f639cc1269fdca96d31ff5a3178f",
+      "bytes": 9067,
+      "duration": 0.619,
+      "voice": "VOICEVOX Nemo 男声1"
+    },
+    {
+      "file": "assets/audio/review-words/ko.0.wav",
+      "text": "학생",
+      "locale": "ko-KR",
+      "pronunciation": null,
+      "source": "e06d453478557a592811100859efb4c50f1965bf157a90bd40ff41736dd05780.m4a",
+      "sha256": "16c8e6d665697c4fc835a5f6f79a5cb2d268dcea7a0903da6de21cee554a02dc",
+      "bytes": 14401,
+      "duration": 1.393,
+      "voice": "Supertonic 3 M1"
+    },
+    {
+      "file": "assets/audio/review-words/ko.1.wav",
+      "text": "커피",
+      "locale": "ko-KR",
+      "pronunciation": null,
+      "source": "1b5cc9da81de67d0c1759bc538da97127c4ef511091f20bf1c398cf9a728da57.m4a",
+      "sha256": "db32648201244e9cdc45faa5d65ec9216352dfa8471d749fe980a93970f94783",
+      "bytes": 13959,
+      "duration": 1.393,
+      "voice": "Supertonic 3 M1"
+    },
+    {
+      "file": "assets/audio/review-words/ko.2.wav",
+      "text": "내일",
+      "locale": "ko-KR",
+      "pronunciation": null,
+      "source": "9e056ddcad81e480dd920f0049b9b4e79e8655e373a714e66141a321bcbb74fe.m4a",
+      "sha256": "2cb12eaa4336e0a5da178b58b673342119b4ab6b4ad3050dc3dac53c5cb6f8e8",
+      "bytes": 13951,
+      "duration": 1.393,
+      "voice": "Supertonic 3 M1"
+    }
+  ],
+  "transcriptions": [
+    {
+      "file": "assets/audio/review-words/ja.0.wav",
+      "expected": "学生",
+      "heard": "学生"
+    },
+    {
+      "file": "assets/audio/review-words/ja.1.wav",
+      "expected": "コーヒー",
+      "heard": "コーヒー"
+    },
+    {
+      "file": "assets/audio/review-words/ja.2.wav",
+      "expected": "明日",
+      "heard": "明日"
+    },
+    {
+      "file": "assets/audio/review-words/ko.0.wav",
+      "expected": "학생",
+      "heard": " 학생"
+    },
+    {
+      "file": "assets/audio/review-words/ko.1.wav",
+      "expected": "커피",
+      "heard": " 커피"
+    },
+    {
+      "file": "assets/audio/review-words/ko.2.wav",
+      "expected": "내일",
+      "heard": " 내일"
+    }
+  ]
+}
