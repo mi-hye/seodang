@@ -408,6 +408,9 @@ let disposeMapCharacter,mapCharacterRequest=0;
 function clearMapCharacter(){mapCharacterRequest++;disposeMapCharacter?.();disposeMapCharacter=null;}
 async function mountMapCharacter(){
   const host=app.querySelector('.map-mascot');if(!host||host.dataset.pose==='running')return;
+  if(state.settings.motion==='off'||window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    host.dataset.renderer='fallback';return;
+  }
   const request=mapCharacterRequest;
   try{
     const {mountOnboardingCharacter}=await import('./onboarding-character.js');

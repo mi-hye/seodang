@@ -30,15 +30,17 @@ test('character resize defers canvas writes, coalesces notifications and cancels
   Object.assign(globalThis,{
    window:{rive:api,devicePixelRatio:1.5,matchMedia:()=>media},document:doc,
    Image:class{async decode(){}},fetch:async()=>({ok:true,arrayBuffer:async()=>new ArrayBuffer(0)}),
-   ResizeObserver:class{constructor(callback){this.callback=callback;observers.push(this);}observe(){}disconnect(){this.disconnected=true;}},
+   ResizeObserver:class{constructor(callback){this.callback=callback;this.targets=[];observers.push(this);}observe(target){this.targets.push(target);}disconnect(){this.disconnected=true;}},
    requestAnimationFrame:callback=>{frames.set(++frameId,callback);return frameId;},cancelAnimationFrame:id=>frames.delete(id),
   });
   dispose=mountOnboardingCharacter(host,{reducedMotion:true});
   for(let i=0;i<10&&!observers.length;i++)await new Promise(resolve=>setImmediate(resolve));
   assert.equal(observers.length,1);assert.equal(resizes,1);
+  assert.deepEqual(observers[0].targets,[],'registration waits until the next frame');
   const notify=()=>{insideObserver=true;try{observers[0].callback();}finally{insideObserver=false;}};
   const flush=()=>{const batch=[...frames.values()];frames.clear();batch.forEach(callback=>callback());};
   flush();
+  assert.deepEqual(observers[0].targets,[host.canvas]);
   bounds={width:120.8,height:110.2};
   notify();notify();notify();
   assert.equal(writesDuringObserver,0);assert.equal(resizes,1);
@@ -48,6 +50,12 @@ test('character resize defers canvas writes, coalesces notifications and cancels
   bounds={width:140,height:130};notify();assert.equal(frames.size,1);
   dispose();assert.equal(frames.size,0);assert.equal(observers[0].disconnected,true);
   notify();flush();assert.equal(resizes,2);assert.equal(writesDuringObserver,0);
+  dispose=mountOnboardingCharacter(host,{reducedMotion:true});
+  for(let i=0;i<10&&observers.length<2;i++)await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(observers.length,2);assert.deepEqual(observers[1].targets,[]);
+  dispose();flush();
+  assert.deepEqual(observers[1].targets,[],'disposal cancels pending registration');
+  assert.equal(observers[1].disconnected,true);assert.equal(frames.size,0);
  }finally{
   dispose?.();
   for(const [key,descriptor]of original)if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];
