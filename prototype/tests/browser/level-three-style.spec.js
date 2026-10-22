@@ -1,9 +1,10 @@
+import {useCatalogWithoutPacks} from './audio-catalog-fixture.js';
 import {test,expect} from '@playwright/test';import {freshState} from '../../src/engine.js';
 for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])for(const lesson of ['cafe','hotel'])test(`${direction} level-three ${lesson} shared layout ${width}`,async({page})=>{
  page.setDefaultTimeout(5000);
  await page.setViewportSize({width,height:844});const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(s=>{localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},{...freshState(),onboarded:true,koreanGuideSeenVersion:1,onboardingLevel:4,courseDirection:direction,settings:{sound:false,motion:'off',textScale:1.2,audioRate:1}});
- await page.route('**/assets/audio/catalog.json',async r=>{const response=await r.fetch(),c=await response.json();await r.fulfill({json:{...c,packs:{}}});});
+ await useCatalogWithoutPacks(page);
  await page.goto('/playable.html');const kind=lesson==='hotel'?'scenario':direction==='ko-ja'?'dialogue':'korean';const id=lesson==='hotel'?'3':kind==='korean'?'4-1':null;
  await page.locator(`[data-action="${kind}"]${id?`[data-id="${id}"]`:''}`).first().click();await page.locator(`[data-action="${kind}-next"]`).click();
  const progress=page.locator('.lesson-progress');await expect(progress).toHaveCount(1);

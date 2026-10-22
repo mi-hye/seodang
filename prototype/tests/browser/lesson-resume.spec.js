@@ -1,9 +1,10 @@
+import {useCatalogWithoutPacks} from './audio-catalog-fixture.js';
 import {test,expect} from '@playwright/test';
 import {freshState} from '../../src/engine.js';
 import {scenarioLessons} from '../../src/scenario-state.js';
 for(const direction of ['ko-ja','ja-ko'])for(const lesson of scenarioLessons.filter(l=>l.id!=='5'))test(`shared resume ${direction} scenario ${lesson.id}`,async({page})=>{
  await page.addInitScript(s=>{localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},{...freshState(),onboarded:true,koreanGuideSeenVersion:1,onboardingLevel:lesson.level,courseDirection:direction,settings:{sound:false,motion:'off',textScale:1,audioRate:1}});
- await page.route('**/assets/audio/catalog.json',async r=>{const response=await r.fetch(),c=await response.json();await r.fulfill({json:{...c,packs:{}}});});
+ await useCatalogWithoutPacks(page);
  const enter=async()=>{await page.locator(`[data-action="scenario"][data-id="${lesson.id}"]`).first().click();await expect(page.locator('.view-scenario, .lesson-resume')).toBeVisible();};const home=async()=>{await page.locator('[data-action="home"]').first().click();await expect(page.locator('.view-home')).toBeVisible();};
  await page.goto('/playable.html');await enter();await expect(page.locator('.lesson-resume')).toHaveCount(0);
  await home();await enter();await expect(page.locator('.lesson-resume')).toHaveCount(0);

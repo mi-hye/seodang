@@ -1,14 +1,31 @@
 import {test,expect} from '@playwright/test';
 import {freshState} from '../../src/engine.js';
 import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
 const catalog=JSON.parse(readFileSync(new URL('../../assets/audio/catalog.json',import.meta.url)));
+const verifiedClips=new Map();
+test.beforeAll(async({request})=>{
+ // Validate the published bytes separately from the five-second tap assertion.
+ // A CDN transfer can take up to the app's 60-second download timeout.
+ test.setTimeout(90000);
+ const files=['ko-ja','ja-ko'].flatMap(direction=>['speak.0','choice.0.1','choice.0.2'].map(part=>`assets/audio/scenarios/${direction}.15.${part}.wav`));
+ await Promise.all(files.map(async file=>{
+  const clip=catalog.files[file],response=await request.get(clip.url,{timeout:60000});
+  expect(response.ok(),`published audio GET: ${file}`).toBe(true);
+  const bytes=await response.body();
+  expect(bytes.length,`published audio size: ${file}`).toBe(clip.bytes);
+  expect(createHash('sha256').update(bytes).digest('hex'),`published audio checksum: ${file}`).toBe(clip.sha256);
+  verifiedClips.set(clip.url,bytes);
+ }));
+});
 for(const direction of ['ko-ja','ja-ko'])test(`order choice taps select and play matching clips ${direction}`,async({page})=>{
  await page.addInitScript(s=>{
   localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));
   window.played=[];window.paused=[];window.Audio=class{constructor(src){this.src=src;}play(){window.played.push(this.src);return Promise.resolve();}pause(){window.paused.push(this.src);}};
  },{...freshState(),onboarded:true,courseDirection:direction,onboardingLevel:2,koreanGuideSeenVersion:1,settings:{sound:false,motion:'off',textScale:1,audioRate:1}});
  await page.route('**/assets/audio/catalog.json',r=>r.fulfill({json:{...catalog,packs:{}}}));
- // Observe the verified media blob without bypassing download or checksum checks.
+ for(const [url,body]of verifiedClips)await page.route(url,r=>r.fulfill({body,contentType:'audio/mp4',headers:{'access-control-allow-origin':'*'}}));
+ // Use the exact verified media bytes; the app still downloads, checks and caches them.
  await page.addInitScript(()=>{URL.createObjectURL=blob=>{const url=`blob:clip-${window.blobs.length}`;window.blobs.push(blob);return url;};URL.revokeObjectURL=()=>{};window.blobs=[];});
  await page.goto('/playable.html');await page.locator('.map-choice[data-action="scenario"][data-id="15"]').click();await page.locator('[data-action="scenario-next"]').click();
  for(const token of [1,0,2,2]){

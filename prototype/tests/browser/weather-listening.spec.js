@@ -1,10 +1,8 @@
 import {test,expect} from '@playwright/test';import {freshState} from '../../src/engine.js';import {scenarioContent} from '../../src/scenario-content.js';
-import {readFileSync} from 'node:fs';
-const catalog=JSON.parse(readFileSync(new URL('../../assets/audio/catalog.json',import.meta.url),'utf8'));
+import {useCatalogWithoutPacks} from './audio-catalog-fixture.js';
 for(const direction of ['ko-ja','ja-ko'])for(const width of [320,390])test(`2-16 weather retry resume evidence review hand-off ${direction} ${width}`,async({page})=>{
  await page.setViewportSize({width,height:width===320?640:844});await page.addInitScript(s=>{if(!localStorage.getItem('seodang.web-prototype.v1'))localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},{...freshState(),onboarded:true,courseDirection:direction,onboardingLevel:2,koreanGuideSeenVersion:1,settings:{sound:false,motion:'off',textScale:1.2,audioRate:1}});
- // Serve the real catalog locally so response parsing cannot outlive a reload or test teardown.
- await page.route('**/assets/audio/catalog.json',r=>r.fulfill({json:{...catalog,packs:{}}}));
+ await useCatalogWithoutPacks(page);
  const enter=()=>page.locator('.map-choice[data-id="16"][data-action="scenario"]').click();await page.goto('/playable.html');await expect(page.locator('.map-choice[data-action]')).toHaveCount(17);await enter();await expect(page.locator('.app-header-title')).toContainText('16.');await expect(page.locator('main')).toHaveClass(/lesson-top/);await page.locator('[data-action="scenario-next"]').click();
  const layout=async()=>{expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);for(const row of await page.locator('.intent-page .audio-text-row:visible').all()){const b=await row.evaluate(e=>({text:e.querySelector('p').getBoundingClientRect().right,speaker:e.querySelector('button').getBoundingClientRect().left}));expect(b.speaker).toBeGreaterThanOrEqual(b.text-1);}const tops=await page.locator('.intent-page>.button-pair>button').evaluateAll(es=>es.map(e=>e.getBoundingClientRect().top));expect(Math.abs(tops[0]-tops[1])).toBeLessThan(2);};
  for(let i=0;i<3;i++){

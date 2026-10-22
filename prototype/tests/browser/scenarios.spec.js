@@ -1,3 +1,4 @@
+import {useCatalogWithoutPacks} from './audio-catalog-fixture.js';
 import {test,expect} from '@playwright/test';
 import {freshState} from '../../src/engine.js';import {scenarioLessons} from '../../src/scenario-state.js';
 // Interactive roleplay, message, listening-intent and reply-repair flows have dedicated specs.
@@ -7,7 +8,7 @@ for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])for(const 
  const state={...freshState(),onboarded:true,koreanGuideSeenVersion:1,courseDirection:direction,onboardingLevel:lesson.level,settings:{sound:false,motion:'off',textScale:1.2,audioRate:1}};
  await page.addInitScript(s=>{localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},state);
  // Exercise local UI independently of the CDN; real audio download is checked separately.
- await page.route('**/assets/audio/catalog.json',async route=>{const r=await route.fetch();const c=await r.json();await route.fulfill({json:{...c,packs:{}}});});
+ await useCatalogWithoutPacks(page);
  await page.goto('/playable.html');
  const entry=page.locator(`[data-action="scenario"][data-id="${lesson.id}"]`);await entry.first().click();
  const click=async a=>page.locator(`[data-action="${a}"]`).click();

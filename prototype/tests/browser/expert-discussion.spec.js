@@ -1,7 +1,8 @@
+import {useCatalogWithoutPacks} from './audio-catalog-fixture.js';
 import {test,expect} from '@playwright/test';import {freshState} from '../../src/engine.js';
 for(const direction of ['ko-ja','ja-ko'])for(const width of [320,390])for(const id of [0,1,2,3])test(`discussion ${direction} ${id} at ${width}`,async({page})=>{
  await page.setViewportSize({width,height:844});await page.addInitScript(s=>{localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},{...freshState(),onboarded:true,koreanGuideSeenVersion:1,onboardingLevel:7,courseDirection:direction,settings:{sound:false,motion:'off',textScale:1.2,audioRate:1}});
- await page.route('**/assets/audio/catalog.json',async r=>{const response=await r.fetch(),c=await response.json();await r.fulfill({json:{...c,packs:{}}});});
+ await useCatalogWithoutPacks(page);
  await page.goto('/playable.html');await page.locator(`[data-action="expert"][data-id="${id}"]`).first().click();await expect(page.locator('.discussion-image')).toBeVisible();await expect(page.locator('.discussion-image')).toHaveJSProperty('complete',true);
  const next=async()=>{await page.waitForTimeout(500);await page.locator('[data-action="expert-next"]').click();};await next();await expect(page.locator('[data-action="expert-opinion"]')).toHaveCount(0);await expect(page.locator('.expert-discussion h1')).toHaveText((direction==='ko-ja'?['새 맛집이 궁금한 친구','많이 둘러보고 싶은 친구','답장을 기다린 친구','주말에 만나고 싶은 친구']:['新しいお店が気になる友達','いろいろ見て回りたい友達','返事を待っていた友達','週末に会いたい友達'])[id]);
  for(let i=0;i<4;i++){

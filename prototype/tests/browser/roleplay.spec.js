@@ -1,8 +1,9 @@
+import {useCatalogWithoutPacks} from './audio-catalog-fixture.js';
 import {test,expect} from '@playwright/test';import {freshState} from '../../src/engine.js';
 import {scenarioContent} from '../../src/scenario-content.js';
 for(const direction of ['ko-ja','ja-ko'])for(const width of [320,390])test(`roleplay conversation retry resume and completion ${direction} ${width}`,async({page})=>{
  await page.setViewportSize({width,height:width===320?640:844});await page.addInitScript(s=>{if(!localStorage.getItem('seodang.web-prototype.v1'))localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},{...freshState(),onboarded:true,courseDirection:direction,onboardingLevel:4,koreanGuideSeenVersion:1,settings:{sound:false,motion:'off',textScale:1.2,audioRate:1}});
- await page.route('**/assets/audio/catalog.json',async r=>{const response=await r.fetch(),c=await response.json();await r.fulfill({json:{...c,packs:{}}});});
+ await useCatalogWithoutPacks(page);
  await page.goto('/playable.html');await page.locator('.map-choice[data-id="8"][data-action="scenario"]').click();await expect(page.locator('.app-header-title')).toContainText('7.');await page.locator('[data-action="scenario-next"]').click();
  const check=async()=>{expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);for(const row of await page.locator('.roleplay-bubble .audio-text-row').all()){const b=await row.evaluate(el=>({text:el.querySelector('p').getBoundingClientRect().right,button:el.querySelector('button').getBoundingClientRect().left}));expect(b.button).toBeGreaterThanOrEqual(b.text-1);}const tops=await page.locator('.roleplay-page>.button-pair>button').evaluateAll(xs=>xs.map(x=>x.getBoundingClientRect().top));expect(Math.abs(tops[0]-tops[1])).toBeLessThan(2);};
  for(let i=0;i<3;i++){

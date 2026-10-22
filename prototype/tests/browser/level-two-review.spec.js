@@ -1,9 +1,10 @@
+import {useCatalogWithoutPacks} from './audio-catalog-fixture.js';
 import {test,expect} from '@playwright/test';
 import {levelTwoReviews} from '../../src/level-two-review-state.js';import {levelTwoReview} from '../../src/level-two-review-content.js';import {reviewFixture} from '../level-two-review-fixtures.mjs';
 for(const [n,key]of Object.keys(levelTwoReviews).entries())test(`level two full review ${key}`,async({page})=>{
  const {s,kind,id}=reviewFixture(key),tasks=levelTwoReview(key),width=n%2?390:320;
  await page.setViewportSize({width,height:width===320?640:844});await page.addInitScript(s=>{if(!localStorage.getItem('seodang.web-prototype.v1'))localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));window.Audio=class{play(){queueMicrotask(()=>this.onended?.());return Promise.resolve();}pause(){}};},s);
- await page.route('**/assets/audio/catalog.json',async r=>{const res=await r.fetch(),c=await res.json();await r.fulfill({json:{...c,packs:{}}});});await page.route('https://www.youtube.com/**',r=>r.fulfill({body:''}));
+ await useCatalogWithoutPacks(page);await page.route('https://www.youtube.com/**',r=>r.fulfill({body:''}));
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  const enter=async()=>{await page.locator(`.map-choice[data-action="${kind}"][data-id="${id}"]`).click();if(kind!=='video')await page.locator('[data-choice="resume"]').click();};
  const saved=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('seodang.web-prototype.v1')));

@@ -1,9 +1,10 @@
+import {useCatalogWithoutPacks} from './audio-catalog-fixture.js';
 import {test,expect} from '@playwright/test';
 import {freshState} from '../../src/engine.js';
 for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])for(const number of [1,2,3])test(`level four ${direction} lesson ${number} width ${width}`,async({page})=>{
  await page.setViewportSize({width,height:844});
  await page.addInitScript(s=>{localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},{...freshState(),onboarded:true,koreanGuideSeenVersion:1,onboardingLevel:5,courseDirection:direction,settings:{sound:false,motion:'off',textScale:1.2,audioRate:1}});
- await page.route('**/assets/audio/catalog.json',async r=>{const response=await r.fetch(),c=await response.json();await r.fulfill({json:{...c,packs:{}}});});
+ await useCatalogWithoutPacks(page);
  await page.goto('/playable.html');
  const kind=number===3?'scenario':direction==='ko-ja'?'reading':'korean';
  const id=number===3?'4':kind==='reading'?String(number===1?5:6):number===1?'5-1':'6-1';
