@@ -83,9 +83,6 @@ yarn-error.*
 !/docs/privacy-policy.html
 !/docs/privacy-policy-legacy.html
 !/docs/third-party-notices.html
-/prototype/docs/*
-!/prototype/docs/asset-provenance/
-!/prototype/docs/asset-provenance/**
 /prototype/references/*.md
 **/credentials.json
 **/*.keystore
