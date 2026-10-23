@@ -1,5 +1,6 @@
 import {levelTwoReviewData,levelTwoReviewWords} from './level-two-review-data.js';
-export const expandedReviewWords=key=>{const c=levelTwoReviewData[key];return c?c.wordChoices.map(id=>levelTwoReviewWords[id][key.split(':')[0]]):[];};
+import {isScenarioRehearsal,scenarioRehearsal} from './scenario-rehearsal-content.js';
+export const expandedReviewWords=key=>{if(isScenarioRehearsal(key))return[];const c=levelTwoReviewData[key];return c?c.wordChoices.map(id=>levelTwoReviewWords[id][key.split(':')[0]]):[];};
 // A stable shuffle preserves the same question after resume without teaching a position pattern.
 function shuffledIds(tokens,seed){
  let n=2166136261;for(const ch of seed)n=Math.imul(n^ch.charCodeAt(0),16777619)>>>0;
@@ -7,6 +8,7 @@ function shuffledIds(tokens,seed){
  if(ids.every((id,i)=>id===i))ids.push(ids.shift());return ids;
 }
 export function levelTwoReview(key){
+ const rehearsal=scenarioRehearsal(key);if(rehearsal)return rehearsal;
  const c=levelTwoReviewData[key];if(!c)return null;
  const jp=key.startsWith('ja-ko:'),units=c.units,words=expandedReviewWords(key);
  const tasks=c.words.map((_,index)=>{const unit=words[index],order=shuffledIds(words,key+':word:'+index);return {review:true,type:'word',stage:-1,stageIndex:index,unitIndex:index,unit,scene:unit.meaning,prompt:unit.meaning,options:order.map(i=>words[i].text),optionAudio:order.map(i=>words[i].audio),optionPictures:order.map(i=>words[i].picture),optionLabels:order.map(i=>words[i].meaning),answer:order.indexOf(index)};});

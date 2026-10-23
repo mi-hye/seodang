@@ -2027,6 +2027,7 @@ dialog :focus-visible {
 /* Two-action groups stay side by side, including narrow screens and large text. */
 .button-pair.button-pair{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:12px;margin-top:20px;width:100%}
 .button-pair.button-pair>button{flex:1 1 0;width:auto;min-width:0;min-height:52px;margin:0;padding-inline:8px;white-space:normal;overflow-wrap:break-word;font-size:calc(17px * var(--text-scale));line-height:1.4}
+.button-pair.button-pair>.primary{border:1px solid transparent}
 
 /* Prefer complete words/phrases. Only split an oversized unit as a last resort. */
 .text-phrase {
@@ -2039,9 +2040,10 @@ dialog :focus-visible {
 
 /* Start or resume above the learning map. */
 .view-home>.home{justify-content:flex-start;gap:28px;padding-top:12px;padding-bottom:24px}
-.home .case-card.home-start-card{min-height:0;display:block;padding:16px;background:var(--stage-raised);border:1px solid var(--line);border-radius:14px;box-shadow:none}
-.home-start-card h2{font-size:calc(18px * var(--text-scale));line-height:1.5;margin:0 0 12px}
-.home-start-card>.primary{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:46px;margin:0;padding:10px 14px;font-size:calc(16px * var(--text-scale))}
+.home .case-card.home-start-card{width:100%;min-height:44px;display:flex;align-items:center;gap:12px;padding:16px;text-align:start;appearance:none;background:var(--stage-raised);border:1px solid var(--line);border-radius:14px;box-shadow:none}
+.home-start-card .home-card-title{display:block;font-size:calc(18px * var(--text-scale));font-weight:700;line-height:1.5;margin:0}
+.home-card-arrow{display:flex;align-items:center;justify-content:center;flex:none;width:32px;height:44px;color:var(--amber-light)}
+.home-card-arrow svg{width:20px;height:20px}
 .tabs{display:flex;flex-direction:row;flex-wrap:nowrap}
 .tabs>.tab{flex:1 1 0;min-width:0}
 

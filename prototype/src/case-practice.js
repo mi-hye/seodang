@@ -1,3 +1,5 @@
+import {createReviewCorrectFeedback} from './review-correct-feedback.js';
+import {courseGroup} from './curriculum.js';
 import {feedbackText} from './feedback-text.js';
 import {renderTokenBuilder,renderTokenSelection} from './token-builder.js';
 import {japaneseLessonUI} from './curriculum.js';
@@ -12,6 +14,7 @@ export function renderCasePractice(s,task,p,top){
 }
 export function mountCasePractice(root,s,task,{advance,stop,onAnswer=()=>{}}){
  const c=copy[locale(s)],confirm=root.querySelector('[data-case-confirm]'),feedback=root.querySelector('.practice-feedback'),undo=root.querySelector('[data-case-undo]');let selected=null,tokens=[],checked=false,busy=false,alive=true;
+ const cue=courseGroup(s.onboardingLevel)>=4?createReviewCorrectFeedback(root,s.settings):null;
  const update=()=>{confirm.disabled=busy||(task.type==='order'?tokens.length!==task.tokens.length:selected===null);if(undo)undo.disabled=checked||tokens.length===0;if(task.type==='order'){root.querySelector('[data-case-answer]').innerHTML=renderTokenSelection({tokens:task.tokens,selected:tokens,locked:checked,lang:s.courseDirection==='ja-ko'?'ko':'ja',empty:c.empty,selectedAttributes:i=>`data-case-remove="${i}"`});for(const b of root.querySelectorAll('[data-case-token]'))b.disabled=checked||tokens.includes(Number(b.dataset.caseToken));}};
  const handle=async e=>{
   const b=e.target.closest('button');if(!alive||!b||b.disabled||busy)return;
@@ -25,8 +28,8 @@ export function mountCasePractice(root,s,task,{advance,stop,onAnswer=()=>{}}){
    onAnswer(correct);
    const reason=task.type==='order'?task.orderFeedback:task.wrongFeedback?.[task.options[selected]];
    feedback.innerHTML=feedbackText(correct?`${c.correct} ${task.hint}`:(reason||c.retry));
-   if(correct){checked=true;confirm.textContent=c.next;for(const x of root.querySelectorAll('[data-case-choice]'))x.disabled=true;}update();
+   if(correct){checked=true;feedback.classList.add('success','lesson-verdict');cue?.play();confirm.textContent=c.next;for(const x of root.querySelectorAll('[data-case-choice]'))x.disabled=true;}update();
   }
  };
- stop();root.addEventListener('click',handle);update();return()=>{alive=false;root.removeEventListener('click',handle);};
+ stop();root.addEventListener('click',handle);update();return()=>{alive=false;cue?.dispose();root.removeEventListener('click',handle);};
 }

@@ -1,9 +1,11 @@
+import {scrollMapSection} from './learning-map-fixture.js';
 import {test,expect} from '@playwright/test';
 import {reviewFixture} from '../level-two-review-fixtures.mjs';
 import {useCatalogWithoutPacks} from './audio-catalog-fixture.js';
 
 async function openMap(page,{motion='system',reducedMotion='no-preference'}={}){
- const {s}=reviewFixture('ja-ko:scenario:14');s.settings.motion=motion;
+ // The current lesson stays on the first page while we exercise its runtime lifecycle.
+ const {s}=reviewFixture('ja-ko:scenario:2');s.settings.motion=motion;
  const errors=[],riveRequests=[];
  page.on('pageerror',error=>errors.push(error.message));
  page.on('request',request=>{if(/\/assets\/(?:vendor\/rive\/|rive\/)/.test(request.url()))riveRequests.push(request.url());});
@@ -20,7 +22,7 @@ async function openMap(page,{motion='system',reducedMotion='no-preference'}={}){
 }
 
 async function openResume(page){
- await page.locator('.map-choice[data-action="scenario"][data-id="14"]').click();
+ await page.locator('.map-choice[data-action="scenario"][data-id="2"]').click();
  await expect(page.locator('.lesson-resume')).toBeVisible();
 }
 
@@ -60,5 +62,20 @@ test('animated map survives resume sheet and lesson transitions',async({page})=>
  expect(riveRequests.some(url=>url.endsWith('/rive.js'))).toBe(true);
  expect(riveRequests.some(url=>url.endsWith('/rive.wasm'))).toBe(true);
  expect(riveRequests.some(url=>url.endsWith('/seodang-onboarding.riv'))).toBe(true);
+ expect(errors).toEqual([]);
+});
+
+test('native map scroll preserves a single character canvas without remounting',async({page})=>{
+ const {errors}=await openMap(page),map=page.locator('.learning-map');
+ for(let round=0;round<2;round++){
+  await expect(page.locator('.map-mascot')).toHaveAttribute('data-renderer','rive');
+  await expect(page.locator('.guide-rive-canvas')).toHaveCount(1);
+  await scrollMapSection(page,1);await expect(map).toHaveAttribute('data-page-index','1');
+  await expect(page.locator('.map-page[data-active="false"] .map-mascot')).toHaveAttribute('data-renderer','rive');
+  await expect(page.locator('.guide-rive-canvas')).toHaveCount(1);
+  await scrollMapSection(page,0);await expect(map).toHaveAttribute('data-page-index','0');
+  await expect(page.locator('.map-page[data-active="true"] .map-mascot')).toHaveAttribute('data-renderer','rive');
+  await expect(page.locator('.guide-rive-canvas')).toHaveCount(1);
+ }
  expect(errors).toEqual([]);
 });

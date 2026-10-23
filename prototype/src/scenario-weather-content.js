@@ -11,6 +11,7 @@ export const weatherPreparation={
         "meaning": "오늘은 비가 와요. 우산을 가져오세요.",
         "answer": "傘を持っていきます。",
         "answerMeaning": "우산을 가져가요.",
+        "learnNote": "가져오라는 부탁에 「持っていきます」로 가져가겠다고 답해요.",
         "hint": "「雨」는 비, 「傘」는 우산이에요. 우산을 가져오라는 말을 들었어요.",
         "others": [
           "上着を着ます。",
@@ -43,6 +44,7 @@ export const weatherPreparation={
         "meaning": "오늘은 추워요. 겉옷을 입고 오세요.",
         "answer": "上着を着ます。",
         "answerMeaning": "겉옷을 입어요.",
+        "learnNote": "「着ます」는 옷을 입는다는 뜻으로, 겉옷을 입고 갈 때도 써요.",
         "hint": "「寒い」는 춥다, 「上着」는 겉옷이에요. 겉옷을 입고 오라는 말을 들었어요.",
         "others": [
           "傘を持っていきます。",
@@ -75,6 +77,7 @@ export const weatherPreparation={
         "meaning": "오늘은 더워요. 물을 가져오세요.",
         "answer": "水を持っていきます。",
         "answerMeaning": "물을 가져가요.",
+        "learnNote": "「持っていきます」 앞의 물건을 바꾸면 가져갈 것을 말할 수 있어요.",
         "hint": "「暑い」는 덥다, 「水」는 물이에요. 물을 가져오라는 말을 들었어요.",
         "others": [
           "傘を持っていきます。",
@@ -115,6 +118,7 @@ export const weatherPreparation={
         "meaning": "今日は雨です。傘を持ってきてください。",
         "answer": "우산을 가져가요.",
         "answerMeaning": "傘を持っていきます。",
+        "learnNote": "持ってきてと頼まれたときは、「가져가요」で持っていくと答えます。",
         "hint": "「비」は雨、「우산」は傘です。傘を持ってくるように頼まれました。",
         "others": [
           "겉옷을 입어요.",
@@ -136,6 +140,7 @@ export const weatherPreparation={
         "meaning": "今日は寒いです。上着を着てきてください。",
         "answer": "겉옷을 입어요.",
         "answerMeaning": "上着を着ます。",
+        "learnNote": "「입어요」は服を着るという意味で、これから着るときにも使います。",
         "hint": "「추워요」は寒い、「겉옷」は上着です。上着を着てくるように頼まれました。",
         "others": [
           "우산을 가져가요.",
@@ -157,6 +162,7 @@ export const weatherPreparation={
         "meaning": "今日は暑いです。水を持ってきてください。",
         "answer": "물을 가져가요.",
         "answerMeaning": "水を持っていきます。",
+        "learnNote": "「가져가요」の前に物の名前を入れると、何を持っていくか伝えられます。",
         "hint": "「더워요」は暑い、「물」は水です。水を持ってくるように頼まれました。",
         "others": [
           "우산을 가져가요.",

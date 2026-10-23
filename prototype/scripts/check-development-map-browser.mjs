@@ -14,7 +14,7 @@ try{
  await page.screenshot({path:'/tmp/seodang-development-map.png'});
  await page.locator('[data-action=kana][data-id="2"]').click();await expect(page.locator('h1')).toHaveText('ま · み · む · め · も');
  await page.locator('[data-action=kana-next]').click();await expect(page.locator('canvas')).toBeVisible();
- await page.reload();await expect(page.locator('.storage-warning')).toHaveCount(0);await page.locator('.home-start-card [data-action=kana]').click();await expect(page.locator('canvas')).toBeVisible();
+ await page.reload();await expect(page.locator('.storage-warning')).toHaveCount(0);await page.locator('button.home-start-card[data-action=kana]').click();await expect(page.locator('canvas')).toBeVisible();
  let raw=await page.evaluate(()=>localStorage.getItem('seodang.web-prototype.v1')),saved=JSON.parse(raw);
  assert.equal(saved.kana.active,2);assert.equal(saved.kana.lessons[0].started,false);assert.equal(saved.kana.lessons.filter(l=>l.completed).length,0);assert.deepEqual(saved.history.completed,[]);
  // A regular build accepts the record but restores the first eligible lesson.

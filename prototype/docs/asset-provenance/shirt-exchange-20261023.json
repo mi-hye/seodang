@@ -1,0 +1,11 @@
+{
+  "asset": "prototype/assets/lesson-scenes/shirt-exchange-v1.jpg",
+  "created": "2026-10-23",
+  "source": "OpenAI built-in image_gen",
+  "kind": "AI-generated photorealistic clothing exchange scene; not a photograph of a real store",
+  "use": "Both language directions of level 3-13; existing hotel scene reused for 3-7",
+  "prompt": "Wide 2:1 realistic clothing boutique photograph: customer with receipt and folded pale blue shirt, assistant holding matching larger shirt, warm daylight, no logos or readable text.",
+  "sourceFile": "/Users/kangmihye/.codex/generated_images/01a153b1-12b6-7700-a6ae-e960523fb276/exec-8db665c7-57cd-4238-af04-96152b9b63ed.png",
+  "export": "sips JPEG quality82 max960, 960x480",
+  "sha256": "41bfded24c3d31dafcb1182bc2f81deee11b854c3c3512390ee748c16235b6c3"
+}

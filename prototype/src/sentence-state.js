@@ -61,7 +61,7 @@ export function reduceSentence(progress, action,id=0) {
     else {
       s.attempts++;
       s.checked=s.tokens.every((n,i)=>n===i);
-      s.feedback=s.checked?'':id!==0?'문장에 나온 말의 순서를 다시 확인해 주세요.':['これは → わたしの → かばんです。 순서예요.','かばんは → まどの そばに → あります。 순서예요.','あかい かばんでは → ありません。 순서예요.'][s.index];
+      s.feedback=s.checked?'':id!==0?'문장에 나온 말의 순서를 다시 확인해 주세요.':['これは → 私の → かばんです。 순서예요.','かばんは → 窓の そばに → あります。 순서예요.','赤い かばんでは → ありません。 순서예요.'][s.index];
     }
   }
   if(action.type==='sentence-select' && s.phase==='solve' && (id===0?['window-red','door-blue','window-blue']:['0','1','2']).includes(action.id)) {s.selected=action.id;s.feedback='';}
@@ -70,7 +70,7 @@ export function reduceSentence(progress, action,id=0) {
     else {
       s.attempts++;
       if(s.selected===(id===0?'window-blue':id===1?'1':'2')) {s.completed=true;s.phase='summary';s.feedback='';}
-      else s.feedback=id===3?'한국 사람이라고 소개한 문장을 떠올려 보세요.':id!==0?'필요한 수량이나 약속 장소와 시각을 다시 확인해 주세요.':s.selected==='window-red'?'ありません은 아니라는 뜻이에요. 빨간 가방은 제외해요.':'まどの そば는 창문 옆이에요. 위치를 확인해 주세요.';
+      else s.feedback=id===3?'한국 사람이라고 소개한 문장을 떠올려 보세요.':id!==0?'필요한 수량이나 약속 장소와 시각을 다시 확인해 주세요.':s.selected==='window-red'?'ありません은 아니라는 뜻이에요. 빨간 가방은 제외해요.':'窓の そば는 창문 옆이에요. 위치를 확인해 주세요.';
     }
   }
   return s;

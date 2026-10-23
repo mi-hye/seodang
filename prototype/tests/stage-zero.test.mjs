@@ -1,11 +1,11 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {freshState,reduce} from '../src/engine.js';import {load,valid} from '../src/storage.js';
 import {freshKana} from '../src/kana-state.js';import {freshBasic} from '../src/basics-state.js';
-import {koreanLessons,nextKorean} from '../src/korean-state.js';import {renderLearningMap} from '../src/learning-map.js';
+import {koreanLessons,nextKorean} from '../src/korean-state.js';import {renderAllLearningMap} from './map-pagination-fixtures.mjs';
 import {guidePages} from '../src/onboarding-guide.js';
 test('zero and word stages are separate in both directions, zero survives language switching',()=>{
  for(const courseDirection of ['ko-ja','ja-ko']){
-  let s={...freshState(),onboarded:true,courseDirection,onboardingLevel:0};assert.ok(valid(s));const letters=renderLearningMap(s),words=renderLearningMap({...s,onboardingLevel:2});
+  let s={...freshState(),onboarded:true,courseDirection,onboardingLevel:0};assert.ok(valid(s));const letters=renderAllLearningMap(s),words=renderAllLearningMap({...s,onboardingLevel:2});
   if(courseDirection==='ko-ja'){assert.match(letters,/data-action="kana"/);assert.doesNotMatch(letters,/data-action="sentence"/);assert.match(words,/data-action="sentence"/);assert.doesNotMatch(words,/data-action="kana"/);}
   else{assert.equal(nextKorean(s).level,0);assert.equal(nextKorean({...s,onboardingLevel:2}).id,'3-1');assert.equal(koreanLessons.filter(l=>l.level===0).length,10);}
   s=reduce(s,{type:'course',value:courseDirection==='ko-ja'?'ja-ko':'ko-ja'});s=reduce(s,{type:'level',value:4});s=reduce(s,{type:'course',value:courseDirection});assert.equal(s.onboardingLevel,0);

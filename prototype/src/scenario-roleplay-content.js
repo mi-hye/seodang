@@ -2,6 +2,8 @@
 export const hotelRoleplay={
  "ko-ja": {
   "mode": "roleplay",
+  "image": "assets/lesson-scenes/hotel-checkin-v1.jpg",
+  "introImageOnly": true,
   "scene": "체크아웃 후에 짐을 맡기고 외출해요. 프런트 직원의 말을 듣고 대화를 이어 보세요.",
   "items": [
    {
@@ -92,6 +94,8 @@ export const hotelRoleplay={
  },
  "ja-ko": {
   "mode": "roleplay",
+  "image": "assets/lesson-scenes/hotel-checkin-v1.jpg",
+  "introImageOnly": true,
   "scene": "チェックアウト後、荷物を預けて出かけます。フロントのスタッフの話を聞いて、会話を続けましょう。",
   "items": [
    {

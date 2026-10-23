@@ -369,7 +369,7 @@ class SeodangVideoPlugin: CAPPlugin, CAPBridgedPlugin, WKUIDelegate, WKNavigatio
 
     @objc func mount(_ call: CAPPluginCall) {
         guard let videoID = call.getString("videoId"), let token = call.getString("token"),
-              ["xRlcrGXwtrA", "PZGxO0qCKRg", "pQ8lfI_W2To", "X3Y9esqDspY", "r5m1bfVUfSQ", "DddirskV5Vo", "sczKFlBP1Y4", "JPZfvT5zTBE", "sst8SX32Yhw", "cE8wVmwY7VY", "F50dzv9H9sU", "VZBU8LvZ91Q", "Eze6-eHmtJg", "0xSiBpUdW4E", "BzYnNdJhZQw", "xRbPAVnqtcs", "EIz09kLzN9k"].contains(videoID) else {
+              ["xRlcrGXwtrA", "PZGxO0qCKRg", "pQ8lfI_W2To", "X3Y9esqDspY", "r5m1bfVUfSQ", "DddirskV5Vo", "sczKFlBP1Y4", "JPZfvT5zTBE", "sst8SX32Yhw", "cE8wVmwY7VY", "F50dzv9H9sU", "VZBU8LvZ91Q", "Eze6-eHmtJg", "0xSiBpUdW4E", "BzYnNdJhZQw", "xRbPAVnqtcs", "EIz09kLzN9k", "UM9XNpgrqVk", "jhOVibLEDhA", "4DxL6IKmXx4", "Y4nEEZwckuU", "J5Z7tIq7bco", "iqEr3P78fz8", "SX_ViT4Ra7k", "TQ8WlA2GXbk", "-VKIqrvVOpo", "vnS_jn2uibs", "D1PvIWdJ8xo", "SK6Sm2Ki9tI", "BS7tz2rAOSA", "d9IxdwEFk1c", "xEeFrLSkMm8", "j1uXcHwLhHM", "m3DZsBw5bnE", "4HG_CJzyX6A"].contains(videoID) else {
             call.reject("Unknown lesson video"); return
         }
         let start = call.getInt("startSeconds") ?? 0

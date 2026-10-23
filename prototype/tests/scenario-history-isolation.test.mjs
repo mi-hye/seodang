@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import {freshState,reduce} from '../src/engine.js';
 import {recordLearning} from '../src/learning-history.js';
 import {prepareContent,interceptCompletion} from '../src/practice-content.js';
-import {advancePractice} from '../src/practice-state.js';
+import {advancePractice,normalizeCasePractice} from '../src/practice-state.js';
+import {lessonPercent} from '../src/lesson-session.js';
 import {learningSnapshot} from '../src/analytics-learning.js';
 import {recordStudyCompletion} from '../src/study-state.js';
 import {valid,load} from '../src/storage.js';
@@ -49,6 +50,52 @@ for(const direction of ['ko-ja','ja-ko'])for(const id of ['2','13','14','15','16
  assert.ok(valid(final));
  const repeated=reduce(frozen(final),p.action,now);
  assert.deepEqual(host(repeated).history,host(final).history,'repeated final action must not count again');
+});
+
+for(const direction of ['ko-ja','ja-ko'])for(const id of ['14','15','16','17'])for(const completed of [false,true])test(`${direction} scenario ${id}: legacy twelve-step review becomes three turns and records ${completed?'repeat':'first'} completion once`,async()=>{
+ const key=`${direction}:scenario:${id}`,fixture=reviewFixture(key),s=withHistory(fixture.s);
+ s.scenarios[key].completed=completed;
+ if(completed&&direction==='ko-ja')s.history.completed.push(key);
+ const earlierDay='2026-10-20';
+ s.studyTools={[direction]:{lessons:{[key]:{completedOn:earlierDay,at:1792465200000}}}};
+ const otherKey=`${direction}:scenario:13`,other={version:1,caseVersion:1,round:0,mode:0,index:7,count:12,action:{type:'scenario-next'}};
+ s.practices={[key]:{version:1,caseVersion:1,round:0,mode:0,index:11,count:12,action:fixture.action},[otherKey]:other};
+ const baseline=structuredClone(s);frozen(s);assert.ok(valid(s));
+ await prepareContent('scenario');
+ const restored=load({getItem:()=>JSON.stringify(s)});assert.equal(restored.blocked,false);
+ assert.deepEqual(s,baseline,'loading cannot mutate the old review');
+ const migrated=restored.state;
+ assert.deepEqual(migrated.practices[key],{...s.practices[key],caseVersion:2,index:0,count:3});
+ assert.deepEqual(migrated.practices[otherKey],other,'an unrelated twelve-step review keeps its index');
+ for(const field of ['scenarios','history','studyTools'])assert.deepEqual(migrated[field],baseline[field]);
+ assert.deepEqual(migrated.korean.history,baseline.korean.history);
+ assert.equal(learningSnapshot(migrated,'scenario').done,false);
+ assert.equal(lessonPercent(migrated,'scenario'),66);
+ let current=migrated;
+ for(let index=0;index<3;index++){
+  const p=current.practices[key];assert.equal(p.index,index);assert.equal(p.caseVersion,2);assert.equal(p.count,3);
+  assert.equal(normalizeCasePractice(p,key),p,'new three-turn progress must not reset');
+  assert.equal(lessonPercent(current,'scenario'),Math.floor((6+index)/9*100));
+  assert.deepEqual(host(current).history,host(baseline).history);
+  assert.deepEqual(current.studyTools,baseline.studyTools,'review due dates wait for the final turn');
+  const reloaded=load({getItem:()=>JSON.stringify(current)});assert.equal(reloaded.blocked,false);assert.deepEqual(reloaded.state.practices,current.practices);
+  const next=advancePractice(p,1,false);
+  if(index<2){assert.ok(next);current={...current,practices:{...current.practices,[key]:next}};}
+  else assert.equal(next,null);
+ }
+ const before=structuredClone(current),practices={...current.practices};delete practices[key];
+ let final=reduce(frozen({...current,practices}),current.practices[key].action,now);
+ assert.deepEqual(current,before);
+ assert.equal(final.scenarios[key].completed,true);assert.equal(final.scenarios[key].phase,'done');
+ assert.deepEqual(final.practices[otherKey],other);
+ const expected=reduce(s,fixture.action,now);
+ assert.deepEqual(host(final).history,host(expected).history);
+ assert.equal(host(final).history.days[day].sentences,host(baseline).history.days[day].sentences+1);
+ assert.equal(host(final).history.days[day].cases,completed?0:1);
+ final=recordStudyCompletion(final,learningSnapshot(current,'scenario'),learningSnapshot(final,'scenario'),now);
+ assert.deepEqual(final.studyTools[direction].lessons[key],{completedOn:day,at:now.getTime()});
+ assert.ok(valid(final));assert.equal(lessonPercent(final,'scenario'),100);
+ assert.deepEqual(reduce(frozen(final),fixture.action,now),final,'the held action can finish the lesson only once');
 });
 
 test('generic learning history does not mutate either input when they share history',()=>{

@@ -6,7 +6,7 @@ import {freshState,reduce} from '../src/engine.js';
 import {valid,load,save,STORAGE_KEY} from '../src/storage.js';
 import {sentenceProgress,validSentence} from '../src/sentence-state.js';
 import {sentences,sentenceAudio} from '../src/sentence-content.js';
-import {renderLearningMap} from '../src/learning-map.js';
+import {renderAllLearningMap} from './map-pagination-fixtures.mjs';
 
 test('level 3 requires correct sentence order and both color/location clues, preserves other courses',()=>{
   let state=freshState();state.onboardingLevel=3;
@@ -53,6 +53,6 @@ test('all new speech uses bundled Ono_Anna WAVs with matching source and hash',(
 });
 
 test('first case map offers only implemented cases',()=>{
- const s=freshState();s.onboardingLevel=2;const html=renderLearningMap(s);
- assert.ok(html.includes('카페에 남겨진 가방'));assert.equal((html.match(/data-action="sentence"/g)||[]).length,4);assert.equal((html.match(/ disabled/g)||[]).length,0);
+ const s=freshState();s.onboardingLevel=2;const html=renderAllLearningMap(s);
+ assert.ok(html.includes('카페에 남겨진 가방'));assert.equal((html.match(/data-action="sentence"/g)||[]).length,4);assert.equal((html.match(/<button class="map-choice"[^>]* disabled/g)||[]).length,0);
 });

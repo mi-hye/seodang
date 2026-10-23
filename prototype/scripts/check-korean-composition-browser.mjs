@@ -12,13 +12,13 @@ try{for(const width of [320,390]){
  lessons['1-2']=freshKoreanProgress();
  lessons['1-1']={...freshKoreanProgress(),index:9,phase:'quiz',started:true};
  await page.addInitScript(state=>{if(!sessionStorage.seed){localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(state));sessionStorage.seed='yes';}},{...freshState(),courseDirection:'ja-ko',onboarded:true,koreanGuideSeenVersion:1,onboardingLevel:1,settings:{sound:false,textScale:1.2,motion:'off'},korean:{version:2,active:'1-1',lessons}});
- await page.goto('https://seodang.test/playable.html');await page.locator('.home-start-card button').click();
+ await page.goto('https://seodang.test/playable.html');await page.locator('button.home-start-card[data-action]').click();
  const check=async()=>{await page.waitForTimeout(470);await page.locator('[data-action=korean-check]').click();};
  await page.locator('[data-action=korean-select][data-id="0"]').click();await check();
  await expect(page.locator('.korean-assembly')).toBeVisible();await expect(page.locator('.korean-count')).toHaveCount(0);
  await page.locator('[data-action=korean-select][data-id="1"]').click();await expect(page.locator('.korean-assembly strong')).toHaveText('어');await check();await expect(page.locator('.korean-feedback')).not.toBeEmpty();
  await page.locator('[data-action=korean-select][data-id="0"]').click();await expect(page.locator('.korean-assembly strong')).toHaveText('아');
- await page.reload();await page.locator('.home-start-card button').click();await expect(page.locator('.korean-assembly strong')).toHaveText('아');await check();
+ await page.reload();await page.locator('button.home-start-card[data-action]').click();await expect(page.locator('.korean-assembly strong')).toHaveText('아');await check();
  for(let i=1;i<10;i++){await page.locator(`[data-action=korean-select][data-id="${i%3}"]`).click();await check();}
  await expect(page.locator('canvas')).toBeVisible();await expect(page.locator('.app-header-title')).toContainText('1-3');
  for(const id of ['1-4','1-6','1-8','1-10']){

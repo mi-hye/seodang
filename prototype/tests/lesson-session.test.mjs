@@ -39,8 +39,8 @@ test('opening a case introduction alone never prompts to resume, actual learning
 
 test('scenario and expert entries share resume and isolated restart for both languages',async()=>{
  const {freshState}=await import('../src/engine.js');const {valid}=await import('../src/storage.js');
- const {scenarioLessons}=await import('../src/scenario-state.js');
- for(const direction of ['ko-ja','ja-ko'])for(const kind of ['scenario','expert'])for(const lesson of kind==='scenario'?scenarioLessons:[0,1,2,3].map(id=>({id,level:7}))){
+ const {scenarioLessons,scenarioAvailable}=await import('../src/scenario-state.js');
+ for(const direction of ['ko-ja','ja-ko'])for(const kind of ['scenario','expert'])for(const lesson of kind==='scenario'?scenarioLessons.filter(l=>scenarioAvailable({courseDirection:direction},l)):[0,1,2,3].map(id=>({id,level:7}))){
   let s=entryState({...freshState(),onboarded:true,onboardingLevel:lesson.level,courseDirection:direction},kind,lesson.id);
   assert.equal(shouldOfferResume(s,kind),false);
   s=reduce(s,{type:`${kind}-start`,id:lesson.id});assert.equal(shouldOfferResume(s,kind),false);

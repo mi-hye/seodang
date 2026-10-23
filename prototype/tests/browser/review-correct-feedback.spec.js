@@ -30,16 +30,11 @@ test('leaving while the sound is resuming cancels it',async({page})=>{
   const {createReviewCorrectFeedback}=await import('/src/review-correct-feedback.js');const cue=createReviewCorrectFeedback(document.body,{sound:true,motion:'off'});cue.play();cue.dispose();resume();await Promise.resolve();return {tones,closed};
  });expect(result).toEqual({tones:0,closed:1});
 });
-test('completion fanfare covers expanded level two and respects sound off',async({page})=>{
+test('shared completion fanfare has six tones and respects sound off',async({page})=>{
  await page.route('**/completion-cue',r=>r.fulfill({contentType:'text/html',body:'<body></body>'}));await page.goto('/completion-cue');
  const result=await page.evaluate(async()=>{
   let tones=0,closed=0;window.AudioContext=class{state='running';currentTime=0;destination={};createOscillator(){tones++;return {frequency:{},connect(){},start(){},stop(){}};}createGain(){return {gain:{setValueAtTime(){},linearRampToValueAtTime(){},exponentialRampToValueAtTime(){}},connect(){}};}close(){closed++;return Promise.resolve();}};
-  const {freshState}=await import('/src/engine.js'),{playIntroductionCompletionSound}=await import('/src/practice.js');const s={...freshState(),sentenceActive:3,settings:{sound:true}};
-  const jp=playIntroductionCompletionSound(s,'sentence');const first=tones;jp();
-  const ko=playIntroductionCompletionSound({...s,courseDirection:'ja-ko',korean:{active:'3-1'}},'korean');const second=tones;ko();
-  playIntroductionCompletionSound({...s,sentenceActive:1},'sentence')();playIntroductionCompletionSound({...s,courseDirection:'ja-ko',korean:{active:'4-1'}},'korean')();playIntroductionCompletionSound({...s,settings:{sound:false}},'sentence')();
-  playIntroductionCompletionSound({...s,sentenceActive:0},'sentence')();
-  playIntroductionCompletionSound({...s,courseDirection:'ja-ko',korean:{active:'3-4'}},'korean')();
-  return {first,second,tones,closed};
- });expect(result).toEqual({first:6,second:12,tones:30,closed:5});
+  const {playReviewCompletionSound}=await import('/src/review-correct-feedback.js');
+  playReviewCompletionSound({sound:true})();playReviewCompletionSound({sound:false})();return {tones,closed};
+ });expect(result).toEqual({tones:6,closed:1});
 });

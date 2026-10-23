@@ -1,0 +1,9 @@
+.dialogue-bubble{min-width:0;margin:0 12px 0 0;padding:14px 12px;border:1px solid var(--line);border-radius:4px 18px 18px;background:var(--stage-raised)}
+.dialogue-bubble.dialogue-self{margin:0 0 0 12px;border-radius:18px 4px 18px 18px;background:var(--selected)}
+.dialogue-bubble>small,.rehearsal-compose>small{display:block;color:var(--muted);font-size:calc(13px * var(--text-scale));line-height:1.5;margin-bottom:6px}
+.dialogue-bubble .audio-text-row{display:flex;flex-flow:row nowrap;align-items:center;gap:8px}
+.dialogue-bubble .audio-text-row>p{flex:1;min-width:0;margin:0;font-size:calc(18px * var(--text-scale));line-height:1.65}
+.dialogue-bubble.dialogue-self .audio-text-row>p{font-size:calc(21px * var(--text-scale));font-weight:650}
+.dialogue-bubble .audio-text-row>.icon-button{flex:none;width:44px;height:44px;min-height:44px;margin:0}
+.dialogue-bubble p.dialogue-meaning,.dialogue-bubble p.case-lesson-meaning{margin:8px 0 0;font-size:calc(15px * var(--text-scale));line-height:1.65;color:var(--muted)}
+.dialogue-bubble :lang(ja){word-break:normal;line-break:strict}.dialogue-bubble :lang(ko){word-break:keep-all;overflow-wrap:break-word}

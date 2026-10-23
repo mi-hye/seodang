@@ -1,8 +1,9 @@
+import {renderAllLearningMap} from './map-pagination-fixtures.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {freshState,reduce} from '../src/engine.js';import {valid,load,STORAGE_KEY} from '../src/storage.js';import {videoLessons,videoLesson,videoProgress,lessonNumberWithVideo,videosForCourse} from '../src/video-lesson-state.js';import {renderLearningMap} from '../src/learning-map.js';import {renderVideoLesson} from '../src/video-lesson.js';
 for(const {id,direction,level,count,number} of videoLessons.filter(l=>!l.mode))test(`video course ${direction} ${level}: map, progress, reload, restart`,()=>{
  let s={...freshState(),courseDirection:direction,onboardingLevel:level,videoActive:id};assert.equal(videoLesson(s).number,number);
- const map=renderLearningMap(s);
+ const map=renderAllLearningMap(s);
  const stops=[...map.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"/g)].map(m=>m[1]);
  assert.equal(number%3,0);assert.equal(stops[number-1],'video');assert.equal(stops.filter(x=>x==='video').length,videosForCourse(s).length);
  assert.equal(lessonNumberWithVideo(s,2),2);assert.equal(lessonNumberWithVideo(s,3),4);
@@ -25,8 +26,8 @@ test('previous/replay do not award completion',()=>{let s={...freshState(),onboa
 
 test('old Misaeng progress is valid but starts the replacement lesson fresh',()=>{
  const old={...freshState(),courseDirection:'ja-ko',onboardingLevel:7,videoLessons:{misaeng:{version:1,started:true,completed:true,index:0,phase:'done'}}};
- assert.equal(valid(old),true);assert.equal(videoProgress(old).version,2);assert.equal(videoProgress(old).completed,false);
- const next=reduce(old,{type:'video-start'});assert.equal(next.videoLessons.misaeng.version,2);assert.equal(next.videoLessons.misaeng.phase,'watch');
+ assert.equal(valid(old),true);assert.equal(videoProgress(old).version,3);assert.equal(videoProgress(old).completed,false);
+ const next=reduce(old,{type:'video-start'});assert.equal(next.videoLessons.misaeng.version,3);assert.equal(next.videoLessons.misaeng.phase,'watch');
  assert.equal(valid(next),true);
 });
 
@@ -42,9 +43,9 @@ test('previous from the next clip returns to the preceding expression',()=>{
  assert.equal(videoProgress(s).phase,'learn');assert.equal(videoProgress(s).index,0);
 });
 
-test('video positions remain multiples of three, with a third clip at levels two and five',()=>{
+test('each level has four video positions',()=>{
  for(const direction of ['ko-ja','ja-ko']){
-  for(const level of [2,4,5,7])assert.equal(videoLessons.filter(l=>l.direction===direction&&l.level===level).length,level===2?4:level===7?3:2);
+  for(const level of [2,4,5,7])assert.equal(videoLessons.filter(l=>l.direction===direction&&l.level===level).length,4);
   assert.equal(videoLesson({...freshState(),courseDirection:direction,onboardingLevel:6}).level,5);
  }
 });
@@ -52,7 +53,8 @@ test('video positions remain multiples of three, with a third clip at levels two
 for(const level of [4,5,7])for(const direction of ['ko-ja','ja-ko'])test(`${direction} internal level ${level} lesson 6 preserves lesson 3 resume`,()=>{
  let s={...freshState(),courseDirection:direction,onboardingLevel:level};const [first,second]=videosForCourse(s);
  assert.deepEqual([first.number,second.number],[3,6]);s=reduce(s,{type:'video-start',id:first.id});s=reduce(s,{type:'video-next'});const saved=structuredClone(videoProgress(s));
- s=reduce(s,{type:'video-start',id:second.id});s=reduce(s,{type:'video-next'});s=reduce(s,{type:'video-next'});
+ s=reduce(s,{type:'video-start',id:second.id});s=reduce(s,{type:'video-next'});
+ if(second.mode==='scene'){for(const [i,answer]of second.answers.entries()){s=reduce(s,{type:'video-select',id:answer});s=reduce(s,{type:'video-check'});s=reduce(s,{type:'video-next'});if(i===0)s=reduce(s,{type:'video-next'});}}else s=reduce(s,{type:'video-next'});
  assert.equal(videoProgress(s).completed,true);assert.deepEqual(videoProgress(s,first.id),saved);
  s=load({getItem:k=>k===STORAGE_KEY?JSON.stringify(s):null}).state;s=reduce(s,{type:'video-start',id:first.id});assert.deepEqual(videoProgress(s),saved);
 });

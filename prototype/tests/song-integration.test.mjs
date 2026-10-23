@@ -22,6 +22,7 @@ for(const l of songLessons)test(`${l.id}: song progress, answers, replay and rev
   s=recordStudyCompletion(s,before,after,now);assert.ok(valid(s),`${type} must remain persistable`);return {before,after};
  };
  act('song-start',l.id);assert.equal(songProgress(s).started,true);act('song-next');
+ if((l.number===15||l.learnFirst)){assert.equal(songProgress(s).phase,'learn');act('song-replay');s=reload(s);act('song-next');assert.equal(songProgress(s).phase,'learn');act('song-next');}
  for(const [index,phase]of ['gap','apply'].entries()){
   assert.equal(songProgress(s).phase,phase);
   act('song-next');assert.equal(songProgress(s).phase,phase);
@@ -37,7 +38,7 @@ for(const l of songLessons)test(`${l.id}: song progress, answers, replay and rev
   s=reload(s);act('song-start',l.id);act('song-next');assert.deepEqual(songProgress(s),saved);
   assert.equal(host(s)?.history,undefined);assert.equal(s.studyTools,undefined);
   act('song-next');
-  if(phase==='gap'){
+  if(phase==='gap'&&!(l.number===15||l.learnFirst)){
    assert.equal(songProgress(s).phase,'learn');act('song-replay');s=reload(s);act('song-next');assert.equal(songProgress(s).phase,'learn');act('song-next');
   }
  }
@@ -52,7 +53,7 @@ for(const l of songLessons)test(`${l.id}: song progress, answers, replay and rev
  // only after finishing the new run rather than merely reopening the lesson.
  now=reviewDay;act('song-start',l.id);assert.equal(songProgress(s).completed,true);assert.equal(learningSnapshot(s,'song').done,false);
  assert.equal(s.studyTools[l.direction].lessons[key].completedOn,'2026-10-22');
- act('song-next');act('song-select',l.answers[0]);act('song-check');act('song-next');act('song-next');
+ act('song-next');if((l.number===15||l.learnFirst))act('song-next');act('song-select',l.answers[0]);act('song-check');act('song-next');if(!(l.number===15||l.learnFirst))act('song-next');
  act('song-select',l.answers[1]);act('song-check');act('song-next');act('song-next');
  assert.deepEqual(host(s).history.days['2026-10-26'],{letters:0,expressions:1,sentences:0,cases:0});
  assert.equal(s.studyTools[l.direction].lessons[key].completedOn,'2026-10-26');

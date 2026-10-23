@@ -76,5 +76,5 @@ export function expressionCard(
 
 export function homeCaseCard({ title, action, actionLabel, id }) {
   const parts=title.split(' · '),position=parts.length>1?parts.shift():null,numbered=parts.join(' · ').match(/^(\d+)\.\s+(.+)$/u),label=[position,numbered?.[1]].filter(Boolean).join(' · ');
-  return `<section class="case-card home-start-card" aria-label="${t('바로 학습하기')}"><div class="home-card-heading">${label?`<span class="home-position">${esc(label)}</span>`:''}<h2>${esc(numbered?numbered[2]:parts.join(' · '))}</h2></div>${button(`${esc(actionLabel)} ${icon("arrow")}`,action,'primary',id===undefined?'':`data-id="${esc(id)}"`)}</section>`;
+  return `<button type="button" class="case-card home-start-card" data-action="${esc(action)}"${id===undefined?'':` data-id="${esc(id)}"`} data-entry="resume" data-coach-title="${esc(t(actionLabel))}" aria-label="${esc(`${t(actionLabel)}: ${title}`)}"><span class="home-card-heading">${label?`<span class="home-position">${esc(label)}</span>`:''}<span class="home-card-title">${esc(numbered?numbered[2]:parts.join(' · '))}</span></span><span class="home-card-arrow" aria-hidden="true">${icon('arrow')}</span></button>`;
 }

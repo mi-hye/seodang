@@ -18,6 +18,10 @@
         "gradleCommand": ":app:bundleRelease",
         "image": "latest"
       }
+    },
+    "production-local": {
+      "extends": "production",
+      "autoIncrement": false
     }
   },
   "submit": {

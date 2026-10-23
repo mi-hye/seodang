@@ -1,8 +1,10 @@
+import {courseVideos} from './course-video-catalog.js';
 import {courseGroup} from './curriculum.js';
 import {songsForCourse} from './song-state.js';
 import {lessonNumberWithSpecials} from './lesson-order.js';
 // Only catalogue and progress load with the map; video and lesson copy load on entry.
 export const videoLessons=[
+ ...courseVideos,
  {id:'chiikawa-offer',direction:'ko-ja',level:2,number:12,title:'치이카와 장면으로 음식 권하기',count:1},
  {id:'hospital-thanks',direction:'ja-ko',level:2,number:12,title:'ドラマでお礼の理由を伝える',count:1},
  {id:'frieren-just-right',direction:'ko-ja',level:2,number:9,title:'치이카와 장면으로 할 일 알려 주기',count:1,revision:2},
@@ -19,14 +21,18 @@ export const videoLessons=[
 {"id": "queen-condition", "direction": "ja-ko", "level": 5, "number": 3, "title": "ドラマで状況による変化を伝える", "count": 1},
 
  {id:'frieren',direction:'ko-ja',level:4,number:3,title:'프리렌 장면으로 표현 배우기',count:2},
- {id:'misaeng',direction:'ja-ko',level:7,number:3,title:'미생 장면으로 묻고 확인하기',count:2,revision:2},
- {id:'frieren-permission',direction:'ko-ja',level:4,number:6,title:'프리렌 장면으로 허락 구하기',count:1},
- {id:'blackdog-confirmation',direction:'ja-ko',level:4,number:6,title:'ドラマでできるか確かめる',count:1},
+ {id:'misaeng',direction:'ja-ko',level:7,number:3,title:'ドラマで方法を尋ねて理解を確かめる',count:2,revision:2},
+ {id:'frieren-permission',direction:'ko-ja',level:4,number:6,title:'프리렌 장면으로 허락 구하기',count:1,mode:'scene',revision:2,answers:[2,0]},
+ {id:'blackdog-confirmation',direction:'ja-ko',level:4,number:6,title:'ドラマでできるか確かめる',count:1,mode:'scene',revision:2,answers:[1,2]},
  {id:'frieren-realization',direction:'ko-ja',level:5,number:6,title:'프리렌 장면으로 새로운 생각에 반응하기',count:1},
  {id:'queen-belief',direction:'ja-ko',level:5,number:6,title:'ドラマで相手の考えに気づく',count:1},
  {id:'frieren-inference',direction:'ko-ja',level:7,number:6,title:'프리렌 장면으로 이해한 내용 확인하기',count:1},
  {id:'blackdog-nuance',direction:'ja-ko',level:7,number:6,title:'ドラマで一部を認めて意見を伝える',count:1}
 ].map(lesson=>{
+ const levelFiveAnswers={'frieren-opinion':[1,2],'frieren-inference':[0,1],'blackdog-nuance':[2,0],misaeng:[1,2,0,1]};
+ if(levelFiveAnswers[lesson.id])return {...lesson,mode:'scene',revision:lesson.id==='misaeng'?3:2,answers:levelFiveAnswers[lesson.id]};
+ const levelFourAnswers={"frieren-uncertainty": [1, 2], "frieren-realization": [0, 1], "queen-condition": [2, 0], "queen-belief": [1, 2]};
+ if(levelFourAnswers[lesson.id])return {...lesson,mode:'scene',revision:2,answers:levelFourAnswers[lesson.id]};
  if(lesson.level!==2)return lesson;
  const answers={'frieren-reaction':[1,2],'hospital-reassurance':[0,1],'frieren-wait':[2,0],'hospital-effort':[1,2],'frieren-just-right':[0,1],'hospital-appreciation':[2,0],'chiikawa-offer':[1,2],'hospital-thanks':[0,1]};
  return {...lesson,mode:'scene',revision:3,answers:answers[lesson.id]};
@@ -42,14 +48,14 @@ export const videoProgress=(s,id)=>{
  if(p?.version===version)return p.phase==='speak'?{...p,phase:'learn'}:p;
  const fresh=freshVideo(version,l?.mode);
  // Content is unchanged: preserve completion, but restart retired generic reviews at the scene.
- if(l?.mode==='scene'&&p&&p.version>=(l.id==='frieren-just-right'?2:1))return {...fresh,started:p.started,completed:p.completed,phase:p.phase==='done'?'done':'watch'};
+ if(l?.mode==='scene'&&p&&p.version>=(['frieren-just-right','misaeng'].includes(l.id)?2:1))return {...fresh,started:p.started,completed:p.completed,phase:p.phase==='done'?'done':'watch'};
  return fresh;
 };
 export function validVideoLessons(s){
  return (s.videoActive===undefined||videoLessons.some(l=>l.id===s.videoActive))&&(s.videoLessons===undefined||Boolean(s.videoLessons&&typeof s.videoLessons==='object'&&!Array.isArray(s.videoLessons)&&Object.entries(s.videoLessons).every(([id,p])=>{
   const l=videoLessons.find(l=>l.id===id);if(!l)return false;
   const scene=l.mode==='scene',legacy=scene&&p?.version!==l.revision;
-  const versions=scene?(l.id==='frieren-just-right'?[1,2,3]:[1,3]):[1,l.revision??1];
+  const versions=scene&&['frieren-just-right','misaeng'].includes(l.id)?[1,2,3]:[1,l.revision??1];
   if(!versions.includes(p?.version)||typeof p.started!=='boolean'||typeof p.completed!=='boolean'||!Number.isInteger(p.index)||p.index<0||p.index>=(l.id==='misaeng'&&p.version===1?1:l.count)||p.phase==='done'&&!p.completed)return false;
   if(l.mode==='detective'||scene&&!legacy){
    const questions=scene?['meaning','use']:['infer','clue'],phases=['watch',...questions,'learn','done'];
@@ -66,9 +72,10 @@ export function reduceVideo(s,a){
   const scene=l.mode==='scene',questions=scene?['meaning','use']:['infer','clue'];
   const stages=scene?['watch','meaning','learn','use','done']:['watch','infer','clue','learn','done'],at=stages.indexOf(p.phase),question=questions.includes(p.phase);
   if(a.type==='video-select'&&question&&!p.checked&&[0,1,2].includes(Number(a.id))){p.selected=Number(a.id);p.retry=false;}
-  else if(a.type==='video-check'&&question&&!p.checked&&p.selected!==null){p.checked=p.selected===l.answers[questions.indexOf(p.phase)];p.retry=!p.checked;}
+  else if(a.type==='video-check'&&question&&!p.checked&&p.selected!==null){p.checked=p.selected===l.answers[(scene?p.index*2:0)+questions.indexOf(p.phase)];p.retry=!p.checked;}
   else if(a.type==='video-next'&&p.phase==='watch'&&p.resume){p.phase=p.resume;p.resume=null;}
-  else if(a.type==='video-next'&&at<4&&(!question||p.checked)){p.phase=stages[at+1];p.selected=null;p.checked=false;p.retry=false;if(p.phase==='done')p.completed=true;}
+  else if(a.type==='video-next'&&at<4&&(!question||p.checked)){p.phase=stages[at+1];p.selected=null;p.checked=false;p.retry=false;if(p.phase==='done'){if(scene&&p.index+1<l.count){p.index++;p.phase='watch';}else p.completed=true;}}
+  else if(a.type==='video-previous'&&scene&&at===0&&p.index>0&&!p.resume){p.index--;p.phase='use';p.selected=null;p.checked=false;p.retry=false;}
   else if(a.type==='video-previous'&&at>0&&at<4){p.phase=stages[at-1];p.selected=null;p.checked=false;p.retry=false;}
   else if(a.type==='video-replay'&&at>0&&at<4){p.resume=p.phase;p.phase='watch';}
   else return s;

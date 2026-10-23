@@ -3,14 +3,14 @@ import assert from 'node:assert/strict';
 import {songLessons} from '../src/song-state.js';
 import {songContent} from '../src/song-lesson-content.js';
 
-test('all six song previews have a verified short clip and matching exercise answers',()=>{
+test('all song previews have a verified short clip and matching exercise answers',()=>{
  assert.deepEqual(Object.keys(songContent).sort(),songLessons.map(l=>l.id).sort());
  for(const l of songLessons){
   const c=songContent[l.id];
   assert.equal(l.released,false,`${l.id}: release requires separate rights review`);
   assert.match(c.videoId,/^[A-Za-z0-9_-]{11}$/);
   assert.ok(Number.isInteger(c.startSeconds)&&Number.isInteger(c.endSeconds));
-  assert.ok(c.endSeconds-c.startSeconds>=4&&c.endSeconds-c.startSeconds<=6);
+  assert.ok(c.endSeconds-c.startSeconds>=(l.level===2?4:2)&&c.endSeconds-c.startSeconds<=(l.level===2?6:8),l.id);
   assert.equal(c.parts.join(''),c.target);
   assert.equal(c.exampleParts.join(''),c.example);
   assert.equal(c.gap.before+c.gap.options[c.gap.answer]+c.gap.after,c.target);

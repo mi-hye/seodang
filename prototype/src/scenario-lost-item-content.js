@@ -14,6 +14,7 @@ export const lostItemChat={
         "meaning": "뭘 두고 왔어요?",
         "answer": "傘を忘れました。",
         "answerMeaning": "우산을 두고 왔어요.",
+        "learnNote": "물건 이름에 「を忘れました」를 붙이면 두고 왔다고 말할 수 있어요.",
         "others": [
           "本を忘れました。",
           "財布を忘れました。"
@@ -42,9 +43,11 @@ export const lostItemChat={
       },
       {
         "text": "何色の傘ですか。",
+        "bundledPromptAudio": "assets/course-voices/ja-JP-c61d393d9fe47e1f.m4a",
         "meaning": "무슨 색 우산이에요?",
         "answer": "黒い傘です。",
         "answerMeaning": "검은 우산이에요.",
+        "learnNote": "「黒い」는 물건 이름 앞에서 검은색임을 나타내요.",
         "others": [
           "赤い傘です。",
           "白い傘です。"
@@ -76,6 +79,7 @@ export const lostItemChat={
         "meaning": "가져다줄까요?",
         "answer": "お願いします。ありがとうございます。",
         "answerMeaning": "부탁해요. 고마워요.",
+        "learnNote": "도움을 받겠다고 할 때 「お願いします」를 쓰고 감사 인사를 덧붙여요.",
         "others": [
           "それは私の傘ではありません。",
           "今日は要りません。"
@@ -116,6 +120,7 @@ export const lostItemChat={
         "meaning": "何を忘れましたか。",
         "answer": "우산을 두고 왔어요.",
         "answerMeaning": "傘を忘れました。",
+        "learnNote": "「우산을」の「을」で、何を置き忘れたのかを示します。",
         "others": [
           "책을 두고 왔어요.",
           "지갑을 두고 왔어요."
@@ -135,6 +140,7 @@ export const lostItemChat={
         "meaning": "何色の傘ですか。",
         "answer": "검은 우산이에요.",
         "answerMeaning": "黒い傘です。",
+        "learnNote": "「검은」は物の名前の前に置いて、黒い色を表します。",
         "others": [
           "빨간 우산이에요.",
           "흰 우산이에요."
@@ -154,6 +160,7 @@ export const lostItemChat={
         "meaning": "持っていきましょうか。",
         "answer": "부탁해요. 고마워요.",
         "answerMeaning": "お願いします。ありがとうございます。",
+        "learnNote": "助けてもらうときは「부탁해요」でお願いし、続けてお礼を言えます。",
         "others": [
           "제 우산이 아니에요.",
           "오늘은 필요 없어요."

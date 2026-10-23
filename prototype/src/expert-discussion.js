@@ -13,7 +13,7 @@ export function renderDiscussion(s,d,top){
  const spoken=line=>`<div class="audio-text-row"><p lang="${lang}">${text(line.text,ja)}</p>${button(icon('sound'),'expert-audio','icon-button',`aria-label="${t('예시 듣기')}"`)}</div>`;
  const scene=d.image&&['intro','perspective','expression'].includes(p.phase)?`<img class="discussion-image" src="${esc(d.image)}" alt="${esc(d.imageAlt||'')}" width="960" height="640" decoding="async">`:'';
  let body;
- if(p.phase==='intro')body=`<h1>${esc(t(d.title))}</h1><p class="reading-intro">${text(t(d.situation),!ja)}</p>${button(t('친구들의 이야기'),'expert-next')}`;
+ if(p.phase==='intro')body=`<h1>${esc(t(d.title))}</h1><p class="reading-intro">${text(t(d.situation),!ja)}</p>${button(t('학습 시작하기'),'expert-next')}`;
  else if(p.phase==='perspective'){const line=d.perspectives[p.part];body=`<h1>${esc(t(line.speaker))}</h1>${spoken(line)}${aids(line)}${nav(p.part===0?'다른 친구의 이야기':'이럴 때 쓰는 표현')}`;}
  else if(p.phase==='expression'){const line=d.expressions[p.part];body=`<h1>${t('이렇게 말해 볼까요?')}</h1><p class="discussion-pattern" lang="${lang}">${text(line.pattern,ja)}</p><p>${esc(t(line.usage))}</p>${spoken(line)}${aids(line)}${nav(p.part===0?'다른 표현':'내 생각 말하기')}`;}
  else if(p.phase==='speak')return renderKoreanSpeaking(()=>header,d.expressions[0].text,ja?'ja-JP':'ko-KR','',undefined,{freeSpeech:true,uiLocale:ja?'ko':'ja',prompt:t(d.speakingPrompt),audioAction:'expert-audio',previousAction:'expert-previous'});

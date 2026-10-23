@@ -1,3 +1,4 @@
+import {collectMapLessons} from './learning-map-fixture.js';
 import {test,expect} from '@playwright/test';import {freshState} from '../../src/engine.js';import {videoContent} from '../../src/video-lesson-content.js';
 for(const direction of ['ko-ja','ja-ko'])for(const width of [320,390])test(`5-9 subtext investigation ${direction} ${width}`,async({page})=>{
  const id=direction==='ko-ja'?'frieren-subtext':'misaeng-subtext',x=videoContent[id][0];
@@ -5,7 +6,7 @@ for(const direction of ['ko-ja','ja-ko'])for(const width of [320,390])test(`5-9 
  await page.route('https://www.youtube.com/embed/**',r=>r.fulfill({body:'player fixture'}));
  const enter=()=>page.locator(`.map-choice[data-action="video"][data-id="${id}"]`).click();
  const layout=async()=>{expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);const tops=await page.locator('.video-lesson>.button-pair>button').evaluateAll(es=>es.map(e=>e.getBoundingClientRect().top));expect(Math.abs(tops[0]-tops[1])).toBeLessThan(2);};
- await page.goto('/playable.html');await expect(page.locator('.map-choice[data-action]')).toHaveCount(9);await enter();await expect(page.locator('.app-header-title')).toContainText('9.');
+ await page.goto('/playable.html');expect(await collectMapLessons(page)).toHaveLength(17);await enter();await expect(page.locator('.app-header-title')).toContainText('9.');
  const src=new URL(await page.locator('iframe.lesson-youtube').getAttribute('src'));expect(src.searchParams.get('start')).toBe(String(x.startSeconds));expect(src.searchParams.get('end')).toBe(String(x.endSeconds));expect(src.searchParams.get('cc_load_policy')).toBe('0');
  await expect(page.locator('.video-dialogue')).toBeHidden();await expect(page.locator('.video-detective-result')).toHaveCount(0);await layout();await page.locator('.video-transcript>summary').click();await expect(page.locator('.video-dialogue blockquote')).toHaveText(x.quote);await page.locator('.video-dialogue summary').click();await layout();await page.locator('.video-transcript>summary').click();
  await page.screenshot({path:`output/detective-watch-${direction}-${width}-${test.info().project.name}.png`,fullPage:true});await page.locator('[data-action="video-next"]').click();

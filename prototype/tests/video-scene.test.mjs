@@ -4,21 +4,21 @@ import {freshState,reduce} from '../src/engine.js';
 import {load,valid} from '../src/storage.js';
 import {videoLessons,videoProgress,videosForCourse,lessonNumberWithVideo} from '../src/video-lesson-state.js';
 import {videoSceneContent} from '../src/video-scene-content.js';
-import {renderLearningMap} from '../src/learning-map.js';
+import {renderAllLearningMap} from './map-pagination-fixtures.mjs';
 import {learningSnapshot,checkedAnswer} from '../src/analytics-learning.js';
 import {recordStudyCompletion} from '../src/study-state.js';
 import {hasExpressionReview} from '../src/practice-state.js';
 
-const scenes=videoLessons.filter(l=>l.mode==='scene');
+const scenes=videoLessons.filter(l=>l.mode==='scene'&&l.count===1);
 const now=new Date('2026-10-22T12:00:00');
-const fixture=l=>({...freshState(),courseDirection:l.direction,onboardingLevel:2,videoActive:l.id});
+const fixture=l=>({...freshState(),courseDirection:l.direction,onboardingLevel:l.level,videoActive:l.id});
 const reload=s=>{const result=load({getItem:()=>JSON.stringify(s)});assert.equal(result.blocked,false);return result.state;};
 for(const l of scenes)test(`${l.id}: scene questions, replay, reload and completion preserve independent progress`,()=>{
  let s=fixture(l);
  const act=(type,id)=>{const before=learningSnapshot(s,'video');s=reduce(s,{type,id},now);const after=learningSnapshot(s,'video');s=recordStudyCompletion(s,before,after,now);assert.ok(valid(s));return {before,after};};
  const key=`${l.direction}:video:${l.id}`;
  assert.equal(l.number%3,0);assert.equal(hasExpressionReview(key),false);
- const map=renderLearningMap(s),stops=[...map.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"/g)].map(m=>m[1]);
+ const map=renderAllLearningMap(s),stops=[...map.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"/g)].map(m=>m[1]);
  assert.equal(stops[l.number-1],'video');assert.equal(stops.filter(x=>x==='video').length,4);
  assert.deepEqual(l.answers,[videoSceneContent[l.id].meaning.answer,videoSceneContent[l.id].use.answer]);
  act('video-start',l.id);assert.equal(videoProgress(s).phase,'watch');act('video-next');
@@ -47,8 +47,8 @@ for(const l of scenes)test(`${l.id}: scene questions, replay, reload and complet
 });
 
 test('all eight legacy video progress records remain readable without changing completed status',()=>{
- assert.equal(scenes.length,8);
- for(const l of scenes)for(const phase of ['watch','learn','speak','done']){
+ const legacyScenes=scenes.filter(l=>l.level===2);assert.equal(legacyScenes.length,8);
+ for(const l of legacyScenes)for(const phase of ['watch','learn','speak','done']){
   const legacy={version:l.id==='frieren-just-right'?2:1,started:true,completed:phase==='done',index:0,phase};
   const s=reload({...fixture(l),videoLessons:{[l.id]:legacy}}),p=videoProgress(s);
   assert.equal(p.version,3);assert.equal(p.phase,phase==='done'?'done':'watch');assert.equal(p.completed,legacy.completed);
@@ -72,4 +72,18 @@ for(const direction of ['ko-ja','ja-ko'])test(`${direction}: two scene lessons k
 test('malformed scene selections, resume phases and versions cannot enter the saved course',()=>{
  const l=scenes[0],s=reduce(fixture(l),{type:'video-start',id:l.id});
  for(const mutation of [{version:4},{selected:3},{phase:'infer'},{phase:'meaning',resume:'use'},{resume:'done'},{checked:true,selected:null}])assert.equal(valid({...s,videoLessons:{[l.id]:{...videoProgress(s),...mutation}}}),false);
+});
+
+test('level 3-6 upgrades old watch/learn/speak/done saves without losing completion',()=>{
+ for(const id of ['frieren-permission','blackdog-confirmation','frieren-uncertainty','frieren-realization','queen-condition','queen-belief']){
+  const l=videoLessons.find(l=>l.id===id);assert.equal(l.mode,'scene');assert.equal(l.revision,2);
+  for(const phase of ['watch','learn','speak','done'])for(const completed of [false,true]){
+   if(phase==='done'&&!completed)continue;
+   const old={version:1,started:true,completed,index:0,phase};
+   let s=reload({...fixture(l),videoLessons:{[id]:old}});
+   assert.equal(videoProgress(s).completed,completed);assert.equal(videoProgress(s).phase,phase==='done'?'done':'watch');
+   s=reduce(s,{type:'video-start',id});assert.ok(valid(s));assert.equal(videoProgress(s).version,2);assert.equal(videoProgress(s).phase,'watch');assert.equal(videoProgress(s).completed,completed);
+   for(const phase of ['meaning','use'])assert.equal(valid({...s,videoLessons:{[id]:{...old,phase}}}),false);
+  }
+ }
 });

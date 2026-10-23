@@ -135,7 +135,8 @@ export class AudioPlayer {
     let sound;
     try {
       let source=entry.audioFile;
-      if(this.remote){
+      const bundled=entry.bundled===true&&/^assets\/course-voices\/(?:ja-JP|ko-KR)-[a-f0-9]{16}\.m4a$/.test(source);
+      if(this.remote&&!bundled){
         const {resolveAudio}=await import('./audio-downloads.js');
         const resolved=await resolveAudio(source);
         if(token!==this.generation){resolved.release();return;}

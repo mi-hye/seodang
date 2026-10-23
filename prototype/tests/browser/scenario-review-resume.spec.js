@@ -19,8 +19,8 @@ for(const direction of ['ko-ja','ja-ko'])test(`completed scenario review survive
   await expect(page.locator('.view-home')).toBeVisible();
   await expect(page.locator('#app')).toContainText(scenarioTitle(s,scenarioLessons.find(l=>l.id==='13')));
   await page.locator('[data-action="practice-resume"]').click();
-  await page.locator('[data-choice="resume"]').click();
   await expect(page.locator('.introduction-review')).toBeVisible();
+  await expect(page.locator('.lesson-resume')).toHaveCount(0);
   await page.locator('.app-header [data-action="home"]').click();
   await page.reload();
  }

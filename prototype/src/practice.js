@@ -1,5 +1,7 @@
-import {playReviewCompletionSound} from './review-correct-feedback.js';
+export {isAdvancingCorrectAnswer,mountAdvancingCorrectAnswer,advancingQuestionKey} from './lesson-answer-feedback.js';
+export {renderLessonComplete,createLessonCompletion} from './lesson-completion.js';
 import {renderIntroductionReview,mountIntroductionReview} from './introduction-review.js';
+import {renderScenarioRehearsal,mountScenarioRehearsal} from './scenario-rehearsal.js';
 import {japaneseLessonUI} from './curriculum.js';
 import {renderCasePractice,mountCasePractice} from './case-practice.js';
 import {hasExpressionReview,practiceHasWriting,practiceRoundCount,normalizePractice,normalizeCasePractice} from './practice-state.js';
@@ -12,7 +14,7 @@ const japanese=s=>japaneseLessonUI(s);
 export function practiceState(s,kind){return normalizePractice(normalizeCasePractice(s.practices?.[practiceKey(s,kind)],practiceKey(s,kind)),practiceRoundCount(practiceKey(s,kind)),practiceHasWriting(practiceKey(s,kind)));}
 function model(s,kind){const p=practiceState(s,kind),units=practiceUnits(s,kind),unit=units[(p.index+p.round)%units.length],text='text',values=[...new Set([...units.map(x=>x[text]),...practiceDistractors(s,kind)].filter(x=>x&&x!==unit[text]))],options=values.slice(p.round%Math.max(1,values.length)).concat(values).filter((x,i,a)=>a.indexOf(x)===i).slice(0,3),answer=(p.index+p.round+p.mode)%(options.length+1);options.splice(answer,0,unit[text]);return {p,unit,options,answer,c:copy[japanese(s)?'ja':'ko'],language:s.courseDirection==='ja-ko'?'ko':'ja'};}
 export function renderPractice(s,kind,top){
- const tasks=caseTasks(s,kind);if(tasks){const p=practiceState(s,kind);return tasks[p.index].review?renderIntroductionReview(s,tasks[p.index],p,top):renderCasePractice(s,tasks[p.index],p,top);}
+ const tasks=caseTasks(s,kind);if(tasks){const p=practiceState(s,kind),task=tasks[p.index];return task.rehearsal?renderScenarioRehearsal(s,task,p,top):task.review?renderIntroductionReview(s,task,p,top):renderCasePractice(s,task,p,top);}
  const {p,unit,options,c,language}=model(s,kind),audio=`<button type="button" class="icon-button" data-practice="listen" aria-label="${c.listen}">${icon('sound')}</button>`;
  const showMeanings=kind==='basic'&&[9,10].includes(s.basics.active),meanings=showMeanings?new Map(practiceUnits(s,kind).map(item=>[item.text,item.meaning])):null;
  const select=p.mode===0?`<div class="practice-choices${kind==='basic'&&[9,10].includes(s.basics.active)?' practice-choices-words':options.every(x=>x.length<=3)?' practice-choices-glyphs':''}">${options.map((x,i)=>`<button class="secondary" type="button" data-practice="choice" data-choice="${i}" aria-pressed="false">${showMeanings?`<span class="practice-choice-text" lang="ja">${phraseText(x)}</span><small class="practice-choice-meaning" lang="ko">${esc(meanings.get(x)||'')}</small>`:phraseText(x)}</button>`).join('')}</div>`:'';
@@ -20,7 +22,7 @@ export function renderPractice(s,kind,top){
  return `${top(c.title)}<main class="page practice-page${p.mode===2?' practice-writing':''}${showMeanings?' practice-with-meanings':''}${kind==='basic'&&s.basics.active>=11?' practice-katakana':''}" lang="${japanese(s)?'ja':'ko'}"><div class="practice-heading"><h1>${c.modes[p.mode]}</h1>${p.mode===0?audio:''}</div>${p.mode===0?'':`<div class="practice-writing-reference${unit.text.length===1?' practice-writing-reference-glyph':''}"><span lang="${language}">${phraseText(unit.text)}</span>${audio}</div>${showMeanings?`<p class="practice-writing-meaning" lang="ko">${esc(unit.meaning)}</p>`:''}<div class="practice-board${unit.text.length===1?' practice-board-glyph':''}">${p.round<2?`<span class="practice-guide" lang="${language}">${phraseText(unit.text)}</span>`:''}<canvas aria-label="${c.modes[2]}" data-practice-canvas></canvas></div>`}${select}<p class="practice-feedback" role="status"></p>${p.mode===2?`<div class="button-pair"><button class="secondary" type="button" data-practice="clear">${c.clear}</button>${nextButton}</div>`:nextButton}</main>`;
 }
 export function mountPractice(root,s,kind,{play,stop,advance,onAnswer=()=>{}}){
- const tasks=caseTasks(s,kind);if(tasks){const p=practiceState(s,kind),task=tasks[p.index];return task.review?mountIntroductionReview(root,s,task,p,{play,advance,stop,onAnswer}):mountCasePractice(root,s,task,{advance,stop,onAnswer});}
+ const tasks=caseTasks(s,kind);if(tasks){const p=practiceState(s,kind),task=tasks[p.index];return task.rehearsal?mountScenarioRehearsal(root,s,task,p,{play,advance,stop,onAnswer}):task.review?mountIntroductionReview(root,s,task,p,{play,advance,stop,onAnswer}):mountCasePractice(root,s,task,{advance,stop,onAnswer});}
  const {p,unit,answer,c}=model(s,kind),next=root.querySelector('[data-practice=next]'),feedback=root.querySelector('.practice-feedback');
  let alive=true,heard=p.mode!==0,selected=null,ready=false,busy=false,request=0;
  const status=text=>{if(alive)feedback.textContent=text;};
@@ -48,16 +50,4 @@ export function mountPractice(root,s,kind,{play,stop,advance,onAnswer=()=>{}}){
  sync();
  if(p.mode===0&&!document.hidden)void listen();
  return ()=>{alive=false;request++;stop();observer?.disconnect();root.removeEventListener('click',handler);document.removeEventListener('visibilitychange',hidden);if(canvas){for(const type of ['selectstart','contextmenu','dragstart','touchstart'])canvas.removeEventListener(type,preventSelection);doc.removeEventListener('selectionchange',selectionChanged);canvas.removeEventListener('lostpointercapture',up);canvas.removeEventListener('pointerdown',down);canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerup',up);canvas.removeEventListener('pointercancel',up);}};
-}
-
-export function renderPracticeComplete(s,top,hasNext){
- const jp=japanese(s),title=jp?'学習が完了しました':'학습을 완료하셨습니다';
- const sparks=Array.from({length:24},(_,i)=>`<i style="--angle:${i*15}deg;--delay:${i%3*80}ms;--distance:${70+i%4*15}px"></i>`).join('');
- return `${top(jp?'学習完了':'학습 완료')}<div class="lesson-progress" role="progressbar" aria-label="${jp?'学習の進み具合':'학습 진행률'}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span style="width:100%"></span></div><main class="page practice-complete"><div class="practice-fireworks" aria-hidden="true">${sparks}<span>${icon('paw')}</span></div><h1 tabindex="-1">${title}</h1><button type="button" class="primary" data-action="completed-next">${hasNext?(jp?'次のレッスン':'다음 수업'):(jp?'学習ホームへ':'학습 홈으로')}</button></main>`;
-}
-
-// Triggered only by completion, never by re-rendering its screen.
-export function playIntroductionCompletionSound(s,kind){
- if(!hasExpressionReview(practiceKey(s,kind)))return ()=>{};
- return playReviewCompletionSound(s.settings);
 }

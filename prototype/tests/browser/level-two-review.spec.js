@@ -1,12 +1,15 @@
+import {openMapLesson} from './learning-map-fixture.js';
 import {useCatalogWithoutPacks} from './audio-catalog-fixture.js';
 import {test,expect} from '@playwright/test';
 import {levelTwoReviews} from '../../src/level-two-review-state.js';import {levelTwoReview} from '../../src/level-two-review-content.js';import {reviewFixture} from '../level-two-review-fixtures.mjs';
-for(const [n,key]of Object.keys(levelTwoReviews).entries())test(`level two full review ${key}`,async({page})=>{
+// The conversation rehearsals have their own three-turn and migration coverage.
+const regularKeys=Object.keys(levelTwoReviews).filter(key=>!/:scenario:(14|15|16|17)$/.test(key));
+for(const [n,key]of regularKeys.entries())test(`level two full review ${key}`,async({page})=>{
  const {s,kind,id}=reviewFixture(key),tasks=levelTwoReview(key),width=n%2?390:320;
  await page.setViewportSize({width,height:width===320?640:844});await page.addInitScript(s=>{if(!localStorage.getItem('seodang.web-prototype.v1'))localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));window.Audio=class{play(){queueMicrotask(()=>this.onended?.());return Promise.resolve();}pause(){}};},s);
  await useCatalogWithoutPacks(page);await page.route('https://www.youtube.com/**',r=>r.fulfill({body:''}));
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- const enter=async()=>{await page.locator(`.map-choice[data-action="${kind}"][data-id="${id}"]`).click();if(kind!=='video')await page.locator('[data-choice="resume"]').click();};
+ const enter=async()=>{await openMapLesson(page,{kind:kind,id:id});if(kind!=='video')await page.locator('[data-choice="resume"]').click();};
  const saved=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('seodang.web-prototype.v1')));
  await page.goto('/playable.html');await enter();await page.locator(kind==='video'?'[data-action="video-next"]':kind==='sentence'?'[data-action="sentence-submit"]':kind==='korean'||s.scenarios?.[key].phase==='speak'?'[data-speaking-skip]':'[data-action="scenario-next"]').click();
  await expect(page.locator('.introduction-review')).toBeVisible();

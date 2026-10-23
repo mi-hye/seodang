@@ -1,8 +1,10 @@
+import {courseVideoContent} from './course-video-content.js';
 import {detectiveVideoContent} from './video-detective-content.js';
 // Quotes and whole-second clip bounds were checked against original audio and isolated crops.
 // No YouTube captions used; original media is not bundled.
 // Explanations, translations and examples below are authored for this lesson.
 export const videoContent={
+...courseVideoContent,
 ...detectiveVideoContent,
 
   "chiikawa-offer": [

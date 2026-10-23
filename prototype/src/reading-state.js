@@ -15,6 +15,7 @@ export function reduceReading(previous,action,level){
  if(!p.started)return p;
  if(action.type==='reading-next'&&p.phase==='intro'){p.phase='learn';return p;}
  if(action.type==='reading-next'&&p.phase==='learn'){p.phase='read';return p;}
+ if(action.type==='reading-previous'&&p.phase==='learn'&&level!==7){p.phase='intro';return p;}
  if(action.type==='reading-previous'&&p.phase==='read'){
   if(p.index%2===0)p.phase='learn';else p.index--;
   p.selected=null;p.retry=false;

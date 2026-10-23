@@ -1,3 +1,5 @@
+import {courseExpansionReview} from './course-expansion-review.js';
+import {expandedCourseContent,courseVoice} from './course-expansion-content.js';
 import {levelTwoReview} from './level-two-review-content.js';
 import {sentenceId,sentenceProgress} from './sentence-state.js';
 import {introductionReview} from './introduction-review-content.js';
@@ -21,8 +23,12 @@ export async function prepareContent(kind){
  if(kind==='kana')loaded.kanaState=await import('./kana-state.js');
 }
 export function practiceKey(s,kind){const id=kind==='video'?s.videoActive:kind==='scenario'?s.scenarioActive:kind==='basic'?s.basics?.active:kind==='korean'?s.korean?.active:kind==='kana'?s.kana?.active:kind==='reading'?s.onboardingLevel:kind==='sentence'?sentenceId(s):0;return `${s.courseDirection}:${kind}:${id}`;}
-export function caseTasks(s,kind){const key=practiceKey(s,kind),expanded=levelTwoReview(key);if(expanded)return expanded;const tasks=isCasePractice(key)?loaded.caseExercises?.caseExercises(s,kind,kind==='reading'?loaded.readingSource:loaded[kind]):null;return tasks&&hasExpressionReview(key)?introductionReview(practiceUnits(s,kind),tasks,s.courseDirection==='ja-ko',key):tasks;}
+export function caseTasks(s,kind){const key=practiceKey(s,kind),expanded=courseExpansionReview(key)||levelTwoReview(key);if(expanded)return expanded;const tasks=isCasePractice(key)?loaded.caseExercises?.caseExercises(s,kind,kind==='reading'?loaded.readingSource:loaded[kind]):null;return tasks&&hasExpressionReview(key)?introductionReview(practiceUnits(s,kind),tasks,s.courseDirection==='ja-ko',key):tasks;}
 export function practiceUnits(s,kind){
+ if(kind==='scenario'){
+  const c=expandedCourseContent(s.courseDirection,s.scenarioActive);
+  if(c)return c.items.map((x,i)=>({text:x.answer,meaning:x.answerMeaning,audio:courseVoice(s.courseDirection,s.scenarioActive,`${i}.answer`,x.answer)}));
+ }
  const mod=loaded[kind];if(!mod)return[];const expanded=levelTwoReview(practiceKey(s,kind));if(expanded)return expanded.filter(t=>t.stage===0).sort((a,b)=>a.unitIndex-b.unitIndex).map(t=>t.unit);if(kind==='video')return[];
  if(kind==='scenario')return (mod.scenarioContent[s.courseDirection][s.scenarioActive]?.items||[]).map((x,i)=>({text:x.text,meaning:x.meaning,audio:mod.scenarioAudio(s.courseDirection,s.scenarioActive,i)}));
  if(kind==='basic')return mod.basicContent[s.basics.active].map(([text,meaning],index)=>({text,meaning,audio:mod.basicAudio({basics:{active:s.basics.active,lessons:{[s.basics.active]:{index}}}})})).filter(unit=>s.basics.active!==10||unit.text.length>2);
@@ -63,7 +69,7 @@ export function practiceDistractors(s,kind){
  if(kind==='korean')return mod.koreanContent[s.korean.active].flatMap(item=>item.others||[]);
  if(kind==='dialogue')return mod.dialogueTurns.flatMap(turn=>turn.choices);
  if(kind==='play')return ['あかい かばん','ドアの そば'];
- if(kind==='sentence')return ['これは わたしの かさです。'];
+ if(kind==='sentence')return ['これは 私の かさです。'];
  if(kind==='reading')return {5:['水曜日も営業します。'],6:['本を持参しないと参加できません。'],7:['数値が改善すれば問題は解決する。']}[s.onboardingLevel];
  return [];
 }

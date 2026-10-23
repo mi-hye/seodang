@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
 import {prepareContent,practiceUnits} from '../src/practice-content.js';
 import {freshState} from '../src/engine.js';
 const catalog=JSON.parse(readFileSync(new URL('../assets/audio/catalog.json',import.meta.url)));
@@ -75,5 +76,11 @@ test('proposal lesson download packs include every tappable clause with matching
 
 test('choice audio packs contain all selectable sentences for chat and order repair',async()=>{
  const {scenarioAudio,scenarioChoiceAudio}=await import('../src/scenario-content.js');
- for(const direction of ['ko-ja','ja-ko'])for(const id of ['14','15','16','17'])for(let i=0;i<3;i++)for(const a of [scenarioAudio(direction,id,i),...[0,1,2].map(c=>scenarioChoiceAudio(direction,id,i,c))]){assert.ok(catalog.packs[`${direction}:scenario:${id}`].files.includes(a.audioFile));assert.equal(catalog.files[a.audioFile].text,a.text);assert.equal(catalog.files[a.audioFile].locale,a.locale);}
+ for(const direction of ['ko-ja','ja-ko'])for(const id of ['14','15','16','17'])for(let i=0;i<3;i++)for(const a of [scenarioAudio(direction,id,i),...[0,1,2].map(c=>scenarioChoiceAudio(direction,id,i,c))]){
+  if(a.bundled){
+   const repair=JSON.parse(readFileSync(new URL('../docs/asset-provenance/lost-item-pronunciation-20261023.json',import.meta.url)));
+   assert.equal(a.audioFile,repair.file);assert.equal(a.text,repair.text);assert.equal(a.locale,'ja-JP');
+   assert.equal(createHash('sha256').update(readFileSync(new URL(`../${a.audioFile}`,import.meta.url))).digest('hex'),repair.sha256);
+  }else{assert.ok(catalog.packs[`${direction}:scenario:${id}`].files.includes(a.audioFile));assert.equal(catalog.files[a.audioFile].text,a.text);assert.equal(catalog.files[a.audioFile].locale,a.locale);}
+ }
 });
