@@ -5,7 +5,7 @@ import {kanaLetters,kanaLessons,legacyKanaGroups,legacyKanaLessons,versionSevenL
 import {completedCases} from '../src/learning-history.js';
 import {valid,load,save} from '../src/storage.js';
 import {renderKana,kanaAudio} from '../src/kana.js';
-import {renderLearningMap} from '../src/learning-map.js';
+import {renderAllLearningMap} from './map-pagination-fixtures.mjs';
 const progress=s=>s.kana.lessons[s.kana.active];
 function finishLesson(s){
  let guard=0;
@@ -63,7 +63,7 @@ test('previous stays within its row and reading help returns to matching without
 });
 test('open access, replay, difficulty changes and another lesson progress are preserved',()=>{
  let s=reduce(freshState(),{type:'kana-start'});assert.equal(reduce(s,{type:'kana-start',lesson:2}).kana.active,2);
- assert.equal((renderLearningMap({...s,onboardingLevel:0}).match(/class="map-choice" disabled/g)||[]).length,0);
+ assert.equal((renderAllLearningMap({...s,onboardingLevel:0}).match(/class="map-choice" disabled/g)||[]).length,0);
  s=finishLesson(s);s=reduce(s,{type:'kana-start',lesson:1});s=reduce(s,{type:'kana-next'});const second=structuredClone(progress(s));
  s=reduce(s,{type:'kana-start',lesson:0});assert.equal(progress(s).phase,'intro');assert.equal(kanaSolvedCount(s.kana),1);
  s=reduce(s,{type:'kana-start',lesson:1});assert.deepEqual(progress(s),second);

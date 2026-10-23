@@ -3,7 +3,7 @@ import {freshState,reduce} from '../src/engine.js';import {valid,load} from '../
 import {videoLessons,videoProgress} from '../src/video-lesson-state.js';import {renderVideoLesson} from '../src/video-lesson.js';import {studyCatalog} from '../src/study-catalog.js';
 for(const l of videoLessons.filter(l=>l.mode==='detective'))test(`${l.id}: infer, evidence, retry, resume, completion and replay`,()=>{
  let s={...freshState(),courseDirection:l.direction,onboardingLevel:7};const act=(type,id)=>{s=reduce(s,{type,id},new Date('2026-10-21T12:00:00'));assert.ok(valid(s));};
- assert.equal(studyCatalog(s).filter(x=>x.level===7).at(-1).position,'5-9');act('video-start',l.id);
+ assert.equal(studyCatalog(s).find(x=>x.kind==='video'&&x.id===l.id).position,'5-9');act('video-start',l.id);
  assert.equal(videoProgress(s).phase,'watch');assert.match(renderVideoLesson(s,()=>''),/cc_load_policy=0/);act('video-next');
  for(const [phase,answer] of [['infer',1],['clue',2]]){
   assert.equal(videoProgress(s).phase,phase);act('video-next');assert.equal(videoProgress(s).phase,phase);act('video-check');assert.equal(videoProgress(s).checked,false);

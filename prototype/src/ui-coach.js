@@ -1,10 +1,10 @@
 import {esc} from './ui.js';
 export function mountUICoach({root,onFinish}) {
- const start=root.querySelector('.case-card button') || root.querySelector('.home .record-case button');
+ const start=root.querySelector('button.home-start-card') || root.querySelector('.home .record-case button');
  const steps=[
   {target:root.querySelector('[data-action="stories"]'),title:'학습 지도',text:'여기서 다음 학습을 골라 봐.'},
   {target:root.querySelector('.app-header-settings'),title:'설정',text:'난이도와 글자 크기, 소리를 바꿀 수 있어.'},
-  {target:start,title:start?.textContent.trim() || '학습 시작',text:start?.dataset.action==='settings'?'여기서 준비된 난이도를 골라 줘.':'이제 이 버튼을 눌러 함께 시작해 보자.'},
+  {target:start,title:start?.dataset.coachTitle || start?.textContent.trim() || '학습 시작',text:start?.dataset.action==='settings'?'여기서 준비된 난이도를 골라 줘.':'이제 이 버튼을 눌러 함께 시작해 보자.'},
  ].filter(s=>s.target);
  if(!steps.length){onFinish();return ()=>{};}
  // An overlay only: never scroll, insert layout spacers, or relocate the actual UI.

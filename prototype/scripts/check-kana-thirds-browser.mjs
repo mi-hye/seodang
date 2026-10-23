@@ -43,7 +43,7 @@ try{for(const [width,height,scale,full] of [[320,568,1,false],[390,844,1,true],[
    await click('kana-next');
    start=row.end;
    if(full&&chapter===0&&start===5){
-    await page.reload();await page.locator('.home-start-card [data-action=kana]').click();await expect(page.locator('h1')).toHaveText('か · き · く · け · こ');
+    await page.reload();await page.locator('button.home-start-card[data-action=kana]').click();await expect(page.locator('h1')).toHaveText('か · き · く · け · こ');
    }
   }
   if(full){

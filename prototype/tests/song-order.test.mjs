@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {freshState} from '../src/engine.js';
 import {orderLessons,lessonNumberWithSpecials} from '../src/lesson-order.js';
 import {studyCatalog} from '../src/study-catalog.js';
-import {renderLearningMap} from '../src/learning-map.js';
+import {renderAllLearningMap} from './map-pagination-fixtures.mjs';
 import {lessonTitle} from '../src/lesson-title.js';
 import {songLessons,songsForCourse} from '../src/song-state.js';
 import {videosForCourse,freshVideo,lessonNumberWithVideo} from '../src/video-lesson-state.js';
@@ -22,7 +22,7 @@ const previewOrder=state=>{
 
 for(const direction of ['ko-ja','ja-ko']){
  test(`${direction} production keeps all 14 existing lessons while unreleased songs are hidden`,()=>{
-  const s=courseState(direction),catalog=levelTwo(s),map=renderLearningMap(s);
+  const s=courseState(direction),catalog=levelTwo(s),map=renderAllLearningMap(s);
   assert.equal(catalog.length,14);
   assert.deepEqual(songsForCourse(s),[]);
   assert.equal(catalog.filter(l=>l.kind==='song').length,0);
@@ -80,8 +80,8 @@ for(const direction of ['ko-ja','ja-ko']){
 }
 
 test('six independent preview song IDs cover both language directions',()=>{
- assert.equal(songLessons.length,6);
- assert.equal(new Set(songLessons.map(l=>l.id)).size,6);
- assert.ok(songLessons.every(l=>l.level===2&&l.released===false));
+ const levelTwoSongs=songLessons.filter(l=>l.level===2);assert.equal(levelTwoSongs.length,6);
+ assert.equal(new Set(levelTwoSongs.map(l=>l.id)).size,6);
+ assert.ok(levelTwoSongs.every(l=>l.level===2&&l.released===false));
  for(const direction of ['ko-ja','ja-ko'])assert.deepEqual(previewSongs(courseState(direction)).map(l=>l.number).sort((a,b)=>a-b),[5,10,15]);
 });

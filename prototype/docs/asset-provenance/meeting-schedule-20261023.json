@@ -1,0 +1,11 @@
+{
+  "asset": "prototype/assets/lesson-scenes/meeting-schedule-v1.jpg",
+  "created": "2026-10-23",
+  "source": "OpenAI built-in image_gen",
+  "kind": "AI-generated photorealistic scene",
+  "use": "Japanese and Korean level 5-17 only",
+  "prompt": "Wide 2:1 candid photograph of three East Asian adult friends coordinating their monthly gathering around a shared calendar and sticky notes in a bright community room; natural daylight, thoughtful cooperative mood, no legible text or logos.",
+  "sourceFile": "/Users/kangmihye/.codex/generated_images/01a153b1-12b6-7700-a6ae-e960523fb276/exec-82225c07-84ce-4a04-b0df-c0fa7cf8cff6.png",
+  "export": "sips JPEG quality82 max960, 960x480",
+  "sha256": "11c16f89c14b065d06d7864c7de14787a27c82953752d786ddcef0a57796a75d"
+}

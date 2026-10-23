@@ -2,6 +2,7 @@
 @import './case-lesson.css';
 @import './speaking.css';
 @import './token-builder.css';
+@import './scenario-dialogue.css';
 .scenario-page{min-height:calc(100svh - 110px - env(safe-area-inset-top) - env(safe-area-inset-bottom));display:flex;flex-direction:column;justify-content:center;gap:16px;padding-top:16px;padding-bottom:24px;word-break:keep-all;overflow-wrap:anywhere}
 .scenario-page.scenario-quiz{justify-content:flex-start}
 .scenario-page h1{font-size:calc(23px * var(--text-scale));line-height:1.5;margin:0}
@@ -85,3 +86,19 @@
 .weather-page>h2{font-size:calc(18px * var(--text-scale));font-weight:600;line-height:1.6}
 .weather-page .scenario-image{max-height:120px}
 .weather-page :lang(ko){word-break:keep-all;overflow-wrap:break-word}
+
+/* Expression preparation stays in the lazy scenario stylesheet. */
+.scenario-learning .audio-text-row h1{flex:1;min-width:0}
+.scenario-learning .scenario-learning-note{font-size:calc(15px * var(--text-scale));line-height:1.7}
+.scenario-learning :lang(ja){word-break:normal;line-break:strict}
+.scenario-learning :lang(ko){word-break:keep-all;overflow-wrap:break-word}
+.scenario-learning .button-pair>.primary{border:1px solid transparent}
+
+/* Original course extensions keep the established lesson spacing and dialogue cards. */
+.course-expansion .course-words{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 0 20px}
+.course-words>div{display:flex;align-items:baseline;gap:8px}
+.course-words dt{font-weight:650}
+.course-words dd{margin:0;color:var(--muted);font-size:14px}
+.course-expansion .course-answer{margin-top:16px}
+.course-expansion .scenario-choices button{text-align:left;line-height:1.65}
+.course-expansion[data-course-activity="reading"] .dialogue-bubble:not(.dialogue-self){border-radius:12px;border-left:3px solid var(--jade)}

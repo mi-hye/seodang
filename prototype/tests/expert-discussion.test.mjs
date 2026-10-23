@@ -43,7 +43,7 @@ test('every daily lesson has paired content, a photo and matching map titles',()
   let s={...freshState(),onboardingLevel:7,courseDirection:'ko-ja'};
   s=reduce(s,{type:'expert-start',id});const d=content['ko-ja'][id].discussion;
   assert.equal(d.title,content['ja-ko'][id].discussion.title);
-  assert.ok(renderDiscussion(s,d,x=>x).includes('친구들의 이야기'));
+  assert.ok(renderDiscussion(s,d,x=>x).includes('학습 시작하기'));
   s=reduce(s,{type:'expert-next'});const html=renderDiscussion(s,d,x=>x);
   assert.ok(html.includes('lang="ja"'));assert.ok(html.includes('번역'));assert.match(d.perspectives[0].text,/[ぁ-んァ-ン]/);
  }

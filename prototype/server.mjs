@@ -28,9 +28,11 @@ http
             ".png": "image/png",
             ".jpg": "image/jpeg",
             ".mp3": "audio/mpeg",
+            ".m4a": "audio/mp4",
             ".wav": "audio/wav",
           }[path.extname(file)] || "application/octet-stream",
         "Cache-Control": "no-cache",
+        "Content-Length": Buffer.byteLength(data),
       });
       res.end(data);
     } catch {

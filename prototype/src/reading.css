@@ -35,3 +35,12 @@
 .expert-discussion h1{font-size:calc(24px * var(--text-scale));line-height:1.5}.expert-discussion .word-memory{margin:16px 0}.expert-discussion .word-memory-body p{line-height:1.8;word-break:keep-all}.expert-discussion .word-memory-body [lang=ja]{word-break:normal;line-break:strict}.expert-discussion .audio-text-row{align-items:center;gap:8px}.expert-discussion .audio-text-row>p{flex:1;min-width:0;line-height:1.8;word-break:keep-all}.expert-discussion .audio-text-row>[lang=ja]{word-break:normal;line-break:strict}.expert-discussion .audio-text-row>.icon-button{flex:none}.expert-discussion .discussion-coach{display:flex;flex-direction:column;align-items:center;text-align:center}.expert-discussion .discussion-coach p{line-height:1.7}.expert-discussion .discussion-pattern{font-size:calc(22px * var(--text-scale));line-height:1.6;word-break:keep-all}.expert-discussion .discussion-pattern[lang=ja]{word-break:normal;line-break:strict}
 
 .expert-discussion .discussion-image{display:block;width:100%;height:clamp(88px,16svh,140px);object-fit:cover;object-position:50% 36%;border-radius:16px;margin:0 0 16px;flex:none}
+
+.reading-document .reading-passage>.audio-text-row{display:flex;flex-flow:row nowrap;align-items:center;gap:8px;margin-bottom:8px}
+.reading-document .audio-text-row>h2{flex:1;min-width:0;font-size:calc(16px * var(--text-scale));line-height:1.6;margin:0;color:var(--muted)}
+.reading-document .audio-text-row>.icon-button{flex:none;width:44px;min-height:44px;margin:0}
+.reading-document .reading-passage>div>p:first-child{margin-top:0}
+.reading-playback summary{font-size:calc(14px * var(--text-scale));color:var(--muted);min-height:44px;display:flex;align-items:center;gap:8px;cursor:pointer}
+.reading-playback summary::after{content:'⌄';margin-left:auto}
+.reading-playback[open] summary::after{transform:rotate(180deg)}
+.reading-playback .passage-pause-only.button-pair{width:44px}

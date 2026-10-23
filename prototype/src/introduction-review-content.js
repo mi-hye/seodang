@@ -8,7 +8,7 @@ export function introductionReview(units,tasks,japanese,key){
   ['저는','학생이에요.'],['저는','일본','사람이에요.'],['한국어를','공부해요.'],
   ['도쿄에','살아요.'],['커피를','좋아해요.'],['내일','시간이','있어요.']
  ]:[['私は','学生です。'],['私は','韓国人','です。'],['日本語を','勉強しています。'],['ソウルに','住んでいます。'],['コーヒーが','好きです。'],['明日は','時間が','あります。']];
- const distractors=bag?(japanese?['네','문','파란']:['あなたの','ドアの','あおい']):japanese?['회사원이에요.','한국','일본어를','서울에','차를','없어요.']:['会社員です。','日本人','韓国語を','東京に','お茶が','ありません。'];
+ const distractors=bag?(japanese?['네','문','파란']:['あなたの','ドアの','青い']):japanese?['회사원이에요.','한국','일본어를','서울에','차를','없어요.']:['会社員です。','日本人','韓国語を','東京に','お茶が','ありません。'];
  const decorate=(task,index,stage)=>({...task,review:true,stage,stageIndex:index,unit:units[task.unitIndex],optionAudio:task.options?.map(option=>units.find(u=>u.text===option)?.audio)});
  const listening=(bag?[1,2,0]:[2,0,4,1,5,3]).map((unitIndex,index)=>{
   const unit=units[unitIndex],others=[units[(unitIndex+1)%units.length].meaning,units[(unitIndex+(bag?2:3))%units.length].meaning],answer=positions[index];others.splice(answer,0,unit.meaning);

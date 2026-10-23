@@ -79,8 +79,13 @@ yarn-error.*
 /assets/
 /marketing/
 /seodang-vault/
-/docs/
-/prototype/docs/
+/docs/*
+!/docs/privacy-policy.html
+!/docs/privacy-policy-legacy.html
+!/docs/third-party-notices.html
+/prototype/docs/*
+!/prototype/docs/asset-provenance/
+!/prototype/docs/asset-provenance/**
 /prototype/references/*.md
 **/credentials.json
 **/*.keystore
@@ -89,3 +94,8 @@ yarn-error.*
 /_workspace/
 /test-results/
 /sites/
+
+/prototype/output/
+/prototype/test-results/
+/prototype/_workspace/
+/prototype/audio-review/

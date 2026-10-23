@@ -22,6 +22,7 @@ export const orderRepair={
           "ください。"
         ],
         "answerMeaning": "차가운 차 주세요.",
+        "learnNote": "「ください」 앞에 원하는 것을 넣으면 정중하게 주문할 수 있어요.",
         "others": [
           "温かいお茶をください。",
           "お水をください。"
@@ -55,6 +56,7 @@ export const orderRepair={
           "ください。"
         ],
         "answerMeaning": "한 잔만 주세요.",
+        "learnNote": "「だけ」는 수량 뒤에 붙여 그만큼만 달라고 할 때 써요.",
         "others": [
           "二杯ください。",
           "三杯ください。"
@@ -90,6 +92,7 @@ export const orderRepair={
           "お願いします。"
         ],
         "answerMeaning": "포장으로 부탁해요.",
+        "learnNote": "「持ち帰りで」는 매장에서 먹지 않고 가져가겠다는 뜻이에요.",
         "others": [
           "ここで飲みます。",
           "お茶は要りません。"
@@ -124,6 +127,7 @@ export const orderRepair={
         "prompt": "冷たいお茶に言い直しましょう。",
         "answer": "차가운 차 주세요.",
         "answerMeaning": "冷たいお茶をください。",
+        "learnNote": "「주세요」の前に欲しい物を入れると、丁寧に注文できます。",
         "others": [
           "따뜻한 차 주세요.",
           "물 주세요."
@@ -150,6 +154,7 @@ export const orderRepair={
         "prompt": "一杯だけほしいと伝えましょう。",
         "answer": "한 잔만 주세요.",
         "answerMeaning": "一杯だけください。",
+        "learnNote": "数量に「만」を付けると、それだけが欲しいと伝えられます。",
         "others": [
           "두 잔 주세요.",
           "세 잔 주세요."
@@ -176,6 +181,7 @@ export const orderRepair={
         "prompt": "持ち帰ると伝えましょう。",
         "answer": "포장해 주세요.",
         "answerMeaning": "持ち帰りにしてください。",
+        "learnNote": "「포장해 주세요」は、店で食べずに持ち帰りたいときに使います。",
         "others": [
           "여기서 마실게요.",
           "차는 필요 없어요."

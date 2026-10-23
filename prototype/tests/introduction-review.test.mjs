@@ -37,6 +37,24 @@ for(const direction of ['ko-ja','ja-ko'])test(`${direction} 2-2 has twelve sourc
 test('2-1 and 2-2 picture choices have exact isolated audio in both offline packs',async()=>{
  const {introductionWordReview}=await import('../src/introduction-word-content.js');
  for(const ui of [false,true])for(const bag of [false,true]){const key=bag?(ui?'ja-ko:korean:3-4':'ko-ja:sentence:0'):(ui?'ja-ko:korean:3-1':'ko-ja:sentence:3');const words=introductionWordReview(ui,bag);assert.equal(words.length,3);if(bag&&!ui){assert.equal(words[2].unit.text,'ドア');assert.equal(words[2].unit.audio.audioFile,'assets/audio/bag-review-words/ja.door.v2.wav');}assert.deepEqual(words.map(t=>t.answer).sort(),[1,2,3]);
-  for(const t of words){assert.equal(t.type,'word');assert.equal(t.options.length,4);assert.equal(new Set(t.optionPictures).size,4);assert.equal(t.options[t.answer],t.unit.text);for(let i=0;i<t.options.length;i++){const a=t.optionAudio[i];assert.equal(a.text,t.options[i]);assert.equal(catalog.files[a.audioFile].text,a.text);assert.ok(catalog.packs[key].files.includes(a.audioFile));}}
+  for(const t of words){assert.equal(t.type,'word');assert.equal(t.options.length,4);assert.equal(new Set(t.optionPictures).size,4);assert.equal(t.options[t.answer],t.unit.text);for(let i=0;i<t.options.length;i++){const a=t.optionAudio[i];assert.equal(a.text,t.options[i]==='窓'?'まど':t.options[i]);assert.equal(catalog.files[a.audioFile].text,a.text);assert.ok(catalog.packs[key].files.includes(a.audioFile));}}
  }
+});
+
+// Orthographic updates must retain saved token indices and the verified audio catalog.
+test('Japanese 2-2 uses the same notation in lesson, vocabulary and every review stage',async()=>{
+ const {sentences,sentenceWords,sentenceAudio}=await import('../src/sentence-content.js');
+ const {introductionWords}=await import('../src/introduction-word-content.js');
+ assert.deepEqual(sentences.map(x=>x.text),['これは 私の かばんです。','かばんは 窓の そばに あります。','赤い かばんでは ありません。']);
+ assert.deepEqual(sentences.map(x=>x.parts.length),[3,3,2]);
+ for(const x of sentences){assert.equal(x.parts.map(([t])=>t).join(' '),x.text);assert.ok(x.kanaReading);assert.equal(sentenceAudio[x.id].text,catalog.files[sentenceAudio[x.id].audioFile].text);}
+ assert.deepEqual(sentenceWords[1].map(([t])=>t),['かばん','窓','そば']);
+ const word=introductionWords(false,true)[1];assert.equal(word.text,'窓');assert.equal(word.kanaReading,'まど');assert.equal(word.audio.text,'まど');
+ assert.equal(introductionWords(true,true)[1].text,'창문');assert.equal(introductionWords(true,true)[1].meaning,'まど');
+ await prepareContent('sentence');const s={...freshState(),courseDirection:'ko-ja',onboardingLevel:2,sentenceActive:0};
+ const tasks=caseTasks(s,'sentence');
+ assert.deepEqual(tasks[9].tokens,['これは','私の','かばんです。']);
+ assert.ok(tasks[10].prompt.includes('私の'));assert.ok(tasks[10].options.includes('窓'));
+ assert.ok(tasks[11].scene.includes('窓'));assert.ok(tasks[11].scene.includes('赤い'));
+ for(const x of tasks.filter(t=>t.stage===1))assert.equal(x.tokens.slice(0,x.answerLength).join(' '),x.unit.text);
 });

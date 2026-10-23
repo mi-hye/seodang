@@ -1,0 +1,28 @@
+{
+  "lesson": "Japanese 2-17",
+  "scenario": "17",
+  "text": "何色の傘ですか。",
+  "synthesisText": "なにいろの傘ですか。",
+  "originalKana": "ナンショクノ'/カ'サデ_スカ",
+  "correctedKana": "ナ'/ニイロノ'/カ'サデ_スカ",
+  "correctedMoras": [
+    "ナ",
+    "ニ",
+    "イ",
+    "ロ",
+    "ノ",
+    "カ",
+    "サ",
+    "デ",
+    "ス",
+    "カ"
+  ],
+  "voice": "VOICEVOX Nemo 男声1",
+  "styleId": 10001,
+  "file": "assets/course-voices/ja-JP-c61d393d9fe47e1f.m4a",
+  "sha256": "f462d92e26c176eafb8357e86087abef221a506b86f179918ae9d38125c9677d",
+  "bytes": 15060,
+  "duration": 1.248,
+  "verification": "Explicit synthesis moras and AAC decode. Not independent human listening.",
+  "distribution": "App-bundled replacement. Existing remote catalogue/cache is bypassed. No upload."
+}

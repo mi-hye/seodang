@@ -1,3 +1,4 @@
+import {expandedCourseContent,courseVoice} from './course-expansion-content.js';
 import {lostItemChat} from './scenario-lost-item-content.js';
 import {weatherPreparation} from './scenario-weather-content.js';
 import {orderRepair} from './scenario-order-content.js';
@@ -82,7 +83,7 @@ export const scenarioContent={
  ]}
  }
 };
-export const scenarioAudio=(direction,id,index,speaking=false)=>{const x=scenarioContent[direction][id].items[index];if(speaking&&x.speaking)return {id:`scenario.${direction}.${id}.speak.${index}`,text:x.answer,locale:direction==='ko-ja'?'ja-JP':'ko-KR',audioFile:x.speaking.audioFile,status:'ready',playbackRate:1};return ({id:`scenario.${direction}.${id}.${index}`,text:scenarioContent[direction][id].items[index].text,locale:direction==='ko-ja'?'ja-JP':'ko-KR',audioFile:`assets/audio/scenarios/${direction}.${id}.${index}.wav`,status:'ready',playbackRate:id==='2'?0.8:1});};
+export const scenarioAudio=(direction,id,index,speaking=false)=>{const x=scenarioContent[direction][id].items[index];if(expandedCourseContent(direction,id))return courseVoice(direction,id,`${index}.${speaking?'answer':'prompt'}`,speaking?x.answer:x.text);if(!speaking&&x.bundledPromptAudio)return {id:`scenario.${direction}.${id}.${index}`,text:x.text,locale:direction==='ko-ja'?'ja-JP':'ko-KR',audioFile:x.bundledPromptAudio,bundled:true,status:'ready',playbackRate:1};if(speaking&&x.speaking)return {id:`scenario.${direction}.${id}.speak.${index}`,text:x.answer,locale:direction==='ko-ja'?'ja-JP':'ko-KR',audioFile:x.speaking.audioFile,status:'ready',playbackRate:1};return ({id:`scenario.${direction}.${id}.${index}`,text:scenarioContent[direction][id].items[index].text,locale:direction==='ko-ja'?'ja-JP':'ko-KR',audioFile:`assets/audio/scenarios/${direction}.${id}.${index}.wav`,status:'ready',playbackRate:id==='2'?0.8:1});};
 
 export const scenarioRoleAudio=(direction,index,part='prompt',id='8')=>{const x=scenarioContent[direction][id].items[index];return part==='prompt'?scenarioAudio(direction,id,index):{id:`scenario.${direction}.${id}.${part}.${index}`,text:part==='answer'?x.answer:x.reply,locale:direction==='ko-ja'?'ja-JP':'ko-KR',audioFile:`assets/audio/scenarios/${direction}.${id}.${part}.${index}.wav`,status:'ready',playbackRate:1};};
 

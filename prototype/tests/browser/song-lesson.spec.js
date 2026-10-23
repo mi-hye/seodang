@@ -1,11 +1,12 @@
+import {findMapLesson,openMapLesson,collectMapLessons} from './learning-map-fixture.js';
 import {test,expect} from '@playwright/test';
 import {freshState} from '../../src/engine.js';
 import {songLessons,freshSong} from '../../src/song-state.js';
 import {songContent} from '../../src/song-lesson-content.js';
 
 const storageKey='seodang.web-prototype.v1';
-const fixture=(l,sound=false)=>({...freshState(),onboarded:true,onboardingLevel:2,courseDirection:l.direction,koreanGuideSeenVersion:1,settings:{sound,motion:'off',textScale:1.2,audioRate:1}});
-const enter=(page,id)=>page.locator(`.map-choice[data-action="song"][data-id="${id}"]`).click();
+const fixture=(l,sound=false)=>({...freshState(),onboarded:true,onboardingLevel:l.level,courseDirection:l.direction,koreanGuideSeenVersion:1,settings:{sound,motion:'off',textScale:1.2,audioRate:1}});
+const enter=(page,id)=>openMapLesson(page,{kind:'song',id:id});
 const select=(page,id)=>page.locator(`[data-action="song-select"][data-id="${id}"]`).click();
 const next=page=>page.locator('[data-action="song-next"]').click();
 const check=page=>page.locator('[data-action="song-check"]').click();
@@ -46,16 +47,16 @@ async function layout(page){
  await expect(page.locator('.review-phase-progress,.practice-rounds')).toHaveCount(0);
 }
 
-for(const [index,lesson]of songLessons.entries())test(`song ${lesson.id}: preview map, full lesson, saved replay and review record`,async({page})=>{
- const width=index%2?390:320,c=songContent[lesson.id],key=`${lesson.direction}:song:${lesson.id}`,errors=[];
+for(const [index,lesson]of songLessons.entries())for(const width of (lesson.number===15||lesson.learnFirst)?[320,390]:[index%2?390:320])test(`song ${lesson.id} ${width}px: preview map, full lesson, saved replay and review record`,async({page})=>{
+ const c=songContent[lesson.id],key=`${lesson.direction}:song:${lesson.id}`,errors=[],learnsFirst=(lesson.number===15||lesson.learnFirst);
  page.on('pageerror',e=>errors.push(e.message));
  await page.setViewportSize({width,height:844});
  await setup(page,lesson);
  await page.goto('/playable.html');
- await expect(page.locator('.map-choice[data-action]')).toHaveCount(17);
- await expect(page.locator('.map-choice[data-action]').nth(lesson.number-1)).toHaveAttribute('data-id',lesson.id);
- expect(await page.locator('.map-choice[data-action="video"]').evaluateAll(es=>es.map(e=>Number(e.querySelector('.map-number').textContent)))).toEqual([3,6,9,12]);
- expect(await page.locator('.map-choice[data-action="song"]').evaluateAll(es=>es.map(e=>Number(e.querySelector('.map-number').textContent)))).toEqual([5,10,15]);
+ expect(await collectMapLessons(page)).toHaveLength(17);
+ expect((await collectMapLessons(page))[lesson.number-1]).toMatchObject({kind:'song',id:lesson.id,number:lesson.number});
+ expect((await collectMapLessons(page)).filter(l=>l.kind==='video').map(l=>l.number)).toEqual([3,6,9,12]);
+ expect((await collectMapLessons(page)).filter(l=>l.kind==='song').map(l=>l.number)).toEqual([5,10,15]);
  await enter(page,lesson.id);
  await expect(page.locator('.app-header-title')).toContainText(`${lesson.number}.`);
  await expect(page.locator('.song-lesson')).toHaveAttribute('lang',lesson.direction==='ko-ja'?'ko':'ja');
@@ -73,10 +74,32 @@ for(const [index,lesson]of songLessons.entries())test(`song ${lesson.id}: previe
  await expect(page.locator('.video-original')).toHaveAttribute('href',`https://www.youtube.com/watch?v=${c.videoId}&t=${c.startSeconds}s`);
  await page.locator('.video-support summary').click();
  await page.screenshot({path:`output/song-${lesson.id}-listen-${test.info().project.name}.png`,fullPage:true});
+ const learning=async()=>{
+  await expect(page.locator('.song-phase-learn')).toBeVisible();
+  await expect(page.locator('.song-target')).toHaveText(c.target);
+  await expect(page.locator('.song-meaning')).toHaveText(c.meaning);
+  await expect(page.locator('.song-expression + p')).toHaveText(c.usage);
+  await expect(page.locator('.song-choices,.video-example,iframe.lesson-youtube')).toHaveCount(0);
+  await layout(page);
+ };
  await next(page);
+ if(learnsFirst){
+  await learning();
+  const progress=await page.locator('[role="progressbar"]').getAttribute('aria-valuenow');
+  await page.locator('[data-action="song-replay"]').click();
+  await expect(page.locator('.song-phase-listen')).toBeVisible();
+  await expect(page.locator('[role="progressbar"]')).toHaveAttribute('aria-valuenow',progress);
+  await page.reload();await enter(page,lesson.id);await next(page);await learning();
+  await page.screenshot({path:`output/song-${lesson.id}-learn-first-${width}-${test.info().project.name}.png`,fullPage:true});
+  await next(page);
+ }
  for(const [stage,phase]of ['gap','apply'].entries()){
   const answer=lesson.answers[stage],wrong=(answer+1)%3;
   await expect(page.locator(`.song-phase-${phase}`)).toBeVisible();
+  if(phase==='gap'&&learnsFirst){
+   await page.locator('[data-action="song-previous"]').click();await learning();await next(page);
+   await expect(page.locator('.song-phase-gap')).toBeVisible();
+  }
   await expect(page.locator('.song-choices>button')).toHaveCount(3);
   await expect(page.locator('[data-action="song-check"]')).toBeDisabled();
   await expect(page.locator('iframe.lesson-youtube')).toHaveCount(0);
@@ -102,6 +125,10 @@ for(const [index,lesson]of songLessons.entries())test(`song ${lesson.id}: previe
   await expect(page.locator('.song-feedback.success')).toBeInViewport();
   await expect(page.locator('.review-correct-mark')).toBeVisible();
   await expect(page.locator('.song-choices>button').first()).toBeDisabled();
+   if(phase==='apply'&&c.apply.optionParts){
+    const flow=await page.locator('.song-choices>button').evaluateAll(es=>es.map(e=>{const r=e.getBoundingClientRect(),css=getComputedStyle(e),first=e.querySelector('.text-phrase')?.getBoundingClientRect();return {display:css.display,left:first?Math.abs(first.left-r.left-parseFloat(css.paddingLeft)-parseFloat(css.borderLeftWidth)):0};}));
+    expect(flow.every(x=>x.display==='block'&&x.left<2)).toBe(true);
+   }
   await expect(page.locator('.song-choices>button.correct')).toHaveCount(1);
   if(phase==='apply'){
    await expect(page.locator('.song-feedback')).toContainText(c.apply.explanation);
@@ -120,11 +147,8 @@ for(const [index,lesson]of songLessons.entries())test(`song ${lesson.id}: previe
   }else await expect(page.locator('[data-action="song-replay"]')).toHaveCount(0);
   await page.screenshot({path:`output/song-${lesson.id}-${phase}-${test.info().project.name}.png`,fullPage:true});
   await next(page);
-  if(phase==='gap'){
-   await expect(page.locator('.song-phase-learn')).toBeVisible();
-   await expect(page.locator('.song-target')).toHaveText(c.target);
-   await expect(page.locator('.video-example')).toHaveCount(0);
-   await layout(page);
+  if(phase==='gap'&&!learnsFirst){
+   await learning();
    await page.screenshot({path:`output/song-${lesson.id}-learn-${test.info().project.name}.png`,fullPage:true});
    await next(page);
   }
@@ -144,14 +168,17 @@ for(const [index,lesson]of songLessons.entries())test(`song ${lesson.id}: previe
  expect(stored.studyTools[lesson.direction].lessons[key].completedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
  const history=lesson.direction==='ko-ja'?stored.history:stored.korean.history;
  expect(Object.values(history.days).reduce((n,d)=>n+d.cases,0)).toBe(1);
+ await expect(page.locator('[data-action="completed-next"]')).toHaveText(lesson.direction==='ja-ko'?'次のレッスン':'다음 수업');
  await page.locator('[data-action="completed-next"]').click();
- await expect(page.locator(`.map-choice[data-id="${lesson.id}"]`)).toContainText(lesson.direction==='ja-ko'?'完了':'완료');
+ await expect(page.locator('.practice-complete')).toHaveCount(0);
+ await page.locator('[data-action="home"]').first().click();
+ await expect(await findMapLesson(page,{kind:'song',id:lesson.id})).toContainText(lesson.direction==='ja-ko'?'完了':'완료');
  await page.locator('[data-action="my"]').first().click();
  await expect(page.locator('.record-overview dd').first()).toHaveText(lesson.direction==='ja-ko'?'1件':'1개');
  await page.evaluate(({storageKey,key,direction})=>{const s=JSON.parse(localStorage.getItem(storageKey)),d=new Date();d.setDate(d.getDate()-4);s.studyTools[direction].lessons[key].completedOn=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;localStorage.setItem(storageKey,JSON.stringify(s));},{storageKey,key,direction:lesson.direction});
  await page.reload();await page.locator('[data-action="my"]').first().click();await page.locator('[data-action="study-review"]').click();
  const review=page.locator(`[data-action="study-lesson"][data-id="${key}"]`);
- await expect(review).toBeVisible();await expect(review.locator('..')).toContainText(`2-${lesson.number}`);
+ await expect(review).toBeVisible();await expect(review.locator('..')).toContainText(`${({2:2,4:3,5:4,7:5})[lesson.level]}-${lesson.number}`);
  await review.click();await expect(page.locator('.song-phase-listen')).toBeVisible();
  expect((await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),storageKey)).songs[lesson.id].completed).toBe(true);
  expect(errors).toEqual([]);
@@ -163,10 +190,10 @@ for(const direction of ['ko-ja','ja-ko'])test(`production ${direction} retains 1
  await buildMode(page,false);
  await page.addInitScript(s=>{localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},state);
  await page.goto('/playable.html');
- await expect(page.locator('.map-choice[data-action]')).toHaveCount(14);
- await expect(page.locator('[data-action="song"]')).toHaveCount(0);
+ expect(await collectMapLessons(page)).toHaveLength(14);
+ expect((await collectMapLessons(page)).filter(l=>l.kind==='song')).toHaveLength(0);
  await expect(page.locator('.storage-warning')).toHaveCount(0);
- expect(await page.locator('.map-choice[data-action="video"]').evaluateAll(es=>es.map(e=>Number(e.querySelector('.map-number').textContent)))).toEqual([3,6,9,12]);
+ expect((await collectMapLessons(page)).filter(l=>l.kind==='video').map(l=>l.number)).toEqual([3,6,9,12]);
 });
 
 for(const direction of ['ko-ja','ja-ko'])for(const sound of [true,false])test(`song native lifecycle and one-time feedback ${direction} sound=${sound}`,async({page})=>{
@@ -211,6 +238,7 @@ for(const direction of ['ko-ja','ja-ko'])for(const sound of [true,false])test(`s
  expect(await page.evaluate(()=>window.songCues.haptics)).toBe(2);
  await expect(page.locator('[data-native-video]')).toHaveCount(0);
  await page.locator('[data-action="completed-next"]').click();
+ await expect(page.locator('.view-video')).toBeVisible();
  expect(await page.evaluate(()=>window.songCues.tones)).toBe(sound?10:0);
- if(sound)expect(await page.evaluate(()=>window.songCues.closed)).toBeGreaterThanOrEqual(3);
+ if(sound)await expect.poll(()=>page.evaluate(()=>window.songCues.closed)).toBeGreaterThanOrEqual(3);
 });

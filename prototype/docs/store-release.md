@@ -41,3 +41,20 @@ The replacement has no ads or subscriptions. Version 1.2.0 adds device-bound com
 Store listing screenshots and privacy disclosures should reflect the new app.
 EAS iOS submission uploads to App Store Connect; review submission and public
 release are separate steps. Check each console for the final review/release state.
+
+## Local store builds
+
+Use `production-local` to retry a local build with the already allocated remote
+build number. Allocate the next number with the normal production profile first;
+never reuse a number that has already been uploaded to a store.
+
+```sh
+npx eas-cli build --platform ios --profile production-local --local --output /tmp/seodang.ipa
+JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home \
+  ANDROID_HOME="$HOME/Library/Android/sdk" \
+  npx eas-cli build --platform android --profile production-local --local --output /tmp/seodang.aab
+```
+
+Local builds use the same custom workflows and existing remote signing credentials.
+They do not consume EAS cloud build quota. The build archive must include the
+asset-provenance JSON and public legal HTML used by the release checks.

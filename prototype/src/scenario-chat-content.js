@@ -36,6 +36,7 @@ export const invitationChat={
         ],
         "words": [],
         "answerMeaning": "좋네요. 같이 가요.",
+        "learnNote": "「行きましょう」는 상대에게 함께 가자고 제안할 때 써요.",
         "otherMeanings": [
           "내일은 못 가요.",
           "오늘은 혼자 갈게요."
@@ -67,6 +68,7 @@ export const invitationChat={
         ],
         "words": [],
         "answerMeaning": "오후 세 시는 어때요?",
+        "learnNote": "「はどうですか」 앞에 원하는 시간을 넣어 다른 시간을 제안해요.",
         "otherMeanings": [
           "오전 열 시면 괜찮아요.",
           "내일은 못 가요."
@@ -99,6 +101,7 @@ export const invitationChat={
         ],
         "words": [],
         "answerMeaning": "공원 입구에서 만나요.",
+        "learnNote": "「で」는 만나는 장소를 나타내요.",
         "otherMeanings": [
           "역 앞에서 만나요.",
           "오후 세 시에 만나요."
@@ -140,6 +143,7 @@ export const invitationChat={
         ],
         "words": [],
         "answerMeaning": "いいですね。一緒に行きましょう。",
+        "learnNote": "「같이 가요」は、相手と一緒に行きたいときの誘い方です。",
         "otherMeanings": [
           "明日は行けません。",
           "今日は一人で行きます。"
@@ -171,6 +175,7 @@ export const invitationChat={
         ],
         "words": [],
         "answerMeaning": "午後三時はどうですか。",
+        "learnNote": "「는 어때요?」の前に時間を入れると、別の時間を提案できます。",
         "otherMeanings": [
           "午前十時で大丈夫です。",
           "明日は行けません。"
@@ -202,6 +207,7 @@ export const invitationChat={
         ],
         "words": [],
         "answerMeaning": "公園の入り口で会いましょう。",
+        "learnNote": "「에서」は、会う場所や何かをする場所を表します。",
         "otherMeanings": [
           "駅の前で会いましょう。",
           "午後三時に会いましょう。"

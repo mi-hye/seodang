@@ -27,19 +27,21 @@ export function createReviewSound(settings={},notes=[[659.25,0],[880,0.09]]){
 export function createReviewCorrectFeedback(root,settings={},selector='.practice-feedback'){
  let alive=true,played=false;
  const sound=createReviewSound(settings),stopSound=sound.stop;
- const play=()=>{
-  if(!alive||played)return;played=true;
+ const show=animate=>{
   const feedback=root.querySelector(selector);
   if(feedback){
    feedback.classList.add('review-correct');
    if(!feedback.querySelector('.review-correct-mark'))feedback.insertAdjacentHTML('afterbegin',`<span class="review-correct-mark" aria-hidden="true">${icon('check')}<i></i><i></i><i></i><i></i></span>`);
-   if(settings.motion!=='off'&&!globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches)feedback.classList.add('review-correct-motion');
+   if(animate&&settings.motion!=='off'&&!globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches)feedback.classList.add('review-correct-motion');
   }
+ };
+ const play=()=>{
+  if(!alive||played)return;played=true;show(true);
   const cap=globalThis.Capacitor;
   try{if(cap?.isNativePlatform?.()&&cap.getPlatform?.()==='ios')void cap.nativePromise('SeodangUI','correctAnswer',{}).catch(()=>{});else globalThis.navigator?.vibrate?.(12);}catch{}
   void sound.play();
  };
- return {play,stopSound,dispose(){alive=false;sound.dispose();root.querySelector('.review-correct-motion')?.classList.remove('review-correct-motion');}};
+ return {play,restore(){if(alive){played=true;show(false);}},stopSound,dispose(){alive=false;sound.dispose();root.querySelector('.review-correct-motion')?.classList.remove('review-correct-motion');}};
 }
 
 export function playReviewCompletionSound(settings){
