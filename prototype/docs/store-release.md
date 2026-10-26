@@ -26,7 +26,7 @@ The custom Gymfile builds the actual project explicitly. Keep the two schemes eq
 
 The approved bilingual dog/book icon is bundled on both platforms. Device speech
 uses AVSpeechSynthesizer on iOS and TextToSpeech on Android. Learning media and
-Rive runtime are bundled for offline use. iOS speaking practice requests microphone and speech recognition permissions and requires on-device recognition.
+Rive runtime are bundled for offline use. iOS speaking practice requests microphone and speech recognition permissions and requires on-device recognition. Android requests microphone permission, uses on-device recognition when available, and requires explicit per-screen consent before using the system recognition service when the device engine or its language model is unavailable. Audio may be processed by the service provider; transcripts are transient and excluded from storage/analytics. Before releasing this Android recognition change, publish the updated privacy policy and review Play Data safety disclosures for the system service.
 
 ## Existing installations
 
