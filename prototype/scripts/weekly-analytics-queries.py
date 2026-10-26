@@ -14,6 +14,13 @@ def dt(d): return "toDateTime('%s', 'UTC')"%stamp(d)
 filters="properties.client = 'seodang-capacitor' AND properties.environment = 'production'"
 window=f"timestamp >= {dt(start)} AND timestamp < {dt(end)} AND {filters}"
 queries={}
+# v3 adds acquisition/consent changes; answer and active-time semantics match v2.
+learning_schema="properties.schema_version IN (2, 3)"
+# Keep all versions visible so a future schema cannot silently disappear.
+queries['schema_coverage']=f"""SELECT toStartOfWeek(toTimeZone(timestamp,'Asia/Seoul'),1) AS week,
+event,properties.schema_version AS schema_version,uniq(uuid) AS events
+FROM events WHERE {window} AND event IN ('answer_checked','step_time')
+GROUP BY week,event,schema_version ORDER BY week,event,schema_version LIMIT 100"""
 queries['weekly_counts']=f"""SELECT toStartOfWeek(toTimeZone(timestamp,'Asia/Seoul'),1) AS week,
 event, uniq(uuid) AS events, uniq(distinct_id) AS observed_installation_ids
 FROM events WHERE {window}
@@ -42,7 +49,7 @@ properties.lesson_id AS lesson_id,properties.phase AS phase,properties.item_inde
 properties.round_index AS round_index,properties.mode_index AS mode_index,
 uniqIf(uuid,properties.correct=false) AS wrong,uniq(uuid) AS checked,
 uniq(distinct_id) AS observed_installation_ids
-FROM events WHERE {window} AND event='answer_checked' AND properties.schema_version=2
+FROM events WHERE {window} AND event='answer_checked' AND {learning_schema}
 GROUP BY week,lesson_id,phase,item_index,round_index,mode_index
 ORDER BY week,lesson_id,phase,item_index LIMIT 500"""
 queries['step_time']=f"""SELECT week,lesson_id,phase,item_index,round_index,mode_index,
@@ -56,7 +63,7 @@ any(properties.attempt_id) AS attempt_id,any(properties.lesson_id) AS lesson_id,
 any(properties.phase) AS phase,any(properties.item_index) AS item_index,
 any(properties.round_index) AS round_index,any(properties.mode_index) AS mode_index,
 any(toFloat(properties.active_ms)) AS chunk_active_ms
-FROM events WHERE {window} AND event='step_time' AND properties.schema_version=2 GROUP BY uuid)
+FROM events WHERE {window} AND event='step_time' AND {learning_schema} GROUP BY uuid)
 GROUP BY installation_id,attempt_id,lesson_id,phase,item_index,round_index,mode_index)
 GROUP BY week,lesson_id,phase,item_index,round_index,mode_index ORDER BY week,lesson_id,phase,item_index LIMIT 500"""
 queries['audio']=f"""SELECT toStartOfWeek(toTimeZone(started_at,'Asia/Seoul'),1) AS week,
