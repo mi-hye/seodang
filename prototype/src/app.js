@@ -23,6 +23,7 @@ import {listeningUnlocked} from './listening-state.js';
 import {labelsUnlocked} from "./labels-state.js";
 import { sentenceProgress,sentenceId,sentenceLessons,nextSentence } from "./sentence-state.js";
 import { showSheet, closeSheet } from "./sheet.js";
+import {installAndroidBack} from './android-back.js';
 import { selectedLevel, kanaLetters, kanaLessons, normalizeKana, kanaSolvedCount } from "./kana-state.js";
 import { renderHeader, installFocusModality } from "./header.js";
 installFocusModality();
@@ -1099,6 +1100,15 @@ app.addEventListener('input',event=>{
  clearTimeout(draftTimer);draftTimer=setTimeout(flushDraft,400);
 });
 app.addEventListener('input',event=>{const input=event.target;if(!input.matches('[data-audio-rate]'))return;const rate=Number(input.value);commit({type:'setting',key:'audioRate',value:rate});player.setRate(rate);const output=input.closest('.passage-speed').querySelector('[data-audio-rate-label]');const label=`${rate===1?output.dataset.normalLabel+' ':''}${rate.toFixed(1)}×`;output.textContent=label;input.setAttribute('aria-valuetext',label);});
+
+installAndroidBack(()=>{
+ if(entryBusy)return true;
+ const back=app.querySelector('[data-community-header-back]:not([hidden])')
+  ||app.querySelector('.app-header-back[data-action]:not([data-action="community-inbox"]):not([hidden]),[data-community="back"]');
+ if(back){if(!back.disabled)back.click();return true;}
+ if(view!=='home'){navigate('home');return true;}
+ return false;
+});
 
 if(state.onboarded&&!needsKoreanGuide){
  openAnalytics(state);learningTracker.enter(learningSnapshot(state,view));

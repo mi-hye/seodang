@@ -1,5 +1,6 @@
 import {t,setUILanguage,loadUILanguage,translateSetup} from './i18n.js';
 import { showSheet, closeSheet } from "./sheet.js";
+import {installAndroidBack} from './android-back.js';
 import { selectedLevel } from "./kana-state.js";
 import { renderHeader, installFocusModality } from "./header.js";
 installFocusModality();
@@ -172,4 +173,9 @@ form.addEventListener('submit', event => {
 });
 
 await languageReady;
+installAndroidBack(()=>{
+ if(guidePending||languagePending)return true;
+ if(step===1)return false;
+ headerRoot.querySelector('[data-action="previous"]')?.click();return true;
+});
 if (window.location.hash === '#guide') showStep(3);

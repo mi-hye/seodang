@@ -33,6 +33,16 @@ export function mountGuide(root,level,{onChange=()=>{},initialIndex=0,reducedMot
  let disposeCharacter,sceneMounted=false;
  let disposed=false,index=Number.isInteger(initialIndex)?Math.max(0,Math.min(pages.length-1,initialIndex)):0;
  const visibility=()=>root.classList.toggle('guide-paused',Boolean(doc.hidden));
+ // Optional animation must never interrupt navigation or guide cleanup.
+ const withCharacter=action=>{
+  try{action();}catch{
+   const cleanup=disposeCharacter;disposeCharacter=null;
+   const host=root.querySelector?.('.guide-scene');
+   if(host)host.dataset.renderer='fallback';
+   try{cleanup?.();}catch{/* Keep the static mascot even if the renderer cannot dispose. */}
+   host?.querySelectorAll('.guide-rive-canvas').forEach(canvas=>canvas.remove());
+  }
+ };
  const draw=()=>{
   if(disposed)return;
   const page=pages[index];
@@ -56,16 +66,16 @@ export function mountGuide(root,level,{onChange=()=>{},initialIndex=0,reducedMot
     <div class="guide-dots" aria-label="${index+1} / ${pages.length}">${dots}</div>
    </section>`;
    const host=root.querySelector?.('.guide-scene');
-   if(host)disposeCharacter=mountOnboardingCharacter(host,{state:'greeting',pose,reducedMotion});
+   if(host)withCharacter(()=>{disposeCharacter=mountOnboardingCharacter(host,{state:'greeting',pose,reducedMotion});});
    sceneMounted=true;
   }
-  disposeCharacter?.setPose?.(pose);
   onChange({index,total:pages.length,last:index===pages.length-1});
+  withCharacter(()=>disposeCharacter?.setPose?.(pose));
  };
- const replay=event=>{if(disposed||!event.target.closest('.guide-replay'))return;disposeCharacter?.replay?.();};
+ const replay=event=>{if(disposed||!event.target.closest('.guide-replay'))return;withCharacter(()=>disposeCharacter?.replay?.());};
  root.addEventListener('click',replay);
  doc.addEventListener('visibilitychange',visibility);visibility();draw();
- const dispose=()=>{if(disposed)return;disposed=true;disposeCharacter?.();root.removeEventListener('click',replay);doc.removeEventListener('visibilitychange',visibility);root.classList.toggle('guide-paused',true);};
+ const dispose=()=>{if(disposed)return;disposed=true;withCharacter(()=>{const cleanup=disposeCharacter;disposeCharacter=null;cleanup?.();});root.removeEventListener('click',replay);doc.removeEventListener('visibilitychange',visibility);root.classList.toggle('guide-paused',true);};
  dispose.next=()=>{if(disposed||index===pages.length-1)return false;index++;draw();return true;};
  dispose.previous=()=>{if(disposed||index===0)return false;index--;draw();return true;};
  return dispose;
