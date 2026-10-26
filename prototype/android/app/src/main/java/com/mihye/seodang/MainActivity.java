@@ -8,6 +8,7 @@ import com.getcapacitor.BridgeActivity;
 public class MainActivity extends BridgeActivity {
     @Override public void onCreate(Bundle savedInstanceState) {
         registerPlugin(SeodangSpeechPlugin.class);
+        registerPlugin(SeodangRecognitionPlugin.class);
         registerPlugin(SeodangAttributionPlugin.class);
         super.onCreate(savedInstanceState);
         applyAppTextZoom();

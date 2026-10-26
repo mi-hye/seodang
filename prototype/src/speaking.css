@@ -8,9 +8,18 @@
 
 .korean-speaking .speaking-coach{width:100%}
 .korean-speaking .speaking-coach h1{max-width:100%;min-height:52px;display:grid;place-items:center;white-space:normal;word-break:normal;overflow-wrap:anywhere;line-height:1.45;text-align:center}
+.korean-speaking .speaking-coach h1:lang(ko){word-break:keep-all}
 .speaking-dog{display:block;flex:none;width:clamp(180px,52vw,210px);aspect-ratio:1;background:url('../assets/mascot/seodang-cartoon-atlas-v1.png') 0 0/300% 200% no-repeat}
 .speaking-dog[data-speaking-mood=listening]{background-position:50% 0}
 .speaking-dog[data-speaking-mood=happy]{background-position:100% 0}
 .speaking-dog[data-speaking-mood=retry]{background-position:50% 100%}
 
 .korean-speaking h2:lang(ja),.korean-speaking h2:lang(ja) .text-phrase{word-break:normal;line-break:strict}
+
+.korean-speaking [data-speaking-permission]{text-align:center;word-break:keep-all}
+.korean-speaking [data-speaking-permission] .secondary{margin:8px 0 0;min-height:44px}
+.speaking-consent{padding:24px;word-break:keep-all;overflow-wrap:anywhere;background:var(--stage-panel);color:var(--text)}
+.speaking-consent:lang(ja){word-break:normal;line-break:strict}
+.speaking-consent h2{font-size:calc(21px * var(--text-scale));line-height:1.4}
+.speaking-consent p{line-height:1.6}
+.speaking-consent .button-pair{margin-bottom:0}
