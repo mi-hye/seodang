@@ -5,6 +5,18 @@ const id='11111111-1111-4111-8111-111111111111',other='22222222-2222-4222-8222-2
 const profile={id,nickname:'서당친구',native_language:'ko',learning_language:'ja',bio:'일본어로 이야기하고 싶어요.',rules_version:1};
 const friend={id:other,nickname:'はる',native_language:'ja',learning_language:'ko',bio:'한국어를 배우고 있어요.'};
 const post={id:postID,author_id:other,profile:friend,body:'오늘은 커피를 마셨어요. <img src=x onerror=alert(1)>',language:'ko',wants_correction:true,created_at:'2026-10-19T09:00:00Z'};
+test('Android Back leaves composition and profile before returning from feed to home',async({page})=>{
+ await page.addInitScript(()=>{window.Capacitor={getPlatform:()=> 'android',isNativePlatform:()=>false};});
+ await setup(page);
+ const back=()=>page.evaluate(()=>!window.dispatchEvent(new Event('seodang:back',{cancelable:true})));
+ await page.locator('[data-action=community]').click();await expect(page.locator('[data-post]')).toBeVisible();
+ await page.locator('[data-community=compose]').click();await expect(page.locator('[name=body]')).toBeVisible();
+ expect(await back()).toBe(true);await expect(page.locator('[data-post]')).toBeVisible();
+ await page.locator('.app-header [data-action=settings]').click();await page.locator('[data-action=community-profile]').click();
+ await expect(page.locator('[name=nickname]')).toBeVisible();expect(await back()).toBe(true);
+ await expect(page.locator('[data-post]')).toBeVisible();expect(await back()).toBe(true);
+ await expect(page.locator('.learning-map')).toBeVisible();expect(await back()).toBe(false);
+});
 async function setup(page,{signed=true,direction='ko-ja',width=390,posts=[post]}={}){
  await page.setViewportSize({width,height:844});
  await page.addInitScript(({state,signed,id})=>{localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(state));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));if(signed)localStorage.setItem('seodang.community.session.v1',JSON.stringify({user:{id},access_token:'test',refresh_token:'test-refresh',expires_at:Math.floor(Date.now()/1000)+3600}));},{state:{...freshState(),onboarded:true,koreanGuideSeenVersion:1,courseDirection:direction,onboardingLevel:2,settings:{sound:false,motion:'off',textScale:1.2,audioRate:1}},signed,id});
