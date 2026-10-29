@@ -1112,5 +1112,4 @@ installAndroidBack(()=>{
 
 if(state.onboarded&&!needsKoreanGuide){
  openAnalytics(state);learningTracker.enter(learningSnapshot(state,view));
- if(analytics.consent===null&&view==='home'){const {askAnalyticsConsent}=await import('./analytics-consent.js');await askAnalyticsConsent(state);openAnalytics(state);}
 }
