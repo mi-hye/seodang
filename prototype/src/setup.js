@@ -60,7 +60,7 @@ function showStep(next) {
   guideRequest++;guidePending=false;form.removeAttribute('aria-busy');
   activateStep(next);
   // Warm only the next onboarding step, leaving the initial screen unchanged.
-  if(next===2)void loadGuideAssets().catch(()=>{});
+  if(next===2){void loadGuideAssets().catch(()=>{});void loadConsentChoice();}
 }
 function loadGuideAssets(){
   guideAssets ||= (async()=>{
@@ -101,11 +101,18 @@ async function showGuide(initialIndex=0) {
   }
 }
 
+let consentUI,consentLoading;
+function loadConsentChoice(){
+ consentLoading ||= import('./setup-analytics.js').then(({mountSetupAnalytics})=>{
+  consentUI=mountSetupAnalytics(document.querySelector('#setup-analytics'),()=>form.elements.language.value==='ko');
+ }).catch(()=>{consentLoading=null;});
+ return consentLoading;
+}
 let languageRequest=0,languagePending=false;
 async function updateLanguage(){
   // A changed choice invalidates any guide still being prepared.
   guideRequest++;guidePending=false;
-  const request=++languageRequest,direction={courseDirection:form.elements.language.value==='ko'?'ja-ko':'ko-ja',onboardingLevel:0};languagePending=true;syncPending();try{await loadUILanguage(direction);if(request!==languageRequest)return;setUILanguage(direction);translateSetup();updateHeader();updateNextLabel();}catch{message('読み込めませんでした。言語を選び直してください。');}finally{if(request===languageRequest){languagePending=false;syncPending();}}}
+  const request=++languageRequest,direction={courseDirection:form.elements.language.value==='ko'?'ja-ko':'ko-ja',onboardingLevel:0};languagePending=true;syncPending();try{await loadUILanguage(direction);if(request!==languageRequest)return;setUILanguage(direction);translateSetup();consentUI?.update();updateHeader();updateNextLabel();}catch{message('読み込めませんでした。言語を選び直してください。');}finally{if(request===languageRequest){languagePending=false;syncPending();}}}
 form.elements.language.forEach(input=>input.addEventListener('change',updateLanguage));
 form.elements.level.forEach(input=>input.addEventListener('change',updateLanguage));
 const languageReady=updateLanguage();
@@ -168,6 +175,7 @@ form.addEventListener('submit', event => {
   delete next.uiGuideSeenVersion;
   const error = save(storage, next);
   if (error) { message(error); return; }
+  consentUI?.save();
   nextButton.disabled = true;
   window.location.assign('playable.html#home');
 });

@@ -33,3 +33,11 @@ form[aria-busy] .primary::after{content:"";display:inline-block;width:14px;heigh
 
 .setup-reduced-motion .progress span{transition:none}
 .setup-reduced-motion .step-content>[data-step],.setup-reduced-motion form[aria-busy] .primary::after{animation:none}
+
+.setup-analytics{margin-top:24px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;line-height:1.65}
+.analytics-choice{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;font-size:16px;font-weight:600}
+.analytics-choice input{width:20px;height:20px;flex:none;accent-color:var(--amber)}
+.analytics-choice input:focus-visible{outline:3px solid var(--amber-light);outline-offset:3px}
+.setup-analytics p{margin:4px 0 8px;color:var(--muted)}
+.setup-analytics a{display:inline-flex;align-items:center;min-height:44px;color:var(--amber-light)}
+.setup-analytics[lang=ja]{word-break:normal;line-break:strict}
