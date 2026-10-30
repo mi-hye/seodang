@@ -1,6 +1,7 @@
 @import './reading.css';
 @import './case-lesson.css';
 @import './speaking.css';
+@import './particle-course.css';
 .korean-learn{text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;margin:12px 0 28px}.korean-learn h1{font-size:calc(32px * var(--text-scale));line-height:1.5;margin:14px 0;word-break:keep-all;overflow-wrap:anywhere}.korean-learn p{margin:0;line-height:1.7}.korean-cue{font-size:calc(16px * var(--text-scale));color:var(--muted);max-width:34em}.korean-question{font-size:calc(20px * var(--text-scale));line-height:1.7;margin:20px 0}.korean-question h1{font-size:inherit}.korean-choices{display:flex;flex-direction:column;gap:12px}.korean-choice{background:var(--stage-raised);border:1px solid var(--line);border-radius:16px;padding:18px 16px;color:var(--text);font-size:calc(20px * var(--text-scale));line-height:1.6;text-align:left;word-break:keep-all;overflow-wrap:anywhere}.korean-choice.selected{border-color:var(--amber);background:var(--selected)}.korean-feedback{min-height:28px;color:var(--amber-light)}.korean-passage{font-size:calc(21px * var(--text-scale));line-height:1.9;word-break:keep-all;overflow-wrap:anywhere}.korean-listen{display:flex;align-items:center;justify-content:center;gap:16px;padding:28px 0}.korean-writing{position:relative;width:min(240px,100%);aspect-ratio:1;border:1px solid var(--line);border-radius:20px;background:var(--stage-raised)}.korean-writing canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}.korean-page [lang=ko]{word-break:keep-all}html[lang=ja] .map-title,html[lang=ja] .setting{word-break:normal;line-break:strict}
 
 .korean-stroke-layer{position:absolute;inset:0;pointer-events:none}.korean-stroke-layer svg{width:100%;height:100%;overflow:visible}.korean-stroke-layer path{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}.korean-stroke-guides path{stroke:var(--line)}.korean-stroke-ink path{stroke:var(--muted);opacity:.3}.korean-stroke-ink path.active{stroke:var(--amber);opacity:1}.korean-stroke-layer text{font-size:6px;fill:var(--muted);text-anchor:middle;dominant-baseline:middle;paint-order:stroke;stroke:var(--stage-raised);stroke-width:1.4px;stroke-linejoin:round}.korean-stroke-layer text.active{fill:var(--amber-light);font-weight:700}.korean-stroke-tip{fill:var(--amber-light)}.korean-writing-tools{width:min(240px,100%)}.korean-stroke-status{min-height:1.2em;font-size:14px;color:var(--muted)}
@@ -32,7 +33,6 @@
 .korean-example-row{width:100%;gap:8px}.korean-example-row .korean-letter-equation{flex:1;min-width:0}
 .korean-zero .korean-cue{font-size:calc(14px * var(--text-scale));text-align:center;line-height:1.6;margin:0;word-break:normal;line-break:strict}
 .korean-writing,.korean-writing *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-.korean-stroke-controls{display:flex;align-items:center;gap:12px;min-height:44px}.korean-stroke-controls button{margin:0;min-height:44px;padding:4px 10px}.korean-stroke-controls .korean-stroke-status{min-height:0}
 .korean-zero-question{margin:0;gap:8px}.korean-zero-question h1{flex:1;min-width:0;word-break:normal;line-break:strict}
 .korean-zero-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:8px 0 0}
 .korean-zero-choices .korean-choice{min-width:0;margin:0;padding:12px;min-height:100px;font-size:calc(32px * var(--text-scale));text-align:center}
@@ -63,3 +63,63 @@
 .korean-feedback{word-break:normal;line-break:strict;overflow-wrap:anywhere}
 .korean-feedback .feedback-phrase{display:inline;word-break:keep-all}
 .korean-feedback .feedback-phrase-short{white-space:nowrap}
+
+/* A selected syllable is a preview, not a correct-answer verdict. */
+.korean-zero-choices .korean-choice{position:relative}
+.korean-zero-choices .korean-choice.incorrect{border-color:var(--rose);color:var(--rose);background:var(--stage-raised)}
+.korean-wrong-mark{position:absolute;top:8px;right:8px;display:flex;pointer-events:none}
+.korean-wrong-mark svg{width:18px;height:18px}
+.korean-answer-retry .korean-assembly strong{color:var(--rose)}
+.korean-zero .korean-feedback{min-height:calc(45px * var(--text-scale));font-size:calc(15px * var(--text-scale));line-height:1.5}
+.korean-zero.korean-answer-retry .korean-feedback{color:var(--rose);border-left:2px solid var(--rose);padding-left:10px}
+.korean-answer-retry .korean-feedback strong,.korean-answer-retry .korean-feedback>span{display:block}
+/* Pronunciation uses shared controls with a stable target-first lesson layout. */
+#app main.pronunciation-course,#app main.pronunciation-speaking{flex:1;gap:16px;padding-bottom:max(20px,env(safe-area-inset-bottom))}
+#app main.pronunciation-course,#app main.pronunciation-speaking.lesson-top{padding-top:4px!important}
+.pronunciation-course{word-break:normal;line-break:strict}
+.pronunciation-focus{padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--stage-raised)}
+.pronunciation-course .pronunciation-focus h1{margin:0 0 8px;color:var(--muted);font-size:calc(14px * var(--text-scale));font-weight:500;line-height:1.5}
+.pronunciation-course .pronunciation-target h2{margin:0;font-size:calc(22px * var(--text-scale));line-height:1.4;word-break:keep-all}
+.pronunciation-course .pronunciation-focus h2,.pronunciation-speaking> .audio-text-row h2{font-size:calc(24px * var(--text-scale));line-height:1.4}
+.pronunciation-course .audio-text-row{display:flex;flex-flow:row nowrap;align-items:center;gap:12px}
+.pronunciation-course .audio-text-row>h2,.pronunciation-compare-copy{flex:1;min-width:0}
+.pronunciation-course .pronunciation-compare-point{margin:4px 0 0;font-size:calc(16px * var(--text-scale));line-height:1.5}
+.pronunciation-comparison>h2{margin:0 0 8px;color:var(--muted);font-size:calc(14px * var(--text-scale));font-weight:500;line-height:1.5}
+.pronunciation-comparison ul{list-style:none;padding:0;margin:0}
+.pronunciation-comparison li{padding:8px 0;border-bottom:1px solid var(--line)}
+.pronunciation-comparison li:last-child{border-bottom:0}
+.pronunciation-comparison .pronunciation-compare-point{color:var(--muted);font-size:calc(14px * var(--text-scale))}
+.pronunciation-linking>span{margin:0;color:var(--muted);font-size:calc(13px * var(--text-scale))}
+.pronunciation-linking{display:flex;flex-direction:column;gap:2px;margin-top:4px}
+.pronunciation-linking strong{font-size:calc(20px * var(--text-scale));line-height:1.45;word-break:keep-all;color:var(--amber)}
+.pronunciation-diagram-link{margin:8px 0 0;min-height:44px;padding:6px 0;font-size:calc(14px * var(--text-scale))}
+.pronunciation-playback{justify-content:space-between}
+.pronunciation-status{line-height:1.5;font-size:calc(15px * var(--text-scale))}
+.pronunciation-status:empty{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.pronunciation-note{font-size:calc(13px * var(--text-scale));color:var(--muted)}
+.pronunciation-note summary{min-height:44px;align-content:center;cursor:pointer}
+.pronunciation-note p{margin:8px 0;line-height:1.6}
+#app main.pronunciation-course>.pronunciation-navigation,#app main.pronunciation-speaking>.speaking-actions{margin-top:auto}
+.pronunciation-navigation{gap:12px}
+.pronunciation-navigation>button{min-height:48px;padding:12px 16px;border-radius:12px;font-size:calc(16px * var(--text-scale))}
+.pronunciation-navigation>.secondary{border-color:transparent;background:transparent;color:var(--muted);font-weight:500;font-size:calc(15px * var(--text-scale))}
+.pronunciation-speaking>.audio-text-row{margin:0}
+.pronunciation-course [hidden],.pronunciation-speaking [hidden]{display:none!important}
+
+
+.korean-batchim-sounds{display:flex;flex-flow:row nowrap;align-items:center;justify-content:center;gap:22px;margin:12px 0}.korean-batchim-sounds>div{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}.korean-batchim-sounds>div>span{font-size:calc(13px * var(--text-scale));color:var(--muted)}.korean-batchim-sounds strong{font-size:calc(34px * var(--text-scale))}.korean-batchim-word{text-align:center;margin:16px 0}.korean-batchim-word>strong{font-size:calc(38px * var(--text-scale))}.korean-batchim-word p{font-size:calc(16px * var(--text-scale));margin:8px 0;color:var(--muted)}
+
+
+
+@media(max-height:700px){
+ #app main.pronunciation-course{gap:12px}
+ #app main.pronunciation-speaking{gap:10px}
+ .pronunciation-speaking>.speaking-microphone{margin-top:0}
+}
+
+.pronunciation-cue-part{display:inline-block;max-width:100%;overflow-wrap:anywhere}
+.pronunciation-navigation>button:disabled{opacity:.35}
+
+.pronunciation-word{display:inline-block;max-width:100%;overflow-wrap:anywhere}
+.pronunciation-word em{font-style:normal;text-decoration:underline;text-decoration-color:var(--amber);text-underline-offset:5px}
+.pronunciation-course .pronunciation-meaning{margin:4px 0 12px;color:var(--muted);font-size:calc(15px * var(--text-scale));line-height:1.5}

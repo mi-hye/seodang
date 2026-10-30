@@ -1,10 +1,11 @@
+import {insertComparisonLessons,resumedComparison,comparisonAttachment} from './comparison-attachments.js';
 import {MAP_PAGE_SIZE,mapPageWindow} from './learning-map-page.js';
 import {videosForCourse,resumeVideoLesson,videoProgress} from './video-lesson-state.js';
 import {songsForCourse,resumeSongLesson,songProgress} from './song-state.js';
 import {orderLessons} from './lesson-order.js';
 import {expertCatalog,expertProgress} from './expert-state.js';
 import {scenarioLessons,scenarioProgress,scenarioTitle,scenarioAvailable} from './scenario-state.js';
-import {courseName,courseGroup,courseLevels,japaneseLessonUI} from './curriculum.js';
+import {courseName,courseGroup,levelsFor,japaneseLessonUI} from './curriculum.js';
 import {koreanLessons, koreanProgress, koreanUnlocked, nextKorean} from './korean-state.js';
 import {t} from './i18n.js';
 import {basicLessons,basicProgress,basicUnlocked,nextBasic} from './basics-state.js';
@@ -39,7 +40,7 @@ function stop({title, symbol='book', ready, complete, current, detail='', status
 }
 function learningMapModel(state) {
   const level = courseGroup(selectedLevel(state));
-  if (level > 7) return {level,lessons:[],current:-1};
+  if (!levelsFor(state.courseDirection).includes(level)) return {level,lessons:[],current:-1};
   let lessons, title, count;
   if(level===7){title=courseName(level,japaneseLessonUI(state));lessons=expertCatalog[state.courseDirection].map((l,id)=>{const p=expertProgress(state,id);return {id,title:t(l.title),ready:true,complete:p.completed,current:p.started&&!p.completed,status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'expert'};});count=lessons.filter(l=>l.complete).length;
   } else if(state.courseDirection==='ja-ko'){
@@ -70,7 +71,7 @@ function learningMapModel(state) {
 
   const specialLessons=videosForCourse(state).map(video=>{const p=videoProgress(state,video.id);return {id:video.id,number:video.number,replaces:video.replaces,title:t(video.title),ready:true,complete:p.completed,current:p.started&&!p.completed,status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'video'};});
   specialLessons.push(...songsForCourse(state).map(song=>{const p=songProgress(state,song.id);return {id:song.id,number:song.number,replaces:song.replaces,title:t(song.title),symbol:'music',ready:true,complete:p.completed,current:p.started&&!p.completed,status:p.completed?'완료':p.started?'이어하기':'시작하기',action:'song'};}));
-  lessons=orderLessons(lessons,specialLessons);
+  lessons=insertComparisonLessons(orderLessons(lessons,specialLessons),state.courseDirection,c=>{const p=koreanProgress(state,c.id);return {id:c.id,title:c.title,action:'korean',ready:true,complete:p.completed,current:false,status:p.completed?'完了':p.started?'続きから':'開始'};});
   count=lessons.filter(l=>l.complete).length;
 
   // A single destination mirrors the home resume card, including direct dev entry.
@@ -82,6 +83,16 @@ function learningMapModel(state) {
   if(resumedVideo)current=lessons.findIndex(l=>l.action==='video'&&l.id===resumedVideo.id);
   const resumedSong=resumeSongLesson(state);
   if(resumedSong)current=lessons.findIndex(l=>l.action==='song'&&l.id===resumedSong.id);
+  if(state.courseDirection==='ja-ko'&&[2,4,5].includes(level)){
+   const comparison=resumedComparison(state);
+   if(comparison)current=lessons.findIndex(l=>l.action==='korean'&&l.id===comparison.id);
+   else if(current<0||!['이어하기','続きから'].includes(lessons[current]?.status)){
+    // Keep established learners near their completed route, rather than jumping
+    // backwards to a newly inserted lesson. Earlier lessons remain available.
+    const lastComplete=lessons.findLastIndex(l=>l.complete);
+    current=lessons.findIndex((l,i)=>i>lastComplete&&l.ready&&!l.complete);
+   }
+  }
   if(current<0)current=lessons.findIndex(l=>l.ready&&!l.complete);
   lessons=lessons.map((l,i)=>({...l,current:i===current}));
   return {level,lessons,title,count,current};
@@ -89,24 +100,21 @@ function learningMapModel(state) {
 export function mapCourseLessons(state){return learningMapModel(state).lessons;}
 export function mapCurrentLesson(state){const model=learningMapModel(state);return model.lessons[model.current];}
 export function mapNextLesson(state,kind,id){
+ const attachment=kind==='korean'&&state.courseDirection==='ja-ko'?comparisonAttachment(id):null;
+ if(attachment)state={...state,onboardingLevel:attachment.level};
  const {level,lessons}=learningMapModel(state);
  const index=lessons.findIndex(l=>l.action===kind&&String(l.id??0)===String(id??0));
  if(index<0)return null;
  let next=lessons[index+1],nextLevel=level;
- if(!next){nextLevel=courseLevels[courseLevels.indexOf(level)+1];if(nextLevel===undefined)return null;next=learningMapModel({...state,onboardingLevel:nextLevel}).lessons[0];}
+ if(!next){const levels=levelsFor(state.courseDirection);nextLevel=levels[levels.indexOf(level)+1];if(nextLevel===undefined)return null;next=learningMapModel({...state,onboardingLevel:nextLevel}).lessons[0];}
  return next?{...next,level:next.action==='reading'?Number(next.id):nextLevel}:null;
-}
-export function mapPageForLesson(state,lessonKey) {
-  const {lessons}=learningMapModel(state);
-  const index=lessons.findIndex(l=>`${state.courseDirection}:${l.action}:${l.id??0}`===lessonKey);
-  return index<0?undefined:Math.floor(index/MAP_PAGE_SIZE);
 }
 export function renderMapSection(state,i,active=false){
  const {level,lessons}=learningMapModel(state),pageCount=Math.max(1,Math.ceil(lessons.length/MAP_PAGE_SIZE));
  if(!Number.isSafeInteger(i)||i<0||i>=pageCount)return '';
  const recommendedEnd=state.courseDirection==='ko-ja'&&level===0?lessons.findIndex(l=>l.action==='basic'&&l.id===10):-1;
  const range=p=>`${p*MAP_PAGE_SIZE+1}~${Math.min(lessons.length,(p+1)*MAP_PAGE_SIZE)}`;
-    const start=i*MAP_PAGE_SIZE,end=Math.min(lessons.length,start+MAP_PAGE_SIZE),showComingSoon=level!==0&&i===pageCount-1;
+    const start=i*MAP_PAGE_SIZE,end=Math.min(lessons.length,start+MAP_PAGE_SIZE),showComingSoon=![0,8,9,10].includes(level)&&i===pageCount-1;
     const routeStops=showComingSoon?[...lessons,null]:lessons;
     const comingSoon=!showComingSoon?'':`<li class="map-stop map-coming-soon is-locked" style="--stop-x:${routePosition(lessons.length)}%"><div class="map-choice"><span class="map-node" aria-hidden="true">?</span><span class="map-title">Coming Soon</span></div></li>`;
     const stops=lessons.slice(start,end).map((lesson,offset)=>{const index=start+offset;return stop(lesson,index,routeStops,index===recommendedEnd)+(index===recommendedEnd?'<li class="map-study-note"><h2>기본 추천 학습은 여기까지예요</h2><p>1~9번에서 히라가나와 기본 발음을 익혀요.</p><p>10번부터는 발음 보충과 가타카나를 배우는 추가 학습이에요. 레벨 2로 먼저 넘어가고 필요할 때 돌아와도 좋아요.</p></li>':'');}).join('');
@@ -114,7 +122,7 @@ export function renderMapSection(state,i,active=false){
 }
 export function renderLearningMap(state,{resumeCard='',page:requestedPage}={}) {
   const {level,lessons,title,count,current}=learningMapModel(state);
-  if (level > 7) return `<section class="map-empty"><span aria-hidden="true">${icon('lock')}</span><h1>${level}단계 학습을 준비하고 있어요</h1></section>`;
+  if (!levelsFor(state.courseDirection).includes(level)) return `<section class="map-empty"><span aria-hidden="true">${icon('lock')}</span><h1>${level}단계 학습을 준비하고 있어요</h1></section>`;
   const progress=lessons.length?Math.round(count/lessons.length*100):0;
   const {page,pageCount,currentPage}=mapPageWindow(lessons.length,current,requestedPage);
   const mapLabel=`${title}${japaneseLessonUI(state)?'の学習マップ':' 학습 지도'}`;

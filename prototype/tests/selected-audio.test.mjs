@@ -26,6 +26,6 @@ test('every shipped WAV is covered by a verified selected-voice manifest',()=>{
 test('all Korean pronunciation samples, including finals, use bundled selected voices',()=>{
  for(const record of Object.values(pronunciationRecords))for(const text of [record.sample,finalPronunciation(record.glyph)?.sample].filter(Boolean)){
   const audio=pronunciationAudio(text);assert.equal(audio.status,'ready',text);
-  assert.equal(readFileSync(new URL(audio.audioFile,root)).toString('ascii',0,4),'RIFF');
+  const bytes=readFileSync(new URL(audio.audioFile,root));if(audio.bundled){const clip=JSON.parse(readFileSync(new URL('docs/asset-provenance/korean-basic-order-20261027.json',root))).files.find(x=>x.file===audio.audioFile);assert.equal(clip.text,text);assert.equal(createHash('sha256').update(bytes).digest('hex'),clip.sha256);assert.equal(bytes.toString('ascii',4,8),'ftyp');}else assert.equal(bytes.toString('ascii',0,4),'RIFF');
  }
 });

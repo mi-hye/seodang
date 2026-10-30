@@ -53,10 +53,10 @@ for(const [index,lesson]of songLessons.entries())for(const width of (lesson.numb
  await page.setViewportSize({width,height:844});
  await setup(page,lesson);
  await page.goto('/playable.html');
- expect(await collectMapLessons(page)).toHaveLength(17);
+ expect(await collectMapLessons(page)).toHaveLength(20);
  expect((await collectMapLessons(page))[lesson.number-1]).toMatchObject({kind:'song',id:lesson.id,number:lesson.number});
- expect((await collectMapLessons(page)).filter(l=>l.kind==='video').map(l=>l.number)).toEqual([3,6,9,12]);
- expect((await collectMapLessons(page)).filter(l=>l.kind==='song').map(l=>l.number)).toEqual([5,10,15]);
+ expect((await collectMapLessons(page)).filter(l=>l.kind==='video').map(l=>l.number)).toEqual([3,6,9,12,18]);
+ expect((await collectMapLessons(page)).filter(l=>l.kind==='song').map(l=>l.number)).toEqual([5,10,15,20]);
  await enter(page,lesson.id);
  await expect(page.locator('.app-header-title')).toContainText(`${lesson.number}.`);
  await expect(page.locator('.song-lesson')).toHaveAttribute('lang',lesson.direction==='ko-ja'?'ko':'ja');
@@ -168,13 +168,20 @@ for(const [index,lesson]of songLessons.entries())for(const width of (lesson.numb
  expect(stored.studyTools[lesson.direction].lessons[key].completedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
  const history=lesson.direction==='ko-ja'?stored.history:stored.korean.history;
  expect(Object.values(history.days).reduce((n,d)=>n+d.cases,0)).toBe(1);
- await expect(page.locator('[data-action="completed-next"]')).toHaveText(lesson.direction==='ja-ko'?'次のレッスン':'다음 수업');
+ await expect(page.locator('[data-action="completed-next"]')).toHaveText(lesson.number===20&&lesson.level===7?(lesson.direction==='ja-ko'?'学習ホームへ':'학습 홈으로'):(lesson.direction==='ja-ko'?'次のレッスン':'다음 수업'));
  await page.locator('[data-action="completed-next"]').click();
  await expect(page.locator('.practice-complete')).toHaveCount(0);
- await page.locator('[data-action="home"]').first().click();
- await expect(await findMapLesson(page,{kind:'song',id:lesson.id})).toContainText(lesson.direction==='ja-ko'?'完了':'완료');
+ if(lesson.number===20&&lesson.level===7)await expect(page.locator('.view-home')).toBeVisible();else await page.locator('[data-action="home"]').first().click();
+ if(lesson.number===20){
+  const expected={2:4,4:5,5:7,7:7}[lesson.level];
+  expect((await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),storageKey)).onboardingLevel).toBe(expected);
+  await page.evaluate(({storageKey,level})=>{const s=JSON.parse(localStorage.getItem(storageKey));s.onboardingLevel=level;localStorage.setItem(storageKey,JSON.stringify(s));},{storageKey,level:lesson.level});await page.reload();
+ }
+ await expect(await findMapLesson(page,{kind:'song',id:lesson.id})).toHaveAttribute('aria-label',new RegExp(lesson.direction==='ja-ko'?'完了':'완료'));
  await page.locator('[data-action="my"]').first().click();
  await expect(page.locator('.record-overview dd').first()).toHaveText(lesson.direction==='ja-ko'?'1件':'1개');
+ // Finish the navigation's lazy import before the fixture forces a reload to age the record.
+ await page.evaluate(()=>import('/src/audio-download-ui.js'));
  await page.evaluate(({storageKey,key,direction})=>{const s=JSON.parse(localStorage.getItem(storageKey)),d=new Date();d.setDate(d.getDate()-4);s.studyTools[direction].lessons[key].completedOn=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;localStorage.setItem(storageKey,JSON.stringify(s));},{storageKey,key,direction:lesson.direction});
  await page.reload();await page.locator('[data-action="my"]').first().click();await page.locator('[data-action="study-review"]').click();
  const review=page.locator(`[data-action="study-lesson"][data-id="${key}"]`);
@@ -184,16 +191,16 @@ for(const [index,lesson]of songLessons.entries())for(const width of (lesson.numb
  expect(errors).toEqual([]);
 });
 
-for(const direction of ['ko-ja','ja-ko'])test(`production ${direction} retains 14 lessons and hides saved local song previews`,async({page})=>{
+for(const direction of ['ko-ja','ja-ko'])test(`production ${direction} retains 16 lessons and hides saved local song previews`,async({page})=>{
  const l=songLessons.find(l=>l.direction===direction),state={...fixture(l),songActive:l.id,songs:{[l.id]:{...freshSong(),started:true,completed:true,phase:'done'}}};
  await page.setViewportSize({width:390,height:844});
  await buildMode(page,false);
  await page.addInitScript(s=>{localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},state);
  await page.goto('/playable.html');
- expect(await collectMapLessons(page)).toHaveLength(14);
+ expect(await collectMapLessons(page)).toHaveLength(16);
  expect((await collectMapLessons(page)).filter(l=>l.kind==='song')).toHaveLength(0);
  await expect(page.locator('.storage-warning')).toHaveCount(0);
- expect((await collectMapLessons(page)).filter(l=>l.kind==='video').map(l=>l.number)).toEqual([3,6,9,12]);
+ expect((await collectMapLessons(page)).filter(l=>l.kind==='video').map(l=>l.number)).toEqual([3,6,9,12,15]);
 });
 
 for(const direction of ['ko-ja','ja-ko'])for(const sound of [true,false])test(`song native lifecycle and one-time feedback ${direction} sound=${sound}`,async({page})=>{

@@ -1,6 +1,20 @@
 // Display-only boundaries for narrow lesson bubbles. Never use these as
 // assembly tokens or voice text: concatenating the parts preserves the source.
 const displayParts = {
+  // Lesson 19: preserve sentence/audio text while fitting narrow dialogue bubbles.
+  '続いていますか。': ['続いて', 'いますか。'],
+  '出してください。': ['出して', 'ください。'],
+  '中を洗ってから、': ['中を', '洗ってから、'],
+  'キャップを外して': ['キャップを', '外して'],
+  '保管してください。': ['保管して', 'ください。'],
+  'どう思いますか。': ['どう', '思いますか。'],
+  '分かりやすいです。': ['分かりやすい', 'です。'],
+  '具体例を加えると、': ['具体例を', '加えると、'],
+  'さらに伝わりそうです。': ['さらに', '伝わりそう', 'です。'],
+  '必要でしょうか。': ['必要', 'でしょうか。'],
+  '初めて読む人には、': ['初めて', '読む人には、'],
+  '少し分かりにくいかも': ['少し', '分かりにくい', 'かも'],
+  'よさそうですか。': ['よさそう', 'ですか。'],
   // Level 3: requests, explanations, and everyday dialogue.
   'この道ではなく、': ['この道', 'ではなく、'],
   '一本隣の道ですよ。': ['一本隣の', '道ですよ。'],

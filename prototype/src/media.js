@@ -74,6 +74,7 @@ export class AudioPlayer {
   stop() {
     this.endPlayback?.('cancelled');this.endPlayback=null;
     this.generation++;
+    this.loadingKey=null;
     if(this.current){this.current.pause();this.current.currentTime=0;}
     this.finishCurrent?.();
     this.release?.(); this.release=null;
@@ -111,10 +112,14 @@ export class AudioPlayer {
     this.endPlayback=end;return end;
   }
   async play(entry, enabled, onError, { rate = entry?.playbackRate ?? 1 } = {}) {
+    const key=entry?.audioFile||`${entry?.locale}:${entry?.text}`;
+    if(enabled&&this.state==='loading'&&this.loadingKey===key)return;
     const stopped = this.stop();
     const token = this.generation;
+    const loading=()=>{this.loadingKey=key;this.changeState('loading');};
     if (entry?.status === "device-tts") {
       if (!enabled || !entry.text) return;
+      loading();
       await stopped;
       if (token !== this.generation) return;
       const end=this.beginPlayback('device');
@@ -122,13 +127,16 @@ export class AudioPlayer {
         const readiness = await this.speech.prepare?.(entry);
         if (token !== this.generation) return;
         if (readiness?.proceed === false) { await this.stop(); return; }
+        this.changeState('playing');
         const result=await this.speech.speak(entry);
         if(token===this.generation)end(result?.cancelled?'cancelled':'completed');
       }
       catch { if (token === this.generation) {end('failed');onError("기기 음성을 재생하지 못했어요. 휴대폰의 음성 설정을 확인해 주세요.");} }
+      finally {if(token===this.generation)this.changeState('idle');}
       return;
     }
     if (!enabled || !entry?.audioFile || entry.status !== "ready") return;
+    loading();
     await stopped;
     if (token !== this.generation) return;
     const end=this.beginPlayback('file');
@@ -144,12 +152,11 @@ export class AudioPlayer {
       }
       sound = this.factory(source);
     }
-    catch { if(token===this.generation){this.release?.();this.release=null;end('failed');onError("음성을 내려받지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.");} return; }
+    catch { if(token===this.generation){this.release?.();this.release=null;this.changeState('idle');end('failed');onError("음성을 내려받지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.");} return; }
     sound.playbackRate = normalizeAudioRate(rate);
     sound.preservesPitch = true;
     if ("webkitPreservesPitch" in sound) sound.webkitPreservesPitch = true;
     this.current = sound;
-    this.changeState('playing');
     await new Promise(resolve => {
       let settled = false;
       const finish = () => {
@@ -157,6 +164,8 @@ export class AudioPlayer {
         settled = true;
         sound.onended = null;
         sound.onerror = null;
+        sound.onplaying = null;
+        sound.onwaiting = null;
         if(this.current===sound){this.changeState('idle');this.release?.();this.release=null;}
         if (this.finishCurrent === finish) this.finishCurrent = null;
         resolve();
@@ -172,7 +181,10 @@ export class AudioPlayer {
       this.finishCurrent = finish;
       sound.onended = ()=>{end('completed');finish();};
       sound.onerror = fail;
-      try { Promise.resolve(sound.play()).catch(fail); }
+      const playing=()=>{if(!settled&&token===this.generation)this.changeState('playing');};
+      sound.onplaying=playing;
+      sound.onwaiting=()=>{if(!settled&&token===this.generation)loading();};
+      try { Promise.resolve(sound.play()).then(playing,fail); }
       catch { fail(); }
     });
   }

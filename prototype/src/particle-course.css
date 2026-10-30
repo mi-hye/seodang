@@ -1,0 +1,40 @@
+/* Loaded with Korean lessons, never the initial map or Japanese course. */
+#app main.particle-course{display:flex;flex-direction:column;flex:1;gap:16px;padding:4px 20px max(20px,env(safe-area-inset-bottom));word-break:normal;line-break:strict}
+.particle-course h1{margin:0;font-size:calc(20px * var(--text-scale));line-height:1.5;font-weight:650}
+.particle-examples{padding:4px 16px;border:1px solid var(--line);border-radius:16px;background:var(--stage-raised)}
+.particle-example{padding:12px 0}
+.particle-example+.particle-example{border-top:1px solid var(--line)}
+.particle-scene{margin:0 0 6px;color:var(--muted);font-size:calc(13px * var(--text-scale));line-height:1.5}
+.particle-course .audio-text-row{display:flex;flex-flow:row nowrap;align-items:center;gap:10px}
+.particle-course .audio-text-row h2{flex:1;min-width:0;margin:0;font-size:calc(22px * var(--text-scale));line-height:1.5;font-weight:650;word-break:keep-all}
+.particle-course .icon-button{flex:none;min-width:44px;min-height:44px}
+.particle-word{white-space:nowrap}
+.particle-course .quoted-text{word-break:keep-all}
+.particle-word em{font-style:normal;color:var(--amber);text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:2px}
+.particle-meaning{margin:6px 0 0;color:var(--muted);font-size:calc(14px * var(--text-scale));line-height:1.5}
+.particle-explanation{font-size:calc(16px * var(--text-scale));line-height:1.65}
+.particle-explanation p{margin:0 0 10px}
+.particle-explanation p:last-child{margin-bottom:0}
+.particle-explanation .particle-note{border-left:2px solid var(--line);padding-left:12px;color:var(--muted);font-size:calc(14px * var(--text-scale))}
+.particle-question{margin:4px 0;font-size:calc(26px * var(--text-scale));font-weight:650;line-height:1.8;word-break:keep-all}
+.particle-gap{display:inline-block;min-width:1.7em;margin:0 3px;border-bottom:2px solid var(--amber);color:var(--amber);text-align:center}
+.particle-choices{display:flex;flex-flow:row nowrap;gap:12px}
+.particle-choices button{position:relative;flex:1;min-width:0;min-height:60px;margin:0;padding:12px 8px;font-size:calc(22px * var(--text-scale));text-align:center}
+.particle-choices button{white-space:nowrap}
+.particle-choices[data-count="3"] button{padding-inline:4px;font-size:calc(20px * var(--text-scale))}
+.particle-choices.particle-interpretation button{white-space:normal;font-size:calc(16px * var(--text-scale));line-height:1.6;word-break:normal;line-break:strict}
+.particle-choices .selected{border-color:var(--amber);background:var(--selected)}
+.particle-choices .incorrect,.particle-gap.incorrect{color:var(--rose);border-color:var(--rose)}
+.particle-wrong-mark{position:absolute;display:flex;top:4px;right:4px}
+.particle-wrong-mark svg{width:14px;height:14px}
+.particle-feedback{margin:0;font-size:calc(16px * var(--text-scale));line-height:1.6}
+.particle-feedback p{margin:8px 0 0}
+.particle-feedback>strong{font-size:calc(15px * var(--text-scale))}
+.particle-feedback.success>strong{color:var(--jade)}
+.particle-retry{border-left:2px solid var(--rose);padding-left:12px}
+.particle-retry>strong{color:var(--rose)}
+.particle-feedback.review-correct .review-correct-mark{float:none;vertical-align:middle;margin-right:8px}
+#app main.particle-course>.particle-navigation{margin-top:auto;padding-top:8px}
+.particle-navigation>button{min-height:48px;font-size:calc(16px * var(--text-scale))}
+.particle-navigation>.secondary{border-color:transparent;background:transparent;color:var(--muted);font-weight:500}
+@media(max-width:350px){#app main.particle-course{gap:12px}.particle-examples{padding-inline:12px}.particle-example{padding-block:10px}}

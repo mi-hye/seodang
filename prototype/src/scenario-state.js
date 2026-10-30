@@ -21,13 +21,14 @@ export const scenarioLessons=[
 ];
 export const scenarioHasSpeaking=id=>['2','6','7','13'].includes(id);
 export const scenarioLearnsFirst=id=>Boolean(expansionLesson(id))||['9','10','11','12','14','15','16','17'].includes(String(id));
-export const scenarioAvailable=(s,l)=>!l.directions||l.directions.includes(s.courseDirection);
+const scenarioDirectionAvailable=(s,l)=>!l.directions||l.directions.includes(s.courseDirection);
+export const scenarioAvailable=(s,l)=>!l.retired&&scenarioDirectionAvailable(s,l);
 const scenarioQuizFirst=id=>['8'].includes(id);
 export const scenarioKey=(s,id=s.scenarioActive)=>`${s.courseDirection}:scenario:${id}`;
 export const freshScenario=id=>({version:1,...(scenarioLearnsFirst(id)?{learningVersion:1}:{}),started:false,phase:'intro',index:0,selected:null,tokens:[],checked:false,retry:false,completed:false,attempts:0});
 export const scenarioProgress=(s,id=s.scenarioActive)=>s.scenarios?.[scenarioKey(s,id)]||freshScenario(id);
 export const scenarioTitle=(s,l)=>l.titles[s.courseDirection==='ja-ko'?1:0];
-const validScenarioKey=key=>{const [direction,kind,id]=key.split(':');return ['ko-ja','ja-ko'].includes(direction)&&kind==='scenario'&&key.split(':').length===3&&(id==='1'||scenarioLessons.some(l=>l.id===id&&scenarioAvailable({courseDirection:direction},l)));};
+const validScenarioKey=key=>{const [direction,kind,id]=key.split(':');return ['ko-ja','ja-ko'].includes(direction)&&kind==='scenario'&&key.split(':').length===3&&(id==='1'||scenarioLessons.some(l=>l.id===id&&scenarioDirectionAvailable({courseDirection:direction},l)));};
 export function validScenarios(s){
  return (s.scenarioActive===undefined||s.scenarioActive==='1'||scenarioLessons.some(l=>l.id===s.scenarioActive))&&(s.scenarios===undefined||Boolean(s.scenarios&&typeof s.scenarios==='object'&&!Array.isArray(s.scenarios)&&Object.entries(s.scenarios).every(([key,p])=>validScenarioKey(key)&&p?.version===1&&(p.learningVersion===undefined||scenarioLearnsFirst(key.split(':')[2])&&p.learningVersion===1)&&(['intro','learn','quiz','done'].includes(p.phase)||scenarioHasSpeaking(key.split(':')[2])&&p.phase==='speak')&&Number.isInteger(p.index)&&p.index>=0&&p.index<3&&[null,0,1,2].includes(p.selected)&&Array.isArray(p.tokens)&&p.tokens.every(x=>[0,1,2].includes(x))&&new Set(p.tokens).size===p.tokens.length&&['started','checked','retry','completed'].every(k=>typeof p[k]==='boolean')&&Number.isInteger(p.attempts)&&p.attempts>=0&&(p.phase!=='done'||p.completed))));
 }

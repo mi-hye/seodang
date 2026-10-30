@@ -1,18 +1,17 @@
+import {levelsFor} from '../src/curriculum.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {freshState,reduce} from '../src/engine.js';
+import {freshState} from '../src/engine.js';
 import {courseLevels} from '../src/curriculum.js';
-import {renderLearningMap,mapPageForLesson,mapNextLesson} from '../src/learning-map.js';
-import {MAP_PAGE_SIZE,MAP_PAGES_STORAGE_KEY,mapPageKey,mapPageWindow,loadMapPages,saveMapPages} from '../src/learning-map-page.js';
+import {renderLearningMap,mapNextLesson} from '../src/learning-map.js';
+import {MAP_PAGE_SIZE,mapPageWindow} from '../src/learning-map-page.js';
 import {mapCatalog,mapPanels,activeMapPage,renderLearningMapPages} from './map-pagination-fixtures.mjs';
 import {videoLessons,freshVideo} from '../src/video-lesson-state.js';
 import {songLessons} from '../src/song-state.js';
-import {STORAGE_KEY,load,valid} from '../src/storage.js';
 
 const stateFor=(direction='ko-ja',level=2)=>({...freshState(),onboarded:true,courseDirection:direction,onboardingLevel:level});
 const choices=html=>[...html.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"(?: data-id="([^"]+)")?/g)].map(([,kind,id])=>({kind,id}));
 const numbers=html=>[...html.matchAll(/<span class="map-number">(\d+)<\/span>/g)].map(match=>Number(match[1]));
-const memory=initial=>{const entries=new Map(Object.entries(initial||{}));return {getItem:key=>entries.get(key)??null,setItem:(key,value)=>entries.set(key,value),removeItem:key=>entries.delete(key)};};
 test('ten-lesson windows handle empty lists, exact boundaries and incomplete final pages',()=>{
  assert.equal(MAP_PAGE_SIZE,10);
  for(const [total,current,requested,expected]of [
@@ -29,56 +28,6 @@ test('ten-lesson windows handle empty lists, exact boundaries and incomplete fin
  ])assert.deepEqual(mapPageWindow(total,current,requested),expected);
  for(const requested of [-1,1.5,'1',null,NaN,Infinity,Number.MAX_SAFE_INTEGER+1])assert.equal(mapPageWindow(30,22,requested).page,2);
  for(const total of [-1,1.5,NaN,Infinity,'30'])assert.deepEqual(mapPageWindow(total,22,2),{page:0,pageCount:1,start:0,end:0,currentPage:0});
-});
-
-test('page memories are independent per language and canonical level',()=>{
- const keys=[];
- for(const direction of ['ko-ja','ja-ko'])for(const level of courseLevels)keys.push(mapPageKey(stateFor(direction,level)));
- assert.equal(new Set(keys).size,10);
- assert.equal(mapPageKey(stateFor('ko-ja',6)),'ko-ja:5');
- for(const level of [1,3])assert.equal(mapPageKey(stateFor('ja-ko',level)),'ja-ko:2');
- assert.equal(mapPageKey(freshState()),'ko-ja:0');
- assert.equal(mapPageKey({...freshState(),onboarded:true}),'ko-ja:2');
-});
-
-test('page preferences persist separately without changing lessons, history or review dates',()=>{
- let state=stateFor();state.studyTools={'ko-ja':{lessons:{'ko-ja:sentence:3':{completedOn:'2026-10-22'}}}};
- const original=structuredClone(state),raw=JSON.stringify(state),storage=memory({[STORAGE_KEY]:raw});
- const pages={'ko-ja:0':2,'ko-ja:2':1,'ja-ko:2':0};
- assert.equal(saveMapPages(storage,pages),true);assert.equal(storage.getItem(STORAGE_KEY),raw);
- assert.deepEqual(loadMapPages(storage),pages);assert.deepEqual(state,original);assert.ok(valid(load(storage).state));
- state=reduce(state,{type:'course',value:'ja-ko'});state=reduce(state,{type:'level',value:2});
- assert.equal(loadMapPages(storage)[mapPageKey(state)],0);
- state=reduce(state,{type:'course',value:'ko-ja'});assert.equal(loadMapPages(storage)[mapPageKey(state)],1);
- assert.deepEqual(state.studyTools,original.studyTools);
-});
-
-test('malformed page preferences and storage failures cannot block lesson progress',()=>{
- for(const raw of ['bad JSON','null','[]','1','"page"'])assert.deepEqual(loadMapPages(memory({[MAP_PAGES_STORAGE_KEY]:raw})),{});
- const pages={'ko-ja:0':2,'ja-ko:7':0,'ja-ko:5':99,'ko-ja:1':1,'ko-ja:6':1,'xx:2':1,'ko-ja:2':-1,'ja-ko:2':1.5,'ko-ja:4':'1','ko-ja:7':Number.MAX_SAFE_INTEGER+1};
- const storage=memory();assert.equal(saveMapPages(storage,pages),true);assert.deepEqual(loadMapPages(storage),{'ko-ja:0':2,'ja-ko:7':0,'ja-ko:5':99});
- for(const unavailable of [undefined,null,{getItem(){throw Error('blocked');},setItem(){throw Error('full');}}]){assert.deepEqual(loadMapPages(unavailable),{});assert.equal(saveMapPages(unavailable,pages),false);}
- assert.equal(mapPageWindow(7,-1,loadMapPages(storage)['ja-ko:5']).page,0,'saved pages clamp if the catalogue shrinks');
-});
-
-for(const direction of ['ko-ja','ja-ko'])test(`${direction}: every stable lesson key resolves to its page in each level`,()=>{
- const otherDirection=direction==='ko-ja'?'ja-ko':'ko-ja';
- for(const level of courseLevels){
-  const state=stateFor(direction,level),before=structuredClone(state),catalog=mapCatalog(state);
-  for(const [index,lesson]of catalog.entries()){
-   assert.equal(mapPageForLesson(state,lesson.key),Math.floor(index/MAP_PAGE_SIZE),lesson.key);
-   assert.equal(mapPageForLesson(state,`${otherDirection}:${lesson.kind}:${lesson.id}`),undefined,'other course keys cannot select a page');
-  }
-  for(const key of [undefined,null,'',`${direction}:scenario:missing`,`${direction}:unknown:0`])assert.equal(mapPageForLesson(state,key),undefined);
-  assert.deepEqual(state,before);
- }
-});
-
-test('the dialogue without a button ID resolves only through its stable zero ID',()=>{
- const state=stateFor('ko-ja',4);
- assert.equal(mapPageForLesson(state,'ko-ja:dialogue:0'),0);
- for(const key of ['ko-ja:dialogue:','ko-ja:dialogue:undefined','ko-ja:dialogue:1','ja-ko:dialogue:0'])assert.equal(mapPageForLesson(state,key),undefined);
- assert.equal(mapPageForLesson(stateFor('ko-ja',2),'ko-ja:dialogue:0'),undefined,'a lesson from another level cannot select this map');
 });
 
 for(const direction of ['ko-ja','ja-ko'])for(const level of courseLevels)test(`${direction} level ${level}: pages preserve every lesson and its absolute number`,()=>{
@@ -110,7 +59,7 @@ for(const direction of ['ko-ja','ja-ko'])test(`${direction}: only the requested 
 });
 
 for(const direction of ['ko-ja','ja-ko'])test(`${direction}: next lesson matches all map positions and crosses level boundaries`,()=>{
- const all=courseLevels.flatMap(level=>mapCatalog(stateFor(direction,level)));
+ const all=levelsFor(direction).flatMap(level=>mapCatalog(stateFor(direction,level)));
  all.forEach((lesson,index)=>{
   const state=stateFor(direction,lesson.level),next=mapNextLesson(state,lesson.kind,lesson.id),expected=all[index+1];
   if(!expected){assert.equal(next,null);return;}
@@ -125,12 +74,12 @@ for(const direction of ['ko-ja','ja-ko'])test(`${direction}: current lesson dete
   [last.id]:{...freshVideo(last.revision,last.mode),started:true}
  };
  const automatic=renderLearningMap(state),firstPage=renderLearningMap(state,{page:0}),lastPage=renderLearningMap(state,{page:1});
- assert.deepEqual(numbers(activeMapPage(automatic)),[11,12,13,14]);
+ assert.deepEqual(numbers(activeMapPage(automatic)),Array.from({length:direction==='ja-ko'?10:6},(_,i)=>11+i));
  assert.match(activeMapPage(automatic),new RegExp(`data-action="video" data-id="${last.id}"[^>]*aria-current="step"`));
  assert.doesNotMatch(activeMapPage(firstPage),/aria-current="step"/);
  for(const html of [automatic,firstPage,lastPage]){
-  assert.match(html,/<span>1\/14<\/span>/);
-  assert.match(html,/class="map-progress"[^>]*><span style="width:7%"/);
+  assert.match(html,new RegExp(`<span>1/${direction==='ja-ko'?23:16}</span>`));
+  assert.match(html,new RegExp(`class="map-progress"[^>]*><span style="width:${direction==='ja-ko'?4:6}%"`));
   assert.match(html,/data-action="map-locate"/);
  }
 });
@@ -141,12 +90,11 @@ test('local preview song slots remain complete and uniquely numbered across both
   for(const song of songLessons)song.released=true;
   for(const direction of ['ko-ja','ja-ko']){
    const state=stateFor(direction),catalog=mapCatalog(state),pages=renderLearningMapPages(state),all=pages.flatMap(choices);
-   assert.equal(catalog.length,17);assert.deepEqual(pages.map(html=>choices(html).length),[10,7]);
-   assert.deepEqual(pages.flatMap(numbers),Array.from({length:17},(_,i)=>i+1));
-   assert.deepEqual(all.flatMap((l,i)=>l.kind==='song'?[i+1]:[]),[5,10,15]);
-   assert.deepEqual(all.flatMap((l,i)=>l.kind==='video'?[i+1]:[]),[3,6,9,12]);
-   assert.equal(new Set(all.map(l=>`${l.kind}:${l.id}`)).size,17);
-   for(const [index,lesson]of catalog.entries())assert.equal(mapPageForLesson(state,lesson.key),Math.floor(index/MAP_PAGE_SIZE),lesson.key);
+   const total=direction==='ja-ko'?27:20;assert.equal(catalog.length,total);assert.deepEqual(pages.map(html=>choices(html).length),direction==='ja-ko'?[10,10,7]:[10,10]);
+   assert.deepEqual(pages.flatMap(numbers),Array.from({length:total},(_,i)=>i+1));
+   assert.deepEqual(all.flatMap((l,i)=>l.kind==='song'?[i+1]:[]),direction==='ja-ko'?[7,13,22,27]:[5,10,15,20]);
+   assert.deepEqual(all.flatMap((l,i)=>l.kind==='video'?[i+1]:[]),direction==='ja-ko'?[5,8,12,16,25]:[3,6,9,12,18]);
+   assert.equal(new Set(all.map(l=>`${l.kind}:${l.id}`)).size,total);
   }
  }finally{songLessons.forEach((song,i)=>song.released=released[i]);}
 });

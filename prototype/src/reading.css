@@ -14,10 +14,6 @@
 .reading-page>.primary{width:100%;margin-top:24px}
 .reading-intro{font-size:calc(18px * var(--text-scale));line-height:1.9}
 
-.reading-listen{padding:16px;border-radius:16px;background:var(--stage-raised)}
-.reading-listen h1{font-size:calc(22px * var(--text-scale));margin:0 0 16px}
-.reading-listen .button-pair{margin-top:0}
-
 .reading-page .passage-audio{display:flex;flex-direction:column;align-items:stretch;gap:12px;width:100%;min-width:0}
 .reading-page .passage-audio>.icon-button{align-self:flex-end;flex:none;min-width:44px;min-height:44px;margin:0}
 
@@ -27,7 +23,6 @@
 
 #app .reading-page{padding-top:8px;padding-inline:20px}
 .reading-passage>p:first-child{margin-top:0}
-.expert-sentence{margin:16px 0;align-items:center}.expert-sentence>p{font-size:calc(22px * var(--text-scale));line-height:1.8;margin:0}.expert-sentence>.icon-button{width:44px;min-height:44px;flex:none}
 .expert-translation{border-top:1px solid var(--line);padding-top:16px;margin:20px 0}.expert-translation h2{font-size:16px;color:var(--muted)}.expert-translation p{font-size:calc(18px * var(--text-scale));line-height:1.8;word-break:keep-all}.expert-translation [lang=ja]{word-break:normal;line-break:strict}
 .expert-page [lang=ja]{word-break:normal;line-break:strict;overflow-wrap:break-word}
 .expert-page [lang=ja] .text-phrase{display:inline;white-space:normal;word-break:normal;overflow-wrap:normal}

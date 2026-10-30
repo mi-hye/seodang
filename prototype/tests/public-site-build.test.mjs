@@ -11,6 +11,14 @@ const root=fileURLToPath(new URL('../../',import.meta.url));
 const build=destination=>promisify(execFile)(process.execPath,[join(root,'scripts/build-public-site.mjs'),destination]);
 const publicHTML=['privacy-policy.html','privacy-policy-legacy.html','third-party-notices.html'];
 
+test('bundled privacy policy matches the published policy source',async()=>{
+ const [bundled,published]=await Promise.all([
+  readFile(join(root,'prototype/analytics-privacy.html'),'utf8'),
+  readFile(join(root,'docs/privacy-policy.html'),'utf8'),
+ ]);
+ assert.equal(bundled,published);
+});
+
 test('Pages artifact contains only public legal pages and the standalone quiz',async t=>{
  const destination=await mkdtemp(join(tmpdir(),'seodang-public-site-'));
  t.after(()=>rm(destination,{recursive:true,force:true}));

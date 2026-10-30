@@ -11,10 +11,6 @@
 .sentence-heading h2{flex:1;min-width:0;font-size:calc(20px * var(--text-scale));line-height:1.65;overflow-wrap:break-word}
 .sentence-heading .icon-button{flex:none;width:44px;min-height:44px;padding:10px;color:var(--amber-light)}
 .sentence-page .sentence-meaning{font-size:calc(17px * var(--text-scale));margin:10px 0 18px}
-.sentence-parts{display:flex;flex-wrap:wrap;gap:8px}
-.sentence-parts>span{display:grid;gap:4px;padding:10px 12px;background:var(--stage-panel);border-radius:10px;font-size:calc(16px * var(--text-scale))}
-.sentence-parts b{font-weight:500}.sentence-parts span span{color:var(--muted)}
-.sentence-page .sentence-help{font-size:calc(16px * var(--text-scale));line-height:1.7}
 .sentence-bag{display:grid;place-items:center;height:180px;margin:8px 0 20px;background:var(--stage-raised);border-radius:16px}.sentence-bag svg{width:150px;height:150px}
 .sentence-confirmed{padding:12px;border:1px solid var(--jade);border-radius:14px}
 .sentence-clues{display:grid;gap:16px;margin:22px 0;padding:16px;background:var(--stage-raised);border-radius:14px}
@@ -24,9 +20,6 @@
 .sentence-feedback{padding:14px;background:var(--stage-panel);border-radius:12px;font-size:16px!important}
 .sentence-review-item{padding:18px 0;border-bottom:1px solid var(--line)}.sentence-review-item p{font-size:calc(16px * var(--text-scale));color:var(--muted)}
 .sentence-complete{display:block;color:var(--jade)}.sentence-complete svg{width:40px;height:40px}
-.sentence-intro-audio{display:flex;justify-content:flex-end}
-
-.sentence-word{display:inline-block;white-space:nowrap}
 .sentence-learn .sentence-image{max-height:200px;object-fit:contain;background:var(--stage-raised)}
 
 .sentence-actions{display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;margin-top:20px}.sentence-actions>button{width:100%;min-width:0;margin:0;min-height:52px}
@@ -40,7 +33,6 @@
 .sentence-learn .sentence-heading h2{margin:4px 0}
 .sentence-learn .sentence-meaning{margin:6px 0}
 .sentence-learn .case-words{margin:10px 0}
-.sentence-learn .sentence-help{margin:6px 0}
 
 .sentence-kana-reading{font-size:calc(15px * var(--text-scale));line-height:1.6;color:var(--muted);margin:4px 0 10px;word-break:normal;overflow-wrap:anywhere}
 

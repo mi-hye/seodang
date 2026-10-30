@@ -1,8 +1,9 @@
+import {comparisonAttachment} from './comparison-attachments.js';
 import {reduceVideo} from './video-lesson-state.js';
 import {reduceSong} from './song-state.js';
 import {reduceExpert} from './expert-state.js';
 import {reduceScenario} from './scenario-state.js';
-import {canonicalLevel} from './curriculum.js';
+import {canonicalLevel,validCourseLevel} from './curriculum.js';
 import {reduceKorean} from './korean-state.js';
 import {reduceBasics} from './basics-state.js';
 import {reduceReading} from './reading-state.js';
@@ -13,7 +14,6 @@ import { recordLearning } from "./learning-history.js";
 import { reduceSentence, sentenceId, sentenceProgress, setSentenceProgress } from "./sentence-state.js";
 import { reduceKana } from "./kana-state.js";
 import { episode, expressions } from "./content.js";
-import {reduceGrowth} from './growth-state.js';
 import {reduceMission} from './mission-state.js';
 export const freshEpisode = () => ({
   contentVersion: 1,
@@ -46,10 +46,19 @@ export function episodeAudioId(state) {
   if (e.step === 'learn') return `case01.${expressions[e.lesson].id}.ja`;
   return null;
 }
-export function reduce(state, action, now) {
-  // Growth answers and missions are the learner's own writing; they never count as lesson activity.
-  if(action.type.startsWith("growth-"))return reduceGrowth(state,action,now);
-  if(action.type.startsWith("mission-"))return reduceMission(state,action,now);
+export function reduce(state,action,now){
+ const next=reduceAction(state,action,now);
+ if(next===state)return next;
+ if(action.type==='korean-start'&&next.courseDirection==='ja-ko'&&next.korean?.active===action.id){
+  const attachment=comparisonAttachment(action.id);
+  return {...next,comparisonResume:attachment?.id??null,...(attachment?{onboardingLevel:attachment.level}: {})};
+ }
+ if(/^(scenario|video|song|expert|basic|sentence|kana|dialogue|reading)-start$/.test(action.type))return {...next,comparisonResume:null};
+ return next;
+}
+function reduceAction(state, action, now) {
+  // A legacy saved sentence can still be handed off to the community composer.
+  if(action.type==='mission-shared')return reduceMission(state,action,now);
   if(action.type.startsWith("video-")){const next=reduceVideo(state,action);return next===state?state:recordLearning(state,next,action,now);}
   if(action.type.startsWith("song-")){const next=reduceSong(state,action);return next===state?state:recordLearning(state,next,action,now);}
   if(action.type.startsWith("expert-")){const next=reduceExpert(state,action);return next===state?state:recordLearning(state,next,action,now);}
@@ -80,15 +89,12 @@ function reduceCore(state, action) {
   }
   switch (action.type) {
     case "course":
-      if(["ko-ja","ja-ko"].includes(action.value)){s.courseLevels||={};s.courseLevels[s.courseDirection]=s.onboardingLevel??0;s.courseDirection=action.value;s.onboardingLevel=canonicalLevel(s.courseLevels[action.value]??0);s.support=s.onboardingLevel<=2?"beginner":"phrase";}
-      break;
-    case "ui-guide-complete":
-      s.uiGuideSeenVersion=2;
+      if(["ko-ja","ja-ko"].includes(action.value)){s.courseLevels||={};s.courseLevels[s.courseDirection]=s.onboardingLevel??0;s.courseDirection=action.value;s.onboardingLevel=canonicalLevel(s.courseLevels[action.value]??0);s.support=(s.onboardingLevel<=2||[8,9,10].includes(s.onboardingLevel))?"beginner":"phrase";}
       break;
     case "level":
-      if (Number.isInteger(action.value) && action.value >= 0 && action.value <= 7) {
+      if (validCourseLevel(action.value,s.courseDirection)&&![9,10].includes(action.value)) {
         s.onboardingLevel = canonicalLevel(action.value);
-        s.support = action.value <= 2 ? "beginner" : "phrase";
+        s.support = (action.value <= 2||[8,9,10].includes(action.value)) ? "beginner" : "phrase";
       }
       break;
     case "onboard":

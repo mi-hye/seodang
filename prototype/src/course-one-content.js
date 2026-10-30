@@ -1,7 +1,7 @@
 // Original reading bridges after the ten Korean letter lessons. Explanations are Japanese.
 const wordLesson=(scene,rows)=>{
  const answers=rows.map(r=>r[2].join(''));
- return {mode:'course-expansion',activity:'words',partner:'読む言葉',scene,items:rows.map(([text,meaning,answerParts,answerMeaning,note,context],i)=>({
+ return {mode:'course-expansion',activity:'words',partner:'読む言葉',scene,items:rows.map(([text,meaning,,answerMeaning,note,context],i)=>({
   text,meaning,answer:answers[i],answerParts:[answers[i]],answerMeaning,prompt:`「${meaning}です」と伝える文を選びましょう。`,
   learnNote:note,others:answers.filter((_,j)=>j!==i),hint:note,words:[[text,meaning]],
   transfer:{prompt:context,options:answers,answer:i,explanation:answerMeaning}

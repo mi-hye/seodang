@@ -33,11 +33,11 @@ export const videoLessons=[
  if(levelFiveAnswers[lesson.id])return {...lesson,mode:'scene',revision:lesson.id==='misaeng'?3:2,answers:levelFiveAnswers[lesson.id]};
  const levelFourAnswers={"frieren-uncertainty": [1, 2], "frieren-realization": [0, 1], "queen-condition": [2, 0], "queen-belief": [1, 2]};
  if(levelFourAnswers[lesson.id])return {...lesson,mode:'scene',revision:2,answers:levelFourAnswers[lesson.id]};
- if(lesson.level!==2)return lesson;
+ if(lesson.level!==2||lesson.mode==='scene')return lesson;
  const answers={'frieren-reaction':[1,2],'hospital-reassurance':[0,1],'frieren-wait':[2,0],'hospital-effort':[1,2],'frieren-just-right':[0,1],'hospital-appreciation':[2,0],'chiikawa-offer':[1,2],'hospital-thanks':[0,1]};
  return {...lesson,mode:'scene',revision:3,answers:answers[lesson.id]};
 });
-export const videosForCourse=s=>videoLessons.filter(l=>l.direction===s.courseDirection&&l.level===courseGroup(s.onboardingLevel)).sort((a,b)=>a.number-b.number);
+export const videosForCourse=s=>videoLessons.filter(l=>l.direction===s.courseDirection&&l.level===courseGroup(s.onboardingLevel)).map(l=>l.level===2&&l.number===18&&!songsForCourse(s).length?{...l,number:15}:l).sort((a,b)=>a.number-b.number);
 export const videoLesson=(s,id=s.videoActive)=>{const lessons=videosForCourse(s);return lessons.find(l=>l.id===id)||lessons[0];};
 export const resumeVideoLesson=s=>{const lessons=videosForCourse(s),active=videoLesson(s);return [active,...lessons.filter(l=>l!==active)].find(l=>l&&videoProgress(s,l.id).started&&!videoProgress(s,l.id).completed);};
 // Display positions change; saved lesson IDs remain stable.

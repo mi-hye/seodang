@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-30",
+  "scope": "Korean-only display level 3.5, lessons 35-1 to 35-4; 12 paired units.",
+  "authorship": "Original Korean example sentences and Japanese explanations, situations and feedback. No quoted source passages.",
+  "sources": [
+    {
+      "url": "https://krdict.korean.go.kr/eng/dicSearch/SearchView?ParaWordNo=80987&nation=eng&nationCode=6&wordMatchFlag=N",
+      "checked": "-ㄹ게 expresses the speaker’s promise or intention to the listener."
+    },
+    {
+      "url": "https://kcenter.korean.go.kr/kcenter/attach/download.do?attachSeq=63155",
+      "checked": "Official Korean teaching inventory separately lists -(으)ㄹ 거예요 for plans and for guesses/simple future, plus -(으)ㄹ게요."
+    },
+    {
+      "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=90&pageIndex=1&qna_seq=331150",
+      "checked": "Standard promise/intention usage concerns the speaker. Conversational extended third-person usage is not categorically declared impossible; this introductory lesson teaches ordinary first-person promise vs third-person plan."
+    },
+    {
+      "url": "https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002237212",
+      "checked": "Primary research compares the intention functions of -겠-, -을 것이-, -을게(요), -을래(요); avoid saying -을 거예요 cannot express intention."
+    },
+    {
+      "url": "https://krdict.korean.go.kr/eng/dicSearch/SearchView?ParaWordNo=81068",
+      "checked": "-ㄹ래 states own intention or asks listener intention; lesson contrasts declarative and interrogative uses without rejecting natural invitations."
+    },
+    {
+      "url": "https://www.korean.go.kr/common/download.do%3Bfront%3DA45AEA82944040510C397576C1F5DAA9?book_seq=295&c_file_name=fbe8dc8b-5b54-46d0-96cb-229db3f23b4f_0.pdf&downGubun=bookDataView&file_path=bookData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%EC%A7%84%ED%9D%A5-02-18.pdf",
+      "checked": "Official beginner teaching guidance: -ㄹ까요 to discuss what to do together."
+    },
+    {
+      "url": "https://file.edu4mc.or.kr/nime_upload/attach/00000/1428/20160909100921795.pdf",
+      "checked": "KSL grammar training material: -ㄹ까(요) asks conjecture or intention and also functions as proposal; do not translate every use as an invitation."
+    },
+    {
+      "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=98&pageIndex=1&qna_seq=324303",
+      "checked": "Both -어서/-니까 can give reasons. Reason -어서 restricted before commands/suggestions; apology/thanks commonly use -어서. Restriction not generalized to sequential -어서."
+    },
+    {
+      "url": "https://krdict.korean.go.kr/jpn/dicSearch/SearchView?ParaWordNo=78637&nation=jpn",
+      "checked": "-지마는 / short form -지만 acknowledges earlier fact then adds an opposing/different fact."
+    },
+    {
+      "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=6788&mn_id=182&pageIndex=1",
+      "checked": "-는데 can give background before explanation, question, command, suggestion."
+    },
+    {
+      "url": "https://www.kci.go.kr/kciportal/landing/article.kci?arti_id=ART002345373",
+      "checked": "Primary study of connective -는데 distinguishes background/explanation and unexpected or contrary developments; not always contrast."
+    }
+  ],
+  "pedagogy": [
+    "Learn two complete examples and their original audio before answering Japanese meaning/situation choices.",
+    "Do not force spontaneous versus previously planned decisions; both forms can convey intention, and context can make -을 거예요 a promise.",
+    "Use listener-directed offer/promise, explaining a plan, and describing another person’s planned attendance. Do not teach categorical prohibition of conversational extended forms.",
+    "35-2: own preference vs listener willingness, two valid invitations, offer vs conjecture.",
+    "35-3: reason for an event vs advice, apology vs next action, both causal endings in a reported past action. Do not teach absolute objective/subjective split.",
+    "35-4: both forms can contrast; -는데 also gives background and a context-dependent indirect response, not always refusal."
+  ],
+  "review": "Claude Desktop Code read-only planning review followed by actual content/catalog review of all nine new units (35-2 to 35-4); no P1/P2 grammar, answer ambiguity or metadata issues. Codex owns all edits. Optional Japanese translation and emphasis refinements adopted. Earlier 35-1 content remains unchanged. Small-screen copy shortened after visual inspection; Korean examples and audio unchanged.",
+  "audio": "24 exact-text bundled AAC files; ending-audio-20261030.json records hashes and verification. No human listening or physical-device playback certification."
+}

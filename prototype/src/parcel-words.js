@@ -4,4 +4,3 @@ export const parcelWords = [
  {text:'かさ',meaning:'우산',ids:['ka','sa'],spoken:'傘',choices:['はな','くつ','かさ']},
  {text:'はな',meaning:'꽃',ids:['ha','na'],spoken:'花',choices:['はな','かさ','くつ']},
 ];
-export const parcelWord = letters => parcelWords.find(word=>word.text===letters.map(l=>l.text).join(''));

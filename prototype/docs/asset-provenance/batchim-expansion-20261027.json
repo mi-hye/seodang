@@ -1,0 +1,238 @@
+{
+  "date": "2026-10-27",
+  "scope": "Korean 1-9 and 1-10: preserve first six items; append 국, 옷 and six double-final words. No new course IDs.",
+  "source": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=261&pageIndex=1&qna_seq=325287",
+  "method": "Original Japanese teaching copy, word-specific final-sound diagrams and four distinct representative sound choices. Six new local Supertonic 3 M1 AAC files; 국/옷 reuse existing pronunciation audio.",
+  "distribution": "Local app-bundled AAC, no upload.",
+  "validation": {
+    "humanListening": false,
+    "devicePlayback": false,
+    "asr": "Local unprompted mlx-whisper large-v3-turbo, single and repeated audio; phonetic/orthographic equivalents explicitly recorded. This is not certification of precise articulation.",
+    "sourceAdjustment": "Four isolated words synthesized with explicit standard sound spelling to resolve ASR disagreement; original displayed word retained.",
+    "aliases": {
+      "넋": [
+        "넋",
+        "넉"
+      ],
+      "앉다": [
+        "앉다",
+        "안따"
+      ],
+      "닭": [
+        "닭",
+        "닥"
+      ],
+      "여덟": [
+        "여덟",
+        "여덜",
+        "8"
+      ],
+      "삶": [
+        "삶",
+        "삼",
+        "3"
+      ],
+      "값": [
+        "값",
+        "갑"
+      ]
+    }
+  },
+  "files": [
+    {
+      "text": "넋",
+      "file": "assets/course-voices/ko-KR-0d5a884a79a7e280.m4a",
+      "sha256": "e4888ce87e14efef4c0fc96cb2fc8b0424c937768dc996f369db4c49d30a75d8",
+      "bytes": 13759,
+      "duration": 1.4628571428571429,
+      "transcript": " 넉",
+      "repeatTranscript": " 넉",
+      "voice": "Supertonic 3 M1",
+      "synthesisInput": "넉.",
+      "speed": 0.95,
+      "humanListening": false,
+      "asrPhoneticMatch": true,
+      "seed": 42,
+      "synthesisReason": "Explicit standard pronunciation for isolated double-final word; displayed spelling unchanged.",
+      "repairAttempts": [
+        {
+          "seed": 42,
+          "input": "넉.",
+          "transcript": " 넉",
+          "repeatTranscript": " 넉"
+        }
+      ],
+      "acoustic": {
+        "peak": 0.606597900390625,
+        "clippedRatio": 0.0,
+        "duration": 1.4628571428571429,
+        "activeRatio": 0.14541480654761904
+      }
+    },
+    {
+      "text": "앉다",
+      "file": "assets/course-voices/ko-KR-0c9eab806d77c8a6.m4a",
+      "sha256": "6cd40fc819d65c7e8df21ff8da86aa0b380a08124b3bc53f718d677b93f2e092",
+      "bytes": 16239,
+      "duration": 1.4628571428571429,
+      "transcript": " 안 따.",
+      "repeatTranscript": " 안 따",
+      "voice": "Supertonic 3 M1",
+      "synthesisInput": "안따.",
+      "speed": 0.95,
+      "humanListening": false,
+      "asrPhoneticMatch": true,
+      "seed": 7,
+      "synthesisReason": "Explicit standard pronunciation for isolated double-final word; displayed spelling unchanged.",
+      "repairAttempts": [
+        {
+          "seed": 42,
+          "input": "안따.",
+          "transcript": " 안다.",
+          "repeatTranscript": " 안타"
+        },
+        {
+          "seed": 7,
+          "input": "안따.",
+          "transcript": " 안 따.",
+          "repeatTranscript": " 안 따"
+        }
+      ],
+      "acoustic": {
+        "peak": 0.533233642578125,
+        "clippedRatio": 0.0,
+        "duration": 1.4628571428571429,
+        "activeRatio": 0.2505890376984127
+      }
+    },
+    {
+      "text": "닭",
+      "file": "assets/course-voices/ko-KR-675e3bf85fa30092.m4a",
+      "sha256": "a9f1a98782cd4c54356b4b72feb72fcd1db2c45bd4fbddadb3066a64689f67a2",
+      "bytes": 14036,
+      "duration": 1.4628571428571429,
+      "transcript": " 닭",
+      "repeatTranscript": " 닭",
+      "voice": "Supertonic 3 M1",
+      "synthesisInput": "닥.",
+      "speed": 0.95,
+      "humanListening": false,
+      "asrPhoneticMatch": true,
+      "seed": 19,
+      "synthesisReason": "Explicit standard pronunciation for isolated double-final word; displayed spelling unchanged.",
+      "repairAttempts": [
+        {
+          "seed": 42,
+          "input": "닥.",
+          "transcript": " 다가",
+          "repeatTranscript": " 탁 탁 탁"
+        },
+        {
+          "seed": 7,
+          "input": "닥.",
+          "transcript": " 탁",
+          "repeatTranscript": " 탁"
+        },
+        {
+          "seed": 19,
+          "input": "닥.",
+          "transcript": " 닭",
+          "repeatTranscript": " 닭"
+        }
+      ],
+      "acoustic": {
+        "peak": 0.64776611328125,
+        "clippedRatio": 0.0,
+        "duration": 1.4628571428571429,
+        "activeRatio": 0.11360677083333333
+      }
+    },
+    {
+      "text": "여덟",
+      "file": "assets/course-voices/ko-KR-857ceebc22346c0e.m4a",
+      "sha256": "e45eea50f2e722aecb5221416be9f26606330251f44b23a5bb1a1db7241ef3c2",
+      "bytes": 15199,
+      "duration": 1.4628571428571429,
+      "transcript": " 여덟",
+      "repeatTranscript": " 여덟",
+      "voice": "Supertonic 3 M1",
+      "synthesisInput": "여덟",
+      "speed": 0.92,
+      "humanListening": false,
+      "asrPhoneticMatch": true,
+      "acoustic": {
+        "peak": 0.44476318359375,
+        "clippedRatio": 0.0,
+        "duration": 1.4628571428571429,
+        "activeRatio": 0.2523716517857143
+      }
+    },
+    {
+      "text": "삶",
+      "file": "assets/course-voices/ko-KR-b2a71c0936f17607.m4a",
+      "sha256": "50cf0744bbd737683a9b9c0d9313ca70637e55c32199d8b26b475ae88b1d3168",
+      "bytes": 13686,
+      "duration": 1.4628571428571429,
+      "transcript": " 3.",
+      "repeatTranscript": " 3 3 3",
+      "voice": "Supertonic 3 M1",
+      "synthesisInput": "삶",
+      "speed": 0.92,
+      "humanListening": false,
+      "asrPhoneticMatch": true,
+      "acoustic": {
+        "peak": 0.480712890625,
+        "clippedRatio": 0.0,
+        "duration": 1.4628571428571429,
+        "activeRatio": 0.20808531746031747
+      }
+    },
+    {
+      "text": "값",
+      "file": "assets/course-voices/ko-KR-1662757592d28adb.m4a",
+      "sha256": "91d67fa67a6be88290947bf4cd8e87dd0176e71f86f39bea9d76bebb59fcd007",
+      "bytes": 12245,
+      "duration": 1.4628571428571429,
+      "transcript": " 갑",
+      "repeatTranscript": " 갑 갑 갑",
+      "voice": "Supertonic 3 M1",
+      "synthesisInput": "갑.",
+      "speed": 0.95,
+      "humanListening": false,
+      "asrPhoneticMatch": true,
+      "seed": 42,
+      "synthesisReason": "Explicit standard pronunciation for isolated double-final word; displayed spelling unchanged.",
+      "repairAttempts": [
+        {
+          "seed": 42,
+          "input": "갑.",
+          "transcript": " 갑",
+          "repeatTranscript": " 갑 갑 갑"
+        }
+      ],
+      "acoustic": {
+        "peak": 0.7039794921875,
+        "clippedRatio": 0.0,
+        "duration": 1.4628571428571429,
+        "activeRatio": 0.11529637896825397
+      }
+    }
+  ],
+  "linkingExamples": {
+    "rule": "Standard Pronunciation §14. Short examples for following vowel-initial particles/endings, not a universal rule for all following words; length marks omitted consistently with existing course.",
+    "examples": {
+      "넋": "넋이 [넉씨]",
+      "앉다": "앉아 [안자]",
+      "닭": "닭이 [달기]",
+      "여덟": "여덟이 [여덜비]",
+      "삶": "삶이 [살미]",
+      "값": "값이 [갑씨]"
+    },
+    "references": [
+      "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=73&pageIndex=1&qna_seq=325622",
+      "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=311062",
+      "https://www.korean.go.kr/common/download.do?c_file_name=0528a905-2eb3-4c5a-978c-f424dd6a6c47_0.pdf&file_path=reportData&o_file_name=한글맞춤법표준어규정해설.pdf"
+    ],
+    "audio": "Text-only notes; existing isolated-word audio unchanged."
+  }
+}

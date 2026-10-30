@@ -43,7 +43,7 @@ const paths = {
   cup: "M4 6h13v10q0 5-6 5T4 16ZM17 7h3q5 6-3 6M6 2v2m5-2v2",
 };
 export const icon = (name) =>
-  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${`<path d="${paths[name] || paths.leaf}"/>`}</svg>`;
+  `<svg${name==='sound'?' data-audio-icon':''} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${`<path d="${paths[name] || paths.leaf}"/>`}</svg>`;
 export const button = (label, action, cls = "primary", extra = "") =>
   `<button class="${cls}" data-action="${action}" ${extra}>${label}</button>`;
 export function bag(color) {
@@ -69,12 +69,12 @@ export function expressionImage(e) {
 }
 export function expressionCard(
   e,
-  { meaning = false, sound = true, beginner = false, picture = false, compactAudio = false, showReading = false } = {},
+  { meaning = false, sound = true, beginner = false, picture = false, showReading = false } = {},
 ) {
   return `<article class="expression">${picture ? expressionImage(e) : ""}<span class="eyebrow">일본어 표현</span><div class="expression-heading audio-text-row"><h3 lang="ja">${phraseText(e.text)}</h3>${audioButton(`case01.${e.id}.ja`, sound, `${e.text} 다시 듣기`, true)}</div>${meaning ? `<p>${e.meaning}</p>` : `<details><summary>뜻 확인하기</summary><p>${e.meaning}</p></details>`}<div class="expression-parts">${meaning ? e.parts.map(([ja, ko]) => `<span><b lang="ja">${phraseText(ja)}</b> ${ko}</span>`).join("") : ""}</div>${showReading ? `<div class="expression-reading"><p lang="ja-Latn">${e.reading}</p><p>${e.help}</p></div>` : `<details><summary>${beginner ? "글자와 읽는 법 도움" : "읽는 법 보기"}</summary><p lang="ja-Latn">${e.reading}</p><p>${e.help}</p><small>일반 표기: <span lang="ja">${phraseText(e.natural)}</span></small></details>`}</article>`;
 }
 
 export function homeCaseCard({ title, action, actionLabel, id }) {
   const parts=title.split(' · '),position=parts.length>1?parts.shift():null,numbered=parts.join(' · ').match(/^(\d+)\.\s+(.+)$/u),label=[position,numbered?.[1]].filter(Boolean).join(' · ');
-  return `<button type="button" class="case-card home-start-card" data-action="${esc(action)}"${id===undefined?'':` data-id="${esc(id)}"`} data-entry="resume" data-coach-title="${esc(t(actionLabel))}" aria-label="${esc(`${t(actionLabel)}: ${title}`)}"><span class="home-card-heading">${label?`<span class="home-position">${esc(label)}</span>`:''}<span class="home-card-title">${esc(numbered?numbered[2]:parts.join(' · '))}</span></span><span class="home-card-arrow" aria-hidden="true">${icon('arrow')}</span></button>`;
+  return `<button type="button" class="case-card home-start-card" data-action="${esc(action)}"${id===undefined?'':` data-id="${esc(id)}"`} data-entry="resume" aria-label="${esc(`${t(actionLabel)}: ${title}`)}"><span class="home-card-heading">${label?`<span class="home-position">${esc(label)}</span>`:''}<span class="home-card-title">${esc(numbered?numbered[2]:parts.join(' · '))}</span></span><span class="home-card-arrow" aria-hidden="true">${icon('arrow')}</span></button>`;
 }

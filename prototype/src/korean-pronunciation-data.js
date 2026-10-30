@@ -1,3 +1,4 @@
+import {batchimWord} from './batchim-expansion-content.js';
 // Schematic teaching positions, not measured vocal-tract contours.
 // Sources: National Institute of Korean Language, Standard Pronunciation §§2–5, 8–9.
 // https://m.korean.go.kr/front/page/pageView.do?mn_id=95&page_id=P000098
@@ -50,9 +51,9 @@ const consonants={
  'ㅅ':['sibilant','사','舌の前と上の歯ぐきの間を狭める。','息をこすって出します。ㅣの前では音が変わります。'],
  'ㅆ':['sibilant','싸','舌の前の狭いすき間を保ち、息をこする。','ㅅより引き締めた音です。大声にする必要はありません。'],
  'ㄴ':['alveolar','나','舌先を上の歯ぐきにつける。','口をふさぎ、鼻へ息を通します。'],
- 'ㅁ':['bilabial','무','両唇を閉じる。','舌ではふさがず、鼻へ息を通します。'],
- 'ㄹ':['tap','라','舌先で上の歯ぐきに一度、軽く触れる。','ここでは語頭の音です。パッチムでは舌先をつけます。'],
- 'ㅇ':['silent','아','母音の前のㅇは発音しない。','下のパッチムのㅇは、舌の奥をつけて鼻へ響かせます。'],
+ 'ㅁ':['bilabial','마','唇を軽く閉じ、鼻に音を響かせる。','すぐ口を開き、ㅏにつなげて마と言います。図はㅁを出すときの形です。'],
+ 'ㄹ':['tap','라','舌先で上の歯ぐきに一度、軽く触れる。','ここでは語頭の音です。舌先を長く押しつけないようにします。'],
+ 'ㅇ':['silent','아','母音の前のㅇは発音しない。','母音の音を、そのまま出します。'],
  'ㅎ':['glottal','하','口の中をふさがず、喉から息を出す。','舌を無理に動かさず、後ろの母音へつなげます。']
 };
 const contrasts=['ㄱㅋㄲ','ㄷㅌㄸ','ㅂㅍㅃ','ㅈㅊㅉ','ㅅㅆ','ㅓㅗ','ㅡㅜ','ㅐㅔ','ㅒㅖ','ㅙㅚㅞ'];
@@ -69,5 +70,5 @@ const finalData={
  'ㅂ':['bilabial','밥','唇を閉じたまま、音を止める。'],
  'ㅇ':['velar','강','舌の奥をつけ、鼻へ響かせる。']
 };
-export function finalPronunciation(glyph){const key=Object.keys(finalGroups).find(k=>finalGroups[k].includes(glyph));if(!key)return null;const [pose,sample,cue]=finalData[key];return {...records[glyph],poses:[pose],sample,cue,note:'単独で読むときの形です。後ろに母音を足さずに終えます。続く音によって発音が変わることがあります。',nasal:'ㄴㅁㅇ'.includes(key),aspirated:false,tense:false,final:true,compare:''};}
-export function pronunciationParts(text){if(text==='ㅇ')return [];if(records[text])return [{glyph:text,final:false}];const n=text.charCodeAt(0)-0xac00;if(text.length!==1||n<0||n>=11172)return [];const initials='ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ',vowels='ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ',finals=' ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ';return [{glyph:initials[Math.floor(n/588)],final:false},{glyph:vowels[Math.floor(n%588/28)],final:false},...(n%28&&records[finals[n%28]]?[{glyph:finals[n%28],final:true}]:[])].filter(part=>part.glyph!=='ㅇ'||part.final);}
+export function finalPronunciation(glyph,text){const word=batchimWord(text);if(word)return {...finalPronunciation(word.finalSound),glyph:word.glyph,sample:word.text,note:`${word.text}の発音は[${word.reading}]。この単語での音の形です。${word.connectionNote||'続く音によって読み方が変わることがあります。'}`,compare:''};const key=Object.keys(finalGroups).find(k=>finalGroups[k].includes(glyph));if(!key)return null;const [pose,sample,cue]=finalData[key];return {...records[glyph],poses:[pose],sample,cue,note:'単独で読むときの形です。後ろに母音を足さずに終えます。続く音によって発音が変わることがあります。',nasal:'ㄴㅁㅇ'.includes(key),aspirated:false,tense:false,final:true,compare:''};}
+export function pronunciationParts(text){const word=batchimWord(text);if(word)return [{glyph:word.glyph,final:true}];if(text==='ㅇ')return [];if(records[text])return [{glyph:text,final:false}];const n=text.charCodeAt(0)-0xac00;if(text.length!==1||n<0||n>=11172)return [];const initials='ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ',vowels='ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ',finals=' ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ';return [{glyph:initials[Math.floor(n/588)],final:false},{glyph:vowels[Math.floor(n%588/28)],final:false},...(n%28&&records[finals[n%28]]?[{glyph:finals[n%28],final:true}]:[])].filter(part=>part.glyph!=='ㅇ'||part.final);}

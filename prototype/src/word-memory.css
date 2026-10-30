@@ -3,7 +3,6 @@
 .word-memory>summary:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 .word-memory-body{padding:2px 4px 14px;line-height:1.7;word-break:keep-all;overflow-wrap:break-word}
 .word-memory-body>strong{display:block;font-size:calc(20px * var(--text-scale));font-weight:600}
-.word-memory-reading{display:block;margin-top:4px;font-size:calc(14px * var(--text-scale));color:var(--muted)}
 .word-memory .word-memory-body p{font-size:calc(15px * var(--text-scale));margin:10px 0 0;color:var(--text);line-height:1.7}
 .basic-learn>.word-memory{flex-shrink:0;margin-top:24px}
 

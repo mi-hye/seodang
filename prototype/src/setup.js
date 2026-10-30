@@ -1,3 +1,4 @@
+import {validCourseLevel} from './curriculum.js';
 import {t,setUILanguage,loadUILanguage,translateSetup} from './i18n.js';
 import { showSheet, closeSheet } from "./sheet.js";
 import {installAndroidBack} from './android-back.js';
@@ -110,6 +111,9 @@ function loadConsentChoice(){
 }
 let languageRequest=0,languagePending=false;
 async function updateLanguage(){
+  const korean=form.elements.language.value==='ko';
+  for(const option of form.querySelectorAll('[data-korean-level]')){option.hidden=!korean;option.querySelector('input').disabled=!korean;}
+  if(!korean&&[8,9,10].includes(Number(form.elements.level.value)))form.elements.level.value='2';
   // A changed choice invalidates any guide still being prepared.
   guideRequest++;guidePending=false;
   const request=++languageRequest,direction={courseDirection:form.elements.language.value==='ko'?'ja-ko':'ko-ja',onboardingLevel:0};languagePending=true;syncPending();try{await loadUILanguage(direction);if(request!==languageRequest)return;setUILanguage(direction);translateSetup();consentUI?.update();updateHeader();updateNextLabel();}catch{message('読み込めませんでした。言語を選び直してください。');}finally{if(request===languageRequest){languagePending=false;syncPending();}}}
@@ -163,12 +167,12 @@ form.addEventListener('submit', event => {
   if (step === 1) { showStep(2); return; }
   if (record.blocked) { message(record.error || '기록을 읽지 못해 저장하지 않았어요. 기존 기록은 유지됩니다.'); return; }
   const level = Number(form.elements.level.value);
-  if (!Number.isInteger(level) || level < 0 || level > 7) { message('난이도를 선택해 주세요.'); return; }
+  if (!validCourseLevel(level,form.elements.language.value==='ko'?'ja-ko':'ko-ja')) { message('난이도를 선택해 주세요.'); return; }
   if (step === 2) { showStep(3); return; }
   if (step === 3 && (nextButton.disabled || !disposeGuide || disposeGuide.next() || !guideLast)) return;
   // Finish the guide before saving setup and returning to the learning home.
   const directed=reduce(record.state,{type:'course',value:form.elements.language.value==='ko'?'ja-ko':'ko-ja'});
-  const next = reduce(directed, { type: 'onboard', value: level <= 2 ? 'beginner' : 'phrase' });
+  const next = reduce(directed, { type: 'onboard', value: level <= 2 || [8,9,10].includes(level) ? 'beginner' : 'phrase' });
   next.onboardingLevel = level;
   next.levelGuideSeen={...next.levelGuideSeen,[`${next.courseDirection}:${level}`]:1};
   if(next.courseDirection==='ja-ko')next.koreanGuideSeenVersion=1;

@@ -99,3 +99,26 @@ test('completion home stays disabled while the next lesson loads',async({page})=
  }finally{release();}
  await expect(page.locator('.view-video')).toBeVisible();
 });
+
+for(const width of [320,390])test(`parent completion opens the next numbered comparison through Next at ${width}`,async({page})=>{
+ const s=initial('ja-ko',4),kind='korean',id='4-1';
+ s.korean={version:4,active:id,lessons:{[id]:{...freshKoreanProgress(id),started:true,phase:'quiz',index:5,selected:2,caseSeen:true}}};
+ await prepareContent(kind);const tasks=caseTasks(s,kind),pk=practiceKey(s,kind);
+ s.practices={[pk]:{version:1,caseVersion:casePracticeVersion(pk),count:tasks.length,index:tasks.length-1,round:0,mode:0,action:{type:'korean-check'}}};
+ await setup(page,s,kind,id);await page.setViewportSize({width,height:width===320?640:844});
+ await page.locator(`[data-case-choice="${tasks.at(-1).answer}"]`).click();await page.locator('[data-case-confirm]').click();await page.locator('[data-case-confirm]').click();
+ await expect(page.locator('.practice-complete')).toBeVisible();
+ const pair=await page.locator('.practice-complete .button-pair>button').evaluateAll(es=>es.map(e=>e.getBoundingClientRect().toJSON()));
+ expect(pair).toHaveLength(2);expect(Math.abs(pair[0].y-pair[1].y)).toBeLessThan(1);expect(Math.abs(pair[0].width-pair[1].width)).toBeLessThan(1);
+ await expect(page.locator('.comparison-links')).toHaveCount(0);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ await page.screenshot({path:`output/comparison-completion-${width}-${test.info().project.name}.png`,fullPage:true});
+ await page.locator('.practice-complete [data-action="completed-next"]').click();
+ await expect(page.locator('.particle-course')).toHaveAttribute('data-particle-phase','learn');
+ await expect(page.locator('.app-header-title')).toContainText(/特別学習.*助詞/s);
+ await page.locator('.app-header [data-action="home"]').click();
+ await expect(page.locator('.home-start-card')).toContainText(/特別学習.*助詞/s);await expect(page.locator('.map-comparison-resume')).toHaveCount(0);
+ await page.reload();await expect(page.locator('.home-start-card')).toContainText(/特別学習.*助詞/s);await expect(page.locator('.map-comparison-resume')).toHaveCount(0);
+ await page.screenshot({path:`output/comparison-resume-${width}-${test.info().project.name}.png`});
+ await page.locator('.home-start-card').click();await expect(page.locator('.particle-course')).toBeVisible();
+});

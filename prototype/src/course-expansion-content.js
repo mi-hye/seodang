@@ -1,5 +1,6 @@
 import {courseVoicePath} from './course-voice-path.js';
 const loaders={
+ course20:()=>import('./course-twenty-content.js').then(m=>m.courseTwentyContent),
  course1:()=>import('./course-one-content.js').then(m=>m.courseOneContent),
  course3:()=>import('./course-three-content.js').then(m=>m.courseThreeContent),
  course4:()=>import('./course-four-content.js').then(m=>m.courseFourContent),

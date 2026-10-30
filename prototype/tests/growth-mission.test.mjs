@@ -1,109 +1,104 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {freshState,reduce} from '../src/engine.js';import {valid,load} from '../src/storage.js';
-import {growthEntry,growthKey,validGrowth} from '../src/growth-state.js';
-import {currentMission,latestCompletion,missionForCommunity,storedMission,validMissions} from '../src/mission-state.js';
-import {hasMissionTask,missionTask} from '../src/mission-content.js';
-import {growthSituations} from '../src/growth-content.js';
+import {validGrowth} from '../src/growth-state.js';
+import {missionForCommunity,storedMission,validMissions,reduceMission} from '../src/mission-state.js';
 import {recordStudyCompletion,validStudy} from '../src/study-state.js';
-import {courseLevels} from '../src/curriculum.js';
 
 const day=d=>new Date(`2026-10-${d}T12:00:00`);
 const base=(direction='ko-ja',level=2)=>({...freshState(),onboarded:true,onboardingLevel:level,courseDirection:direction});
 const roundTrip=s=>{const r=load({getItem:()=>JSON.stringify(s)});assert.equal(r.blocked,false);return r.state;};
+const savedMission=(direction,status='ready')=>({lessonKey:`${direction}:scenario:9`,lessonOn:'2026-10-20',text:direction==='ko-ja'?'少し遅れそうです。':'조금 늦을 것 같아요.',status,updatedOn:'2026-10-20'});
+const legacyGrowth=()=>({version:1,entries:{
+ 'ko-ja:2':{answers:Array.from({length:12},(_,i)=>({text:`答え${i}`,on:'2026-10-20',completed:i})),draft:{text:'次の答え',on:'2026-10-21'}},
+ 'ko-ja:4':{answers:[],draft:{text:'',on:'2026-10-21'}},
+ 'ja-ko:2':{answers:[{text:'안녕하세요.',on:'2026-10-20',completed:1}]},
+ 'ja-ko:8':{answers:[{text:'문을 열어요.',on:'2026-10-20',completed:2}],draft:{text:'물을',on:'2026-10-21'}},
+}});
 
-test('every direction and course level has one fixed growth situation',()=>{
- for(const direction of ['ko-ja','ja-ko'])for(const level of courseLevels)assert.ok(growthSituations[direction][level]?.length>10,`${direction}:${level}`);
+test('legacy growth answers and drafts round-trip without losing direction, level, or pronunciation-course data',()=>{
+ for(const [direction,level] of [['ko-ja',2],['ja-ko',8]]){
+  const s={...base(direction,level),growth:legacyGrowth()};
+  assert.ok(valid(s));
+  const restored=roundTrip(s);
+  assert.deepEqual(restored.growth,s.growth);
+  assert.equal(restored.history,undefined);
+ }
+ assert.equal(validGrowth(undefined),true);
+ assert.equal(roundTrip(base()).growth,undefined);
 });
 
-test('growth keeps the first answer, stores later answers, and restores drafts per direction and level',()=>{
- let s=base();
- assert.equal(growthKey(s),'ko-ja:2');
- assert.equal(reduce(s,{type:'growth-save',text:'   ',completed:0},day(21)),s,'empty answers are rejected');
- s=reduce(s,{type:'growth-draft',text:'わたしは'},day(21));assert.equal(growthEntry(s).draft.text,'わたしは');
- s=roundTrip(s);assert.equal(growthEntry(s).draft.on,'2026-10-21');
- s=reduce(s,{type:'growth-save',text:' わたしはミヘです。 ',completed:4},day(21));
- assert.deepEqual(growthEntry(s).answers,[{text:'わたしはミヘです。',on:'2026-10-21',completed:4}]);assert.equal(growthEntry(s).draft,undefined);
- // No lock: a later answer can be saved right away, and the first one never changes.
- s=reduce(s,{type:'growth-save',text:'はじめまして。ミヘです。',completed:4},day(21));
- for(let i=0;i<15;i++)s=reduce(s,{type:'growth-save',text:`答え${i}`,completed:5+i},day(22));
- const answers=growthEntry(s).answers;assert.equal(answers.length,12);assert.equal(answers[0].text,'わたしはミヘです。');assert.equal(answers.at(-1).text,'答え14');
- assert.ok(valid(s));s=roundTrip(s);
- // Other level and other direction have their own entries.
- assert.deepEqual(growthEntry({...s,onboardingLevel:4}).answers,[]);
- assert.deepEqual(growthEntry({...s,courseDirection:'ja-ko'}).answers,[]);
- // Growth writing is not lesson activity.
- assert.equal(s.history,undefined);
+test('legacy missions round-trip in every stored status without creating new missions',()=>{
+ for(const status of ['draft','ready','shared']){
+  const s={...base(),missions:{version:1,items:{'ko-ja':savedMission('ko-ja',status),'ja-ko':savedMission('ja-ko',status)}}};
+  assert.ok(valid(s));
+  assert.deepEqual(roundTrip(s).missions,s.missions);
+ }
+ const emptyDraft={...base(),missions:{version:1,items:{'ko-ja':{...savedMission('ko-ja','draft'),text:''}}}};
+ assert.deepEqual(roundTrip(emptyDraft).missions,emptyDraft.missions);
+ assert.equal(validMissions(undefined),true);
+ assert.equal(roundTrip(base()).missions,undefined);
 });
 
-test('malformed growth and mission records are rejected',()=>{
+test('malformed legacy growth and mission records remain rejected',()=>{
  assert.equal(validGrowth({version:1,entries:{'ko-ja:3':{answers:[]}}}),false);
+ assert.equal(validGrowth({version:1,entries:{'ko-ja:8':{answers:[]}}}),false,'pronunciation course belongs only to Korean learners');
  assert.equal(validGrowth({version:1,entries:{'ko-ja:2':{answers:[{text:'',on:'2026-10-21',completed:0}]}}}),false);
  assert.equal(validGrowth({version:1,entries:{'ko-ja:2':{answers:[{text:'a',on:'2026-02-31',completed:0}]}}}),false);
- assert.equal(validMissions({version:1,items:{'ko-ja':{lessonKey:'ja-ko:scenario:2',lessonOn:'2026-10-21',text:'',status:'draft',updatedOn:'2026-10-21'}}}),false);
- assert.equal(validMissions({version:1,items:{'ko-ja':{lessonKey:'ko-ja:scenario:2',lessonOn:'2026-10-21',text:'',status:'ready',updatedOn:'2026-10-21'}}}),false);
+ const tooMany=legacyGrowth();tooMany.entries['ko-ja:2'].answers.push({text:'13',on:'2026-10-21',completed:13});assert.equal(validGrowth(tooMany),false);
+ assert.equal(validMissions({version:1,items:{'ko-ja':{...savedMission('ja-ko'),text:''}}}),false);
+ assert.equal(validMissions({version:1,items:{'ko-ja':{...savedMission('ko-ja'),text:''}}}),false);
  assert.equal(validStudy({'ko-ja':{lessons:{'ko-ja:scenario:2':{completedOn:'2026-10-21',at:-1}}}}),false);
 });
 
-test('completion records keep their time so same-day retakes become the latest lesson',()=>{
+test('completion records preserve timestamps and update same-day retakes',()=>{
  const snap=(id,done)=>({lesson_id:`ko-ja:scenario:${id}`,course_direction:'ko-ja',done});
- let s=base();
- s=recordStudyCompletion(s,snap(2,false),snap(2,true),new Date('2026-10-21T09:00:00'));
- s=recordStudyCompletion(s,snap(3,false),snap(3,true),new Date('2026-10-21T10:00:00'));
- assert.equal(latestCompletion(s).key,'ko-ja:scenario:3');
- s=recordStudyCompletion(s,snap(2,false),snap(2,true),new Date('2026-10-21T11:00:00'));
- assert.equal(latestCompletion(s).key,'ko-ja:scenario:2','retaken lesson comes last even though its key was stored first');
+ const first=new Date('2026-10-21T09:00:00'),second=new Date('2026-10-21T10:00:00'),retaken=new Date('2026-10-21T11:00:00');
+ let s=recordStudyCompletion(base(),snap(2,false),snap(2,true),first);
+ s=recordStudyCompletion(s,snap(3,false),snap(3,true),second);
+ assert.deepEqual(s.studyTools['ko-ja'].lessons['ko-ja:scenario:2'],{completedOn:'2026-10-21',at:first.getTime()});
+ assert.deepEqual(s.studyTools['ko-ja'].lessons['ko-ja:scenario:3'],{completedOn:'2026-10-21',at:second.getTime()});
+ s=recordStudyCompletion(s,snap(2,false),snap(2,true),retaken);
+ assert.deepEqual(s.studyTools['ko-ja'].lessons['ko-ja:scenario:2'],{completedOn:'2026-10-21',at:retaken.getTime()});
+ assert.equal(s.studyTools['ko-ja'].lessons['ko-ja:scenario:3'].at,second.getTime());
  assert.ok(validStudy(s.studyTools));
- // Older records without a time still work.
- assert.equal(latestCompletion({...s,studyTools:{'ko-ja':{lessons:{'ko-ja:scenario:9':{completedOn:'2026-10-20'},'ko-ja:scenario:4':{completedOn:'2026-10-20'}}}}}).key,'ko-ja:scenario:4');
+ assert.deepEqual(roundTrip(s).studyTools,s.studyTools);
+ // Old completion records without timestamps remain compatible.
+ const old={'ko-ja':{lessons:{'ko-ja:scenario:9':{completedOn:'2026-10-20'}}}};
+ assert.ok(validStudy(old));assert.deepEqual(roundTrip({...base(),studyTools:old}).studyTools,old);
 });
 
-test('missions follow lessons with a fitting task and hide video and letter lessons',()=>{
- assert.ok(missionTask('ko-ja:scenario:12').includes('제안'));assert.ok(missionTask('ja-ko:scenario:12').includes('提案'));
- for(const key of ['ko-ja:video:frieren-subtext','ko-ja:kana:0','ko-ja:basic:7','ja-ko:korean:1-1','ja-ko:sentence:3'])assert.equal(hasMissionTask(key),false,key);
- const s={...base(),studyTools:{'ko-ja':{lessons:{'ko-ja:scenario:9':{completedOn:'2026-10-20',at:1},'ko-ja:video:frieren-subtext':{completedOn:'2026-10-21',at:2}}}}};
- assert.equal(currentMission(s,hasMissionTask).lessonKey,'ko-ja:scenario:9');
- assert.equal(currentMission({...s,studyTools:{'ko-ja':{lessons:{'ko-ja:kana:0':{completedOn:'2026-10-21'}}}}},hasMissionTask),null);
+test('ready missions still reach community in either language and sharing preserves other saved data',()=>{
+ for(const direction of ['ko-ja','ja-ko']){
+  const other=direction==='ko-ja'?'ja-ko':'ko-ja';
+  const s={...base(direction),growth:legacyGrowth(),missions:{version:1,items:{'ko-ja':savedMission('ko-ja'),'ja-ko':savedMission('ja-ko')}},
+   studyTools:{'ko-ja':{lessons:{'ko-ja:scenario:9':{completedOn:'2026-10-21',at:day(21).getTime()}}}},
+   history:{version:1,startedOn:'2026-10-20',completed:[],days:{'2026-10-20':{letters:1,expressions:2,sentences:3,cases:0}}},
+  };
+  const before=structuredClone(s);
+  assert.deepEqual(missionForCommunity(s),{text:storedMission(s).text,language:direction==='ja-ko'?'ko':'ja'});
+  const next=reduce(s,{type:'mission-shared'},day(22));
+  const expected={...before,missions:{version:1,items:{...before.missions.items,[direction]:{...before.missions.items[direction],status:'shared',updatedOn:'2026-10-22'}}}};
+  assert.deepEqual(next,expected);
+  assert.deepEqual(s,before,'sharing does not mutate the previous state');
+  assert.equal(missionForCommunity(next),null);
+  assert.deepEqual(storedMission(next,other),before.missions.items[other]);
+  assert.equal(missionForCommunity({...next,courseDirection:other}).text,before.missions.items[other].text);
+  assert.ok(valid(next));
+  const restored=roundTrip(next);
+  assert.deepEqual(restored.missions,next.missions);assert.deepEqual(restored.growth,next.growth);
+  assert.deepEqual(restored.history,next.history);assert.deepEqual(restored.studyTools,next.studyTools);
+  assert.equal(reduce(next,{type:'mission-shared'},day(23)),next,'sharing is idempotent');
+ }
 });
 
-test('mission draft, save, community hand-off, and no silent overwrite',()=>{
- const lessons={'ko-ja:scenario:9':{completedOn:'2026-10-20',at:1}};
- let s={...base(),studyTools:{'ko-ja':{lessons}}};
- const target={lessonKey:'ko-ja:scenario:9',lessonOn:'2026-10-20'};
- assert.equal(reduce(s,{type:'mission-draft',text:'x',lessonKey:'ko-ja:scenario:2',lessonOn:'2026-10-20'},day(21)),s,'unknown completion is rejected');
- s=reduce(s,{type:'mission-draft',text:'遅れそうです',...target},day(21));
- assert.equal(storedMission(s).status,'draft');assert.equal(missionForCommunity(s),null);
- assert.equal(reduce(s,{type:'mission-save',text:'  ',...target},day(21)),s);
- s=reduce(s,{type:'mission-save',text:' 少し遅れそうです。',...target},day(21));
- assert.deepEqual(missionForCommunity(s),{text:'少し遅れそうです。',language:'ja'});
- s=roundTrip(s);
- // A newer lesson does not replace the unfinished sentence.
- s={...s,studyTools:{'ko-ja':{lessons:{...lessons,'ko-ja:scenario:12':{completedOn:'2026-10-21',at:2}}}}};
- const m=currentMission(s,hasMissionTask);assert.equal(m.lessonKey,'ko-ja:scenario:9');assert.equal(m.stale,true);
- assert.equal(reduce(s,{type:'mission-draft',text:'new',lessonKey:'ko-ja:scenario:12',lessonOn:'2026-10-21'},day(21)),s);
- s=reduce(s,{type:'mission-shared'},day(21));assert.equal(storedMission(s).status,'shared');assert.equal(missionForCommunity(s),null);
- // After hand-off the newest lesson gets a fresh mission.
- assert.equal(currentMission(s,hasMissionTask).lessonKey,'ko-ja:scenario:12');
- assert.ok(valid(s));assert.equal(s.history,undefined);
+test('missing, draft, and shared missions are not offered to community or changed by sharing',()=>{
+ const states=[base(),...['draft','shared'].map(status=>({...base(),missions:{version:1,items:{'ko-ja':savedMission('ko-ja',status)}}}))];
+ for(const s of states){assert.equal(missionForCommunity(s),null);assert.equal(reduce(s,{type:'mission-shared'},day(22)),s);}
+ const ready={...base(),missions:{version:1,items:{'ko-ja':savedMission('ko-ja')}}};
+ assert.equal(reduceMission(ready,{type:'unrelated'},day(22)),ready);
 });
 
-test('a stored unfinished mission stays editable after its lesson is retaken on a later day',()=>{
- const target={lessonKey:'ko-ja:scenario:9',lessonOn:'2026-10-20'};
- let s={...base(),studyTools:{'ko-ja':{lessons:{'ko-ja:scenario:9':{completedOn:'2026-10-20',at:1}}}}};
- s=reduce(s,{type:'mission-draft',text:'遅れ',...target},day(20));
- // Retake moves the completion date forward.
- s={...s,studyTools:{'ko-ja':{lessons:{'ko-ja:scenario:9':{completedOn:'2026-10-21',at:5}}}}};
- const m=currentMission(s,hasMissionTask);assert.equal(m.lessonOn,'2026-10-20');assert.equal(m.text,'遅れ');
- s=reduce(s,{type:'mission-draft',text:'遅れそう',...target},day(21));assert.equal(storedMission(s).text,'遅れそう');
- s=reduce(s,{type:'mission-save',text:'遅れそうです。',...target},day(21));assert.equal(storedMission(s).status,'ready');
- s=reduce(s,{type:'mission-edit'},day(21));assert.equal(storedMission(s).status,'draft');
- s=reduce(s,{type:'mission-save',text:'少し遅れそうです。',...target},day(21));assert.equal(storedMission(s).text,'少し遅れそうです。');
- assert.ok(valid(s));
- // Discarding is explicit, then the retaken lesson starts a new mission.
- s=reduce(s,{type:'mission-discard'},day(21));assert.equal(storedMission(s),null);
- assert.equal(currentMission(s,hasMissionTask).lessonOn,'2026-10-21');
-});
-
-test('growth counts completed lessons from the active catalog, including videos and expert talks in both directions',async()=>{
+test('records count completed lessons from the active catalog, including videos and expert talks in both directions',async()=>{
  const {completedLessons}=await import('../src/records.js');
  const {expertKey,freshExpert}=await import('../src/expert-state.js');
  const {videoLessons}=await import('../src/video-lesson-state.js');

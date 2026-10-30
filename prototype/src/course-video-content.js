@@ -1,5 +1,7 @@
+import {courseTwentyVideoContent,courseTwentyVideoScenes} from './course-twenty-video-content.js';
 // Original-audio excerpts; source checks are recorded in docs/asset-provenance.
 export const courseVideoContent={
+...courseTwentyVideoContent,
   "scene-jp3-9": [
     {
       "videoId": "r5m1bfVUfSQ",
@@ -238,6 +240,7 @@ export const courseVideoContent={
   ]
 };
 export const courseVideoScenes={
+...courseTwentyVideoScenes,
   "scene-jp3-9": {
     "meaning": {
       "question": "무엇을 제안하나요?",

@@ -1,3 +1,4 @@
+import {mapCatalog} from './map-pagination-fixtures.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {freshState,reduce} from '../src/engine.js';
@@ -19,7 +20,7 @@ for(const l of scenes)test(`${l.id}: scene questions, replay, reload and complet
  const key=`${l.direction}:video:${l.id}`;
  assert.equal(l.number%3,0);assert.equal(hasExpressionReview(key),false);
  const map=renderAllLearningMap(s),stops=[...map.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"/g)].map(m=>m[1]);
- assert.equal(stops[l.number-1],'video');assert.equal(stops.filter(x=>x==='video').length,4);
+ assert.equal(stops[mapCatalog(s).findIndex(x=>x.id===l.id)],'video');assert.equal(stops.filter(x=>x==='video').length,5);
  assert.deepEqual(l.answers,[videoSceneContent[l.id].meaning.answer,videoSceneContent[l.id].use.answer]);
  act('video-start',l.id);assert.equal(videoProgress(s).phase,'watch');act('video-next');
  for(const [stage,phase]of ['meaning','use'].entries()){
@@ -47,7 +48,7 @@ for(const l of scenes)test(`${l.id}: scene questions, replay, reload and complet
 });
 
 test('all eight legacy video progress records remain readable without changing completed status',()=>{
- const legacyScenes=scenes.filter(l=>l.level===2);assert.equal(legacyScenes.length,8);
+ const legacyScenes=scenes.filter(l=>l.level===2&&l.number<=12);assert.equal(legacyScenes.length,8);
  for(const l of legacyScenes)for(const phase of ['watch','learn','speak','done']){
   const legacy={version:l.id==='frieren-just-right'?2:1,started:true,completed:phase==='done',index:0,phase};
   const s=reload({...fixture(l),videoLessons:{[l.id]:legacy}}),p=videoProgress(s);

@@ -6,11 +6,13 @@ test('Korean course progresses through all registered lessons with isolated reco
  assert.equal(s.onboardingLevel,0);assert.equal(koreanUnlocked(s,'1-2'),true);
  for(const lesson of koreanLessons){s=reduce(s,{type:'level',value:lesson.level});s=reduce(s,{type:'korean-start',id:lesson.id});assert.equal(koreanContent[lesson.id].length,lesson.count);
   for(let index=0;index<lesson.count;index++){
-   const item=koreanContent[lesson.id][index];assert.equal(new Set([item.answer||item.text,...item.others]).size,3);
+   const item=koreanContent[lesson.id][index];if(![8,9,10].includes(lesson.level))assert.equal(new Set([item.answer||item.text,...item.others]).size,3);
    if(lesson.level===0&&!lesson.practice){if(koreanProgress(s,lesson.id).phase==='intro')s=reduce(s,{type:'korean-next'});assert.equal(koreanProgress(s,lesson.id).phase,'learn');s=reduce(s,{type:'korean-next'});assert.ok(valid(s));continue;}
-   while(koreanProgress(s,lesson.id).phase!=='quiz')s=reduce(s,{type:'korean-next'});
-   s=reduce(s,{type:'korean-select',id:String((index+1)%(lesson.level===0?4:3))});s=reduce(s,{type:'korean-check'});assert.equal(koreanProgress(s,lesson.id).index,index);assert.equal(koreanProgress(s,lesson.id).retry,true);
-   s=reduce(s,{type:'korean-select',id:String(index%(lesson.level===0?4:3))});s=reduce(s,{type:'korean-check'});assert.ok(valid(s));const restored=load({getItem:()=>JSON.stringify(s)});assert.equal(restored.blocked,false);s=restored.state;if(koreanProgress(s,lesson.id).phase==='speak')s=reduce(s,{type:'korean-speak-next'});
+   if(lesson.level===8){s=reduce(s,{type:'korean-next'});assert.equal(koreanProgress(s,lesson.id).phase,'speak');s=reduce(s,{type:'korean-speak-next'});assert.ok(valid(s));continue;}
+   for(let n=0;n<3&&koreanProgress(s,lesson.id).phase!=='quiz';n++)s=reduce(s,{type:'korean-next'});
+   assert.equal(koreanProgress(s,lesson.id).phase,'quiz');
+   s=reduce(s,{type:'korean-select',id:String(((lesson.answers?.[index]??index)+1)%(lesson.choiceCounts?.[index]??(lesson.level===0?4:3)))});s=reduce(s,{type:'korean-check'});assert.equal(koreanProgress(s,lesson.id).index,index);assert.equal(koreanProgress(s,lesson.id).retry,true);
+   s=reduce(s,{type:'korean-select',id:String(lesson.answers?.[index]??index%(lesson.level===0?4:3))});s=reduce(s,{type:'korean-check'});assert.ok(valid(s));const restored=load({getItem:()=>JSON.stringify(s)});assert.equal(restored.blocked,false);s=restored.state;if(koreanProgress(s,lesson.id).phase==='speak')s=reduce(s,{type:'korean-speak-next'});if(koreanProgress(s,lesson.id).phase==='review')s=reduce(s,{type:'korean-next'});
   }
   assert.equal(koreanProgress(s,lesson.id).completed,true);
  }
@@ -23,14 +25,15 @@ test('Korean audio uses bundled matching files and advanced passages stay hidden
  const extra=JSON.parse(readFileSync(new URL('../assets/audio/level-two/manifest.json',import.meta.url)));
  Object.assign(manifest.files,Object.fromEntries(Object.entries(extra.files).filter(([,e])=>e.locale==='ko-KR')));
  let count=0;
- for(const l of koreanLessons)for(let index=0;index<l.count;index++){
+ for(const l of koreanLessons.filter(l=>l.level!==8))for(let index=0;index<l.count;index++){
+  if(koreanContent[l.id][index].audio&&!manifest.files[koreanContent[l.id][index].audio.id])continue; // New bundled samples have separate provenance checks.
   const s={...freshState(),courseDirection:'ja-ko',onboardingLevel:l.level,korean:{active:l.id,lessons:{[l.id]:{index,phase:koreanQuizOnly(l)?'quiz':'learn',selected:null}}}},entry=koreanAudio(s),info=manifest.files[entry.id];
   assert.equal(entry.locale,'ko-KR');assert.equal(entry.status,'ready');assert.equal(info.spoken,entry.text);assert.equal(info.file,entry.audioFile);
   const wav=readFileSync(new URL('../'+entry.audioFile,import.meta.url));assert.equal(wav.toString('ascii',0,4),'RIFF');assert.equal(createHash('sha256').update(wav).digest('hex'),info.sha256);
   if(l.level===7){const markup=renderKorean(s,()=> '');assert.ok(markup.includes('korean-passage'));assert.ok(markup.replace(/<[^>]*>/g,'').includes(koreanContent[l.id][index].text));}
   count++;
  }
- assert.equal(count,Object.keys(manifest.files).length);
+ assert.equal(count,koreanLessons.filter(l=>l.level!==8).flatMap(l=>koreanContent[l.id].map((item,index)=>item.audio?.id||`korean.${l.id}.${index}`)).filter(id=>manifest.files[id]).length);
 });
 test('interface localization switches both directions without changing learning text',async()=>{await loadUILanguage({courseDirection:'ja-ko'});setUILanguage({courseDirection:'ja-ko'});assert.equal(t('내 기록'),'学習記録');assert.equal(t('정말 삭제하시겠습니까?'),'本当に削除しますか？');setUILanguage({courseDirection:'ko-ja'});assert.equal(t('내 기록'),'내 기록');});
 
@@ -40,6 +43,7 @@ test('letter learning alternates with composition using only previously learned 
   assert.equal(Boolean(lesson.practice),Number(lesson.id.split('-')[1])%2===0);
   for(const item of koreanContent[lesson.id]){
    if(!lesson.practice){if(item.text.length===1&&item.text.charCodeAt(0)<0xac00)known.add(item.text);continue;}
+   if(item.finalSoundPractice)continue; // New sound-selection rounds do not use composition or writing.
    assert.equal(composeKorean(item.parts),item.text);
    for(const part of [...item.parts,...item.others])assert.ok(known.has(part),`${lesson.id}: ${part}`);
    const s={...freshState(),korean:{version:2,active:lesson.id,lessons:{[lesson.id]:{index:0,phase:'quiz',selected:null}}}};

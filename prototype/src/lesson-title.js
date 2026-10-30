@@ -1,3 +1,4 @@
+import {studyCatalog} from './study-catalog.js';
 import {scenarioLessons,scenarioTitle} from './scenario-state.js';
 import {videoLesson,lessonNumberWithVideo} from './video-lesson-state.js';
 import {songsForCourse} from './song-state.js';
@@ -6,6 +7,10 @@ import {kanaLessons} from './kana-state.js';
 import {basicLessons} from './basics-state.js';
 import {koreanLessons} from './korean-state.js';
 export function lessonTitle(s,kind,fallback=''){
+ if(s.courseDirection==='ja-ko'){
+  const id=kind==='korean'?s.korean?.active:kind==='scenario'?s.scenarioActive:kind==='video'?s.videoActive:kind==='song'?s.songActive:undefined;
+  if(id!==undefined){const l=studyCatalog(s).find(l=>l.kind===kind&&String(l.id)===String(id));if(l)return `${l.number}. ${l.title}`;}
+ }
  if(kind==='song'){const l=songsForCourse(s).find(l=>l.id===s.songActive);return l?`${l.number}. ${l.title}`:fallback;}
  if(kind==='video'){const l=videoLesson(s);return l?`${l.number}. ${l.title}`:fallback;}
  if(kind==='scenario'){const l=scenarioLessons.find(l=>l.id===s.scenarioActive);return l?`${lessonNumberWithVideo(s,l.number[s.courseDirection])}. ${scenarioTitle(s,l)}`:fallback;}

@@ -1,7 +1,7 @@
 .community{padding:12px 20px 105px;min-height:65vh;color:var(--text);overflow-wrap:anywhere}
 .community h1{font-size:calc(27px * var(--text-scale));margin:0}
 .community h2{font-size:calc(19px * var(--text-scale));margin:16px 0 10px}
-.community h3{font-size:1em}.community-heading p{color:var(--muted);margin:8px 0 20px;font-size:.9em}
+.community h3{font-size:1em}
 .community-button,.community-back{min-height:44px;padding:8px 14px;border-radius:12px;background:var(--stage-panel);font-size:.88em;border:1px solid var(--line);white-space:normal}
 .community .primary{background:var(--amber-light);color:var(--ink,#211b13);font-weight:700}
 .community .danger{color:var(--rose)}.community-back{margin-bottom:8px;background:transparent}
@@ -11,9 +11,7 @@
 .community-person{display:flex;gap:10px;align-items:center;min-width:0;background:transparent;text-align:start;padding:0;min-height:44px}.community-person>span:last-child{min-width:0}
 .community-person strong,.community-room strong{display:block;overflow-wrap:anywhere;font-size:.95em}.community-person small,.community-room small{display:block;color:var(--muted);font-size:.72em}
 .community-avatar{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;flex:none;border-radius:50%;background:var(--stage);color:var(--amber-light);font-weight:700}
-.community-body,.community-message p,.community-reply blockquote p{white-space:pre-wrap;margin:14px 0;line-height:1.8}
-.community-actions{display:flex;gap:8px;justify-content:flex-end}.community-actions .community-button,.community-reply>.community-button{background:transparent;border:0;padding:5px 8px;color:var(--muted);font-size:.78em}
-.community-tag{display:inline-block;color:var(--jade);font-size:.72em;margin-top:12px}.community-muted{color:var(--muted);font-size:.85em}
+.community-body,.community-message p,.community-reply blockquote p{white-space:pre-wrap;margin:14px 0;line-height:1.8}.community-reply>.community-button{background:transparent;border:0;padding:5px 8px;color:var(--muted);font-size:.78em}.community-muted{color:var(--muted);font-size:.85em}
 .community-empty{text-align:center;padding:28px 8px;color:var(--muted)}.community-empty svg{width:44px;height:44px;color:var(--amber-light)}.community-empty p{font-size:.9em}
 .community form{display:grid;gap:14px;margin:16px 0}.community label{display:grid;gap:7px;font-size:.9em}
 .community input,.community textarea,.community select{font:inherit;font-size:16px;color:var(--text);background:var(--stage);border:1px solid var(--line);border-radius:10px;padding:12px;min-width:0;max-width:100%;width:100%;line-height:1.6}
@@ -25,7 +23,7 @@
 .community-messages{display:flex;flex-direction:column;gap:12px;padding:18px 0}.community-message{align-self:flex-start;max-width:90%;border:1px solid var(--line);background:var(--stage-panel);border-radius:16px;padding:12px}.community-message.mine{align-self:flex-end;border-color:var(--jade)}.community-message p{margin:0 0 5px}.community-message small{color:var(--muted);font-size:.68em}.community-message button{font-size:.65em;border:0;background:transparent;margin-left:8px;min-height:44px}.community-account{display:grid;gap:10px;margin-top:26px}
 @media(max-width:350px){.community{padding-inline:14px}.community-card{padding:12px}.community-toolbar{gap:5px}.community-toolbar button{padding-inline:8px}.community-card-head{flex-wrap:wrap}.community-card-head time{margin-left:50px}}
 /* Override shared learning CTA sizing inside the optional community surface. */
-.community .community-button{width:auto;margin:0;box-shadow:none}.community-toolbar>.community-button{flex:none}.community .community-heading p{margin-top:4px}.community .community-card>button{margin-top:8px;margin-right:6px}
+.community .community-button{width:auto;margin:0;box-shadow:none}.community-toolbar>.community-button{flex:none}.community .community-card>button{margin-top:8px;margin-right:6px}
 
 .community .community-compose-fab{position:fixed;right:max(20px,calc((100vw - 480px)/2 + 20px));bottom:calc(88px + env(safe-area-inset-bottom));width:56px;height:56px;min-height:56px;padding:16px;display:grid;place-items:center;border-radius:50%;z-index:7;box-shadow:0 4px 18px #0005}
 .community-pull-refresh{height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.85em}

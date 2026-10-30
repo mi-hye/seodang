@@ -1,7 +1,9 @@
+import {courseTwentySongContent} from './course-twenty-song-content.js';
 // Local development preview only. Commercial lyric-display/translation rights are unconfirmed.
 // The production build must exclude this module. Only official YouTube embeds are used.
 // Examples and application questions are original instructional writing, not song lyrics.
-export const songContent = {
+export const songContent={
+...courseTwentySongContent,
   "jp-arigatou": {
     "videoId": "VZBU8LvZ91Q",
     "work": "ありがとう",

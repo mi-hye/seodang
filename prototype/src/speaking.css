@@ -1,23 +1,23 @@
-.korean-speaking{display:flex;flex-direction:column;gap:16px;padding-top:16px;word-break:normal;line-break:strict}.korean-speaking h1,.korean-speaking h2,.korean-speaking p{margin:0}.korean-speaking .audio-text-row{display:flex;flex-flow:row nowrap;align-items:center;gap:8px}.korean-speaking h2{flex:1;min-width:0;font-size:calc(24px * var(--text-scale));word-break:keep-all}.korean-speaking .icon-button{flex:none;min-width:44px;min-height:44px}.korean-speaking [data-speaking-transcript]{word-break:keep-all;overflow-wrap:anywhere}.korean-speaking>.primary{margin:0}
+.speaking-page{display:flex;flex-direction:column;gap:16px;padding-top:16px;word-break:normal;line-break:strict}.speaking-page h1,.speaking-page h2,.speaking-page p{margin:0}.speaking-page .audio-text-row{display:flex;flex-flow:row nowrap;align-items:center;gap:8px}.speaking-page h2{flex:1;min-width:0;font-size:calc(24px * var(--text-scale));word-break:keep-all}.speaking-page .icon-button{flex:none;min-width:44px;min-height:44px}.speaking-page [data-speaking-transcript]{word-break:keep-all;overflow-wrap:anywhere}.speaking-page>.primary{margin:0}
 
- .korean-speaking .speaking-coach{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}.korean-speaking .speaking-coach h1{position:relative;z-index:1;padding:10px 18px;background:var(--stage-raised);border:1px solid var(--line);border-radius:18px;font-size:calc(20px * var(--text-scale));white-space:nowrap}.speaking-coach h1::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;background:var(--stage-raised);border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:translateX(-50%) rotate(45deg)}.korean-speaking>.audio-text-row{margin-block:12px}.korean-speaking>.text-button{align-self:center}.korean-speaking .speaking-microphone{align-self:center;display:grid;place-items:center;flex:none;width:72px;height:72px;min-height:72px;padding:20px;border-radius:50%;margin:0}.speaking-microphone svg{display:block;width:32px;height:32px}.speaking-microphone[aria-pressed=true]{box-shadow:0 0 0 5px var(--line)}
+ .speaking-page .speaking-coach{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}.speaking-page .speaking-coach h1{position:relative;z-index:1;padding:10px 18px;background:var(--stage-raised);border:1px solid var(--line);border-radius:18px;font-size:calc(20px * var(--text-scale));white-space:nowrap}.speaking-coach h1::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;background:var(--stage-raised);border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:translateX(-50%) rotate(45deg)}.speaking-page>.audio-text-row{margin-block:12px}.speaking-page>.text-button{align-self:center}.speaking-page .speaking-microphone{align-self:center;display:grid;place-items:center;flex:none;width:72px;height:72px;min-height:72px;padding:20px;border-radius:50%;margin:0}.speaking-microphone svg{display:block;width:32px;height:32px}.speaking-microphone[aria-pressed=true]{box-shadow:0 0 0 5px var(--line)}
 
-.korean-speaking .speaking-actions{display:flex;flex-direction:column;align-items:center;gap:24px;width:100%;padding-top:8px}.speaking-actions .speaking-navigation{width:100%;margin:0;gap:12px}.speaking-navigation .text-button{min-height:48px;padding:12px 16px;margin:0;border:0;background:transparent;color:var(--muted);font-size:calc(15px * var(--text-scale));font-weight:500;text-align:center}.speaking-navigation .text-button:hover,.speaking-navigation .text-button:focus-visible{color:var(--text);background:var(--stage-raised);border-radius:12px}.speaking-navigation .primary{min-height:48px;font-size:calc(16px * var(--text-scale));margin:0;border-radius:12px}.speaking-navigation [hidden]{display:none!important}
+.speaking-page .speaking-actions{display:flex;flex-direction:column;align-items:center;gap:24px;width:100%;padding-top:8px}.speaking-actions .speaking-navigation{width:100%;margin:0;gap:12px}.speaking-navigation .text-button{min-height:48px;padding:12px 16px;margin:0;border:0;background:transparent;color:var(--muted);font-size:calc(15px * var(--text-scale));font-weight:500;text-align:center}.speaking-navigation .text-button:hover,.speaking-navigation .text-button:focus-visible{color:var(--text);background:var(--stage-raised);border-radius:12px}.speaking-navigation .primary{min-height:48px;font-size:calc(16px * var(--text-scale));margin:0;border-radius:12px}.speaking-navigation [hidden]{display:none!important}
 
-.korean-speaking>.speaking-microphone{margin-top:8px}.korean-speaking>.audio-text-row{margin-block:8px 12px}.korean-speaking .speaking-actions{padding-top:0;gap:0}
+.speaking-page>.speaking-microphone{margin-top:8px}.speaking-page>.audio-text-row{margin-block:8px 12px}.speaking-page .speaking-actions{padding-top:0;gap:0}
 
-.korean-speaking .speaking-coach{width:100%}
-.korean-speaking .speaking-coach h1{max-width:100%;min-height:52px;display:grid;place-items:center;white-space:normal;word-break:normal;overflow-wrap:anywhere;line-height:1.45;text-align:center}
-.korean-speaking .speaking-coach h1:lang(ko){word-break:keep-all}
+.speaking-page .speaking-coach{width:100%}
+.speaking-page .speaking-coach h1{max-width:100%;min-height:52px;display:grid;place-items:center;white-space:normal;word-break:normal;overflow-wrap:anywhere;line-height:1.45;text-align:center}
+.speaking-page .speaking-coach h1:lang(ko){word-break:keep-all}
 .speaking-dog{display:block;flex:none;width:clamp(180px,52vw,210px);aspect-ratio:1;background:url('../assets/mascot/seodang-cartoon-atlas-v1.png') 0 0/300% 200% no-repeat}
 .speaking-dog[data-speaking-mood=listening]{background-position:50% 0}
 .speaking-dog[data-speaking-mood=happy]{background-position:100% 0}
 .speaking-dog[data-speaking-mood=retry]{background-position:50% 100%}
 
-.korean-speaking h2:lang(ja),.korean-speaking h2:lang(ja) .text-phrase{word-break:normal;line-break:strict}
+.speaking-page h2:lang(ja),.speaking-page h2:lang(ja) .text-phrase{word-break:normal;line-break:strict}
 
-.korean-speaking [data-speaking-permission]{text-align:center;word-break:keep-all}
-.korean-speaking [data-speaking-permission] .secondary{margin:8px 0 0;min-height:44px}
+.speaking-page [data-speaking-permission]{text-align:center;word-break:keep-all}
+.speaking-page [data-speaking-permission] .secondary{margin:8px 0 0;min-height:44px}
 .speaking-consent{padding:24px;word-break:keep-all;overflow-wrap:anywhere;background:var(--stage-panel);color:var(--text)}
 .speaking-consent:lang(ja){word-break:normal;line-break:strict}
 .speaking-consent h2{font-size:calc(21px * var(--text-scale));line-height:1.4}

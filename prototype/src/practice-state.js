@@ -9,7 +9,6 @@ export const expressionReviewCount=key=>(expansionReview(key)||expressionReviews
 export const hasExpressionReview=key=>expressionReviewCount(key)>0;
 export const casePracticeVersion=key=>(expansionReview(key)||expressionReviews[key])?.version||1;
 export const normalizeCasePractice=(p,key)=>p&&isCasePractice(key)&&(p.caseVersion!==casePracticeVersion(key)||hasExpressionReview(key)&&p.count!==expressionReviewCount(key))?{...p,caseVersion:casePracticeVersion(key),...(hasExpressionReview(key)?{count:expressionReviewCount(key)}:{}),round:0,mode:0,index:0}:p;
-export const practiceModes=['listen','write'];
 export const practiceHasWriting=key=>/^ko-ja:kana:/.test(key)||/^ko-ja:basic:(?!6$)\d+$/.test(key)||/^ja-ko:korean:1-(?:[1-9]|10)$/.test(key);
 // These reviews shipped once. Accept their saved shape only long enough for load
 // to remove the retired gate; video progress now belongs to the video lesson.

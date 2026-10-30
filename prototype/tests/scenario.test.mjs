@@ -1,10 +1,11 @@
+import {mainLessons,baselineCatalog,mainStops} from './main-lesson-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {freshState,reduce} from '../src/engine.js';import {valid,load} from '../src/storage.js';
 import {scenarioLessons,scenarioAvailable,scenarioKey,scenarioProgress} from '../src/scenario-state.js';import {scenarioContent,scenarioAudio} from '../src/scenario-content.js';import {renderAllLearningMap} from './map-pagination-fixtures.mjs';import {learningSnapshot,checkedAnswer} from '../src/analytics-learning.js';
 const act=(s,type,id)=>reduce(s,{type,id},new Date('2026-10-19T12:00:00'));
 for(const direction of ['ko-ja','ja-ko'])for(const l of scenarioLessons.filter(l=>!l.extended))test(`${direction}/${l.id}: map, learn, retry, resume, finish and replay preserve other progress`,()=>{
  let s={...freshState(),courseDirection:direction,onboardingLevel:l.level};
- assert.equal((renderAllLearningMap(s).match(/data-action="scenario"/g)||[]).length,l.level===4?12:l.level===5?11:l.level===7?9:l.level===2?6:1);
+ assert.equal((renderAllLearningMap(s).match(/data-action="scenario"/g)||[]).length,l.level===4?13:l.level===5?12:l.level===7?10:l.level===2?7:1);
  s=act(s,'scenario-start',l.id);assert.equal(scenarioProgress(s).phase,'intro');s=act(s,'scenario-next');
  for(let i=0;i<3;i++){
   assert.equal(scenarioProgress(s).phase,['8'].includes(l.id)?'quiz':'learn');if(!['8'].includes(l.id))s=act(s,'scenario-next');const untouched=act(s,'scenario-next');assert.equal(scenarioProgress(untouched).phase,'quiz');
@@ -46,10 +47,10 @@ test('starting a completed Korean lesson from an unfinished one never counts a n
  s=act(s,'scenario-start','3');assert.equal(s.korean?.history?.days?.['2026-10-19']?.cases??0,0);assert.ok(valid(s));
 });
 
-test('level one adds Korean reading bridges without reviving retired progress',()=>{
+test('level one keeps the original alphabet courses without retired reading bridges',()=>{
  for(const courseDirection of ['ko-ja','ja-ko']){
   const s={...freshState(),courseDirection,onboardingLevel:0};
-  assert.equal(scenarioLessons.filter(l=>l.level===0&&scenarioAvailable(s,l)).length,courseDirection==='ja-ko'?7:0);
+  assert.equal(scenarioLessons.filter(l=>l.level===0&&scenarioAvailable(s,l)).length,0);
   assert.doesNotMatch(renderAllLearningMap(s),/data-action="scenario" data-id="1"/);
   assert.deepEqual(act(s,'scenario-start','1'),s);
   const old={...s,scenarioActive:'1',scenarios:{[`${courseDirection}:scenario:1`]:{...scenarioProgress(s,'1'),started:true,completed:true,phase:'done'}}};
@@ -73,8 +74,8 @@ test('dialogue phrase boundaries preserve line order and original audio text',()
 test('level three adds through lesson 3-7 and keeps the video at 3-3',()=>{
  for(const courseDirection of ['ko-ja','ja-ko']){
   const s={...freshState(),courseDirection,onboardingLevel:4};const html=renderAllLearningMap(s);
-  const stops=[...html.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"(?: data-id="([^"]+)")?/g)];
-  assert.equal(stops.length,17);assert.equal(stops[2][1],'video');assert.deepEqual(stops[3].slice(1),['scenario','6']);assert.deepEqual(stops[15].slice(1),['scenario','course3-16']);
+  const stops=mainStops([...html.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"(?: data-id="([^"]+)")?/g)]);
+  assert.equal(stops.length,19);assert.equal(stops[2][1],'video');assert.deepEqual(stops[3].slice(1),['scenario','6']);assert.deepEqual(stops[15].slice(1),['scenario','course3-16']);
   assert.deepEqual(stops[4].slice(1),['scenario','7']);assert.equal(stops[5][1],'video');assert.deepEqual(stops[6].slice(1),['scenario','8']);assert.match(html,/5\. /);assert.equal(scenarioLessons.filter(l=>l.level===4&&!l.extended).length,4);
  }
 });
@@ -102,7 +103,7 @@ for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} roleplay
 });
 
 for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} level 4-5 reply builder preserves a draft and gates answer audio`,async()=>{
- const {currentScenarioAudio}=await import('../src/scenario.js');let s={...freshState(),courseDirection,onboardingLevel:5};const html=renderAllLearningMap(s);const stops=[...html.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"(?: data-id="([^"]+)")?/g)];assert.equal(stops.length,17);assert.equal(stops[5][1],'video');assert.deepEqual(stops[4].slice(1),['scenario','9']);assert.equal(stops[2][1],'video');
+ const {currentScenarioAudio}=await import('../src/scenario.js');let s={...freshState(),courseDirection,onboardingLevel:5};const html=renderAllLearningMap(s);const stops=mainStops([...html.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"(?: data-id="([^"]+)")?/g)]);assert.equal(stops.length,19);assert.equal(stops[5][1],'video');assert.deepEqual(stops[4].slice(1),['scenario','9']);assert.equal(stops[2][1],'video');
  s=act(s,'scenario-start','9');s=act(s,'scenario-next');assert.equal(scenarioProgress(s).phase,'learn');s=act(s,'scenario-next');assert.equal(scenarioProgress(s).phase,'quiz');const x=scenarioContent[courseDirection]['9'].items[0];assert.equal(currentScenarioAudio(s,'answer').text,x.text);
  s=act(s,'scenario-token',0);s=act(s,'scenario-token',2);const draft=load({getItem:()=>JSON.stringify(s)});assert.equal(draft.blocked,false);assert.deepEqual(scenarioProgress(draft.state).tokens,[0,2]);assert.equal(scenarioProgress(act(s,'scenario-check')).checked,false);
  s=act(s,'scenario-token',2);s=act(s,'scenario-token',1);s=act(s,'scenario-token',2);s=act(s,'scenario-check');assert.equal(scenarioProgress(s).checked,true);assert.equal(currentScenarioAudio(s,'answer').text,x.answer);assert.deepEqual(scenarioProgress(act(s,'scenario-token',0)).tokens,[0,1,2]);
@@ -110,14 +111,14 @@ for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} level 4-
 });
 
 for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} level 4-7 listens before revealing intent and restores selected answer`,async()=>{
- const {renderScenario,currentScenarioAudio}=await import('../src/scenario.js');let s={...freshState(),courseDirection,onboardingLevel:5};const map=renderAllLearningMap(s);const stops=[...map.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"(?: data-id="([^"]+)")?/g)];assert.equal(stops.length,17);assert.deepEqual(stops[6].slice(1),['scenario','10']);
+ const {renderScenario,currentScenarioAudio}=await import('../src/scenario.js');let s={...freshState(),courseDirection,onboardingLevel:5};const map=renderAllLearningMap(s);const stops=mainStops([...map.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"(?: data-id="([^"]+)")?/g)]);assert.equal(stops.length,19);assert.deepEqual(stops[6].slice(1),['scenario','10']);
  s=act(s,'scenario-start','10');assert.equal(currentScenarioAudio(s),null);s=act(s,'scenario-next');assert.equal(scenarioProgress(s).phase,'learn');s=act(s,'scenario-next');assert.equal(scenarioProgress(s).phase,'quiz');assert.equal(currentScenarioAudio(s).text,scenarioContent[courseDirection]['10'].items[0].text);assert.match(renderScenario(s,()=>''),/intent-transcript/);assert.doesNotMatch(renderScenario(s,()=>''),/intent-result/);
  s=act(s,'scenario-select',1);s=load({getItem:()=>JSON.stringify(s)}).state;assert.equal(scenarioProgress(s).selected,1);s=act(s,'scenario-check');assert.equal(scenarioProgress(s).retry,true);assert.equal(scenarioProgress(act(s,'scenario-next')).index,0);
  s=act(s,'scenario-select',0);s=act(s,'scenario-check');assert.match(renderScenario(s,()=>''),/intent-result/);s=act(s,'scenario-next');assert.equal(scenarioProgress(s).index,1);s=act(s,'scenario-previous');assert.equal(scenarioProgress(s).index,0);assert.equal(scenarioProgress(s).checked,false);
 });
 
 for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} level 5-7 keeps expert/video order and gates rewritten audio`,async()=>{
- const {currentScenarioAudio,renderScenario}=await import('../src/scenario.js');let s={...freshState(),courseDirection,onboardingLevel:7};const map=renderAllLearningMap(s),stops=[...map.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"(?: data-id="([^"]+)")?/g)];assert.equal(stops.length,17);assert.deepEqual(stops[6].slice(1),['scenario','11']);assert.equal(stops[4][1],'expert');assert.equal(stops[5][1],'video');assert.doesNotMatch(map,/data-action="scenario" data-id="5"/);
+ const {currentScenarioAudio,renderScenario}=await import('../src/scenario.js');let s={...freshState(),courseDirection,onboardingLevel:7};const map=renderAllLearningMap(s),stops=[...map.matchAll(/<button class="map-choice"[^>]*data-action="([^"]+)"(?: data-id="([^"]+)")?/g)];assert.equal(stops.length,19);assert.deepEqual(stops[6].slice(1),['scenario','11']);assert.equal(stops[4][1],'expert');assert.equal(stops[5][1],'video');assert.doesNotMatch(map,/data-action="scenario" data-id="5"/);
  s=act(s,'scenario-start','11');assert.equal(currentScenarioAudio(s),null);s=act(s,'scenario-next');s=act(s,'scenario-next');const x=scenarioContent[courseDirection]['11'].items[0];assert.equal(currentScenarioAudio(s,'answer').text,x.text);
  s=act(s,'scenario-select',1);s=load({getItem:()=>JSON.stringify(s)}).state;assert.equal(scenarioProgress(s).selected,1);s=act(s,'scenario-check');assert.match(renderScenario(s,()=>''),/role="status"/);assert.equal(scenarioProgress(s).retry,true);assert.equal(scenarioProgress(act(s,'scenario-next')).index,0);
  s=act(s,'scenario-select',0);s=act(s,'scenario-check');assert.equal(currentScenarioAudio(s,'answer').text,x.answer);assert.equal(currentScenarioAudio(s,'prompt').text,x.text);assert.notEqual(currentScenarioAudio(s,'answer').audioFile,currentScenarioAudio(s,'prompt').audioFile);s=act(s,'scenario-next');s=act(s,'scenario-previous');assert.equal(scenarioProgress(s).checked,false);assert.equal(currentScenarioAudio(s,'answer').text,x.answer);
@@ -128,7 +129,7 @@ for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} level 5-
  let s={...freshState(),courseDirection,onboardingLevel:7};
  const {studyCatalog}=await import('../src/study-catalog.js');
  const lessons=studyCatalog(s).filter(x=>x.level===7);
- assert.equal(lessons.length,17);assert.equal(lessons[7].id,'12');assert.equal(lessons[7].position,'5-8');assert.deepEqual(lessons.filter(x=>x.kind==='video').map(x=>x.position),['5-3','5-6','5-9','5-12']);
+ assert.equal(lessons.length,19);assert.equal(lessons[7].id,'12');assert.equal(lessons[7].position,'5-8');assert.deepEqual(lessons.filter(x=>x.kind==='video').map(x=>x.position),['5-3','5-6','5-9','5-12','5-18']);
  s=act(s,'scenario-start','12');assert.equal(currentScenarioAudio(s),null);s=act(s,'scenario-next');s=act(s,'scenario-next');
  const x=scenarioContent[courseDirection]['12'].items[0];assert.equal(currentScenarioAudio(s,'answer').text,x.text);
  s=act(s,'scenario-token',0);s=act(s,'scenario-token',2);s=load({getItem:()=>JSON.stringify(s)}).state;
@@ -152,8 +153,8 @@ for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} proposal
 
 for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} level 2-8 adds the shop after existing lessons`,()=>{
  const s={...freshState(),courseDirection,onboardingLevel:2},html=renderAllLearningMap(s);
- const stops=[...html.matchAll(/data-action="(sentence|korean|scenario|video)" data-id="([^"]+)"/g)].map(x=>x.slice(1));
- assert.equal(stops.length,14);assert.deepEqual(stops[7],['scenario','13']);
+ const stops=mainStops([...html.matchAll(/class="map-choice" data-action="(sentence|korean|scenario|video)" data-id="([^"]+)"/g)]).map(x=>x.slice(1));
+ assert.equal(stops.length,16);assert.deepEqual(stops[7],['scenario','13']);
  assert.equal(stops[2][0],'video');assert.equal(stops[5][0],'video');
  for(let i=0;i<3;i++)assert.equal(scenarioAudio(courseDirection,'13',i,true).text,scenarioContent[courseDirection]['13'].items[i].answer);
 });
@@ -164,7 +165,7 @@ for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} message 
  s=act(s,'scenario-select',2);s=act(s,'scenario-check');assert.equal(scenarioProgress(s).checked,true);assert.equal(currentScenarioAudio(s,'answer').text,scenarioContent[courseDirection]['14'].items[0].answer);
  s=act(s,'scenario-next');s=act(s,'scenario-next');assert.equal(currentScenarioAudio(s,'0:answer').text,scenarioContent[courseDirection]['14'].items[0].answer);assert.equal(currentScenarioAudio(s,'1:answer'),null);assert.equal(currentScenarioAudio(s,'2:reply'),null);
  assert.equal(load({getItem:()=>JSON.stringify(s)}).blocked,false);
- const stops=[...renderAllLearningMap(s).matchAll(/data-action="(sentence|korean|scenario|video)" data-id="([^"]+)"/g)].map(x=>x.slice(1));assert.equal(stops.length,14);assert.deepEqual(stops[9],['scenario','14']);
+ const stops=mainStops([...renderAllLearningMap(s).matchAll(/class="map-choice" data-action="(sentence|korean|scenario|video)" data-id="([^"]+)"/g)]).map(x=>x.slice(1));assert.equal(stops.length,16);assert.deepEqual(stops[9],['scenario','14']);
 });
 
 for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} every chat choice speaks its exact sentence without changing progress`,async()=>{
@@ -173,17 +174,17 @@ for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} every ch
 });
 
 for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} order repair is 2-11 and speaks displayed choices only in unanswered rounds`,async()=>{
- const {currentScenarioAudio}=await import('../src/scenario.js');const {studyCatalog}=await import('../src/study-catalog.js');let s={...freshState(),courseDirection,onboardingLevel:2};const map=studyCatalog(s).filter(l=>l.level===2);assert.equal(map.length,14);assert.equal(map[10].position,'2-11');assert.equal(map[10].id,'15');assert.deepEqual(map.filter(l=>l.kind==='video').map(l=>l.position),['2-3','2-6','2-9','2-12']);s=act(s,'scenario-start','15');assert.equal(currentScenarioAudio(s,'choice:0'),null);s=act(s,'scenario-next');
+ const {currentScenarioAudio}=await import('../src/scenario.js');const {studyCatalog}=await import('../src/study-catalog.js');let s={...freshState(),courseDirection,onboardingLevel:2};const map=baselineCatalog(studyCatalog(s)).filter(l=>l.level===2);assert.equal(map.length,16);assert.equal(map[10].position,'2-11');assert.equal(map[10].id,'15');assert.deepEqual(map.filter(l=>l.kind==='video').map(l=>l.position),['2-3','2-6','2-9','2-12','2-15']);s=act(s,'scenario-start','15');assert.equal(currentScenarioAudio(s,'choice:0'),null);s=act(s,'scenario-next');
  for(let i=0;i<3;i++){assert.equal(scenarioProgress(s).phase,'learn');s=act(s,'scenario-next');const x=scenarioContent[courseDirection]['15'].items[i];assert.equal(currentScenarioAudio(s).text,x.text);for(let c=0;c<3;c++)assert.equal(currentScenarioAudio(s,`choice:${c}`).text,[x.answer,...x.others][c]);assert.equal(currentScenarioAudio(s,'choice:3'),null);s=act(s,'scenario-select',[1,2,0][i]);s=act(s,'scenario-check');assert.equal(currentScenarioAudio(s,'answer').text,x.answer);assert.equal(currentScenarioAudio(s,'choice:0'),null);s=act(s,'scenario-next');}
  assert.equal(scenarioProgress(s).completed,true);assert.equal(currentScenarioAudio(s),null);
 });
 
 for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} weather lesson appends 2-13 and gates its answer audio`,async()=>{
- const {currentScenarioAudio}=await import('../src/scenario.js');const {studyCatalog}=await import('../src/study-catalog.js');let s={...freshState(),courseDirection,onboardingLevel:2};const map=studyCatalog(s).filter(l=>l.level===2);assert.equal(map.length,14);assert.equal(map[12].position,'2-13');assert.equal(map[12].id,'16');assert.deepEqual(map.filter(l=>l.kind==='video').map(l=>l.position),['2-3','2-6','2-9','2-12']);s=act(s,'scenario-start','16');assert.equal(currentScenarioAudio(s),null);s=act(s,'scenario-next');
+ const {currentScenarioAudio}=await import('../src/scenario.js');const {studyCatalog}=await import('../src/study-catalog.js');let s={...freshState(),courseDirection,onboardingLevel:2};const map=baselineCatalog(studyCatalog(s)).filter(l=>l.level===2);assert.equal(map.length,16);assert.equal(map[12].position,'2-13');assert.equal(map[12].id,'16');assert.deepEqual(map.filter(l=>l.kind==='video').map(l=>l.position),['2-3','2-6','2-9','2-12','2-15']);s=act(s,'scenario-start','16');assert.equal(currentScenarioAudio(s),null);s=act(s,'scenario-next');
  for(let i=0;i<3;i++){assert.equal(scenarioProgress(s).phase,'learn');s=act(s,'scenario-next');const x=scenarioContent[courseDirection]['16'].items[i];assert.equal(currentScenarioAudio(s).text,x.text);for(let c=0;c<3;c++)assert.equal(currentScenarioAudio(s,`choice:${c}`).text,[x.answer,...x.others][c]);assert.equal(currentScenarioAudio(s,'choice:3'),null);s=act(s,'scenario-select',[2,0,1][i]);s=act(s,'scenario-check');assert.equal(currentScenarioAudio(s,'answer').text,x.answer);assert.equal(currentScenarioAudio(s,'choice:0'),null);s=act(s,'scenario-next');}assert.equal(scenarioProgress(s).completed,true);assert.equal(currentScenarioAudio(s),null);
 });
 
 for(const courseDirection of ['ko-ja','ja-ko'])test(`${courseDirection} lost bag 2-14 gates conversation and choice audio`,async()=>{
- const {currentScenarioAudio}=await import('../src/scenario.js');const {studyCatalog}=await import('../src/study-catalog.js');let s={...freshState(),courseDirection,onboardingLevel:2};const map=studyCatalog(s).filter(l=>l.level===2);assert.equal(map.length,14);assert.equal(map.at(-1).position,'2-14');assert.equal(map.at(-1).id,'17');s=act(s,'scenario-start','17');assert.equal(currentScenarioAudio(s),null);s=act(s,'scenario-next');
+ const {currentScenarioAudio}=await import('../src/scenario.js');const {studyCatalog}=await import('../src/study-catalog.js');let s={...freshState(),courseDirection,onboardingLevel:2};const map=baselineCatalog(studyCatalog(s)).filter(l=>l.level===2);assert.equal(map.length,16);assert.equal(map[13].position,'2-14');assert.equal(map[13].id,'17');s=act(s,'scenario-start','17');assert.equal(currentScenarioAudio(s),null);s=act(s,'scenario-next');
  for(let i=0;i<3;i++){assert.equal(scenarioProgress(s).phase,'learn');s=act(s,'scenario-next');const x=scenarioContent[courseDirection]['17'].items[i];assert.equal(currentScenarioAudio(s).text,x.text);assert.equal(currentScenarioAudio(s,'answer'),null);assert.equal(currentScenarioAudio(s,'2:reply'),null);for(let c=0;c<3;c++)assert.equal(currentScenarioAudio(s,`choice:${c}`).text,[x.answer,...x.others][c]);assert.equal(currentScenarioAudio(s,'choice:3'),null);s=act(s,'scenario-select',[1,0,2][i]);s=act(s,'scenario-check');assert.equal(currentScenarioAudio(s,'answer').text,x.answer);assert.equal(currentScenarioAudio(s,'reply').text,x.reply);assert.equal(currentScenarioAudio(s,'choice:0'),null);assert.equal(currentScenarioAudio(s,'0:answer').text,scenarioContent[courseDirection]['17'].items[0].answer);s=act(s,'scenario-next');}assert.equal(scenarioProgress(s).completed,true);assert.equal(currentScenarioAudio(s),null);
 });

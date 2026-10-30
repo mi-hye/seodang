@@ -2,8 +2,8 @@ import {openMapLesson} from './learning-map-fixture.js';
 import {useCatalogWithoutPacks} from './audio-catalog-fixture.js';
 import {test,expect} from '@playwright/test';
 import {freshState} from '../../src/engine.js';import {scenarioLessons} from '../../src/scenario-state.js';
-// Interactive roleplay, message, listening-intent and reply-repair flows have dedicated specs.
-for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])for(const lesson of scenarioLessons.filter(l=>['2','3','4','6','7','13'].includes(l.id)))test(`${direction} new level ${lesson.id} at ${width}px`,async({page})=>{
+// Interactive flows and video replacements (including the retired scenario 7) have dedicated specs.
+for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])for(const lesson of scenarioLessons.filter(l=>['2','3','4','6','13'].includes(l.id)))test(`${direction} new level ${lesson.id} at ${width}px`,async({page})=>{
  await page.setViewportSize({width,height:width===320?640:844});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  const state={...freshState(),onboarded:true,koreanGuideSeenVersion:1,courseDirection:direction,onboardingLevel:lesson.level,settings:{sound:false,motion:'off',textScale:1.2,audioRate:1}};
@@ -12,8 +12,8 @@ for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])for(const 
  await useCatalogWithoutPacks(page);
  await page.goto('/playable.html');
  await openMapLesson(page,{kind:'scenario',id:lesson.id});
- const click=async a=>page.locator(`[data-action="${a}"]`).click();
- const check=async()=>{if(['2','3','6','7'].includes(lesson.id)&&!await page.locator('.practice-complete, .introduction-review').count()){const image=page.locator('.scenario-image, .case-lesson-image');await expect(image).toBeVisible();expect(await image.evaluate(el=>el.complete&&el.naturalWidth>0)).toBe(true);const gap=await page.evaluate(()=>{const img=document.querySelector('.scenario-image, .case-lesson-image').getBoundingClientRect(),progress=document.querySelector('.lesson-progress, .scenario-progress').getBoundingClientRect();return img.top-progress.bottom;});expect(gap).toBeLessThan(72);}expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);const pair=page.locator('.scenario-page .button-pair, .case-lesson .button-pair, .reading-page>.button-pair');if(await pair.count()){const b=await pair.locator('button').evaluateAll(xs=>xs.map(x=>x.getBoundingClientRect().top));expect(Math.abs(b[0]-b[1])).toBeLessThan(2);}};
+ const click=async a=>page.locator(`[data-action="${a}"]`).first().click();
+ const check=async()=>{if(['2','3','6','7'].includes(lesson.id)&&!await page.locator('.practice-complete, .introduction-review').count()){const image=page.locator('.scenario-image, .case-lesson-image');await expect(image).toBeVisible();await expect.poll(()=>image.evaluate(el=>el.complete&&el.naturalWidth>0)).toBe(true);const gap=await page.evaluate(()=>{const img=document.querySelector('.scenario-image, .case-lesson-image').getBoundingClientRect(),progress=document.querySelector('.lesson-progress, .scenario-progress').getBoundingClientRect();return img.top-progress.bottom;});expect(gap).toBeLessThan(72);}expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);const pair=page.locator('.scenario-page .button-pair, .case-lesson .button-pair, .reading-page>.button-pair');if(await pair.count()){const b=await pair.locator('button').evaluateAll(xs=>xs.map(x=>x.getBoundingClientRect().top));expect(Math.abs(b[0]-b[1])).toBeLessThan(2);}};
  await expect(page.locator('.scenario-page h1, .reading-page h1')).toContainText(lesson.titles[direction==='ja-ko'?1:0]);await check();await click('scenario-next');
  for(let i=0;i<3;i++){
   await expect(page.locator('.scenario-text, .reading-passage')).toBeVisible();await check();
@@ -26,7 +26,7 @@ for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])for(const 
    await expect(page.locator('.case-lesson')).toContainText('お名前（おなまえ·오나마에）');
   }
 
-  if(lesson.id==='4'){expect(await page.locator('.passage-player').evaluate(el=>el.getBoundingClientRect().top>=document.querySelector('.reading-passage').getBoundingClientRect().bottom)).toBe(true);}else{const pos=await page.locator('.audio-text-row').evaluate(el=>{const text=el.querySelector('.scenario-text').getBoundingClientRect(),button=el.querySelector('[data-action="scenario-audio"]').getBoundingClientRect();return button.x>=text.right-1;});expect(pos).toBe(true);}
+  if(lesson.id==='4'){await expect(page.locator('.reading-playback')).not.toHaveAttribute('open');expect(await page.locator('.reading-passage .audio-text-row').evaluate(el=>el.querySelector('button').getBoundingClientRect().left>=el.querySelector('h2').getBoundingClientRect().right-1)).toBe(true);}else{const pos=await page.locator('.audio-text-row').evaluate(el=>{const text=el.querySelector('.scenario-text').getBoundingClientRect(),button=el.querySelector('[data-action="scenario-audio"]').getBoundingClientRect();return button.x>=text.right-1;});expect(pos).toBe(true);}
   if(i===0&&['6','7','13'].includes(lesson.id))await page.screenshot({path:`output/scenario${lesson.id}-learn-${direction}-${width}-${test.info().project.name}.png`,fullPage:true});
   if(i===1&&lesson.id!=='4'){await click('home');await openMapLesson(page,{kind:'scenario',id:lesson.id});await page.locator('[data-choice="resume"]').click();await expect(page.locator('.scenario-count, .case-lesson-count, .reading-count')).toHaveCount(0);}
   if(lesson.id==='5'&&direction==='ja-ko')expect(await page.locator('.scenario-page').getAttribute('lang')).toBe('ko');
@@ -55,5 +55,5 @@ for(const width of [320,390])for(const direction of ['ko-ja','ja-ko'])for(const 
  }
  await check();expect(errors).toEqual([]);
  await page.screenshot({path:`output/scenario-${direction}-${lesson.id}-${width}-${test.info().project.name}.png`,fullPage:true});
- await click(lesson.level===2?'home':'completed-next');await expect(page.locator('.view-home')).toBeVisible();
+ await click('home');await expect(page.locator('.view-home')).toBeVisible();
 });

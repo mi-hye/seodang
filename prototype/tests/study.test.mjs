@@ -26,7 +26,7 @@ test('language schedules remain separate and legacy undated completions stay ava
 });
 test('review metadata matches the map numbers for both languages without a three-item cap',()=>{
  for(const courseDirection of ['ko-ja','ja-ko']){
-  const s={...freshState(),courseDirection},all=studyCatalog(s),video=all.find(x=>x.position==='4-3');assert.equal(video.kind,'video');assert.equal(video.id,courseDirection==='ko-ja'?'frieren-uncertainty':'queen-condition');
+  const s={...freshState(),courseDirection},all=studyCatalog(s),video=all.find(x=>x.id===(courseDirection==='ko-ja'?'frieren-uncertainty':'queen-condition'));assert.equal(video.kind,'video');assert.equal(video.id,courseDirection==='ko-ja'?'frieren-uncertainty':'queen-condition');
   assert.equal(new Set(all.map(x=>x.key)).size,all.length);assert.equal(scheduledReviews(s,all.map(l=>({...l,completed:true}))).length,all.length);
  }
 });
