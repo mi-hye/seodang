@@ -1,0 +1,88 @@
+{
+  "date": "2026-10-29",
+  "scope": "Korean-only level 2.5: thirteen stable IDs, three paired comparison units per lesson; choose by function, context and predicate rather than isolated particle/allomorph drills.",
+  "authorship": "Original Japanese instructional explanations, Korean example sentences and contextual feedback. Dictionary definitions and examples are not copied as lesson text.",
+  "sources": [
+    {
+      "url": "https://krdict.korean.go.kr/m/jpn/searchResultView?ParaWordNo=85851&mainSearchWord=%EB%8A%94&nation=jpn&nationCode=7",
+      "checked": "Topic and contrast uses of 는; counterpart 은 depends on the preceding final consonant."
+    },
+    {
+      "url": "https://krdict.korean.go.kr/jpn/dicMarinerSearch/search?mainSearchWord=%EC%97%90%EC%84%9C",
+      "checked": "에서 as action location and departure point; Japanese translation changes with function."
+    },
+    {
+      "url": "https://krdict.korean.go.kr/jpn/dicMarinerSearch/search?mainSearchWord=%ED%95%9C%ED%85%8C",
+      "checked": "한테 includes both recipient and source functions; 한테서 explicitly marks source. Never present 한테 as categorically wrong with 받다."
+    },
+    {
+      "url": "https://krdict.korean.go.kr/eng/dicSearch/SearchView?ParaWordNo=70321&nation=eng",
+      "checked": "에게서 marks a source person/animal, with 한테서 listed as synonym."
+    },
+    {
+      "url": "https://krdict.korean.go.kr/eng/dicMarinerSearch/search?mainSearchWord=%EC%9C%BC%EB%A1%9C",
+      "checked": "으로 has direction and tool/means functions; scope intentionally limited to these beginner uses."
+    },
+    {
+      "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=261&qna_seq=314593",
+      "checked": "로 follows vowel-final nouns and ㄹ-final nouns; 으로 follows other consonant-final nouns."
+    },
+    {
+      "url": "https://krdict.korean.go.kr/jpn/dicSearch/SearchView?ParaWordNo=27929&nation=jpn",
+      "checked": "좋아하다 is a verb, with the liking construction 1이 2를 좋아하다. Japanese を好む is a local pedagogical comparison, not a rule that all Japanese particles match Korean."
+    },
+    {
+      "url": "https://krdict.korean.go.kr/jpn/dicSearch/SearchView?ParaWordNo=79033",
+      "checked": "좋다 is an adjective; sense 10 includes liking, with the construction 1이 2가 좋다. Both comparison sentences can express preference; drink selection is an original contextual example, not an absolute semantic split."
+    },
+    {
+      "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=&pageIndex=1&qna_seq=317656",
+      "checked": "학교에 가다 and 학교로 가다 both express direction/destination; do not invent an arrival versus non-arrival rule."
+    },
+    {
+      "url": "https://krdict.korean.go.kr/eng/dicSearch/SearchView?ParaWordNo=69714",
+      "checked": "한테 has source and recipient functions; chiefly colloquial, 에게 synonym and 께 respectful form."
+    },
+    {
+      "url": "https://krdict.korean.go.kr/jpn/dicSearch/SearchView?ParaWordNo=70055",
+      "checked": "부터 marks a starting point; time-start contrasts with a time point and endpoint."
+    },
+    {
+      "url": "https://www.korean.go.kr/common/download.do?book_seq=275&c_file_name=dd56408d-ba84-49d8-8343-8a9b33bf79c1_0.pdf&downGubun=bookDataView&file_path=bookData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%EC%A7%84%ED%9D%A5-01-20.pdf",
+      "checked": "까지 marks an endpoint or limit of a range. Japanese rendering depends on predicate: a deadline for arrival versus the end of ongoing work."
+    },
+    {
+      "url": "https://krdict.korean.go.kr/m/eng/searchResultView?ParaWordNo=70070&currentPage=1&exaType=&font_size=12&mainSearchWord=%EB%B0%96&nation=eng&nationCode=6&proverbType=&searchType=W&sort=W&viewType=A&wordMatchFlag=N",
+      "checked": "밖에 excludes alternatives and combines with negation in the taught declarative constructions. 물만 없다 and 물밖에 없다 have different scopes; original contextual examples."
+    },
+    {
+      "url": "https://krdict.korean.go.kr/eng/dicMarinerSearch/search?mainSearchWord=%EB%A7%8C%ED%81%BC",
+      "checked": "Particle 만큼 expresses a similar degree or limit; same degree is not a claim of mathematically exact measurement."
+    },
+    {
+      "url": "https://krdict.korean.go.kr/jpn/dicMarinerSearch/search?mainSearchWord=%EB%B3%B4%EB%8B%A4",
+      "checked": "Particle 보다 marks the standard of comparison; predicate determines the comparison, not an absolute better-than meaning."
+    },
+    {
+      "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=261&pageIndex=1&qna_seq=316447",
+      "checked": "처럼 indicates similarity; the original running example explicitly allows a speed interpretation in context rather than prohibiting degree comparisons."
+    }
+  ],
+  "pedagogy": [
+    "First show two complete, natural Korean sentences with short Japanese scene labels and explanations. Distinguish what changes and why before practice.",
+    "Compare 은/는–이/가, 은/는–을/를, 이/가–을/를, location 에–에서, departure/arrival 에–에서, 에–(으)로 and place–tool, 한테–하고, 한테–한테서, 한테–에게–께, and 은/는–도–만.",
+    "Use Japanese meaning/situation choices when both sentences are valid (topic/focus, register, 에/로 destinations, 한테/한테서 sources). Use particle gaps only with an explicit intended meaning or a clear predicate constraint. No allomorph-only drills.",
+    "Do not equate Korean particles one-to-one with Japanese translations. 에서 is not simply movement and 에 stillness. 한테 받다 and 한테서 받다 are both natural. 하고 with 전화하다 can identify the other person on the call, not only a physically accompanying person.",
+    "Compare 커피를 좋아해요 and 커피가 좋아요 with exact audio: verb 좋아하다 uses 을/를, adjective 좋다 uses 이/가 in this preference pattern. Both express preference and 좋아요 also works for drink selection; not a habitual/momentary split.",
+    "은/는 may introduce a topic or contrast but does not itself mean only. 도 adds and 만 restricts in the presented drink/student contexts. 께 honors the recipient while 에게 alone does not.",
+    "Claude Desktop Code read-only planning and final grammar/renderer/migration review completed. No P1/P2 found; lightly reduced translation-leading prompts after the optional P3 comment.",
+    "Keep ten IDs and completed history. Content version 2 restarts replaced incomplete units at learn, clears stale selected answers, and validates old three-choice saves with the legacy answer catalog.",
+    "Append 25-11 (에/부터/까지), 25-12 (만/밖에), 25-13 (보다/만큼/처럼), preserving all original ten lesson bodies and current contentVersion 2 progress. Three units each; interpreting meaning rather than declaring both-valid expressions ungrammatical.",
+    "25-11 arrival deadline allows arriving early; continuing work until a time illustrates the other Japanese translation. 25-12 contrasts water-only absence with absence of everything except water; insufficiency is not obligatory. 25-13 avoids treating 처럼 as incapable of expressing similar degree.",
+    "2026-10-30 extension review: logged-in Claude Desktop Code read the final nine units and catalog, found no P1/P2 grammar, Japanese or answer-ambiguity issues. Optional wording refinements applied: less leading deadline question, natural money scene label, direct ability question, and 언니/누나 speaker distinction. Codex edits only; no CLI/API use."
+  ],
+  "audio": "All example and correct-answer sentences use exact-text bundled audio via particle-course-audio.js. File provenance and synthesis/verification limits are tracked separately in particle-audio-20261029.json.",
+  "validation": "Content assertions cover metadata/answer counts, complete Korean sentence reconstruction and spacing, exact highlight ranges, allomorphs including the ㄹ exception, and context-sensitive distractor feedback. Physical-device listening is not certified by these assertions.",
+  "updated": "2026-10-30",
+  "contentVersion": 2
+}

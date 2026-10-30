@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {freshState,reduce} from '../src/engine.js';import {freshKoreanProgress} from '../src/korean-state.js';import {valid,load} from '../src/storage.js';import {matchesSpeakingTarget} from '../src/korean-speaking.js';
+import {freshState,reduce} from '../src/engine.js';import {freshKoreanProgress} from '../src/korean-state.js';import {valid,load} from '../src/storage.js';import {matchesSpeakingTarget,speakingResult} from '../src/korean-speaking.js';
 const start=()=>({...freshState(),onboarded:true,courseDirection:'ja-ko',onboardingLevel:2,korean:{version:4,active:'3-1',lessons:{'3-1':{...freshKoreanProgress('3-1'),phase:'quiz',started:true,caseSeen:true,selected:0}}}});
 test('first exchange answer opens persisted speaking step before counting the sentence',()=>{
  let s=reduce(start(),{type:'korean-check'});assert.equal(s.korean.lessons['3-1'].phase,'speak');assert.equal(s.korean.lessons['3-1'].index,0);assert.equal(s.korean.history,undefined);assert.ok(valid(s));
@@ -22,6 +22,17 @@ test('speech matching uses the current sentence instead of the first sentence',(
  assert.equal(matchesSpeakingTarget('저는 학생이에요.', '커피를 좋아해요.'),false);
  assert.equal(matchesSpeakingTarget('', ''),false);
 });
+test('recognizer alternatives can recover the spoken sentence without accepting similar or incomplete speech',()=>{
+ const target='저는 학생이에요.';
+ assert.deepEqual(speakingResult({text:'저는 학성이에요',alternatives:['저는 학성이에요','저는 학생이에요.']},[target]),{text:target,matched:true});
+ assert.equal(speakingResult({text:'저는 학성이에요'},[target]).matched,false);
+ assert.equal(speakingResult({text:'저는 학생이에요 아니요',alternatives:['학생이에요','저는 학생이 아니에요']},[target]).matched,false);
+ assert.equal(speakingResult({text:'저는 회사원이에요',alternatives:['저는 회사원이에요','저는 선생님이에요','저는 의사예요',target]},[target]).matched,false);
+ assert.deepEqual(speakingResult({text:'',alternatives:[null,42,'  ']},[target]),{text:'',matched:false});
+ assert.deepEqual(speakingResult(undefined,[target]),{text:'',matched:false});
+ assert.equal(speakingResult({text:'なにいろですか。'},['何色ですか。','なにいろですか']).matched,true);
+ assert.deepEqual(speakingResult({text:'自分の考えです',alternatives:['別の候補']},[],true),{text:'自分の考えです',matched:true});
+});
 test('all twelve exchange sentences persist speaking then advance once, including final practice handoff',async()=>{
  const {sentenceProgress}=await import('../src/sentence-state.js');
  const {prepareContent,interceptCompletion}=await import('../src/practice-content.js');
@@ -41,7 +52,7 @@ test('all twelve exchange sentences persist speaking then advance once, includin
 test('every active level-two Korean lesson persists speech, returns to quiz and migrates pending completion',async()=>{
  const {koreanLessons,koreanHasSpeaking}=await import('../src/korean-state.js');
  let count=0;
- for(const lesson of koreanLessons.filter(l=>koreanHasSpeaking(l.id))){
+ for(const lesson of koreanLessons.filter(l=>l.level===2&&koreanHasSpeaking(l.id))){
   for(let index=0;index<lesson.count;index++){
    const initial={...start(),korean:{version:4,active:lesson.id,lessons:{[lesson.id]:{...freshKoreanProgress(lesson.id),index,phase:'quiz',selected:index%3,started:true,caseSeen:true}}}};
    const spoken=reduce(initial,{type:'korean-check'});assert.equal(spoken.korean.lessons[lesson.id].phase,'speak');assert.equal(load({getItem:()=>JSON.stringify(spoken)}).blocked,false);

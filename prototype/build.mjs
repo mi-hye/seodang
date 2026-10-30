@@ -48,7 +48,10 @@ async function build() {
   const developmentMode = process.env.SEODANG_DEV_MODE === '1';
   await writeFile('dist/src/build-config.js', `export const developmentMode = ${developmentMode};\nexport const appVersion = ${JSON.stringify(JSON.parse(await readFile('app.json','utf8')).expo.version)};\n`);
   // Pending lyric permissions: local previews never enter production assets.
-  if(!developmentMode)await writeFile('dist/src/song-lesson-content.js','export const songContent = {};\n');
+  if(!developmentMode){
+    await writeFile('dist/src/song-lesson-content.js','export const songContent = {};\n');
+    await writeFile('dist/src/course-twenty-song-content.js','export const courseTwentySongContent = {};\n');
+  }
   await cp("start-asset-test.html", "dist/start-asset-test.html");
   await mkdir("dist/references", { recursive: true });
   for (const name of ["01_start_hanok.png"])

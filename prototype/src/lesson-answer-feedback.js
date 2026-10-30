@@ -1,12 +1,12 @@
 import {createReviewCorrectFeedback} from './review-correct-feedback.js';
 import {dialogueProgress,reduceDialogue} from './dialogue-state.js';
 import {readingProgress,reduceReading} from './reading-state.js';
-import {koreanProgress,reduceKorean} from './korean-state.js';
+import {koreanProgress,reduceKorean,isComparisonCourse} from './korean-state.js';
 import {courseGroup,japaneseLessonUI} from './curriculum.js';
 
 // Inspect the existing reducer's result; keep grading and saved progress unchanged.
 export function isAdvancingCorrectAnswer(s,kind,action,id){
- if(courseGroup(s.onboardingLevel)<4||action!==`${kind}-check`||s.practices?.[`${s.courseDirection}:${kind}:${kind==='dialogue'?0:kind==='reading'?s.onboardingLevel:s.korean?.active}`])return false;
+ if(kind==='korean'&&isComparisonCourse(s.korean?.active)||courseGroup(s.onboardingLevel)<4||action!==`${kind}-check`||s.practices?.[`${s.courseDirection}:${kind}:${kind==='dialogue'?0:kind==='reading'?s.onboardingLevel:s.korean?.active}`])return false;
  let before,after;
  if(kind==='dialogue'){before=dialogueProgress(s);after=reduceDialogue(before,{type:action,id});}
  else if(kind==='reading'){before=readingProgress(s,s.onboardingLevel);after=reduceReading(before,{type:action,id},s.onboardingLevel);}

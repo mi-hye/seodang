@@ -1,0 +1,223 @@
+{
+  "scope": "Korean 1.5 only; 10 lessons, 3 sentences practiced twice. Level 1 unchanged.",
+  "method": "Original Japanese learning guidance; exact bundled audio reuse, no new synthesis or uploads.",
+  "verification": "All 30 selected clips have prior normalized-exact ASR and existing SHA-256. This is not new human listening or a pronunciation score.",
+  "files": [
+    {
+      "lesson": "15-1",
+      "text": "아이예요.",
+      "file": "assets/course-voices/ko-KR-9de51bf56cddd0fb.m4a",
+      "sha256": "3ec4bc9e82b9e019f322fd3a16c08c8e5623ddcad3e2848e3d331e642a6fc9a4",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-1",
+      "text": "어디에 사세요?",
+      "file": "assets/course-voices/ko-KR-92337a403053e8aa.m4a",
+      "sha256": "f9928f0abcc5a21f07b439123750287f8075199d20a8822e9fb2180c4fa07c96",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-1",
+      "text": "고마워요.",
+      "file": "assets/course-voices/ko-KR-ef4ba489d3ee22c7.m4a",
+      "sha256": "712aae8954f4f9a748c73e62baa520bbc4a883f00c0d7d524fe889eba26bd263",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-2",
+      "text": "우유예요.",
+      "file": "assets/course-voices/ko-KR-0bad527d82a36133.m4a",
+      "sha256": "76f510500cebb19298819e9a84313c915a0b13a4a881fb8419d5f523a1c73156",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-2",
+      "text": "물이에요.",
+      "file": "assets/course-voices/ko-KR-05527595b847925b.m4a",
+      "sha256": "1760675c0d2bc2402e1900f86d36f5f9e8a3c683a49ce3851fadb1218a9106b3",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-2",
+      "text": "의자예요.",
+      "file": "assets/course-voices/ko-KR-bc16d525ad913a6b.m4a",
+      "sha256": "7368b852e351372b56050f16e9c32d76e301ab5a4e3cd698648c7a76070a4cb0",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-3",
+      "text": "저는 가수예요.",
+      "file": "assets/course-voices/ko-KR-8aaef73319fc98bd.m4a",
+      "sha256": "d09de44b35bf0d1d399b19616fd93271c457804cae5d774ab61a090a0ec1b5a1",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-3",
+      "text": "카드로 낼게요.",
+      "file": "assets/course-voices/ko-KR-9225520b66f84fe5.m4a",
+      "sha256": "fca1654b7f359237baf0e426cd5e8cbf80c1a52afc45df545dd3d193ba68fc12",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-3",
+      "text": "토끼예요.",
+      "file": "assets/course-voices/ko-KR-3377f9e175631f8f.m4a",
+      "sha256": "7a6bcf05f1e934435a614d38cda4d6857a8e35a0ac0077803bdf22a34ecc3493",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-4",
+      "text": "두 장 주세요.",
+      "file": "assets/course-voices/ko-KR-95f38c82d04ad844.m4a",
+      "sha256": "d36be68181890ab7897af8ff67160f2c6582d2fdf1a271ee056ee7743c3abba9",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-4",
+      "text": "오늘은 전철을 안 타요.",
+      "file": "assets/course-voices/ko-KR-67652a19c501cdd7.m4a",
+      "sha256": "f53d2e0007cd284356aca2db1f9b4607b683ede68583d794094913824b9a8317",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-4",
+      "text": "따로 가져갈 게 있나요?",
+      "file": "assets/course-voices/ko-KR-31666e42bb79ff88.m4a",
+      "sha256": "379a7f100eee65da40669a7c44633a5a121fec2ff6f137bf83e3ff836f085ca5",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-5",
+      "text": "밥이에요.",
+      "file": "assets/course-voices/ko-KR-4112c6ba047c68f0.m4a",
+      "sha256": "fc879a3b1ae292a5c6a82f8eeb996fd3ec7da6546e5f016cfe1a713a5b878263",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-5",
+      "text": "커피예요.",
+      "file": "assets/course-voices/ko-KR-fe306f3d662210f3.m4a",
+      "sha256": "0a9e3892d249399c73f4cffcfa49278d8412062210a754a2c3f94389219a81f5",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-5",
+      "text": "더 빨리 말씀해 주세요.",
+      "file": "assets/course-voices/ko-KR-7185900d5b92b9e3.m4a",
+      "sha256": "c7c437ee9408843c62f8c411517fc00fdf8e8ff450bdac4613b429c44ba3c7ca",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-6",
+      "text": "과자예요.",
+      "file": "assets/course-voices/ko-KR-e08532a92fa15d67.m4a",
+      "sha256": "d29594c21a7e09e39a76598060c70ef904996235de8f226d31ebdba602e44023",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-6",
+      "text": "이 차를 하나 더 주세요.",
+      "file": "assets/course-voices/ko-KR-6284d86fd6088361.m4a",
+      "sha256": "85cbcd5c99ccdd5c1c680979dc0b369fd50e6490c6ab26d2606aa130fab1e228",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-6",
+      "text": "주스를 주문했어요.",
+      "file": "assets/course-voices/ko-KR-8daca61b95a4f435.m4a",
+      "sha256": "7f0fb80fa210771df7b372b3e472d825f63e192ae62c453aa475625698a47f60",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-7",
+      "text": "안녕하세요.",
+      "file": "assets/course-voices/ko-KR-62a66308d3cf577a.m4a",
+      "sha256": "dad0e1addab278da5dd79fdf2b02ab060724a7a0c599f3b374ce6c1e1c30c165",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-7",
+      "text": "정말 고마워요.",
+      "file": "assets/course-voices/ko-KR-844b23c2f8198bac.m4a",
+      "sha256": "a1b3bb160d5f7873066848b0023af908a37b0d0a7a1767d095668f76a4d281b3",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-7",
+      "text": "안녕히 가세요.",
+      "file": "assets/course-voices/ko-KR-4fc6aa48fb8693ea.m4a",
+      "sha256": "10baa6e600711fa96c5cb14d7b61bc90d8b0db95b5d56be7cd88044a75de289d",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-8",
+      "text": "문이에요.",
+      "file": "assets/course-voices/ko-KR-731a5f092053c227.m4a",
+      "sha256": "55ac46617d640bb1dc4f3e1fac3d68fb71f95f6e33332561ae60575cb99c4ced",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-8",
+      "text": "현금으로 낼게요.",
+      "file": "assets/course-voices/ko-KR-efa41a815a213faf.m4a",
+      "sha256": "ac3bbeb8c43d33c13cc39d39e85d56d1163c760fc29703a32cea33547381f7cf",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-8",
+      "text": "봉투 한 장 주세요.",
+      "file": "assets/course-voices/ko-KR-d1bce3572298d955.m4a",
+      "sha256": "c1ff8d2353619dac88ae2da4190730807d26e426b08b6537a5666f0a7e9d453f",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-9",
+      "text": "얼마인가요?",
+      "file": "assets/course-voices/ko-KR-0d6dee5859917bd2.m4a",
+      "sha256": "09bc3c92d81ca58a4c15b33c4fc30c684c441ed1a6f6588394f06d01a942b253",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-9",
+      "text": "어디에 놓을까요?",
+      "file": "assets/course-voices/ko-KR-8f18b0e70fd5d629.m4a",
+      "sha256": "ffc45984da0d6325d42729fa996b9f0ee6a3d56e32c77a43c9fbc8c4f38db534",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-9",
+      "text": "예약해야 하나요?",
+      "file": "assets/course-voices/ko-KR-2e824217b8cb080d.m4a",
+      "sha256": "f96f6eb4a20f3e509bbbb74f9aea521e2b7c3bc45deee06bf2fdfb0c7f0ed427",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-10",
+      "text": "문을 열어요.",
+      "file": "assets/course-voices/ko-KR-0ec309f9accb9eb7.m4a",
+      "sha256": "04a5648c84148d6bac180dc52f70ced74ebb17d4e5e151a1c76fed7481071118",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-10",
+      "text": "물을 마셔요.",
+      "file": "assets/course-voices/ko-KR-09c5b1e915bdada7.m4a",
+      "sha256": "2b4ec8816e43d5d4cc6fa93417fc7d28931600a90a32fbbe6ddda48c93c0bf23",
+      "priorAsr": "normalized-exact"
+    },
+    {
+      "lesson": "15-10",
+      "text": "밥을 먹어요.",
+      "file": "assets/course-voices/ko-KR-facbb0cb156b1221.m4a",
+      "sha256": "bf5df8ddd6afd989e8a1d833b1d5e12e28368be17763a9cb3d167fa981040b86",
+      "priorAsr": "normalized-exact"
+    }
+  ],
+  "references": [
+    "prototype/docs/asset-provenance/course-expansion-20261022.json",
+    "prototype/src/korean-pronunciation-data.js",
+    "https://www.korean.go.kr/kornorms/main/main.do"
+  ],
+  "review": "Claude Desktop Code read-only content/UI review; focus wording, lesson names and nasal articulation copy corrected. Optional ASR and recording are not pronunciation scoring."
+}

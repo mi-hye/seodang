@@ -6,7 +6,7 @@ export const EVENTS=['analytics_enabled','app_opened','lesson_started','learning
 const validUUID=v=>typeof v==='string'&&/^[\da-f]{8}-(?:[\da-f]{4}-){3}[\da-f]{12}$/i.test(v);
 const TTL=7*24*60*60*1000, SESSION=30*60*1000;
 const index=v=>Number.isInteger(v)&&v>=0&&v<=1000;
-const allowed={item_index:index,round_index:index,mode_index:index,match_count:index,correct:v=>typeof v==='boolean',active_ms:v=>Number.isInteger(v)&&v>=0&&v<=60000,exit_reason:v=>['navigation','restart'].includes(v),audio_source:v=>['file','device'].includes(v),audio_result:v=>['started','completed','failed','cancelled'].includes(v),playback_id:validUUID,course_direction:v=>['ko-ja','ja-ko'].includes(v),level:v=>Number.isInteger(v)&&v>=1&&v<=5,lesson_id:v=>typeof v==='string'&&(/^(ko-ja|ja-ko):(expert|scenario|kana|basic|korean|sentence|reading|dialogue|labels|listening|play):[\d-]+$/.test(v)||Boolean(expansionReview(v))),phase:v=>['opinion','perspective','expression','reflection','speak','intro','scenario','learn','reading','write','quiz','practice','arrange','solve','build','read','listen','investigate','solved','transfer','summary','done','review','match'].includes(v),attempt_id:validUUID};
+const allowed={item_index:index,round_index:index,mode_index:index,match_count:index,correct:v=>typeof v==='boolean',active_ms:v=>Number.isInteger(v)&&v>=0&&v<=60000,exit_reason:v=>['navigation','restart'].includes(v),audio_source:v=>['file','device'].includes(v),audio_result:v=>['started','completed','failed','cancelled'].includes(v),playback_id:validUUID,course_direction:v=>['ko-ja','ja-ko'].includes(v),level:v=>v===1.5||v===2.5||v===3.5||Number.isInteger(v)&&v>=1&&v<=5,lesson_id:v=>typeof v==='string'&&(/^(ko-ja|ja-ko):(expert|scenario|kana|basic|korean|sentence|reading|dialogue|labels|listening|play):[\d-]+$/.test(v)||Boolean(expansionReview(v))),phase:v=>['opinion','perspective','expression','reflection','speak','intro','scenario','learn','reading','write','quiz','practice','arrange','solve','build','read','listen','investigate','solved','transfer','summary','done','review','match'].includes(v),attempt_id:validUUID};
 export function createAnalytics({storage,send,uuid=()=>crypto.randomUUID(),now=()=>Date.now(),environment='development',platform='web',appVersion='unknown'}){
  let data={consent:null,queue:[]},busy=false,controller,nextTry=0,failures=0,epoch=0;
  try{const saved=JSON.parse(storage.getItem(ANALYTICS_KEY));if(saved&&[true,false,null].includes(saved.consent))data={...saved,queue:Array.isArray(saved.queue)?saved.queue:[]};}catch{}
@@ -34,6 +34,11 @@ export function createAnalytics({storage,send,uuid=()=>crypto.randomUUID(),now=(
   if(value)capture('analytics_enabled');
   return data.consent===value;
  }
+ function resetConsent(){
+  epoch++;controller?.abort();nextTry=0;failures=0;
+  data={consent:null,queue:[]};
+  return persist();
+ }
  async function flush(){
   if(data.consent!==true||busy||now()<nextTry)return;
   prune();if(!data.queue.length){persist();return;}
@@ -54,5 +59,5 @@ export function createAnalytics({storage,send,uuid=()=>crypto.randomUUID(),now=(
   const clean=cleanAcquisition(properties);if(!clean.acquisition_status)return false;
   data.acquisition=clean;return capture('install_attribution');
  }
- return {capture,flush,setConsent,reload,recordAcquisition,get hasAcquisition(){return !!data.acquisition;},get consent(){return data.consent;},get installationId(){return data.id||null;},get pending(){return data.queue.length;}};
+ return {capture,flush,setConsent,resetConsent,reload,recordAcquisition,get hasAcquisition(){return !!data.acquisition;},get consent(){return data.consent;},get installationId(){return data.id||null;},get pending(){return data.queue.length;}};
 }

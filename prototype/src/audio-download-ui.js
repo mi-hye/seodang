@@ -7,7 +7,7 @@ import {showSheet,closeSheet} from './sheet.js';
 let lessonController;
 export function prefetchLesson(state,kind,notify){
  lessonController?.abort();lessonController=new AbortController();const {signal}=lessonController;
- void (async()=>{const c=await catalog(),pack=c.packs[kind==='expert'?expertKey(state):kind==='scenario'?scenarioKey(state):practiceKey(state,kind)];if(!pack)return;await downloadFiles(pack.files,{signal});})().catch(e=>{if(!signal.aborted)notify(japaneseLessonUI(state)?'音声を保存できませんでした。通信環境を確認してください。':'음성을 저장하지 못했어요. 인터넷 연결을 확인해 주세요.');});
+ void (async()=>{const c=await catalog(),pack=c.packs[kind==='expert'?expertKey(state):kind==='scenario'?scenarioKey(state):practiceKey(state,kind)];if(!pack)return;await downloadFiles(pack.files,{signal});})().catch(()=>{if(!signal.aborted)notify(japaneseLessonUI(state)?'音声を保存できませんでした。通信環境を確認してください。':'음성을 저장하지 못했어요. 인터넷 연결을 확인해 주세요.');});
 }
 export function cancelLessonDownload(){lessonController?.abort();}
 let styles;

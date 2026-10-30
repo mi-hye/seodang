@@ -16,7 +16,7 @@ test('published packs cover every lesson practice clip and use verified immutabl
  for(const [key,pack]of Object.entries(catalog.packs)){
   const [courseDirection,kind,id]=key.split(':');if(kind==='expert'){const article=JSON.parse(readFileSync(new URL('../src/expert-content.json',import.meta.url)))[courseDirection][id];assert.deepEqual(pack.files,article.discussion?[...article.discussion.perspectives,...article.discussion.expressions].map(s=>s.audioFile):[article.audio.audioFile,...article.sentences.map(s=>s.audioFile)]);for(const file of pack.files)assert.ok(catalog.files[file]);continue;}await prepareContent(kind);
   const s={...freshState(),courseDirection,onboardingLevel:pack.level,scenarioActive:id,sentenceActive:Number(id),basics:{active:Number(id)},kana:{active:Number(id)},korean:{active:id}};
-  for(const unit of practiceUnits(s,kind)){assert.ok(pack.files.includes(unit.audio.audioFile),`${key}: ${unit.audio.audioFile}`);if(kind==='scenario')assert.equal(catalog.files[unit.audio.audioFile].text,unit.audio.text);}
+  for(const unit of practiceUnits(s,kind)){if(unit.audio.bundled){const files=['batchim-expansion-20261027','korean-basic-order-20261027'].flatMap(name=>JSON.parse(readFileSync(new URL(`../docs/asset-provenance/${name}.json`,import.meta.url))).files);const clip=files.find(x=>x.file===unit.audio.audioFile);assert.ok(clip,unit.audio.audioFile);assert.equal(clip.text,unit.audio.text);assert.equal(createHash('sha256').update(readFileSync(new URL('../'+clip.file,import.meta.url))).digest('hex'),clip.sha256);continue;}assert.ok(pack.files.includes(unit.audio.audioFile),`${key}: ${unit.audio.audioFile}`);if(kind==='scenario')assert.equal(catalog.files[unit.audio.audioFile].text,unit.audio.text);}
   for(const file of pack.files)assert.ok(catalog.files[file],`${key}: ${file}`);
  }
 });
@@ -83,4 +83,29 @@ test('choice audio packs contain all selectable sentences for chat and order rep
    assert.equal(createHash('sha256').update(readFileSync(new URL(`../${a.audioFile}`,import.meta.url))).digest('hex'),repair.sha256);
   }else{assert.ok(catalog.packs[`${direction}:scenario:${id}`].files.includes(a.audioFile));assert.equal(catalog.files[a.audioFile].text,a.text);assert.equal(catalog.files[a.audioFile].locale,a.locale);}
  }
+});
+
+test('audio pack generation covers live remote clips without entering retired or app-bundled courses',async()=>{
+ const {mkdtempSync,mkdirSync,writeFileSync,rmSync}=await import('node:fs');
+ const {tmpdir}=await import('node:os');const {join}=await import('node:path');
+ const {fileURLToPath}=await import('node:url');const {execFileSync}=await import('node:child_process');
+ const {scenarioLessons,scenarioAvailable}=await import('../src/scenario-state.js');
+ const dir=mkdtempSync(join(tmpdir(),'seodang-audio-pack-test-'));
+ try{
+  const out=join(dir,'output/final-voices');mkdirSync(out,{recursive:true});
+  writeFileSync(join(out,'jobs.json'),JSON.stringify(Object.keys(catalog.files).map(file=>({file}))));
+  execFileSync(process.execPath,[fileURLToPath(new URL('../scripts/build-audio-packs.mjs',import.meta.url))],{cwd:dir,stdio:'pipe'});
+  const packs=JSON.parse(readFileSync(join(out,'packs.json')));
+  for(const [key,pack]of Object.entries(packs)){
+   assert.ok(pack.files.length,key);for(const file of pack.files)assert.ok(catalog.files[file],file);
+   const [direction,kind,id]=key.split(':');if(kind!=='scenario')continue;
+   const lesson=scenarioLessons.find(l=>l.id===id);assert.ok(scenarioAvailable({courseDirection:direction},lesson));assert.equal(Boolean(lesson.extended),false);
+  }
+  for(const direction of ['ko-ja','ja-ko']){
+   assert.ok(packs[`${direction}:scenario:8`].files.length,'hotel roleplay keeps its downloadable speech');
+   assert.equal(packs[`${direction}:scenario:course3-8`],undefined,'expanded course speech is already app-bundled');
+  }
+  assert.equal(packs['ja-ko:korean:15-1'],undefined,'pronunciation sentences are already app-bundled');
+  for(let n=1;n<=10;n++)assert.equal(packs[`ja-ko:korean:25-${n}`],undefined,'particle examples and answers are already app-bundled');
+ }finally{rmSync(dir,{recursive:true,force:true});}
 });

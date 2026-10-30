@@ -1,5 +1,7 @@
+import {courseTwentyVideos} from './course-twenty-video-catalog.js';
 // Metadata only. Replacements preserve the 17 lesson positions and old saved IDs.
 export const courseVideos=[
+...courseTwentyVideos,
   {
     "id": "scene-jp3-9",
     "direction": "ko-ja",

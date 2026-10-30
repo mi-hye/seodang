@@ -1,0 +1,19 @@
+{
+  "purpose": "Basic consonants use a consistent ㅏ vowel; existing clips retain immutable IDs.",
+  "files": [
+    {
+      "text": "마",
+      "file": "assets/course-voices/ko-KR-4c4cc0773cb41a79.m4a",
+      "sha256": "a6ade891bde4a2817620dc958684beac6896f79412def6e26db62d5d907a2397",
+      "bytes": 13532,
+      "duration": 1.4628571428571429,
+      "transcript": " 마",
+      "repeatTranscript": " 마",
+      "voice": "Supertonic 3 M1",
+      "synthesisInput": "마",
+      "speed": 0.92,
+      "humanListening": false
+    }
+  ],
+  "validation": "Local AAC decode + unprompted single/repeated ASR. No human listening certification."
+}

@@ -1,10 +1,11 @@
+import {courseTwentyCatalog} from './course-twenty-catalog.js';
 import {courseOneCatalog} from './course-one-catalog.js';
 import {courseThreeCatalog} from './course-three-catalog.js';
 import {courseFourCatalog} from './course-four-catalog.js';
 import {courseFiveCatalog} from './course-five-catalog.js';
 
 // Eager metadata only. Dialogues, translations and exercises load on course entry.
-export const courseExpansionCatalog=[...courseOneCatalog,...courseThreeCatalog,...courseFourCatalog,...courseFiveCatalog];
+export const courseExpansionCatalog=[...courseOneCatalog,...courseThreeCatalog,...courseFourCatalog,...courseFiveCatalog,...courseTwentyCatalog];
 export const expansionLesson=id=>courseExpansionCatalog.find(l=>l.id===id);
 export const expansionReview=key=>{
  if(typeof key!=='string')return null;

@@ -42,7 +42,7 @@ test('listening grids have four distinct choices with exactly one target in ever
  const {renderPractice}=await import('../src/practice.js');
  const {koreanLessons}=await import('../src/korean-state.js');
  const cases=practiceCases().map(([kind,s])=>[kind,s]);
- for(const l of koreanLessons)cases.push(['korean',{...freshState(),courseDirection:'ja-ko',onboardingLevel:l.level,korean:{active:l.id}}]);
+ for(const l of koreanLessons.filter(l=>![8,9,10].includes(l.level)))cases.push(['korean',{...freshState(),courseDirection:'ja-ko',onboardingLevel:l.level,korean:{active:l.id}}]);
  for(const [kind,s] of cases){if(isCasePractice(practiceKey(s,kind)))continue;await prepareContent(kind);const units=practiceUnits(s,kind);for(let round=0;round<3;round++)for(let index=0;index<units.length;index++){
   const state={...s,practices:{[practiceKey(s,kind)]:{round,mode:0,index,count:units.length}}};
   const html=renderPractice(state,kind,()=>''),choices=[...html.matchAll(/data-choice="\d"[^>]*>(.*?)<\/button>/g)].map(m=>m[1].replace(/<[^>]+>/g,''));

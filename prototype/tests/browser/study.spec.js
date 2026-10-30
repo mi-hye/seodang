@@ -1,4 +1,5 @@
 import {test,expect} from '@playwright/test';
+import {videoSceneContent} from '../../src/video-scene-content.js';
 import {freshState} from '../../src/engine.js';
 const click=(page,action)=>page.locator(`[data-action="${action}"]`).first().click();
 for(const direction of ['ko-ja','ja-ko'])for(const width of [320,390])test(`whole lesson review ${direction} ${width}`,async({page})=>{
@@ -11,7 +12,14 @@ for(const direction of ['ko-ja','ja-ko'])for(const width of [320,390])test(`whol
  await page.screenshot({path:`output/whole-review-${direction}-${width}-${test.info().project.name}.png`,fullPage:true});
  await click(page,'study-lesson');await expect(page.locator('.view-video')).toBeVisible();await expect(page.locator('.app-header-title')).toContainText('3.');
  await click(page,'home');await click(page,'my');await click(page,'study-review');await expect(page.locator('.study-card')).toHaveCount(1);
- await click(page,'study-lesson');await click(page,'video-next');await click(page,'video-next');await expect(page.locator('.practice-complete')).toBeVisible();
+ await click(page,'study-lesson');await click(page,'video-next');
+ for(const phase of ['meaning','use']){
+  await expect(page.locator(`.video-phase-${phase}`)).toBeVisible();
+  await page.locator(`[data-action="video-select"][data-id="${videoSceneContent[id][phase].answer}"]`).click();
+  await click(page,'video-check');await expect(page.locator('.video-scene-feedback.success')).toBeVisible();await click(page,'video-next');
+  if(phase==='meaning'){await expect(page.locator('.video-phase-learn')).toBeVisible();await click(page,'video-next');}
+ }
+ await expect(page.locator('.practice-complete')).toBeVisible();
  await click(page,'home');await click(page,'my');await click(page,'study-review');await expect(page.locator('.study-card')).toHaveCount(0);await expect(page.locator('.study-empty')).toBeVisible();
  await page.reload();await click(page,'my');await click(page,'study-review');await expect(page.locator('.study-card')).toHaveCount(0);
 });

@@ -1,5 +1,7 @@
+import {courseTwentySongs} from './course-twenty-song-catalog.js';
 // Local previews replace regular lessons without changing stored IDs.
 export const courseSongs=[
+...courseTwentySongs,
   {
     "id": "jp-kaiju",
     "direction": "ko-ja",

@@ -1,3 +1,8 @@
+import {renderPronunciationCourse,mountPronunciationSpeaking,pronunciationContrastAudio} from './pronunciation-course.js';
+import {renderParticleCourse} from './particle-course.js';
+import {isComparisonCourse} from './comparison-course-catalog.js';
+export {particleAudio,mountParticleCorrect} from './particle-course.js';
+export {mountPronunciationSpeaking,pronunciationContrastAudio};
 import {readingPassage,readingOptions} from './reading-layout.js';
 import {caseLesson} from './case-lesson.js';
 import {renderKoreanSpeaking} from './korean-speaking.js';
@@ -12,9 +17,9 @@ export {composeKorean,koreanExampleAudio};
 export {renderKoreanLettersComplete} from './korean-letters.js';
 import {mountKoreanStrokes} from './korean-strokes.js';
 import {koreanContent} from './korean-content.js';
-import {koreanLessons,koreanProgress,koreanQuizOnly} from './korean-state.js';
+import {koreanLessons,koreanProgress,koreanQuizOnly,isPronunciationCourse} from './korean-state.js';
 import {button,esc,icon,phraseText} from './ui.js';
-export function koreanAudio(s){const id=s.korean.active,p=koreanProgress(s,id),item=koreanContent[id][p.index];if(extraKoreanCases[id])return levelTwoAudio(`korean.${id}.${p.index}`,item.text,'ko-KR');return {id:`korean.${id}.${p.index}`,text:item.spoken||item.text,locale:'ko-KR',playbackRate:koreanLessons.find(l=>l.id===id)?.level===2?0.8:undefined,status:'ready',audioFile:`assets/audio/korean/korean.${id}.${p.index}.wav`,productionMethod:'Selected offline TTS',voice:'Supertonic 3 M1',voiceId:'Supertonic 3 M1'};}
+export function koreanAudio(s){const id=s.korean.active,p=koreanProgress(s,id),item=koreanContent[id][p.index];if(isPronunciationCourse(id))return item.audio;if(item.audio)return item.audio;if(extraKoreanCases[id])return levelTwoAudio(`korean.${id}.${p.index}`,item.text,'ko-KR');return {id:`korean.${id}.${p.index}`,text:item.spoken||item.text,locale:'ko-KR',playbackRate:koreanLessons.find(l=>l.id===id)?.level===2?0.8:undefined,status:'ready',audioFile:`assets/audio/korean/korean.${id}.${p.index}.wav`,productionMethod:'Selected offline TTS',voice:'Supertonic 3 M1',voiceId:'Supertonic 3 M1'};}
 export function koreanIntroAudio(s){
  const id=s.korean.active,l=koreanLessons.find(l=>l.id===id);
  if(!l||![2,4].includes(l.level)||l.retired||koreanProgress(s,id).phase!=='scenario')return [];
@@ -27,6 +32,8 @@ function renderCafeCue(cue){
  return `<p class="case-lesson-cue"><span lang="ko">${esc(parts[1])}</span><span lang="ja">${esc(parts[2])}</span></p>`;
 }
 export function renderKorean(s,top){
+ if(isComparisonCourse(s.korean.active))return renderParticleCourse(s,top);
+ if(isPronunciationCourse(s.korean.active))return renderPronunciationCourse(s,top);
  if(koreanProgress(s,s.korean.active).phase==='speak')return renderKoreanSpeaking(top,koreanContent[s.korean.active][koreanProgress(s,s.korean.active).index].text);
  if(koreanProgress(s,s.korean.active).phase==='scenario'&&koreanCases[s.korean.active])return renderKoreanCase(s,top);
  if(koreanLessons.find(l=>l.id===s.korean.active)?.level===0)return renderKoreanLetters(s,top);

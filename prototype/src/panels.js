@@ -1,6 +1,6 @@
 import {developmentMode} from './build-config.js';
-import {japaneseLessonUI,courseGroup} from './curriculum.js';
-import {t,levelLabels} from './i18n.js';
+import {japaneseLessonUI,courseGroup,levelsFor,courseName,displayLevel} from './curriculum.js';
+import {t} from './i18n.js';
 import { selectedLevel } from "./kana-state.js";
 import { episode, expressions } from "./content.js";
 import { icon, button, expressionCard } from "./ui.js";
@@ -10,14 +10,14 @@ export function renderPanel(kind, state, id) {
   if (kind === "settings") {
     title = t('설정');
     const select=(key,label,choices,current)=>`<label class="setting"><span>${t(label)}</span><select data-setting="${key}">${choices.map(([value,text])=>`<option value="${value}" ${String(current)===String(value)?'selected':''}>${t(text)}</option>`).join('')}</select></label>`;
-    body = `${id === 'learning' ? (developmentMode?select('course','배울 언어',[['ko-ja','일본어'],['ja-ko','한국어']],state.courseDirection):'')+select('difficulty','난이도',levelLabels.map((label,i)=>[i,label]).filter(([,label])=>label),courseGroup(selectedLevel(state))) : ''}${select('textScale','글자 크기',[[1,'기본'],[1.2,'크게']],state.settings.textScale)}${select('motion','화면 움직임',[['system','기기 설정 따르기'],['off','항상 멈추기']],state.settings.motion)}<label class="setting"><span>${t('소리 사용')}</span><input type="checkbox" data-setting="sound" ${state.settings.sound?'checked':''}></label>${id==='learning'?button(japaneseLessonUI(state)?'プロフィールを編集':'내 정보 수정','community-profile','record-row'):''}${id==='learning'?button(t('서당개 안내'),'guide','record-row'):''}${id==='learning'?button(japaneseLessonUI(state)?'音声のダウンロード':'음성 다운로드','audio-downloads','record-row'):''}${id==='learning'?button(japaneseLessonUI(state)?'学習統計の共有（任意）':'학습 통계 공유 (선택)','analytics-consent','record-row'):''}<details class="usage-notice"><summary>${t('이용안내')}</summary><h3>${japaneseLessonUI(state)?'AI音声':'AI 음성'}</h3><p>VOICEVOX Nemo · ${japaneseLessonUI(state)?'男声1':'남성1'}<br>Supertonic 3 · M1<br>Google Cloud Chirp 3 HD · Kore</p><p>${japaneseLessonUI(state)?'学習用音声はAIで生成しています。':'학습용 음성은 AI로 생성했어요.'}</p><p><a href="assets/audio/NOTICE.txt" target="_blank" rel="noopener noreferrer">${t('출처 및 가공 내역')}</a></p><h3>${t('한자 획순 출처')}</h3><p><a href="https://kanjivg.tagaini.net/" target="_blank" rel="noopener noreferrer">KanjiVG</a><br>© 2009/2010/2011 Ulrich Apel and contributors</p><p><a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a></p><p><a href="assets/lesson-kanji/NOTICE.txt" target="_blank" rel="noopener noreferrer">${t('출처 및 가공 내역')}</a></p></details>`;
+    body = `${id === 'learning' ? (developmentMode?select('course','배울 언어',[['ko-ja','일본어'],['ja-ko','한국어']],state.courseDirection):'')+select('difficulty','난이도',levelsFor(state.courseDirection).map(level=>[level,`${displayLevel(level)}. ${courseName(level,japaneseLessonUI(state))}`]),courseGroup(selectedLevel(state))) : ''}${select('textScale','글자 크기',[[1,'기본'],[1.2,'크게']],state.settings.textScale)}${select('motion','화면 움직임',[['system','기기 설정 따르기'],['off','항상 멈추기']],state.settings.motion)}<label class="setting"><span>${t('소리 사용')}</span><input type="checkbox" data-setting="sound" ${state.settings.sound?'checked':''}></label>${id==='learning'?button(japaneseLessonUI(state)?'プロフィールを編集':'내 정보 수정','community-profile','record-row'):''}${id==='learning'?button(t('서당개 안내'),'guide','record-row'):''}${id==='learning'?button(japaneseLessonUI(state)?'音声のダウンロード':'음성 다운로드','audio-downloads','record-row'):''}${id==='learning'?button(japaneseLessonUI(state)?'学習統計の共有（任意）':'학습 통계 공유 (선택)','analytics-consent','record-row'):''}<details class="usage-notice"><summary>${t('이용안내')}</summary><h3>${japaneseLessonUI(state)?'AI音声':'AI 음성'}</h3><p>VOICEVOX Nemo · ${japaneseLessonUI(state)?'男声1':'남성1'}<br>Supertonic 3 · M1<br>Google Cloud Chirp 3 HD · Kore</p><p>${japaneseLessonUI(state)?'学習用音声はAIで生成しています。':'학습용 음성은 AI로 생성했어요.'}</p><p><a href="assets/audio/NOTICE.txt" target="_blank" rel="noopener noreferrer">${t('출처 및 가공 내역')}</a></p><h3>${t('한자 획순 출처')}</h3><p><a href="https://kanjivg.tagaini.net/" target="_blank" rel="noopener noreferrer">KanjiVG</a><br>© 2009/2010/2011 Ulrich Apel and contributors</p><p><a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a></p><p><a href="assets/lesson-kanji/NOTICE.txt" target="_blank" rel="noopener noreferrer">${t('출처 및 가공 내역')}</a></p></details>`;
   }
   if (kind === "clue") {
     const c = episode.clues.find((c) => c.id === id);
     title = c.title;
     body = `<span class="eyebrow">손님이 찾는 가방</span>${expressionCard(
       expressions.find((x) => x.id === c.expressionId),
-      { sound: state.settings.sound, compactAudio: true },
+      { sound: state.settings.sound },
     )}${button("가방 고르기", "close")}`;
   }
   if (kind === "restart") {

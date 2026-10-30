@@ -102,7 +102,7 @@ for(const key of keys)for(const width of [320,390])for(const legacy of [false,tr
  expect(completed.studyTools[s.courseDirection].lessons[key].completedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
  const history=s.courseDirection==='ko-ja'?completed.history:completed.korean.history;
  expect(Object.values(history.days).reduce((total,day)=>total+day.cases,0)).toBe(1);
- await page.locator('[data-action="completed-next"]').click();await expect(await findMapLesson(page,{kind:'scenario',id:id})).toContainText(s.courseDirection==='ko-ja'?'완료':'完了');
+ await page.locator('.practice-complete [data-action="home"]').click();await expect(await findMapLesson(page,{kind:'scenario',id:id})).toHaveAttribute('aria-label',new RegExp(s.courseDirection==='ko-ja'?'완료':'完了'));
  expect(errors).toEqual([]);
 });
 

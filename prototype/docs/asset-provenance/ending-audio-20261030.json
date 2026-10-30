@@ -1,0 +1,478 @@
+{
+  "date": "2026-10-30",
+  "scope": "Korean level 3.5 ending comparisons, lessons 35-1–35-4.",
+  "distribution": "Local app-bundled AAC. No upload or remote catalogue changes.",
+  "voice": "Supertonic 3 M1",
+  "generation": "Cached offline Supertonic 3. Existing exact-text bundled clips are reused unchanged.",
+  "jobsSha256": "52f18711af429738200b08bcb1ddbe3fdeaa7a2609eb1b8f8f6735629bc1a715",
+  "lessons": 4,
+  "clips": 24,
+  "bytes": 500238,
+  "audioVerification": {
+    "status": "automated-comparison-complete",
+    "method": "Every AAC decoded with afconvert; duration, active samples, peak and clipping checked; local mlx-whisper large-v3-turbo without expected-text prompts. Short ASR disagreements are also checked with repeated audio.",
+    "humanListening": false,
+    "devicePlayback": false,
+    "limitations": "ASR and acoustic checks do not certify human listening or device playback.",
+    "summary": {
+      "scope": "All generated AAC files, decoded locally; local unprompted ASR and acoustic checks. Not human listening or device playback certification.",
+      "model": "mlx-community/whisper-large-v3-turbo",
+      "initialPrompt": null,
+      "expected": 24,
+      "verified": 24,
+      "complete": true,
+      "normalizedExact": 24,
+      "japanesePhonetic": 0,
+      "koreanNumberSpelling": 0,
+      "repeatMatched": 0,
+      "mismatches": [],
+      "acousticIssues": []
+    }
+  },
+  "packs": {
+    "35-1": {
+      "files": [
+        "assets/course-voices/ko-KR-76ca670d1500ea23.m4a",
+        "assets/course-voices/ko-KR-75d3e539fd420b17.m4a",
+        "assets/course-voices/ko-KR-7104a5d93181d9d7.m4a",
+        "assets/course-voices/ko-KR-1afb525da9143b73.m4a",
+        "assets/course-voices/ko-KR-1e0d0e7586cb7d3b.m4a",
+        "assets/course-voices/ko-KR-3762d2efa6b050c1.m4a"
+      ]
+    },
+    "35-2": {
+      "files": [
+        "assets/course-voices/ko-KR-59a1712dd094f943.m4a",
+        "assets/course-voices/ko-KR-c02bf098310a0d52.m4a",
+        "assets/course-voices/ko-KR-e508bdb99f80e127.m4a",
+        "assets/course-voices/ko-KR-98ed178592030f0b.m4a",
+        "assets/course-voices/ko-KR-e3f353546ebb9ff6.m4a",
+        "assets/course-voices/ko-KR-4d934d401f16112a.m4a"
+      ]
+    },
+    "35-3": {
+      "files": [
+        "assets/course-voices/ko-KR-ac8ab67770a39e19.m4a",
+        "assets/course-voices/ko-KR-7f1be03d6bc09613.m4a",
+        "assets/course-voices/ko-KR-3cb79aee40242cb0.m4a",
+        "assets/course-voices/ko-KR-400181a429dd9316.m4a",
+        "assets/course-voices/ko-KR-ff0fde572320836d.m4a",
+        "assets/course-voices/ko-KR-0e594689bdf0300b.m4a"
+      ]
+    },
+    "35-4": {
+      "files": [
+        "assets/course-voices/ko-KR-98ba9a5650f33ddc.m4a",
+        "assets/course-voices/ko-KR-b9bcc978d27193fa.m4a",
+        "assets/course-voices/ko-KR-6e72b0566a921274.m4a",
+        "assets/course-voices/ko-KR-291e7bae4a8df174.m4a",
+        "assets/course-voices/ko-KR-365e996b3af07525.m4a",
+        "assets/course-voices/ko-KR-5602077de39819b3.m4a"
+      ]
+    }
+  },
+  "files": [
+    {
+      "file": "assets/course-voices/ko-KR-76ca670d1500ea23.m4a",
+      "text": "제가 할게요.",
+      "locale": "ko-KR",
+      "sha256": "2572d9bce675e62dc97d6a9a027fd4452ee802cf91e3c5ba5908fb62de196735",
+      "bytes": 15939,
+      "duration": 1.6022,
+      "voice": "Supertonic 3 M1",
+      "reused": true,
+      "synthesis": null,
+      "transcript": "제가 할게요.",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-75d3e539fd420b17.m4a",
+      "text": "제가 할 거예요.",
+      "locale": "ko-KR",
+      "sha256": "d9773481482ef5f867c2d9140ed7614eb915ba655afd590c8c8bba3115310f31",
+      "bytes": 16811,
+      "duration": 1.7415,
+      "voice": "Supertonic 3 M1",
+      "reused": true,
+      "synthesis": null,
+      "transcript": "제가 할 거예요.",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-7104a5d93181d9d7.m4a",
+      "text": "내일 전화할게요.",
+      "locale": "ko-KR",
+      "sha256": "0b9b897de6c6dcddb08fd1b2316c29c2addd4eda45439dd9d519a06aa0fb0e71",
+      "bytes": 19808,
+      "duration": 1.8808,
+      "voice": "Supertonic 3 M1",
+      "reused": true,
+      "synthesis": null,
+      "transcript": "내일 전화할게요.",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-1afb525da9143b73.m4a",
+      "text": "내일 전화할 거예요.",
+      "locale": "ko-KR",
+      "sha256": "66154c409812ced9f6a1343621bf95f74772b6de3d4df5ce1c4e5343a2836ee5",
+      "bytes": 20269,
+      "duration": 2.0898,
+      "voice": "Supertonic 3 M1",
+      "reused": true,
+      "synthesis": null,
+      "transcript": "내일 전화할 거예요.",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-1e0d0e7586cb7d3b.m4a",
+      "text": "제가 갈게요.",
+      "locale": "ko-KR",
+      "sha256": "31364fe7cf2e13070341817ffc6d399eab54195d322e39337d6f8247636d1f9b",
+      "bytes": 15969,
+      "duration": 1.6022,
+      "voice": "Supertonic 3 M1",
+      "reused": true,
+      "synthesis": null,
+      "transcript": "제가 갈게요.",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-3762d2efa6b050c1.m4a",
+      "text": "친구가 갈 거예요.",
+      "locale": "ko-KR",
+      "sha256": "853d3ce37a3fca729ce66af48c785c87e53ee60458fbdc60776995252e2adac2",
+      "bytes": 19504,
+      "duration": 2.0201,
+      "voice": "Supertonic 3 M1",
+      "reused": true,
+      "synthesis": null,
+      "transcript": "친구가 갈 거예요.",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-59a1712dd094f943.m4a",
+      "text": "저는 커피 마실래요.",
+      "locale": "ko-KR",
+      "sha256": "224efe1ff97db197ecab6085f7713be74417a08d20ddd87fcfa532d9efaf0910",
+      "bytes": 20251,
+      "duration": 2.0898,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "저는 커피 마실래요.",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-c02bf098310a0d52.m4a",
+      "text": "커피 마실래요?",
+      "locale": "ko-KR",
+      "sha256": "00e8fbbe2dd99a20ebd74520f99f268320943bdf43024cdd90846c48d4a5680c",
+      "bytes": 17635,
+      "duration": 1.6718,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "커피 마실래요?",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-e508bdb99f80e127.m4a",
+      "text": "같이 갈래요?",
+      "locale": "ko-KR",
+      "sha256": "5dc505d4cf39732dfbc3a055afa3b271f18d117f1d9df2dcfed27454a568cde6",
+      "bytes": 15891,
+      "duration": 1.6022,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "같이 갈래요?",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-98ed178592030f0b.m4a",
+      "text": "같이 갈까요?",
+      "locale": "ko-KR",
+      "sha256": "e1c3e27e8a190921c5ed09f54e77d9829d1a035e441dd54f2edd5ee958cc4ea0",
+      "bytes": 15578,
+      "duration": 1.6718,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "같이 갈까요?",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-e3f353546ebb9ff6.m4a",
+      "text": "제가 문을 열까요?",
+      "locale": "ko-KR",
+      "sha256": "a4d9991d5e565e43973f38b25ff93613f4457fee11c6c83ade1ce434226911a3",
+      "bytes": 20236,
+      "duration": 1.9505,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "제가 문을 열까요?",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-4d934d401f16112a.m4a",
+      "text": "내일 비가 올까요?",
+      "locale": "ko-KR",
+      "sha256": "162517a564ba8c840bc0d84f962f05237721a3204ff8d04916553e2742d53300",
+      "bytes": 20364,
+      "duration": 1.9505,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "내일 비가 올까요?",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-ac8ab67770a39e19.m4a",
+      "text": "비가 와서 늦었어요.",
+      "locale": "ko-KR",
+      "sha256": "81647e4c5d6acdebf663f7b80d38d89f438fb5fd117bdb2c6e7ec629c35038d7",
+      "bytes": 19661,
+      "duration": 2.0201,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "비가 와서 늦었어요.",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-7f1be03d6bc09613.m4a",
+      "text": "비가 오니까 우산을 가져가세요.",
+      "locale": "ko-KR",
+      "sha256": "dd1cb06a7b92ccd1767d65cf292d00b248efac390a986b7e1b2732a57697e88e",
+      "bytes": 29328,
+      "duration": 2.9257,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "비가 오니까 우산을 가져가세요.",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-3cb79aee40242cb0.m4a",
+      "text": "늦어서 죄송해요.",
+      "locale": "ko-KR",
+      "sha256": "49a7eaeb7db1888aa85c34c267bad36347ec5301472f0410b8fa37401864efa7",
+      "bytes": 19960,
+      "duration": 1.8808,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "늦어서 죄송해요.",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-400181a429dd9316.m4a",
+      "text": "늦었으니까 택시를 타요.",
+      "locale": "ko-KR",
+      "sha256": "e465bc3e596311718de52cf3040e9aceeb3451800d3e741437663d51cd820b34",
+      "bytes": 22663,
+      "duration": 2.2988,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "늦었으니까 택시를 타요",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-ff0fde572320836d.m4a",
+      "text": "배가 고파서 밥을 먹었어요.",
+      "locale": "ko-KR",
+      "sha256": "f33256c2d0178f7c83ce5d32730bd5a027ebce246d858686ba2fa709d3194d9a",
+      "bytes": 25504,
+      "duration": 2.5774,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "배가 고파서 밥을 먹었어요.",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-0e594689bdf0300b.m4a",
+      "text": "배가 고프니까 밥을 먹었어요.",
+      "locale": "ko-KR",
+      "sha256": "7c5f59375275a1a0c1eaaac707d488fcc16365ef45ebb41f01deb7f6cb714ea3",
+      "bytes": 27229,
+      "duration": 2.7167,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "배가 고프니까 밥을 먹었어요.",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-98ba9a5650f33ddc.m4a",
+      "text": "비싸지만 맛있어요.",
+      "locale": "ko-KR",
+      "sha256": "7e16c3431b20c3722f41b48eeecef0eb8fd5bfd6878079e7c0051e5c60a70a67",
+      "bytes": 19807,
+      "duration": 2.0898,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "비싸지만 맛있어요",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-b9bcc978d27193fa.m4a",
+      "text": "비싼데 맛있어요.",
+      "locale": "ko-KR",
+      "sha256": "a9b94e6205cb3a5698f2ba71822d36897a4f14f3ce3e6e6a932298e178e4f32f",
+      "bytes": 19101,
+      "duration": 1.8808,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "비싼데 맛있어요",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-6e72b0566a921274.m4a",
+      "text": "지금 카페에 있는데 올래요?",
+      "locale": "ko-KR",
+      "sha256": "3376e8d14f925e10904581672657d8b71e0ae4a0c8f4045c6c6b4c250a420882",
+      "bytes": 26201,
+      "duration": 2.5078,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "지금 카페에 있는데 올래요?",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-291e7bae4a8df174.m4a",
+      "text": "지금 카페에 있지만 곧 나갈 거예요.",
+      "locale": "ko-KR",
+      "sha256": "ff46435bec9e9bac3b74e26ffb0921a98d440ce69baa29938527e0e8b64f5654",
+      "bytes": 32339,
+      "duration": 3.3437,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "지금 카페에 있지만 곧 나갈 거예요.",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-365e996b3af07525.m4a",
+      "text": "시간이 없는데요.",
+      "locale": "ko-KR",
+      "sha256": "dd68f05283be25f06c9c132cd972dcec455019b17b74b1614ef423fc05fdd5e3",
+      "bytes": 18537,
+      "duration": 1.8808,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "시간이 없는데요.",
+      "asrMatch": "normalized-exact"
+    },
+    {
+      "file": "assets/course-voices/ko-KR-5602077de39819b3.m4a",
+      "text": "시간이 없지만 갈게요.",
+      "locale": "ko-KR",
+      "sha256": "e07060c5935a27a80b5504e551298ac7bdc54e3efdea1e1511cd023431d8014a",
+      "bytes": 21653,
+      "duration": 2.2988,
+      "voice": "Supertonic 3 M1",
+      "reused": false,
+      "synthesis": {
+        "seed": 42,
+        "speed": 0.94,
+        "steps": 16,
+        "displayedTextChanged": false
+      },
+      "transcript": "시간이 없지만 갈게요.",
+      "asrMatch": "normalized-exact"
+    }
+  ]
+}

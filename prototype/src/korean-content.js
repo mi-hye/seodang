@@ -1,3 +1,7 @@
+import {courseVoicePath} from './course-voice-path.js';
+import {batchimExpansion} from './batchim-expansion-content.js';
+import {pronunciationCourseContent} from './pronunciation-course-content.js';
+import {comparisonCourseContent} from './comparison-course-content.js';
 import {exchangeChoiceFeedback} from './korean-exchange-feedback.js';
 import {extraKoreanCases} from './level-two-content.js';
 // Korean is the learning material; Japanese is instructional copy.
@@ -6,7 +10,7 @@ export const koreanContent={
  '1-1':cards([
  ['ㅏ','ア',['ㅓ','ㅗ'],'縦線の右に短い線。口を開けて発音します。','아'],['ㅓ','オ（口を広めに）',['ㅏ','ㅜ'],'ㅗとは別の音です。唇を丸めすぎず、音を聞いてまねしましょう。','어'],['ㅗ','オ（唇を丸めて）',['ㅜ','ㅓ'],'横線の上に短い線。唇を丸めます。','오'],['ㅜ','ウ（唇を丸めて）',['ㅗ','ㅡ'],'横線の下に短い線。唇を丸めて前に出します。','우'],['ㅡ','ウ（唇を横に）',['ㅜ','ㅣ'],'唇を丸めずに発音します。カタカナは目安です。','으'],['ㅣ','イ',['ㅡ','ㅏ'],'縦線一本。音を聞いて、なぞってみましょう。','이']]),
  '1-2':cards([['ㅑ','ヤ',['ㅏ','ㅕ'],'短い線が二本です。','야'],['ㅕ','ヨ（口を広めに）',['ㅓ','ㅛ'],'ㅓに「y」の音を加えます。','여'],['ㅛ','ヨ（唇を丸めて）',['ㅗ','ㅠ'],'ㅗに「y」の音を加えます。','요'],['ㅠ','ユ',['ㅜ','ㅛ'],'ㅜに「y」の音を加えます。','유']]),
- '1-3':cards([['ㄱ','キヨク',['ㄴ','ㄷ'],'가の最初の子音です。','기역'],['ㄴ','ニウン',['ㄱ','ㄹ'],'나の最初の子音です。','니은'],['ㄷ','ティグッ',['ㅌ','ㄴ'],'다の最初の子音です。','디귿'],['ㄹ','リウル',['ㄴ','ㅁ'],'라の最初の子音です。位置によって響きが変わります。','리을'],['ㅁ','ミウム',['ㅂ','ㅇ'],'무の最初の子音です。唇を閉じてから発音します。','미음'],['ㅂ','ピウプ',['ㅍ','ㅁ'],'바の最初の子音です。','비읍'],['ㅅ','シオッ',['ㅈ','ㅊ'],'사の最初の子音です。','시옷']]),
+ '1-3':cards([['ㄱ','キヨク',['ㄴ','ㄷ'],'가の最初の子音です。','기역'],['ㄴ','ニウン',['ㄱ','ㄹ'],'나の最初の子音です。','니은'],['ㄷ','ティグッ',['ㅌ','ㄴ'],'다の最初の子音です。','디귿'],['ㄹ','リウル',['ㄴ','ㅁ'],'라の最初の子音です。位置によって響きが変わります。','리을'],['ㅁ','ミウム',['ㅂ','ㅇ'],'마の最初の子音です。唇を閉じて鼻に軽く響かせ、すぐ口を開いてㅏにつなげます。','미음'],['ㅂ','ピウプ',['ㅍ','ㅁ'],'바の最初の子音です。','비읍'],['ㅅ','シオッ',['ㅈ','ㅊ'],'사の最初の子音です。','시옷']]),
  '1-4':cards([['ㅇ','イウン',['ㅁ','ㅎ'],'母音の前では音がありません。아は「ア」です。','이응'],['ㅈ','チウッ',['ㅅ','ㅊ'],'자の最初の子音です。','지읒'],['ㅊ','チウチ',['ㅈ','ㅌ'],'차の最初の子音。息を強く出します。','치읓'],['ㅋ','キウク',['ㄱ','ㅌ'],'카の最初の子音。息を強く出します。','키읔'],['ㅌ','ティウッ',['ㄷ','ㅋ'],'타の最初の子音。息を強く出します。','티읕'],['ㅍ','ピウプ（激音）',['ㅂ','ㅁ'],'파の最初の子音。息を強く出します。','피읖'],['ㅎ','ヒウッ',['ㅇ','ㅊ'],'하の最初の子音です。','히읗']]),
  '1-5':cards([['ㄲ','サンギヨク',['ㄱ','ㅋ'],'까の子音。息を強く出すㅋと聞き比べましょう。','쌍기역'],['ㄸ','サンディグッ',['ㄷ','ㅌ'],'따の子音です。','쌍디귿'],['ㅃ','サンビウプ',['ㅂ','ㅍ'],'빠の子音です。','쌍비읍'],['ㅆ','サンシオッ',['ㅅ','ㅈ'],'싸の子音です。','쌍시옷'],['ㅉ','サンジウッ',['ㅈ','ㅊ'],'짜の子音です。','쌍지읒']]),
  '1-6':cards([['ㅒ','イェ',['ㅑ','ㅐ'],'얘の母音です。','얘'],['ㅖ','イェ',['ㅕ','ㅔ'],'예の母音です。','예'],['ㅙ','ウェ',['ㅘ','ㅗ'],'왜の母音です。','왜'],['ㅞ','ウェ',['ㅝ','ㅜ'],'웨の母音です。','웨'],['ㅐ','エ',['ㅏ','ㅓ'],'애の母音です。ㅔとの違いは現代の会話では小さくなっています。','애'],['ㅔ','エ',['ㅓ','ㅣ'],'에の母音です。','에'],['ㅘ','ワ',['ㅗ','ㅝ'],'ㅗとㅏを組み合わせます。','와'],['ㅝ','ウォ',['ㅜ','ㅘ'],'ㅜとㅓを組み合わせます。','워'],['ㅚ','ウェ',['ㅟ','ㅘ'],'외の母音です。','외'],['ㅟ','ウィ',['ㅚ','ㅜ'],'ㅜとㅣを組み合わせます。','위'],['ㅢ','ウィ（唇を丸めずに）',['ㅟ','ㅡ'],'의の母音です。単語の中では発音が変わることもあります。','의']]),
@@ -48,10 +52,23 @@ Object.assign(koreanContent,{
  '1-6':Array.from('까따빠싸짜').map((text,i)=>practice(text,[Array.from('ㄲㄸㅃㅆㅉ')[i],'ㅏ'],0,i===0?['ㄱ','ㅋ']:i===1?['ㄷ','ㅌ']:i===2?['ㅂ','ㅍ']:i===3?['ㅅ','ㅈ']:['ㅈ','ㅊ'])),
  '1-7':pick('ㅐㅔㅒㅖㅘㅝㅙㅞㅚㅟㅢ'),
  '1-8':Array.from('애에얘예와워왜웨외위의').map((text,i)=>practice(text,['ㅇ',Array.from('ㅐㅔㅒㅖㅘㅝㅙㅞㅚㅟㅢ')[i]],1,i===0?['ㅔ','ㅏ']:i===1?['ㅐ','ㅓ']:['ㅏ','ㅓ'])),
- '1-9':Array.from('산밤강문물밥').map(text=>originalLetters[text]),
+ '1-9':[...Array.from('산밤강문물밥').map(text=>originalLetters[text]),...batchimExpansion],
  '1-10':[
-  practice('산',['ㅅ','ㅏ','ㄴ'],2,['ㅁ','ㅇ']),practice('밤',['ㅂ','ㅏ','ㅁ'],2,['ㅇ','ㅂ']),practice('강',['ㄱ','ㅏ','ㅇ'],2,['ㄴ','ㅁ']),practice('문',['ㅁ','ㅜ','ㄴ'],2,['ㄹ','ㅇ']),practice('물',['ㅁ','ㅜ','ㄹ'],2,['ㄴ','ㅁ']),practice('밥',['ㅂ','ㅏ','ㅂ'],2,['ㅁ','ㅇ'])]
+  practice('산',['ㅅ','ㅏ','ㄴ'],2,['ㅁ','ㅇ']),practice('밤',['ㅂ','ㅏ','ㅁ'],2,['ㅇ','ㅂ']),practice('강',['ㄱ','ㅏ','ㅇ'],2,['ㄴ','ㅁ']),practice('문',['ㅁ','ㅜ','ㄴ'],2,['ㄹ','ㅇ']),practice('물',['ㅁ','ㅜ','ㄹ'],2,['ㄴ','ㅁ']),practice('밥',['ㅂ','ㅏ','ㅂ'],2,['ㅁ','ㅇ']),...batchimExpansion]
 });
+// Keep published audio identities stable when moving the basic letters.
+for(const id of ['1-1','1-2','1-3','1-4'])for(const [index,item] of koreanContent[id].entries())item.audio={id:`korean.${id}.${index}`,text:item.spoken||item.text,locale:'ko-KR',status:'ready',audioFile:`assets/audio/korean/korean.${id}.${index}.wav`};
+const basicLetters=new Map([...koreanContent['1-1'],...koreanContent['1-3']].map(item=>[item.text,item]));
+const basicPractice=new Map([...koreanContent['1-2'],...koreanContent['1-4']].map(item=>[item.text,item]));
+const maAudio={id:'pronunciation.마',text:'마',locale:'ko-KR',status:'ready',audioFile:courseVoicePath('ko-KR','마'),bundled:true,voiceId:'Supertonic 3 M1'};
+koreanContent['1-1']=Array.from('ㅏㅓㅗㅜㅡㅣㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ',glyph=>basicLetters.get(glyph));
+koreanContent['1-2']=[...Array.from('아어오우으이',text=>basicPractice.get(text)),...Array.from('가나다라마바사아자차카타파하',(text,index)=>{
+ const glyph='ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'[index],old=basicPractice.get(text);
+ return {...practice(text,[glyph,'ㅏ'],0,Array.from('ㄱㄴㄷㄹㅁ').filter(x=>x!==glyph).slice(0,2)),audio:old?.audio||maAudio};
+})];
+koreanContent['1-3']=Array.from('ㅑㅕㅛㅠ',glyph=>basicLetters.get(glyph));
+koreanContent['1-4']=Array.from('야여요유',text=>basicPractice.get(text));
+
 // Some vowel distinctions merge in modern speech; show a written cue as well.
 for(const item of koreanContent['1-8'])item.cue=`${item.text}の母音を選んでください。`;
 
@@ -62,3 +79,6 @@ koreanContent['1-11']=cards([
 ]);
 
 for(const [id,lesson] of Object.entries(extraKoreanCases))koreanContent[id]=lesson.items;
+
+Object.assign(koreanContent,pronunciationCourseContent);
+Object.assign(koreanContent,Object.fromEntries(Object.entries(comparisonCourseContent).map(([id,units])=>[id,units.map(({question:{text,meaning,audio}})=>({text,meaning,audio}))])));

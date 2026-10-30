@@ -257,7 +257,7 @@ class SeodangAudioPlugin: CAPPlugin, CAPBridgedPlugin {
 class SeodangRecognitionPlugin: CAPPlugin, CAPBridgedPlugin {
     let identifier = "SeodangRecognitionPlugin"
     let jsName = "SeodangRecognition"
-    let pluginMethods: [CAPPluginMethod] = ["recognize", "finish", "cancel"].map {
+    let pluginMethods: [CAPPluginMethod] = ["status", "recognize", "finish", "cancel"].map {
         CAPPluginMethod(name: $0, returnType: CAPPluginReturnPromise)
     }
     private let engine = AVAudioEngine()
@@ -269,21 +269,47 @@ class SeodangRecognitionPlugin: CAPPlugin, CAPBridgedPlugin {
     private var session = UUID()
     private var tapped = false
     private var text = ""
+    private var alternatives: [String] = []
+    private var ending = false
+    private var waitingToBegin: UUID?
+    @objc func status(_ call: CAPPluginCall) { call.resolve(["readyEvents": true]) }
     override func load() {
-        NotificationCenter.default.addObserver(self, selector: #selector(interrupted), name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(interrupted), name: AVAudioSession.interruptionNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(interrupted(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(interrupted(_:)), name: AVAudioSession.interruptionNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(becameActive), name: UIApplication.didBecomeActiveNotification, object: nil)
     }
-    @objc private func interrupted() { DispatchQueue.main.async { self.complete(code: "INTERRUPTED") } }
+    @objc private func interrupted(_ notification: Notification) {
+        if notification.name == AVAudioSession.interruptionNotification,
+           (notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt) != AVAudioSession.InterruptionType.began.rawValue { return }
+        DispatchQueue.main.async { self.complete(code: "INTERRUPTED") }
+    }
+    @objc private func becameActive() {
+        DispatchQueue.main.async {
+            guard let id = self.waitingToBegin, self.session == id, self.pending != nil else { return }
+            self.waitingToBegin = nil; self.timeout?.cancel(); self.timeout = nil
+            self.beginWhenActive(id: id)
+        }
+    }
+    private func beginWhenActive(id: UUID) {
+        guard session == id, pending != nil else { return }
+        if UIApplication.shared.applicationState == .active { begin(id: id); return }
+        guard UIApplication.shared.applicationState != .background else { complete(code: "INTERRUPTED"); return }
+        // Permission alerts can close before the app has become active again.
+        waitingToBegin = id
+        let work = DispatchWorkItem { [weak self] in guard let self, self.session == id else { return }; self.complete(code: "INTERRUPTED") }
+        timeout = work; DispatchQueue.main.asyncAfter(deadline: .now() + 8, execute: work)
+    }
     private func complete(code: String? = nil) {
         guard pending != nil else { return }
-        let call = pending, result = text
+        let call = pending, result = text, candidates = alternatives
         pending = nil; session = UUID(); timeout?.cancel(); timeout = nil
         engine.stop()
         if tapped { engine.inputNode.removeTap(onBus: 0); tapped = false }
         request?.endAudio(); task?.cancel(); task = nil; request = nil; recognizer = nil; text = ""
+        alternatives = []; ending = false; waitingToBegin = nil
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
-        if let code { call?.reject(code, code) } else { call?.resolve(["text": result]) }
+        if let code { call?.reject(code, code) } else { call?.resolve(["text": result, "alternatives": candidates]) }
     }
     @objc func recognize(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
@@ -302,8 +328,7 @@ class SeodangRecognitionPlugin: CAPPlugin, CAPBridgedPlugin {
                         DispatchQueue.main.async {
                             guard self.session == id, self.pending != nil else { return }
                             guard allowed else { self.complete(code: "PERMISSION_DENIED"); return }
-                            guard UIApplication.shared.applicationState == .active else { self.complete(code: "INTERRUPTED"); return }
-                            self.begin(id: id)
+                            self.beginWhenActive(id: id)
                         }
                     }
                 }
@@ -327,23 +352,28 @@ class SeodangRecognitionPlugin: CAPPlugin, CAPBridgedPlugin {
             task = recognizer.recognitionTask(with: request) { result, error in
                 DispatchQueue.main.async {
                     guard self.session == id, self.pending != nil else { return }
-                    if let result { self.text = result.bestTranscription.formattedString }
+                    if let result {
+                        self.text = result.bestTranscription.formattedString
+                        self.alternatives = Array(result.transcriptions.prefix(3)).map { $0.formattedString }
+                    }
                     if result?.isFinal == true { self.complete() }
                     else if error != nil { self.complete(code: self.text.isEmpty ? "RECOGNITION_FAILED" : nil) }
                 }
             }
             engine.prepare(); try engine.start()
+            notifyListeners("ready", data: ["requestId": pending?.getString("requestId") ?? ""])
             let work = DispatchWorkItem { [weak self] in guard let self, self.session == id else { return }; self.endInput(id: id) }
-            timeout = work; DispatchQueue.main.asyncAfter(deadline: .now() + 10, execute: work)
+            timeout = work; DispatchQueue.main.asyncAfter(deadline: .now() + 20, execute: work)
         } catch { complete(code: "AUDIO_UNAVAILABLE") }
     }
     private func endInput(id: UUID) {
-        guard session == id, pending != nil else { return }
+        guard session == id, pending != nil, !ending else { return }
+        ending = true
         engine.stop()
         if tapped { engine.inputNode.removeTap(onBus: 0); tapped = false }
         request?.endAudio(); timeout?.cancel()
         let work = DispatchWorkItem { [weak self] in guard let self, self.session == id else { return }; self.complete() }
-        timeout = work; DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: work)
+        timeout = work; DispatchQueue.main.asyncAfter(deadline: .now() + 4, execute: work)
     }
     @objc func finish(_ call: CAPPluginCall) {
         DispatchQueue.main.async { self.endInput(id: self.session); call.resolve() }

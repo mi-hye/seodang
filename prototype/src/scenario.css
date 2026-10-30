@@ -3,7 +3,7 @@
 @import './speaking.css';
 @import './token-builder.css';
 @import './scenario-dialogue.css';
-.scenario-page{min-height:calc(100svh - 110px - env(safe-area-inset-top) - env(safe-area-inset-bottom));display:flex;flex-direction:column;justify-content:center;gap:16px;padding-top:16px;padding-bottom:24px;word-break:keep-all;overflow-wrap:anywhere}
+.scenario-page{min-height:calc(100svh - 110px - env(safe-area-inset-top) - env(safe-area-inset-bottom));display:flex;flex-direction:column;justify-content:flex-start;gap:16px;padding-top:16px;padding-bottom:24px;word-break:keep-all;overflow-wrap:anywhere}
 .scenario-page.scenario-quiz{justify-content:flex-start}
 .scenario-page h1{font-size:calc(23px * var(--text-scale));line-height:1.5;margin:0}
 .scenario-page p{font-size:calc(17px * var(--text-scale));line-height:1.75;margin:0}

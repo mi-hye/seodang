@@ -1,3 +1,5 @@
+import {isComparisonCourse,comparisonCourseCatalog} from './comparison-course-catalog.js';
+import {isPronunciationCourse} from './pronunciation-course-catalog.js';
 import {videoLesson,videoProgress} from './video-lesson-state.js';
 import {expertProgress,expertKey,freshExpert} from './expert-state.js';
 import {scenarioProgress,scenarioKey,freshScenario,scenarioHasSpeaking,scenarioLearnsFirst} from './scenario-state.js';
@@ -62,7 +64,7 @@ export function restartLesson(s,kind){
  return next;
 }
 export function lessonPercent(s,kind){
- const p=lessonProgress(s,kind)||{},practiceCount=caseTasks(s,kind)?.length??practiceUnits(s,kind).length,count=kind==='basic'?basicLessons.find(l=>l.id===s.basics.active).count:practiceUnits(s,kind).length;if(!count)return 0;
+ const p=lessonProgress(s,kind)||{},practiceCount=caseTasks(s,kind)?.length??practiceUnits(s,kind).length,count=kind==='korean'&&isComparisonCourse(s.korean?.active)?comparisonCourseCatalog.find(l=>l.id===s.korean.active).count:kind==='basic'?basicLessons.find(l=>l.id===s.basics.active).count:practiceUnits(s,kind).length;if(!count)return 0;
  let done=0,total=count*2;
  const i=p.index||0;
  if(kind==='kana'){
@@ -71,8 +73,11 @@ export function lessonPercent(s,kind){
  }else if(kind==='basic'||kind==='korean'){
   const quizOnly=kind==='korean'&&koreanQuizOnly(koreanLessons.find(l=>l.id===s.korean.active));
   const steps=kind==='korean'&&koreanExplanation(s.korean.active)?1:quizOnly||kind==='basic'&&s.basics.active===10?1:(kind==='basic'&&basicSinglePass(s.basics.active)||kind==='korean'&&koreanStageZero(s.korean.active))?3:2;total=count*steps;done=i*steps+(p.phase==='write'?1:p.phase==='quiz'&&!quizOnly?steps-1:0);if(kind==='basic'&&basicHasIntro(s.basics.active)){const size=basicGroup(s.basics.active,i).size;total+=Math.ceil(count/size);done+=Math.floor(i/size)+(p.phase==='intro'?0:1);}
+  if(kind==='korean'&&s.korean.active==='1-10'){total=6*3+(count-6)*2;done=i<6?i*3+(p.phase==='write'?1:p.phase==='quiz'?2:0):18+(i-6)*2+(p.phase==='quiz'?1:0);}
   if(kind==='korean'&&koreanExplanation(s.korean.active)){const groups=koreanGroups[s.korean.active],group=koreanGroup(s.korean.active,i);let preceding=0,start=0;for(const size of groups){if(start===group.start)break;start+=size;preceding++;}total+=groups.length;done+=preceding+(p.phase==='intro'?0:1);}
-  if(kind==='korean'&&koreanHasSpeaking(s.korean.active)){total+=count;done+=i+(p.phase==='speak'?2:0);}
+  if(kind==='korean'&&isComparisonCourse(s.korean.active)){total=count*2;done=i*2+(['quiz','review'].includes(p.phase)?1:0);}
+  else if(kind==='korean'&&isPronunciationCourse(s.korean.active)){total=count*2;done=i*2+(p.phase==='speak'?1:0);}
+  else if(kind==='korean'&&koreanHasSpeaking(s.korean.active)){total+=count;done+=i+(p.phase==='speak'?2:0);}
  }else if(kind==='labels'){total=count*3;done=p.phase==='match'?count*2+(p.matches?.length||0):i*2+(p.phase==='build'?1:0);}
  else if(kind==='listening'){total=count;done=i;}
  else if(kind==='sentence'){total=count*3+(sentenceId(s)===3?0:1);done=p.phase==='solve'?count*3:i*3+(p.phase==='arrange'?1:p.phase==='speak'?2:0);}
@@ -85,7 +90,7 @@ export function lessonPercent(s,kind){
  const practice=normalizePractice(normalizeCasePractice(s.practices?.[practiceKey(s,kind)],practiceKey(s,kind)),practiceRoundCount(practiceKey(s,kind)),practiceHasWriting(practiceKey(s,kind)));
  if(practice)done=total+(practice.round*modeCount+(practice.mode===0?0:1))*practice.count+practice.index;
  else if(['summary','done'].includes(p.phase||p.step)||(kind==='listening'&&i===4))return 100;
- return Math.max(0,Math.min(99,Math.floor(done/(total+((kind==='basic'&&basicSinglePass(s.basics.active)||kind==='korean'&&koreanStageZero(s.korean.active))?0:practiceCount*practiceRoundCount(practiceKey(s,kind))*modeCount))*100)));
+ return Math.max(0,Math.min(99,Math.floor(done/(total+((kind==='basic'&&basicSinglePass(s.basics.active)||kind==='korean'&&(koreanStageZero(s.korean.active)||isPronunciationCourse(s.korean.active)||isComparisonCourse(s.korean.active)))?0:practiceCount*practiceRoundCount(practiceKey(s,kind))*modeCount))*100)));
 }
 export function progressBar(s,kind){const value=lessonPercent(s,kind),jp=japaneseLessonUI(s);return `<div class="lesson-progress" role="progressbar" aria-label="${jp?'学習の進み具合':'학습 진행률'}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${value}" aria-valuetext="${value}%"><span style="width:${value}%"></span></div>`;}
 export function askResume(jp=false){
@@ -113,7 +118,7 @@ export function centerLesson(root,s,kind,completed=false){
   return;
  }
  const group=courseGroup(selectedLevel(s)),main=root.querySelector('main');
- if([5,7].includes(group)&&['reading','korean','scenario','expert'].includes(kind)&&!completed&&!main?.classList.contains('korean-speaking'))main?.classList.add(group===5?'level-four-lesson':'level-five-lesson');
+ if(!(kind==='korean'&&isComparisonCourse(s.korean?.active))&&[5,7].includes(group)&&['reading','korean','scenario','expert'].includes(kind)&&!completed&&!main?.classList.contains('korean-speaking'))main?.classList.add(group===5?'level-four-lesson':'level-five-lesson');
  if(courseGroup(selectedLevel(s))>=2){
   root.querySelector('.shell')?.classList.add('lesson-top-shell');
   root.querySelector('main')?.classList.add('lesson-top');

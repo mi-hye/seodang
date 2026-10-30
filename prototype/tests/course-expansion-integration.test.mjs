@@ -1,3 +1,4 @@
+import {mainLessons,baselineCatalog,mainStops} from './main-lesson-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { freshState, reduce } from '../src/engine.js';
@@ -7,7 +8,7 @@ import { courseVoicePath } from '../src/course-voice-path.js';
 import { courseExpansionReview } from '../src/course-expansion-review.js';
 import { prepareScenario } from '../src/scenario.js';
 import { currentCourseAudio } from '../src/course-expansion.js';
-import { scenarioKey, scenarioProgress, scenarioAvailable } from '../src/scenario-state.js';
+import { scenarioKey, scenarioProgress, scenarioAvailable, freshScenario } from '../src/scenario-state.js';
 import { prepareContent, caseTasks, practiceUnits, interceptCompletion } from '../src/practice-content.js';
 import { expressionReviewCount, advancePractice, normalizeCasePractice, validPractices } from '../src/practice-state.js';
 import { lessonPercent, restartLesson } from '../src/lesson-session.js';
@@ -29,12 +30,12 @@ const cases = s => Object.values((s.courseDirection==='ja-ko'?s.korean?.history:
 await prepareContent('scenario');
 for (const meta of courseExpansionCatalog) await prepareScenario(meta.id);
 
-test('63 added lessons have supported content and six complete review steps', () => {
- assert.equal(entries.length,63);
- assert.equal(new Set(entries.map(x=>x.key)).size,63);
+test('74 added lessons have supported content and six complete review steps', () => {
+ assert.equal(entries.length,74);
+ assert.equal(new Set(entries.map(x=>x.key)).size,74);
  const pending={};
  for (const {meta,direction,key} of entries) {
-  const state=act(fixture(direction,meta),'scenario-start',meta.id),content=expandedCourseContent(direction,meta.id),tasks=caseTasks(state,'scenario');
+  const state={...fixture(direction,meta),scenarioActive:meta.id},content=expandedCourseContent(direction,meta.id),tasks=caseTasks(state,'scenario');
   assert.ok(content,key);assert.equal(content.items.length,3,key);
   assert.deepEqual(expansionReview(key),{count:6,version:1},key);
   assert.equal(tasks.length,expressionReviewCount(key),key);
@@ -70,7 +71,7 @@ test('63 added lessons have supported content and six complete review steps', ()
  assert.ok(Object.keys(pending).length>64);assert.equal(validPractices(pending),true,'existing and new pending reviews coexist beyond the former limit');
 });
 
-for(const {meta,direction,key} of entries)test(`expansion learning, storage, deferred completion and replay ${key}`,()=>{
+for(const {meta,direction,key} of entries.filter(x=>!x.meta.retired))test(`expansion learning, storage, deferred completion and replay ${key}`,()=>{
  let state=act(fixture(direction,meta),'scenario-start',meta.id);
  const source=expandedCourseContent(direction,meta.id),progress=[];
  assert.equal(scenarioProgress(state).phase,'intro');assert.equal(lessonPercent(state,'scenario'),0);
@@ -125,11 +126,11 @@ const oldPrefixes={
  'ja-ko':{4:['korean:4-1','scenario:3','video:blackdog-help','scenario:6','scenario:7','video:blackdog-confirmation','scenario:8'],5:['korean:5-1','korean:6-1','video:queen-condition','scenario:4','scenario:9','video:queen-belief','scenario:10'],7:['expert:0','expert:1','video:misaeng','expert:2','expert:3','video:blackdog-nuance','scenario:11','scenario:12','video:misaeng-subtext']}
 };
 for(const direction of directions)test(`catalog order and completion identity remain stable ${direction}`,()=>{
- const state={...freshState(),courseDirection:direction},catalog=studyCatalog(state);
+ const state={...freshState(),courseDirection:direction},catalog=baselineCatalog(studyCatalog(state));
  for(const level of [4,5,7]){
   const lessons=catalog.filter(l=>courseGroup(l.level)===level),old=oldPrefixes[direction][level];
-  assert.equal(lessons.length,17);assert.deepEqual(lessons.slice(0,old.length).map(l=>`${l.kind}:${l.id}`),old);
-  assert.deepEqual(lessons.map(l=>Number(l.position.split('-')[1])),Array.from({length:17},(_,i)=>i+1));
+  assert.equal(lessons.length,19);assert.deepEqual(lessons.slice(0,old.length).map(l=>`${l.kind}:${l.id}`),old);
+  assert.deepEqual(lessons.map(l=>Number(l.position.split('-')[1])),Array.from({length:19},(_,i)=>i+1));
   for(const meta of courseExpansionCatalog.filter(l=>l.level===level)){
    const listed=lessons.find(l=>l.id===meta.id);
    if(!listed){assert.ok(lessons.some(l=>l.replaces?.kind==='scenario'&&l.replaces.id===meta.id));continue;}
@@ -144,8 +145,8 @@ for(const direction of directions)test(`catalog order and completion identity re
    assert.equal(act({...state,onboardingLevel:0},'scenario-start',meta.id).scenarios?.[`ko-ja:scenario:${meta.id}`],undefined);
   }
  }else{
-  assert.equal(alphabet.length,17);assert.deepEqual(alphabet.slice(0,10).map(l=>l.key),Array.from({length:10},(_,i)=>`ja-ko:korean:1-${i+1}`));
-  assert.deepEqual(alphabet.slice(10).map(l=>l.id),Array.from({length:7},(_,i)=>`course1-${i+11}`));
+  assert.equal(alphabet.length,10);assert.deepEqual(alphabet.slice(0,10).map(l=>l.key),Array.from({length:10},(_,i)=>`ja-ko:korean:1-${i+1}`));
+  assert.deepEqual(alphabet.slice(10),[]);
  }
 });
 
@@ -153,4 +154,17 @@ test('invalid extended lesson IDs and Korean-only lesson direction do not enter 
  const base=fixture('ko-ja',courseExpansionCatalog.find(l=>l.level===4));
  const p={version:1,caseVersion:1,count:6,index:0,round:0,mode:0,action:{type:'scenario-next'}};
  for(const key of ['ko-ja:scenario:course3-999','ko-ja:scenario:course1-11','ja-ko:scenario:course3-8:extra','en-ja:scenario:course3-8']){assert.equal(expansionReview(key),null,key);assert.equal(validPractices({[key]:p}),false,key);assert.equal(valid({...base,practices:{[key]:p}}),false,key);}
+});
+
+for(const meta of courseExpansionCatalog.filter(l=>l.retired))test(`retired alphabet progress remains loadable but unavailable ${meta.id}`,()=>{
+ const key=`ja-ko:scenario:${meta.id}`,pending={version:1,caseVersion:1,count:6,index:4,round:0,mode:0,action:{type:'scenario-next'}};
+ const state={...fixture('ja-ko',meta),scenarioActive:meta.id,scenarios:{[key]:{...freshScenario(meta.id),started:true,phase:'quiz',index:2,checked:true}},practices:{[key]:pending}};
+ const restored=restore(state);
+ assert.deepEqual(restored.scenarios,state.scenarios);
+ assert.deepEqual(restored.archivedPractices[key],pending);
+ assert.equal(restored.practices[key],undefined);
+ assert.equal(scenarioAvailable(restored,meta),false);
+ assert.equal(act(restored,'scenario-start',meta.id),restored);
+ assert.ok(!studyCatalog(restored).some(l=>l.key===key));
+ assert.equal(restore(restored).archivedPractices[key].index,4);
 });

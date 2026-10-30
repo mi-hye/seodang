@@ -9,7 +9,7 @@ import {freshScenario} from '../../src/scenario-state.js';
 import {openMapLesson,findMapLesson,collectMapLessons} from './learning-map-fixture.js';
 import {useCatalogWithoutPacks} from './audio-catalog-fixture.js';
 const storageKey='seodang.web-prototype.v1';
-const examples=[...['ko-ja','ja-ko'].flatMap(direction=>['course3-8','course4-11','course5-16'].map(id=>({direction,id}))),{direction:'ja-ko',id:'course1-11'},{direction:'ja-ko',id:'course1-17'}];
+const examples=['ko-ja','ja-ko'].flatMap(direction=>[...[2,3,4,5].map(level=>`course20-${level}-19`),'course3-8','course4-11','course5-16'].map(id=>({direction,id})));
 for(const {id} of examples)await prepareCourseExpansion(id);
 const saved=page=>page.evaluate(key=>JSON.parse(localStorage.getItem(key)),storageKey);
 const button=(page,action)=>page.locator(`[data-action="${action}"]`);
@@ -28,6 +28,11 @@ async function setup(page,direction,id,width){
  await enter();return{meta,state,enter};
 }
 async function layout(page){
+ const lesson=page.locator('main.course-expansion');
+ if(await lesson.count()){
+  const gap=await lesson.evaluate(el=>el.firstElementChild.getBoundingClientRect().top-el.getBoundingClientRect().top);
+  expect(gap,'lesson content starts below the header without vertical centering').toBeLessThanOrEqual(18);
+ }
  await expect(page.locator('.case-task-count,.practice-rounds')).toHaveCount(0);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
  for(const pair of await page.locator('main .button-pair:visible').all()){
@@ -46,7 +51,7 @@ async function home(page){await button(page,'home').first().click();await expect
 for(const {direction,id}of examples)for(const width of [320,390])test(`expanded lesson ${direction} ${id} ${width}px full learning, audio, review and resume`,async({page})=>{
  test.setTimeout(90000);const errors=[];page.on('pageerror',e=>errors.push(e.message));
  const {meta,enter}=await setup(page,direction,id,width),key=`${direction}:scenario:${id}`,content=expandedCourseContent(direction,id),tasks=courseExpansionReview(key);
- const resumeAfterReload=async()=>{if(id.startsWith('course5-')){await page.locator(`.home-start-card[data-action="scenario"][data-id="${id}"]`).click();await expect(page.locator('.lesson-resume')).toHaveCount(0);await expect(page.locator('.view-scenario')).toBeVisible();}else await enter(true);};
+ const resumeAfterReload=async()=>{if(meta.level===7){await page.locator(`.home-start-card[data-action="scenario"][data-id="${id}"]`).click();await expect(page.locator('.lesson-resume')).toHaveCount(0);await expect(page.locator('.view-scenario')).toBeVisible();}else await enter(true);};
  await expect(page.locator('.course-expansion')).toHaveAttribute('data-course-activity',content.activity);await expect(page.locator('.reading-intro')).toHaveText(content.scene);await progress(page,0);await layout(page);
  if(content.image){const img=page.locator('.scenario-image');await expect(img).toHaveAttribute('src',content.image);await expect.poll(()=>img.evaluate(el=>el.complete&&el.naturalWidth>0)).toBe(true);}
  await expect(page.locator('[data-action="scenario-select"]')).toHaveCount(0);await button(page,'scenario-next').click();
@@ -89,53 +94,41 @@ for(const {direction,id}of examples)for(const width of [320,390])test(`expanded 
  await enter();await button(page,'scenario-next').click();await home(page);await openMapLesson(page,{kind:'scenario',id});await page.locator('[data-choice="restart"]').click();await expect.poll(async()=>(await saved(page)).scenarios[key]).toMatchObject({phase:'intro',completed:true});const restarted=await saved(page);expect(restarted.scenarios[key]).toMatchObject({phase:'intro',completed:true});expect(restarted.studyTools).toEqual(done.studyTools);expect(direction==='ja-ko'?restarted.korean.history:restarted.history).toEqual(history);expect(errors).toEqual([]);
 });
 for(const direction of ['ko-ja','ja-ko'])test(`all new map pages expose the expected levels ${direction}`,async({page})=>{
- await setup(page,direction,direction==='ko-ja'?'course3-8':'course1-11',390);await home(page);
+ await setup(page,direction,'course3-8',390);await home(page);
  for(const level of [0,4,5,7]){
   await page.evaluate(({storageKey,level})=>{const s=JSON.parse(localStorage.getItem(storageKey));s.onboardingLevel=level;localStorage.setItem(storageKey,JSON.stringify(s));},{storageKey,level});await page.reload();const lessons=await collectMapLessons(page);
-  expect(lessons.length).toBe(level===0&&direction==='ko-ja'?30:17);expect(lessons.map(l=>l.number)).toEqual(Array.from({length:lessons.length},(_,i)=>i+1));if(level===0&&direction==='ko-ja')expect(lessons.some(l=>l.id?.startsWith('course1-'))).toBe(false);
+  expect(lessons.length).toBe(level===0?(direction==='ko-ja'?30:10):20);expect(lessons.map(l=>l.number)).toEqual(Array.from({length:lessons.length},(_,i)=>i+1));if(level===0&&direction==='ko-ja')expect(lessons.some(l=>l.id?.startsWith('course1-'))).toBe(false);
  }
 });
 
-test('Korean alphabet lesson 10 continues directly to new lesson 11',async({page})=>{
- const id='1-10',state={...freshState(),onboarded:true,onboardingLevel:0,courseDirection:'ja-ko',koreanGuideSeenVersion:1,korean:{version:4,active:id,lessons:{[id]:{...freshKoreanProgress(id),started:true,phase:'quiz',index:5,selected:1}}},settings:{sound:false,motion:'off',textScale:1.2,audioRate:1}};
- await page.setViewportSize({width:320,height:640});
- await page.addInitScript(({storageKey,state})=>{localStorage.setItem(storageKey,JSON.stringify(state));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));window.Audio=class{play(){queueMicrotask(()=>this.onended?.());return Promise.resolve();}pause(){}};},{storageKey,state});
- await useCatalogWithoutPacks(page);await page.goto('/playable.html');await openMapLesson(page,{kind:'korean',id});await page.locator('[data-choice="resume"]').click();await expect(button(page,'korean-check')).toBeVisible();await button(page,'korean-check').click();
- await expect(page.locator('.korean-zero-finish')).toBeVisible();await expect(button(page,'completed-next')).toHaveText('単語を読む');await button(page,'completed-next').click();
- await expect(page.locator('.course-expansion')).toHaveAttribute('data-course-activity','words');await expect(page.locator('main h1')).toHaveText('母音をつないで読む');const next=await saved(page);expect(next.onboardingLevel).toBe(0);expect(next.scenarioActive).toBe('course1-11');expect(next.korean.lessons['1-10'].completed).toBe(true);await expect(page.locator('.lesson-resume')).toHaveCount(0);
-});
-
-const repeatExamples=examples.filter(({id})=>id!=='course1-17');
+const repeatExamples=examples;
 for(const {direction,id}of repeatExamples)test(`expansion resume card keeps the UI language ${direction} ${id}`,async({page})=>{
  const {meta}=await setup(page,direction,id,320);await button(page,'scenario-next').click();await home(page);
- const card=page.locator(`.home-start-card[data-action="scenario"][data-id="${id}"]`),level={0:1,4:3,5:4,7:5}[meta.level];
- await expect(card.locator('.home-position')).toHaveText(`${direction==='ja-ko'?`レベル${level}`:`${level}단계`} · ${id.split('-')[1]}`);
+ const card=page.locator(`.home-start-card[data-action="scenario"][data-id="${id}"]`),level={0:1,2:2,4:3,5:4,7:5}[meta.level];
+ await expect(card.locator('.home-position')).toHaveText(`${direction==='ja-ko'?`レベル${level}`:`${level}단계`} · ${id.split('-').at(-1)}`);
  await card.click();await expect(page.locator('.scenario-learning')).toBeVisible();await expect(page.locator('.lesson-resume')).toHaveCount(0);
 });
 
-for(const route of ['completion','home'])for(const width of [320,390])test(`Korean lesson 1-17 continues to level two from ${route} at ${width}px`,async({page})=>{
- const direction='ja-ko',id='course1-17',key=`${direction}:scenario:${id}`,meta=courseExpansionCatalog.find(l=>l.id===id);
- const priorScenarios=Object.fromEntries(courseExpansionCatalog.filter(l=>l.level===0&&l.id!==id).map(l=>[`${direction}:scenario:${l.id}`,{...freshScenario(l.id),started:true,phase:'done',index:2,selected:l.answers[2],checked:true,completed:true}]));
- const priorKorean=Object.fromEntries(koreanLessons.filter(l=>l.level===0).map(l=>[l.id,{...freshKoreanProgress(l.id),started:true,phase:'done',index:l.count-1,completed:true}]));
- const state={...freshState(),onboarded:true,koreanGuideSeenVersion:1,courseDirection:direction,onboardingLevel:0,scenarioActive:id,korean:{version:4,active:'1-10',lessons:priorKorean},scenarios:{...priorScenarios,[key]:{...freshScenario(id),started:true,phase:'quiz',index:2,selected:meta.answers[2],checked:true}},practices:{[key]:{version:1,caseVersion:1,count:6,index:5,round:0,mode:0,action:{type:'scenario-next'}}},settings:{sound:false,motion:'off',textScale:1.2,audioRate:1}};
+for(const route of ['completion','home'])for(const width of [320,390])test(`Korean lesson 1-10 ends level one and continues to pronunciation from ${route} at ${width}px`,async({page})=>{
+ const id='1-10',key='ja-ko:scenario:course20-1-20';
+ const oldProgress={...freshScenario('course20-1-20'),started:true,phase:'quiz',index:2,checked:true};
+ const pending={version:1,caseVersion:1,count:6,index:5,round:0,mode:0,action:{type:'scenario-next'}};
+ const lessons=Object.fromEntries(koreanLessons.filter(l=>l.level===0).map(l=>[l.id,{...freshKoreanProgress(l.id),started:true,phase:'done',index:l.count-1,completed:true}]));
+ lessons[id]={...freshKoreanProgress(id),started:true,phase:'quiz',index:koreanLessons.find(l=>l.id===id).count-1,selected:(koreanLessons.find(l=>l.id===id).count-1)%4};
+ const state={...freshState(),onboarded:true,koreanGuideSeenVersion:1,courseDirection:'ja-ko',onboardingLevel:0,korean:{version:4,active:id,lessons},scenarioActive:'course20-1-20',scenarios:{[key]:oldProgress},practices:{[key]:pending},settings:{sound:false,motion:'off',textScale:1.2,audioRate:1}};
  await page.setViewportSize({width,height:width===320?640:844});
  await page.addInitScript(({storageKey,state})=>{if(!localStorage.getItem(storageKey))localStorage.setItem(storageKey,JSON.stringify(state));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));window.Audio=class{play(){queueMicrotask(()=>this.onended?.());return Promise.resolve();}pause(){}};},{storageKey,state});
- await useCatalogWithoutPacks(page);await page.goto('/playable.html');await page.locator(`.home-start-card[data-action="scenario"][data-id="${id}"]`).click();
- const task=courseExpansionReview(key)[5];await expect(page.locator('.introduction-review')).toBeVisible();await page.locator(`[data-review-choice="${task.answer}"]`).click();await page.locator('[data-review-confirm]').click();await expect(page.locator('.review-result')).toBeVisible();await page.locator('[data-review-confirm]').click();
- await expect(page.locator('.practice-complete')).toBeVisible();await expect(button(page,'completed-next')).toHaveText('次のレッスン');await layout(page);
- const completed=await saved(page);expect(completed.scenarios[key].completed).toBe(true);expect(completed.practices[key]).toBeUndefined();expect(completed.korean.lessons).toEqual(priorKorean);for(const [priorId,p]of Object.entries(priorScenarios))expect(completed.scenarios[priorId]).toEqual(p);
+ await useCatalogWithoutPacks(page);await page.goto('/playable.html');
+ await expect(page.locator('.home-start-card[data-action="practice-resume"],.home-start-card[data-action="scenario"]')).toHaveCount(0);
+ await openMapLesson(page,{kind:'korean',id});await page.locator('[data-choice="resume"]').click();await button(page,'korean-check').click();
+ await expect(page.locator('.korean-zero-finish')).toBeVisible();await layout(page);
+ expect((await saved(page)).korean.lessons[id].completed).toBe(true);
  if(route==='home'){
-  await home(page);const card=page.locator('.home-start-card[data-action="next-course"]');await expect(card).toContainText('レベル2');await expect(card).toContainText('交流会で自己紹介する');await page.reload();await expect(card).toBeVisible();await card.click();
+  await home(page);const card=page.locator('.home-start-card[data-action="next-course"]');await expect(card).toContainText('レベル1.5');await page.reload();await expect(card).toBeVisible();await card.click();
  }else await button(page,'completed-next').click();
- await expect(page.locator('.view-korean')).toBeVisible();await expect(page.locator('.lesson-resume')).toHaveCount(0);
- const advanced=await saved(page);expect(advanced.onboardingLevel).toBe(2);expect(advanced.korean.active).toBe('3-1');expect(advanced.korean.lessons['3-1']).toMatchObject({started:true,completed:false,phase:'scenario'});expect(advanced.scenarios).toEqual(completed.scenarios);expect(advanced.studyTools).toEqual(completed.studyTools);for(const [priorId,p]of Object.entries(priorKorean))expect(advanced.korean.lessons[priorId]).toEqual(p);
- await home(page);await page.reload();const resume=page.locator('.home-start-card[data-action="korean"]');await expect(resume).toContainText('レベル2');await expect(resume).toContainText('交流会で自己紹介する');await resume.click();await expect(page.locator('.view-korean')).toBeVisible();expect((await saved(page)).korean.lessons['3-1'].completed).toBe(false);
-});
-
-test('Korean level-one home keeps an unfinished lesson before the next-level card',async({page})=>{
- await setup(page,'ja-ko','course1-17',320);await home(page);
- await page.evaluate(storageKey=>{const s=JSON.parse(localStorage.getItem(storageKey));Object.assign(s.scenarios['ja-ko:scenario:course1-17'],{phase:'done',completed:true});localStorage.setItem(storageKey,JSON.stringify(s));},storageKey);await page.reload();
- await expect(page.locator('.home-start-card[data-action="next-course"]')).toHaveCount(0);await expect(page.locator('.home-start-card[data-action="korean"]')).toBeVisible();expect((await saved(page)).korean?.lessons?.['1-1']?.completed).not.toBe(true);
+ await expect(page.locator('.view-korean')).toBeVisible();
+ const advanced=await saved(page);expect(advanced.onboardingLevel).toBe(8);expect(advanced.korean.active).toBe('15-1');expect(advanced.scenarios[key]).toEqual(oldProgress);expect(advanced.archivedPractices[key]).toEqual(pending);expect(advanced.practices[key]).toBeUndefined();
+ for(const l of koreanLessons.filter(l=>l.level===0))expect(advanced.korean.lessons[l.id].completed).toBe(true);
 });
 
 for(const {direction,id}of repeatExamples)test(`completed expansion repeat stays in its level home card ${direction} ${id}`,async({page})=>{
@@ -151,7 +144,7 @@ for(const {direction,id}of repeatExamples)test(`completed expansion repeat stays
  expect((await saved(page)).practices[key]).toEqual(pending);expect((await saved(page)).scenarios[key].completed).toBe(true);
  await home(page);await page.reload();await expect(card).toBeVisible();await expect(card).toContainText(meta.titles[direction==='ja-ko'?1:0]);
  // A repeat belongs to its actual level, even though legacy scenario reviews use level 2.
- await page.evaluate(storageKey=>{const s=JSON.parse(localStorage.getItem(storageKey));s.onboardingLevel=2;localStorage.setItem(storageKey,JSON.stringify(s));},storageKey);await page.reload();
+ await page.evaluate(({storageKey,level})=>{const s=JSON.parse(localStorage.getItem(storageKey));s.onboardingLevel=level===2?4:2;localStorage.setItem(storageKey,JSON.stringify(s));},{storageKey,level:meta.level});await page.reload();
  await expect(page.locator('.home-start-card')).toBeVisible();await expect(card).toHaveCount(0);await expect(page.locator(`.home-start-card[data-action="scenario"][data-id="${id}"]`)).toHaveCount(0);expect((await saved(page)).practices[key]).toEqual(pending);
  await page.evaluate(({storageKey,level})=>{const s=JSON.parse(localStorage.getItem(storageKey));s.onboardingLevel=level;localStorage.setItem(storageKey,JSON.stringify(s));},{storageKey,level:meta.level});await page.reload();await expect(card).toBeVisible();await card.click();await expect(page.locator('.case-task-scene')).toHaveText(courseExpansionReview(key)[index].scene);await progress(page,83);
 });

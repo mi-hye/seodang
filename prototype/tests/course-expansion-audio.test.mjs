@@ -8,9 +8,9 @@ import {courseVoicePath} from '../src/course-voice-path.js';
 const root=new URL('../',import.meta.url);
 const sha=data=>createHash('sha256').update(data).digest('hex');
 
-test('course speech covers all 63 lessons and deduplicates only identical language/text pairs',async()=>{
+test('course speech covers all 74 lessons and deduplicates only identical language/text pairs',async()=>{
  const {jobs,packs}=await prepareCourseAudioJobs();
- assert.equal(Object.keys(packs).length,63);
+ assert.equal(Object.keys(packs).length,74);
  assert.ok(jobs.length>0);
  assert.equal(new Set(jobs.map(x=>x.file)).size,jobs.length);
  assert.equal(new Set(jobs.map(x=>`${x.locale}:${x.text}`)).size,jobs.length);

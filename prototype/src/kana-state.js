@@ -80,7 +80,6 @@ export function normalizeKana(previous){
  return k;
 }
 export const kanaSolvedCount = previous => normalizeKana(previous).lessons.filter(l => l.caseSolved).length;
-export const kanaCompletedCount = previous => normalizeKana(previous).lessons.filter(l => l.completed).length;
 export const kanaUnlocked = (k, index) => Number.isInteger(index) && index >= 0 && index < kanaLessons.length;
 function validLesson(l, length, version = 2) {
   return l && typeof l.started === 'boolean' && (version >= 8 ? ['intro','learn','reading','quiz','summary'] : version >= 4 ? ['preview','intro','learn','quiz','solve','summary',...(version>=7?['reading']:[])] : version === 3 ? ['intro','learn','quiz','solve','summary'] : ['learn','quiz','summary']).includes(l.phase)

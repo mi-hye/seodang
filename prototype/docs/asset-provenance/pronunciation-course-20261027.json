@@ -1,0 +1,13 @@
+{
+  "scope": "Korean-only level 1.5, lessons 15-1 through 15-10",
+  "method": "Original Japanese instructional copy and listening/record-and-compare exercises. Reuse of existing model audio, no new synthesis or external recording.",
+  "references": [
+    "https://www.korean.go.kr/front/page/pageView.do?page_id=P000098&mn_id=95",
+    "prototype/src/korean-pronunciation-data.js",
+    "prototype/src/course-one-content.js"
+  ],
+  "rules": "Articulation contrasts follow the app's previously sourced NIKL pronunciation materials. Do not score modern merged ae/e as distinct. Final stops are unreleased; liaison examples use existing course1-16 model clips with original orthography preserved.",
+  "audio": "Lessons 1-9 use existing catalogued Supertonic clips, lesson 10 reuses bundled course voice clips for 문을 열어요./물을 마셔요./밥을 먹어요.",
+  "recording": "User-initiated browser MediaRecorder, up to 8 seconds, temporary Blob URL, no network or persistence, microphone tracks and URL disposed on exit. No automatic pronunciation score.",
+  "validation": "Automated file/canonical text mapping and browser mocked audio/recording tests. New human listening and physical-device recording are not certified."
+}

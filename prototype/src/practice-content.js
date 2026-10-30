@@ -4,7 +4,7 @@ import {levelTwoReview} from './level-two-review-content.js';
 import {sentenceId,sentenceProgress} from './sentence-state.js';
 import {introductionReview} from './introduction-review-content.js';
 import {isCasePractice,hasExpressionReview,casePracticeVersion} from './practice-state.js';
-import {koreanStageZero} from './korean-state.js';
+import {koreanStageZero,isPronunciationCourse,isComparisonCourse} from './korean-state.js';
 import {basicSinglePass} from './basics-state.js';
 const loaded={};
 const koreanSyllableMeaning=Object.fromEntries([
@@ -32,7 +32,8 @@ export function practiceUnits(s,kind){
  const mod=loaded[kind];if(!mod)return[];const expanded=levelTwoReview(practiceKey(s,kind));if(expanded)return expanded.filter(t=>t.stage===0).sort((a,b)=>a.unitIndex-b.unitIndex).map(t=>t.unit);if(kind==='video')return[];
  if(kind==='scenario')return (mod.scenarioContent[s.courseDirection][s.scenarioActive]?.items||[]).map((x,i)=>({text:x.text,meaning:x.meaning,audio:mod.scenarioAudio(s.courseDirection,s.scenarioActive,i)}));
  if(kind==='basic')return mod.basicContent[s.basics.active].map(([text,meaning],index)=>({text,meaning,audio:mod.basicAudio({basics:{active:s.basics.active,lessons:{[s.basics.active]:{index}}}})})).filter(unit=>s.basics.active!==10||unit.text.length>2);
- if(kind==='korean')return mod.koreanContent[s.korean.active].map((item,index)=>({text:item.answer&&Number(s.onboardingLevel)>=5?item.answer:item.text,meaning:item.meaning||koreanSyllableMeaning[item.text]||item.question,audio:entry(Number(s.onboardingLevel)>=5?item.answer:(item.spoken||item.text),`assets/audio/${['3-2','3-3','3-4'].includes(s.korean.active)?'level-two':Number(s.onboardingLevel)>=5?'practice':'korean'}/korean.${s.korean.active}.${index}.wav`,'ko-KR')}));
+ if(kind==='korean'&&isPronunciationCourse(s.korean.active))return mod.koreanContent[s.korean.active].map(item=>({text:item.text,meaning:item.meaning,audio:item.audio}));
+ if(kind==='korean')return mod.koreanContent[s.korean.active].map((item,index)=>({text:item.answer&&Number(s.onboardingLevel)>=5?item.answer:item.text,meaning:item.meaning||koreanSyllableMeaning[item.text]||item.question,audio:item.audio||entry(Number(s.onboardingLevel)>=5?item.answer:(item.spoken||item.text),`assets/audio/${['3-2','3-3','3-4'].includes(s.korean.active)?'level-two':Number(s.onboardingLevel)>=5?'practice':'korean'}/korean.${s.korean.active}.${index}.wav`,'ko-KR')}));
  if(kind==='kana')return loaded.kanaState.kanaLessons[s.kana.active].letters.map(letter=>({text:letter.text,meaning:letter.reading,audio:mod.kanaLetterAudio(letter)}));
  if(kind==='labels'||kind==='listening')return mod.labelWords.map(w=>({text:w.text,meaning:w.meaning,audio:entry(w.text,`assets/audio/labels/${w.id}.wav`)}));
  if(kind==='play')return mod.expressions.map(x=>({text:x.text,meaning:x.meaning,audio:entry(x.text,`assets/audio/cafe/case01.${x.id}.ja.wav`)}));
@@ -44,7 +45,7 @@ export function completionAttempt(before,after,kind,action){
  if(kind==='video')return before.videoLessons?.[before.videoActive]?.phase!=='done'&&after.videoLessons?.[before.videoActive]?.phase==='done';
  if(kind==='scenario'){const key=practiceKey(before,kind);return before.scenarios?.[key]?.phase!=='done'&&after.scenarios?.[key]?.phase==='done';}
  if(kind==='basic')return ['basic-check','basic-next'].includes(action.type)&&before.basics?.lessons[before.basics.active]?.phase!=='done'&&after.basics?.lessons[before.basics.active]?.phase==='done';
- if(kind==='korean')return ['korean-check','korean-speak-next'].includes(action.type)&&before.korean?.lessons[before.korean.active]?.phase!=='done'&&after.korean?.lessons[before.korean.active]?.phase==='done';
+ if(kind==='korean')return ['korean-check','korean-speak-next','korean-next'].includes(action.type)&&before.korean?.lessons[before.korean.active]?.phase!=='done'&&after.korean?.lessons[before.korean.active]?.phase==='done';
  if(kind==='kana')return action.type==='kana-next'&&before.kana?.lessons[before.kana.active]?.phase!=='summary'&&after.kana?.lessons[before.kana.active]?.phase==='summary';
  if(kind==='labels')return before.labels?.phase!=='summary'&&after.labels?.phase==='summary';
  if(kind==='listening')return before.listening?.index<4&&after.listening?.index===4;
@@ -55,7 +56,7 @@ export function completionAttempt(before,after,kind,action){
  return false;
 }
 export function interceptCompletion(before,after,kind,action){
- if(kind==='basic'&&basicSinglePass(before.basics?.active)||kind==='korean'&&koreanStageZero(before.korean?.active))return after;
+ if(kind==='basic'&&basicSinglePass(before.basics?.active)||kind==='korean'&&(koreanStageZero(before.korean?.active)||isPronunciationCourse(before.korean?.active)||isComparisonCourse(before.korean?.active)))return after;
  if(['scenario','video'].includes(kind)&&!hasExpressionReview(practiceKey(before,kind)))return after;
  if(!completionAttempt(before,after,kind,action))return after;
  const key=practiceKey(before,kind),count=caseTasks(before,kind)?.length??practiceUnits(before,kind).length;
@@ -66,6 +67,7 @@ export function interceptCompletion(before,after,kind,action){
 // Extra distractors for short lessons keep the listening grid at four distinct choices.
 export function practiceDistractors(s,kind){
  const mod=loaded[kind];
+ if(kind==='korean'&&isPronunciationCourse(s.korean.active))return mod.koreanContent[s.korean.active].map(item=>({text:item.text,meaning:item.meaning,audio:item.audio}));
  if(kind==='korean')return mod.koreanContent[s.korean.active].flatMap(item=>item.others||[]);
  if(kind==='dialogue')return mod.dialogueTurns.flatMap(turn=>turn.choices);
  if(kind==='play')return ['あかい かばん','ドアの そば'];

@@ -29,7 +29,7 @@ for(const direction of ['ko-ja','ja-ko'])for(const width of [320,390])test(`lazy
  await wheelIntent(page,-80);await expect(pages).toHaveCount(2);
  expect(Math.abs((await overview.boundingBox()).y-before.y)).toBeLessThan(2);
  expect(await anchor.evaluate(e=>e===window.mapAnchor)).toBe(true);
- expect((await collectMapLessons(page)).map(l=>l.number)).toEqual(Array.from({length:17},(_,i)=>i+1));
+ expect((await collectMapLessons(page)).map(l=>l.number)).toEqual(Array.from({length:20},(_,i)=>i+1));
  await scrollMapSection(page,0);await wheelIntent(page,-80);await expect(pages).toHaveCount(2);
  await page.locator('[data-action="map-locate"]').click();await expect(anchor).toBeFocused();
  const located=await anchor.boundingBox();expect(located.y).toBeGreaterThan(64);expect(located.y+located.height).toBeLessThan(640);
@@ -99,7 +99,7 @@ test('prepending while overview is offscreen preserves the visible lesson positi
  await expect(page.locator('[data-map-page="0"] .map-stop').last().locator('.map-trail')).toBeVisible();
 });
 
-const cases=[['ko-ja','course3-8',4,'video','scene-jp3-9'],['ja-ko','course3-8',4,'video','scene-ko3-9'],['ko-ja','course4-11',5,'video','scene-jp4-12'],['ja-ko','course4-17',5,'expert',0],['ko-ja','course5-16',7,'scenario','course5-17'],['ja-ko','course1-17',0,'korean','3-1'],['ko-ja','course5-17',7,null,null]];
+const cases=[['ko-ja','course3-8',4,'video','scene-jp3-9'],['ja-ko','course3-8',4,'video','scene-ko3-9'],['ko-ja','course4-11',5,'video','scene-jp4-12'],['ja-ko','course4-17',5,'video','scene-ko4-18'],['ko-ja','course5-16',7,'scenario','course5-17'],['ko-ja','course5-17',7,'video','scene-jp5-18']];
 for(const [direction,id,level,nextKind,nextId]of cases)test(`completion follows map ${direction} ${id}`,async({page})=>{
  await prepareCourseExpansion(id);const progressKey=`${direction}:scenario:${id}`,tasks=courseExpansionReview(progressKey),last=tasks.at(-1);
  const scenarios={[progressKey]:{...freshScenario(id),started:true,phase:'quiz',index:2,checked:true,selected:0}},practices={[progressKey]:{version:1,caseVersion:1,count:6,index:5,round:0,mode:0,action:{type:'scenario-next'}}};

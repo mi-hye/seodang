@@ -8,9 +8,10 @@ test('Korean stage zero covers every component with valid composition, four choi
  const manifest=JSON.parse(readFileSync(new URL('../assets/audio/korean/manifest.json',import.meta.url)));
  for(const l of lessons){assert.equal(koreanGroups[l.id].reduce((a,b)=>a+b),l.count);assert.ok(koreanGroups[l.id].every(size=>size<=5));for(const [index,item] of koreanContent[l.id].entries()){
   const choices=koreanLetterChoices(l.id,index);assert.equal(choices.length,4);assert.equal(new Set(choices).size,4);assert.equal(choices[index%4],item.answer||item.text);
+  if(item.finalSoundPractice){assert.equal(koreanExampleAudio({korean:{active:l.id,lessons:{[l.id]:{index}}}}).text,item.text);continue;}
   const example=koreanExample(item);assert.notEqual(example.text,'？');if(l.practice)assert.equal(composeKorean(item.parts),item.text);
   assert.ok(koreanStrokes(item.text)?.length,`${l.id} ${item.text}`);
-  const audio=koreanExampleAudio({korean:{active:l.id,lessons:{[l.id]:{index}}}});assert.equal(audio.text,example.text);assert.ok(existsSync(audio.audioFile));assert.equal(manifest.files[audio.id].spoken,audio.text);
+  const audio=koreanExampleAudio({korean:{active:l.id,lessons:{[l.id]:{index}}}});assert.equal(audio.text,example.text);assert.ok(existsSync(audio.audioFile));if(audio.bundled){assert.equal(audio.text,'마');assert.equal(audio.audioFile,'assets/course-voices/ko-KR-4c4cc0773cb41a79.m4a');}else assert.equal(manifest.files[audio.id].spoken,audio.text);
  }}
  const glyphs=lessons.filter(l=>!l.practice).flatMap(l=>koreanContent[l.id].map(x=>x.text)).filter(g=>g.charCodeAt(0)<0xac00);assert.equal(new Set(glyphs).size,40);
 });
@@ -27,14 +28,14 @@ test('every Korean zero course completes once with monotonic progress, group int
 });
 test('v2 Korean progress and history survive; old extra practice resumes in the explanation phase',()=>{
  const old={...freshState(),courseDirection:'ja-ko',onboarded:true,korean:{version:2,active:'1-3',lessons:{'1-1':{...freshKoreanProgress(),completed:true,started:true,phase:'done',index:9},'1-3':{...freshKoreanProgress(),started:true,index:8,phase:'quiz',selected:2}}},practices:{'ja-ko:korean:1-3':{version:1,round:1,mode:2,index:5,count:14,action:{type:'korean-check'}}}};
- const result=load({getItem:()=>JSON.stringify(old)});assert.equal(result.blocked,false);assert.equal(result.state.korean.version,4);assert.equal(result.state.korean.lessons['1-1'].completed,true);assert.equal(result.state.korean.lessons['1-3'].index,5);assert.equal(result.state.korean.lessons['1-3'].phase,'learn');assert.equal(result.state.korean.lessons['1-3'].selected,null);assert.equal(result.state.practices['ja-ko:korean:1-3'],undefined);assert.ok(valid(result.state));
+ const result=load({getItem:()=>JSON.stringify(old)});assert.equal(result.blocked,false);assert.equal(result.state.korean.version,4);assert.equal(result.state.korean.lessons['1-1'].completed,true);assert.equal(result.state.korean.lessons['1-3'].index,0);assert.equal(result.state.korean.lessons['1-3'].phase,'intro');assert.equal(result.state.korean.lessons['1-3'].selected,null);assert.equal(result.state.practices['ja-ko:korean:1-3'],undefined);assert.ok(valid(result.state));
 });
 
 test('v3 saves migrate to explanation or practice without dropping positions, completion or history',()=>{
  for(const l of lessons)for(const phase of ['intro','learn','write','quiz','done']){
   const old={version:3,active:l.id,lessons:{[l.id]:{index:2,phase,selected:phase==='quiz'?1:null,retry:phase==='quiz',started:true,completed:phase==='done'}},history:{version:1,startedOn:'2026-10-14',days:{'2026-10-14':{letters:8,expressions:0,sentences:0,cases:1}}}};
-  assert.ok(validKorean(old));const migrated=normalizeKorean(old);assert.ok(validKorean(migrated));assert.equal(migrated.version,4);assert.equal(migrated.lessons[l.id].index,2);assert.equal(migrated.lessons[l.id].completed,phase==='done');assert.deepEqual(migrated.history,old.history);assert.equal(old.version,3);
-  assert.equal(migrated.lessons[l.id].phase,phase==='done'?'done':l.practice?(phase==='intro'?'learn':phase):['write','quiz'].includes(phase)?'learn':phase);
+  assert.ok(validKorean(old));const migrated=normalizeKorean(old);assert.ok(validKorean(migrated));assert.equal(migrated.version,4);assert.equal(migrated.lessons[l.id].index,['1-1','1-2','1-3','1-4'].includes(l.id)?phase==='done'?l.count-1:0:2);assert.equal(migrated.lessons[l.id].completed,phase==='done');assert.deepEqual(migrated.history,old.history);assert.equal(old.version,3);
+  assert.equal(migrated.lessons[l.id].phase,phase==='done'?'done':['1-1','1-2','1-3','1-4'].includes(l.id)?l.practice?'learn':'intro':l.practice?(phase==='intro'?'learn':phase):['write','quiz'].includes(phase)?'learn':phase);
  }
 });
 test('explanation completion hands off to practice and replay preserves case count',()=>{

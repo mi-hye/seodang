@@ -31,7 +31,7 @@ test('app state is eager while lesson material, community and optional screens r
  const directory=fileURLToPath(new URL('../src/',import.meta.url));
  const graph=await measureModuleGraph('app.js',directory);
  for(const file of ['app.js','curriculum.js','lesson-title.js','song-state.js','storage.js'])assert.ok(graph.files.includes(file),file);
- for(const file of ['song-lesson.js','song-lesson-content.js','video-lesson-content.js','scenario-content.js','practice.js','community.js','growth-view.js','mission-view.js'])assert.ok(!graph.files.includes(file),`${file} must stay outside the initial app graph`);
+ for(const file of ['song-lesson.js','song-lesson-content.js','video-lesson-content.js','scenario-content.js','practice.js','community.js','pronunciation-course.js','speaking-coach.js','dog-chat.js','dog-chat-api.js','dog-chat-lessons.js'])assert.ok(!graph.files.includes(file),`${file} must stay outside the initial app graph`);
  const sizes=await Promise.all(graph.files.map(async file=>gzipSync(await readFile(join(directory,file))).length));
  assert.equal(graph.gzip,sizes.reduce((sum,size)=>sum+size,0));
 });

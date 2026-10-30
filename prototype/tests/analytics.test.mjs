@@ -36,6 +36,15 @@ test('session survives page reload, opens again only after inactivity',()=>{
  const f=fixture();f.a.setConsent(true);assert.equal(f.a.capture('app_opened'),true);
  const a=createAnalytics(f.options);assert.equal(a.capture('app_opened'),false);f.advance(31*60000);assert.equal(a.capture('app_opened'),true);
 });
+test('reset returns analytics to an unanswered state without retaining or sending old data',async()=>{
+ let signal,finish;const f=fixture((b,s)=>{signal=s;return new Promise(r=>finish=r);});
+ f.a.setConsent(true);const task=f.a.flush();assert.equal(f.a.resetConsent(),true);
+ assert.equal(signal.aborted,true);finish({ok:true});await task;
+ assert.equal(f.a.consent,null);assert.equal(f.a.installationId,null);assert.equal(f.a.pending,0);
+ const restarted=createAnalytics({...f.options,send:async()=>assert.fail('reset must not enable collection')});
+ assert.equal(restarted.consent,null);assert.equal(restarted.capture('app_opened'),false);await restarted.flush();
+ restarted.setConsent(false);assert.equal(restarted.resetConsent(),true);assert.equal(restarted.consent,null);
+});
 test('storage errors never break learning and cannot activate collection',()=>{
  const a=createAnalytics({storage:{getItem(){throw Error();},setItem(){throw Error();}},send:async()=>assert.fail('must not send')});assert.equal(a.setConsent(true),false);assert.equal(a.capture('app_opened'),false);
 });

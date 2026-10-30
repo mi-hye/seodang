@@ -1,3 +1,6 @@
+import {isComparisonCourse} from './comparison-course-catalog.js';
+import {mountAudioLoading} from './audio-loading.js';
+import {isPronunciationCourse} from './pronunciation-course-catalog.js';
 import {songLesson,songProgress,resumeSongLesson} from './song-state.js';
 import {recordStudyCompletion} from './study-state.js';
 import {missionForCommunity} from './mission-state.js';
@@ -8,7 +11,7 @@ import {analytics,openAnalytics} from './analytics.js';
 import {learningSnapshot,createLearningTracker} from './analytics-learning.js';
 const learningTracker=createLearningTracker(analytics);
 learningTracker.visibility(!document.hidden);
-import {japaneseLessonUI,courseGroup,displayLevel,retiredPractice} from './curriculum.js';
+import {japaneseLessonUI,courseGroup,displayLevel,retiredPractice,levelsFor} from './curriculum.js';
 import {lessonTitle} from './lesson-title.js';
 import {developmentMode} from './build-config.js';
 import {practiceHasWriting,practiceRoundCount,advancePractice} from './practice-state.js';
@@ -73,8 +76,9 @@ window.addEventListener('pagehide',()=>learningTracker.visibility(false));
 window.addEventListener('pageshow',()=>learningTracker.visibility(!document.hidden));
 for(const event of ['pointerdown','keydown'])document.addEventListener(event,()=>learningTracker.activity(),{capture:true,passive:true});
 setInterval(()=>learningTracker.tick(),15000);
-function updatePassagePlayback(){for(const el of app.querySelectorAll('[data-passage-pause]')){const paused=player.state==='paused';el.disabled=player.state==='idle';el.innerHTML=icon(paused?'play':'pause');el.setAttribute('aria-label',paused?el.dataset.resumeLabel:el.dataset.pauseLabel);}}
-player.onStateChange=updatePassagePlayback;
+function updatePassagePlayback(){for(const el of app.querySelectorAll('[data-passage-pause]')){const paused=player.state==='paused';el.disabled=['idle','loading'].includes(player.state);el.innerHTML=icon(paused?'play':'pause');el.setAttribute('aria-label',paused?el.dataset.resumeLabel:el.dataset.pauseLabel);}}
+const audioLoading=mountAudioLoading(player);
+player.onStateChange=()=>{updatePassagePlayback();audioLoading.update();};
 const progress = () =>
   ({ intro: 0, learn: 1, investigate: 2, solved: 3, transfer: 4, summary: 5 })[
     state.episode.step
@@ -147,7 +151,7 @@ function speakEpisodeAudio() {
 }
 function top(title, back = true) {
   if(!completedKind&&reviewKinds.includes(view))title=lessonTitle(state,view,title);
-  return renderHeader(title || "서당", { backAction: "home", backLabel: "학습 홈으로", backDisabled: !back, backHidden: !back });
+  return renderHeader(title || "서당", { backAction: "home", backLabel: "학습 홈으로", backDisabled: !back, backHidden: !back, titleParts: !completedKind&&view==='korean'&&!/^(25|35)-/.test(state.korean?.active)?koreanLessons.find(l=>l.id===state.korean?.active)?.titleParts:undefined });
 }
 let communityModule,communityStyles,disposeCommunity,communityScreen='feed';
 async function loadCommunity(){
@@ -160,10 +164,11 @@ function tabs() {
   const japanese=japaneseLessonUI(state);
   const items=[
     ['home','book',japanese?'学習':'학습'],
+    ['kana-chart','letters',japanese?'文字':'글자'],
     ['my','chart',japanese?'記録':'기록'],
     ['community','people',japanese?'交流':'교류'],
   ];
-  return `<nav class="tabs" aria-label="${japanese?'メインメニュー':'주 메뉴'}">${items.map(([id,i,label])=>button(`${icon(i)}<span>${esc(label)}</span>`,id,view===id?'tab active':'tab',`aria-current="${view===id?'page':'false'}"`)).join('')}</nav>`;
+  return `<nav class="tabs" aria-label="${japanese?'メインメニュー':'주 메뉴'}">${items.map(([id,i,label])=>button(`${icon(i)}<span>${esc(label)}</span>`,id,view===id?'tab active':'tab',id==='kana-chart'?'aria-haspopup="dialog"':`aria-current="${view===id?'page':'false'}"`)).join('')}</nav>`;
 }
 function currentPracticeKey(){
  const visible=courseGroup(selectedLevel(state))>=4?mapCourseLessons(state):null;
@@ -180,12 +185,16 @@ function homeCaseCard(props){
  else if(kind==='sentence')s={...state,sentenceActive:Number(props.id??nextSentence(state))};
  else if(kind==='reading'&&props.id!==undefined)s={...state,onboardingLevel:props.id};
  else if(kind==='kana'){const k=normalizeKana(state.kana),active=k.lessons[k.active].phase==='summary'?Math.max(0,k.lessons.findIndex(l=>!l.caseSolved)):k.active;s={...state,kana:{...k,active}};}
- else if(kind==='korean')s={...state,korean:{...state.korean,active:nextKorean(state).id}};
+ else if(kind==='korean')s={...state,korean:{...state.korean,active:props.id??nextKorean(state).id}};
  else if(kind==='basic')s={...state,basics:{...state.basics,active:nextBasic(state)}};
  const parts=props.title.split(' · '),prefix=parts.length>1?parts.shift()+' · ':'';
  return renderHomeCaseCard({...props,title:prefix+lessonTitle(s,kind,parts.join(' · '))});
 }
 function caseCard() {
+  if(state.courseDirection==='ja-ko'&&[2,4,5].includes(courseGroup(selectedLevel(state)))&&!currentPracticeKey()){
+   const visible=mapCourseLessons(state),lesson=mapCurrentLesson(state);
+   if(lesson)return renderHomeCaseCard({title:`${visible.findIndex(l=>l.action===lesson.action&&l.id===lesson.id)+1}. ${lesson.title}`,action:lesson.action,id:lesson.id,actionLabel:t(['이어하기','続きから'].includes(lesson.status)?'학습 이어하기':'학습 시작하기')});
+  }
   const music=resumeSongLesson(state);if(music)return renderHomeCaseCard({title:`${music.number}. ${music.title}`,action:'song',id:music.id,actionLabel:t('학습 이어하기')});
   const v=resumeVideoLesson(state);if(v)return renderHomeCaseCard({title:`${v.number}. ${t(v.title)}`,action:'video',id:v.id,actionLabel:t('학습 이어하기')});
   const visible=mapCourseLessons(state);
@@ -198,9 +207,9 @@ function caseCard() {
     return homeCaseCard({title,action:'practice-resume',actionLabel:japaneseLessonUI(state)?'学習を続ける':'학습 이어하기'});
   }
   const current=mapCurrentLesson(state);
-  if(courseGroup(selectedLevel(state))>=4&&visible.length){const lesson=current||visible[0];return renderHomeCaseCard({title:`${visible.findIndex(l=>l.action===lesson.action&&l.id===lesson.id)+1}. ${lesson.title}`,action:lesson.action,id:lesson.id,actionLabel:t(lesson.complete?'다시 학습하기':['이어하기','続きから'].includes(lesson.status)?'학습 이어하기':'학습 시작하기')});}
+  if(!current&&state.courseDirection==='ja-ko'&&[0,8,2,9,10].includes(courseGroup(selectedLevel(state)))){const next=koreanNextCourse();return renderHomeCaseCard({title:`レベル${displayLevel(next.level)} · ${next.title}`,action:'next-course',actionLabel:'次のレベルへ'});}
+  if(courseGroup(selectedLevel(state))>=4&&![8,9,10].includes(courseGroup(selectedLevel(state)))&&visible.length){const lesson=current||visible[0];return renderHomeCaseCard({title:`${visible.findIndex(l=>l.action===lesson.action&&l.id===lesson.id)+1}. ${lesson.title}`,action:lesson.action,id:lesson.id,actionLabel:t(lesson.complete?'다시 학습하기':['이어하기','続きから'].includes(lesson.status)?'학습 이어하기':'학습 시작하기')});}
   if(current?.action==='scenario'&&scenarioLessons.find(l=>l.id===current.id)?.extended)return renderHomeCaseCard({title:current.title,action:'scenario',id:current.id,actionLabel:t('학습 시작하기')});
-  if(!current&&state.courseDirection==='ja-ko'&&courseGroup(selectedLevel(state))===0){const next=koreanLessons.find(l=>!l.retired&&l.level===2);return renderHomeCaseCard({title:`レベル2 · ${next.title}`,action:'next-course',actionLabel:'次のレベルへ'});}
   if(selectedLevel(state)===7){const list=expertCatalog[state.courseDirection];let id=list.findIndex((_,i)=>expertProgress(state,i).started&&!expertProgress(state,i).completed);if(id<0)id=list.findIndex((_,i)=>!expertProgress(state,i).completed);if(id<0)id=0;const p=expertProgress(state,id);return renderHomeCaseCard({title:`${lessonNumberWithVideo(state,id+1)}. ${t(list[id].title)}`,action:'expert',id,actionLabel:t(p.completed?'다시 학습하기':p.started?'학습 이어하기':'학습 시작하기')});}
   if(state.courseDirection==='ja-ko'){const l=nextKorean(state),p=koreanProgress(state,l.id);return homeCaseCard({title:`レベル${displayLevel(l.level)} · ${l.title}`,action:'korean',actionLabel:(p.completed?'もう一度学ぶ':p.started?'学習を続ける':'学習を始める')});}
 
@@ -246,14 +255,14 @@ async function loadVideo(){
  videoStyles ||= new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href='src/video-lesson.css';link.onload=resolve;link.onerror=()=>{link.remove();videoStyles=null;reject(Error('Video lesson styles unavailable'));};document.head.append(link);});
  await Promise.all([videoStyles,loadPractice('video')]);
 }
-function video(){return videoProgress(state).phase==='done'?practiceModule.renderLessonComplete(state,top,hasNextLesson('video')):videoModule.renderVideoLesson(state,title=>renderHeader(title,{backLabel:t('학습 홈으로')}));}
+function video(){return videoProgress(state).phase==='done'?practiceModule.renderLessonComplete(state,top,hasNextLesson('video')):videoModule.renderVideoLesson(state,title=>renderHeader(lessonTitle(state,'video',title),{backLabel:t('학습 홈으로')}));}
 let songModule,songStyles;
 async function loadSong(){
  songModule ||= await import('./song-lesson.js');
  songStyles ||= Promise.all(['video-lesson.css','song-lesson.css'].map(name=>new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href=`src/${name}`;link.onload=resolve;link.onerror=()=>{link.remove();songStyles=null;reject(Error('Song lesson styles unavailable'));};document.head.append(link);})));
  await Promise.all([songStyles,loadPractice()]);
 }
-function song(){return songProgress(state).phase==='done'?practiceModule.renderLessonComplete(state,top,hasNextLesson('song')):songModule.renderSongLesson(state,title=>renderHeader(title,{backLabel:t('학습 홈으로')}));}
+function song(){return songProgress(state).phase==='done'?practiceModule.renderLessonComplete(state,top,hasNextLesson('song')):songModule.renderSongLesson(state,title=>renderHeader(lessonTitle(state,'song',title),{backLabel:t('학습 홈으로')}));}
 let expertModule;
 async function loadExpert(){expertModule ||= await import('./expert.js');await Promise.all([loadReading(),loadPractice('reading'),expertModule.prepareExpert()]);}
 function expert(){return expertProgress(state).phase==='done'?practiceModule.renderLessonComplete(state,top,hasNextLesson('expert')):expertModule.renderExpert(state,title=>renderHeader(title,{backLabel:t('학습 홈으로')}));}
@@ -306,7 +315,7 @@ async function loadKorean(){
 }
 function korean(){return koreanModule.renderKorean(state,top);}
 function speakKoreanIntro(){const entries=koreanModule.koreanIntroAudio(state);if(entries.length)void player.playSequence(entries,state.settings.sound,()=>{toast='音声を再生できませんでした。もう一度お試しください。';render();});}
-function speakKorean(){if(pendingPractice())return;const phase=koreanProgress(state,state.korean.active).phase;if(phase==='scenario'){speakKoreanIntro();return;}if(phase==='intro')return;const entry=koreanStageZero(state.korean.active)&&koreanProgress(state,state.korean.active).phase==='learn'?koreanModule.koreanExampleAudio(state)||koreanModule.koreanAudio(state):koreanModule.koreanAudio(state);void player.play(entry,state.settings.sound,()=>{toast='音声を再生できませんでした。もう一度お試しください。';render();},{rate:entry?.playbackRate??state.settings.audioRate??1});}
+function speakKorean(){if(pendingPractice()||isComparisonCourse(state.korean.active))return;const phase=koreanProgress(state,state.korean.active).phase;if(phase==='scenario'){speakKoreanIntro();return;}if(phase==='intro'||isPronunciationCourse(state.korean.active)&&phase==='learn')return;const entry=koreanStageZero(state.korean.active)&&koreanProgress(state,state.korean.active).phase==='learn'?koreanModule.koreanExampleAudio(state)||koreanModule.koreanAudio(state):koreanModule.koreanAudio(state);void player.play(entry,state.settings.sound,()=>{toast='音声を再生できませんでした。もう一度お試しください。';render();},{rate:entry?.playbackRate??state.settings.audioRate??1});}
 let basicModule,basicStyles;
 async function loadBasics(){
  basicModule ||= await import('./basics.js');
@@ -340,36 +349,6 @@ function review() {
   }${state.episode.step === "summary" ? button("다시 학습하기", "restart", "secondary") : button(learned.length ? "학습 이어하기" : "학습 시작하기", "play")}</main>${tabs()}`;
 }
 
-// Growth comparison and daily mission screens load on demand from the records page.
-let growthModule,missionModule,growthStyles,growthScreen='overview',growthNotice='',growthError='',growthPending,missionError='',missionPending,draftTimer=null;
-const uiText=(ko,ja)=>japaneseLessonUI(state)?ja:ko;
-async function loadGrowthStyles(){
- growthStyles ||= new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href='src/growth.css';link.onload=resolve;link.onerror=()=>{link.remove();growthStyles=null;reject(Error('Growth styles unavailable'));};document.head.append(link);});
- await growthStyles;
-}
-async function loadGrowth(kind){
- await loadRecords();
- if(kind==='growth')growthModule ||= await import('./growth-view.js');else missionModule ||= await import('./mission-view.js');
- await loadGrowthStyles();
-}
-const growthHeader=title=>renderHeader(title,{backAction:'my',backLabel:'학습 기록'});
-function growth(){return growthModule.renderGrowth(state,growthHeader,{screen:growthScreen,notice:growthNotice,error:growthError,pendingText:growthPending});}
-function mission(){return missionModule.renderMission(state,growthHeader,{error:missionError,pendingText:missionPending});}
-// Typing saves a draft shortly after input stops, and before any other action or page hide.
-function flushDraft(){
- if(draftTimer===null)return;
- clearTimeout(draftTimer);draftTimer=null;
- const field=app.querySelector('[data-growth-draft],[data-mission-draft]');if(!field)return;
- if(field.matches('[data-growth-draft]'))commit({type:'growth-draft',text:field.value});
- else commit({type:'mission-draft',text:field.value,lessonKey:field.dataset.lessonKey,lessonOn:field.dataset.lessonOn});
-}
-// Save failures keep the typed text on screen and leave the stored record unchanged.
-function saveWriting(action,{onSaved,onFailed}){
- const before=state;commit(action);
- if(state===before)return onFailed('empty');
- if(blocked||storageError){state=before;return onFailed('storage');}
- onSaved();
-}
 let recordsModule, recordsStyles, recordOffset=0, recordSelected;
 function my() { return recordsModule.renderRecords(state,top,tabs,{offset:recordOffset,selected:recordSelected}); }
 async function loadRecords() {
@@ -408,7 +387,7 @@ function play() {
   if (e.step === "intro")
     body = `${scene()}<section class="reading dialogue-slab"><span class="speaker">${episode.intro[0].speaker}</span><h2>색과 위치 표현을 배워요</h2>${button(`표현 익히기 ${icon("arrow")}`, "next")}</section>`;
   if (e.step === "learn")
-    body = `<section class="reading learning-sheet"><span class="eyebrow">표현 익히기</span><h1>${e.lesson ? "어디에 있을까요?" : "어떤 가방일까요?"}</h1>${expressionCard(expressions[e.lesson], { meaning: true, picture: true, compactAudio: true, showReading: true, sound: state.settings.sound, beginner: state.support === "beginner" })}<div class="button-pair">${button("이전", "previous-lesson", "secondary")}${button(e.lesson ? "메모 보기" : "다음", "next")}</div></section>`;
+    body = `<section class="reading learning-sheet"><span class="eyebrow">표현 익히기</span><h1>${e.lesson ? "어디에 있을까요?" : "어떤 가방일까요?"}</h1>${expressionCard(expressions[e.lesson], { meaning: true, picture: true, showReading: true, sound: state.settings.sound, beginner: state.support === "beginner" })}<div class="button-pair">${button("이전", "previous-lesson", "secondary")}${button(e.lesson ? "메모 보기" : "다음", "next")}</div></section>`;
   if (e.step === "investigate")
     body = `${investigation()}<section class="reading investigation-slab"><div class="section-row"><h2>${e.selected?'선택한 가방을 확인해 주세요':'메모와 같은 가방을 골라요'}</h2></div>${e.feedback?`<div class="feedback" role="status">${esc(e.feedback)}</div>`:''}${button('확인하기','submit','primary',e.selected?'':'disabled')}</section>`;
   if (e.step === "solved")
@@ -456,8 +435,8 @@ function render(scroll = false) {
     state.settings.textScale,
   );
   document.documentElement.dataset.motion = state.settings.motion;
-  document.documentElement.classList.toggle("library-theme", ["home", "my", "community", "growth", "mission"].includes(view));
-  app.innerHTML = `<div class="shell view-${view}">${storageError ? `<aside class="storage-warning" role="status">${esc(t(storageError))}</aside>` : ""}${completedKind?(completedKind==='korean'&&state.korean.active==='1-10'?koreanModule.renderKoreanLettersComplete(top):practiceModule.renderLessonComplete(state,top,hasNextLesson(completedKind))):pendingPractice()?practiceModule.renderPractice(state,view,top):{ home, study, community, growth, mission, video, song, expert, scenario, korean, basic, review, my, play, kana, sentence, labels, listening, dialogue, reading }[view]()}${toast ? `<div class="toast" role="status">${esc(t(toast))}</div>` : ""}</div>`;
+  document.documentElement.classList.toggle("library-theme", ["home", "my", "community"].includes(view));
+  app.innerHTML = `<div class="shell view-${view}">${storageError ? `<aside class="storage-warning" role="status">${esc(t(storageError))}</aside>` : ""}${completedKind?(completedKind==='korean'&&state.korean.active==='1-10'?koreanModule.renderKoreanLettersComplete(top):practiceModule.renderLessonComplete(state,top,hasNextLesson(completedKind))):pendingPractice()?practiceModule.renderPractice(state,view,top):{ home, study, community, video, song, expert, scenario, korean, basic, review, my, play, kana, sentence, labels, listening, dialogue, reading }[view]()}${toast ? `<div class="toast" role="status">${esc(t(toast))}</div>` : ""}</div>`;
   if(lessonSession&&['scenario','video'].includes(view)&&practiceModule?.caseTasksForReview?.(state,view)&&!completedKind){app.querySelector('.lesson-progress,.scenario-progress')?.remove();app.querySelector('.app-header')?.insertAdjacentHTML('afterend',lessonSession.progressBar(state,view));}
   if(!completedKind&&lessonSession&&practiceKinds.includes(view))app.querySelector('.app-header')?.insertAdjacentHTML('afterend',lessonSession.progressBar(state,view));
   if(lessonSession&&(practiceKinds.includes(view)||pendingPractice()||['scenario','expert'].includes(view)&&[5,7].includes(courseGroup(selectedLevel(state)))))lessonSession.centerLesson(app,state,view,Boolean(completedKind));
@@ -472,7 +451,7 @@ function render(scroll = false) {
   if(view==='expert'&&expertProgress(state).phase==='speak')disposeSpeaking=expertModule.mountExpertSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'expert-next'});render(true);}});
   if(!pendingPractice()&&view==='scenario'&&scenarioProgress(state).phase==='speak')disposeSpeaking=scenarioModule.mountScenarioSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'scenario-speak-next'});render(true);speakScenario();}});
   if(!pendingPractice()&&view==='sentence'&&sentenceProgress(state).phase==='speak')disposeSpeaking=sentenceModule.mountSentenceSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'sentence-speak-next'});render(true);speakSentence();}});
-  if(!pendingPractice()&&view==='korean'&&koreanProgress(state,state.korean.active).phase==='speak')disposeSpeaking=koreanModule.mountKoreanSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'korean-speak-next'});render(true);speakKorean();}});
+  if(!pendingPractice()&&view==='korean'&&koreanProgress(state,state.korean.active).phase==='speak')disposeSpeaking=(isPronunciationCourse(state.korean.active)?koreanModule.mountPronunciationSpeaking:koreanModule.mountKoreanSpeaking)(app,{stop:()=>player.stop(),advance:()=>{commit({type:'korean-speak-next'});if(isPronunciationCourse(state.korean.active)&&koreanProgress(state,state.korean.active).phase==='done')completedKind='korean';render(true);if(!completedKind)speakKorean();}});
   if (!completedKind&&!pendingPractice()&&view === "kana") {
     disposeWriting = kanaModule.mountWriting(app);
     disposeMatching = kanaModule.mountMatching(app, ({keyboard,...action})=>{
@@ -537,8 +516,9 @@ function hasNextLesson(kind){
  if(kind==='sentence')return sentenceLessons.findIndex(l=>l.id===sentenceId(state))<sentenceLessons.length-1;
  return false;
 }
+function koreanNextCourse(){const levels=levelsFor(state.courseDirection),level=levels[levels.indexOf(courseGroup(selectedLevel(state)))+1];return koreanLessons.find(l=>!l.retired&&l.level===level);}
 async function startKoreanSecondCourse(){
- const next=koreanLessons.find(l=>!l.retired&&l.level===2);
+ const next=koreanNextCourse();
  await Promise.all([loadKorean(),loadPractice('korean')]);
  commit({type:'level',value:next.level});commit({type:'korean-start',id:next.id});navigate('korean');
 }
@@ -553,7 +533,7 @@ async function nextCompletedLesson(kind=completedKind){
   if(kind==='basic'&&state.basics.active===6){commit({type:'level',value:2});await loadPractice('play');commit({type:'start'});navigate('play');return;}
   if(kind==='basic'&&followingBasic(state.basics.active)){commit({type:'basic-start',id:followingBasic(state.basics.active)});navigate('basic');return;}
   if(kind==='basic'){await loadSentences();commit({type:'level',value:2});commit({type:'sentence-start',id:sentenceLessons[0].id});navigate('sentence');return;}
-  if(kind==='korean'&&state.korean.active==='1-10'){await loadScenario('course1-11');commit({type:'scenario-start',id:'course1-11'});navigate('scenario');return;}
+  if(kind==='korean'&&state.korean.active==='1-10'){await startKoreanSecondCourse();return;}
   if(kind==='korean'){const id=state.korean.active,next=followingKorean(id);if(next){commit({type:'korean-start',id:next.id});navigate('korean');return;}}
   if(kind==='kana'){if(state.kana.active<kanaLessons.length-1){commit({type:'kana-start',lesson:state.kana.active+1});navigate('kana');}else{await loadBasics();await loadPractice('basic');commit({type:'basic-start',id:7});navigate('basic');}return;}
   if(kind==='labels'){await loadPractice('listening');navigate('listening');return;}
@@ -575,7 +555,7 @@ async function handle(event, answerConfirmed=false) {
 
   const a = el.dataset.action,
     id = el.dataset.id;
-  flushDraft();
+
   // Legacy quizzes used to leave the answer immediately. Keep their saved model,
   // and let the shared feedback finish on screen before the learner continues.
   if(!answerConfirmed&&courseGroup(selectedLevel(state))>=4&&practiceModule?.isAdvancingCorrectAnswer(state,view,a,id)){
@@ -611,7 +591,7 @@ async function handle(event, answerConfirmed=false) {
   if(a==='passage-pause'){if(player.state==='paused')void player.resume();else player.pause();return;}
   if(a==='completed-next'){if(entryBusy)return;const buttons=app.querySelectorAll('.practice-complete button,.app-header [data-action="home"]');buttons.forEach(button=>{button.disabled=true;});try{await nextCompletedLesson(completedKind||view);}finally{buttons.forEach(button=>{if(button.isConnected)button.disabled=false;});}return;}
   if(a==='next-course'){
-    if(view!=='home'||state.courseDirection!=='ja-ko'||courseGroup(selectedLevel(state))!==0||mapCurrentLesson(state)||entryBusy)return;
+    if(view!=='home'||state.courseDirection!=='ja-ko'||![0,8,2,9,10].includes(courseGroup(selectedLevel(state)))||mapCurrentLesson(state)||entryBusy)return;
     entryBusy=true;el.disabled=true;
     try{await startKoreanSecondCourse();}catch{toast='学習を読み込めませんでした。';render();}finally{entryBusy=false;if(el.isConnected)el.disabled=false;}return;
   }
@@ -635,7 +615,7 @@ async function handle(event, answerConfirmed=false) {
   if(a==='pronunciation'){
     if(state.courseDirection!=='ja-ko')return;
     el.disabled=true;
-    try{const {openPronunciation}=await import('./korean-pronunciation.js');await openPronunciation(id,{trigger:el,stop:()=>player.stop(),play:(entry,onError)=>{if(!state.settings.sound)commit({type:'setting',key:'sound',value:true});return player.play(entry,true,onError);}});}
+    try{const {openPronunciation}=await import('./korean-pronunciation.js');await openPronunciation(id,{position:el.dataset.position,trigger:el,stop:()=>player.stop(),play:(entry,onError)=>{if(!state.settings.sound)commit({type:'setting',key:'sound',value:true});return player.play(entry,true,onError);}});}
     catch{toast='発音ガイドを開けませんでした。もう一度お試しください。';render();}
     finally{el.disabled=false;}return;
   }
@@ -672,24 +652,32 @@ async function handle(event, answerConfirmed=false) {
     const lesson=id||nextKorean(state).id;if(state.courseDirection!=='ja-ko'||!koreanUnlocked(state,lesson))return;
     el.disabled=true;try{await loadKorean();commit({type:'korean-start',id:lesson});navigate('korean');}catch{toast='学習を読み込めませんでした。';render();}return;
   }
+  if(a==='particle-audio'){
+    if(view!=='korean'||!isComparisonCourse(state.korean?.active))return;
+    disposePractice?.stopSound?.();if(!state.settings.sound)commit({type:'setting',key:'sound',value:true});
+    const audio=koreanModule.particleAudio(state,id);if(audio)void player.play(audio,true,()=>{toast='音声を再生できませんでした。もう一度お試しください。';render();},{rate:state.settings.audioRate??1});return;
+  }
   if(a.startsWith('korean-')){
     if(view!=='korean'||state.courseDirection!=='ja-ko')return;
     if(a==='korean-clear')return;
+    if(a==='korean-contrast-audio'){const audio=koreanModule.pronunciationContrastAudio(state,id);if(audio){disposePractice?.stopSound?.();void player.play(audio,true,()=>{});}return;}
     if(a==='korean-stop'){player.stop();return;}
     if(a==='korean-intro-audio'){if(!state.settings.sound)commit({type:'setting',key:'sound',value:true});speakKoreanIntro();return;}
     if(['korean-audio','korean-example-audio'].includes(a)){disposePractice?.stopSound?.();if(!state.settings.sound)commit({type:'setting',key:'sound',value:true});const entry=a==='korean-example-audio'?koreanModule.koreanExampleAudio(state):koreanModule.koreanAudio(state);if(entry)void player.play(entry,true,()=>{},{rate:entry?.playbackRate??state.settings.audioRate??1});return;}
     const moving=['korean-next','korean-check','korean-previous'].includes(a);
     if(moving){const now=performance.now();if(!answerConfirmed&&now-lastAdvance<450)return;lastAdvance=now;player.stop();}
     if(a==='korean-next'&&koreanProgress(state,state.korean.active).phase==='write')koreanModule.clearKoreanDraft(state);
-    const before=koreanProgress(state,state.korean.active).index;
+    const beforeProgress=koreanProgress(state,state.korean.active),before=beforeProgress.index;
     commit({type:a,id});
     const progress=koreanProgress(state,state.korean.active);
     if(progress.phase==='done'){
-      if(koreanStageZero(state.korean.active)){completedKind='korean';render(true);return;}
+      if(koreanStageZero(state.korean.active)||isComparisonCourse(state.korean.active)){completedKind='korean';render(true);return;}
       const next=followingKorean(state.korean.active);
       if(next){commit({type:'korean-start',id:next.id});navigate('korean');}else navigate('home');return;
     }
-    render(moving&&!(a==='korean-check'&&progress.retry));if(moving&&progress.phase!=='speak'&&(before!==progress.index||a==='korean-next'))speakKorean();return;
+    render(moving&&!(a==='korean-check'&&progress.retry));
+    if(isComparisonCourse(state.korean.active)&&a==='korean-check'&&beforeProgress.phase==='quiz'&&progress.phase==='review')disposePractice=koreanModule.mountParticleCorrect(app,state);
+    if(moving&&progress.phase!=='speak'&&(before!==progress.index||a==='korean-next'))speakKorean();return;
   }
   if(a==='kana-chart-switch'){
     if(panelKind!=='kana-chart')return;
@@ -768,42 +756,6 @@ async function handle(event, answerConfirmed=false) {
    commit({type:a,id});if(state.labels.phase==='summary'){navigate('listening');return;}render(advancing);if(advancing)speakLabels();return;
   }
   if(['community','community-profile','community-inbox'].includes(a)){el.disabled=true;try{await loadCommunity();communityScreen=a==='community-profile'?'profile':a==='community-inbox'?'inbox':'feed';if(panel.open)closePanel();navigate('community');}catch{toast=state.courseDirection==='ja-ko'?'交流を読み込めませんでした。':'커뮤니티를 불러오지 못했어요.';render();}return;}
-  if(a==='growth'||a==='mission'){
-    el.disabled=true;
-    try{await loadGrowth(a);}catch{toast=uiText('화면을 불러오지 못했어요. 다시 눌러 주세요.','画面を読み込めませんでした。もう一度押してください。');render();return;}
-    growthScreen='overview';growthNotice='';growthError='';growthPending=undefined;missionError='';missionPending=undefined;
-    navigate(a);return;
-  }
-  if(a==='growth-write'||a==='growth-cancel'){
-    if(view!=='growth')return;
-    growthScreen=a==='growth-write'?'write':'overview';growthNotice='';growthError='';growthPending=undefined;
-    render(true);if(a==='growth-write')app.querySelector('#growth-answer')?.focus({preventScroll:true});return;
-  }
-  if(a==='growth-save'){
-    if(view!=='growth')return;
-    const text=app.querySelector('#growth-answer')?.value??'';
-    saveWriting({type:'growth-save',text,completed:recordsModule.completedLessons(state).length},{
-      onSaved:()=>{growthScreen='overview';growthPending=undefined;growthError='';growthNotice=uiText('답을 저장했어요.','答えを保存しました。');},
-      onFailed:reason=>{growthPending=text;growthError=reason==='empty'?uiText('답을 입력해 주세요.','答えを入力してください。'):uiText('저장하지 못했어요. 쓴 답은 화면에 남아 있어요. 저장 공간을 확인한 뒤 다시 눌러 주세요.','保存できませんでした。書いた答えは画面に残っています。保存領域を確認してから、もう一度押してください。');},
-    });
-    render(true);return;
-  }
-  if(a==='mission-save'||a==='mission-edit'||a==='mission-discard'){
-    if(view!=='mission')return;
-    if(a==='mission-discard'&&!confirm(uiText('쓰던 문장을 지우고 새 미션을 받을까요?','書きかけの文を消して、新しいミッションを受け取りますか？')))return;
-    const text=app.querySelector('#mission-answer')?.value??'';
-    saveWriting(a==='mission-save'?{type:a,text,lessonKey:el.dataset.lessonKey,lessonOn:el.dataset.lessonOn}:{type:a},{
-      onSaved:()=>{missionPending=undefined;missionError='';},
-      onFailed:reason=>{missionPending=a==='mission-save'?text:undefined;missionError=reason==='empty'?uiText('문장을 입력해 주세요.','文を入力してください。'):uiText('저장하지 못했어요. 쓴 문장은 화면에 남아 있어요. 저장 공간을 확인한 뒤 다시 눌러 주세요.','保存できませんでした。書いた文は画面に残っています。保存領域を確認してから、もう一度押してください。');},
-    });
-    render(true);return;
-  }
-  if(a==='mission-community'){
-    if(view!=='mission')return;
-    el.disabled=true;
-    try{await loadCommunity();}catch{toast=uiText('교류를 불러오지 못했어요. 다시 눌러 주세요.','交流を読み込めませんでした。もう一度押してください。');render();return;}
-    communityScreen='compose';navigate('community');return;
-  }
   if(a==='my') {
     el.disabled=true;
     try { await loadRecords(); navigate('my'); }
@@ -957,7 +909,7 @@ async function handle(event, answerConfirmed=false) {
     if (!(await confirmReset())) return;
     try {
       reset(storage);
-      analytics.setConsent(false);
+      if(!analytics.resetConsent())throw Error('Analytics reset could not be saved');
       state = freshState();
       blocked = false;
       storageError = "";
@@ -1066,9 +1018,9 @@ panel.addEventListener("change", async (event) => {
     render();
   }
 });
-window.addEventListener("pagehide", () => {flushDraft();clearMapCharacter();disposeSpeaking?.();disposePractice?.();disposeMediaFeedback?.();completionUI?.cancel();player.stop();});
+window.addEventListener("pagehide", () => {clearMapCharacter();disposeSpeaking?.();disposePractice?.();disposeMediaFeedback?.();completionUI?.cancel();player.stop();});
 window.addEventListener("pageshow",event=>{if(event.persisted){if(pendingPractice())render();else void mountMapCharacter();}});
-document.addEventListener("visibilitychange", () => { if (document.hidden) {flushDraft();player.stop();} else openAnalytics(state); });
+document.addEventListener("visibilitychange", () => { if (document.hidden) {player.stop();} else openAnalytics(state); });
 window.addEventListener("storage", (e) => {
   if (e.key === STORAGE_KEY) {
     blocked = true;
@@ -1091,14 +1043,6 @@ else if(enteringCase && view==='dialogue')speakDialogue();
 else if (enteringCase && view==='sentence') speakSentence();
 else if (enteringCase && view==='play') speakEpisodeAudio();
 
-app.addEventListener('input',event=>{
- const field=event.target;if(!field.matches?.('[data-growth-draft],[data-mission-draft]'))return;
- const growthField=field.matches('[data-growth-draft]');
- if(growthField)growthPending=field.value;else missionPending=field.value;
- const count=app.querySelector('[data-growth-count]');if(count)count.textContent=`${field.value.length} / ${field.maxLength}`;
- const save=app.querySelector(growthField?'[data-action="growth-save"]':'[data-action="mission-save"]');if(save)save.disabled=!field.value.trim();
- clearTimeout(draftTimer);draftTimer=setTimeout(flushDraft,400);
-});
 app.addEventListener('input',event=>{const input=event.target;if(!input.matches('[data-audio-rate]'))return;const rate=Number(input.value);commit({type:'setting',key:'audioRate',value:rate});player.setRate(rate);const output=input.closest('.passage-speed').querySelector('[data-audio-rate-label]');const label=`${rate===1?output.dataset.normalLabel+' ':''}${rate.toFixed(1)}×`;output.textContent=label;input.setAttribute('aria-valuetext',label);});
 
 installAndroidBack(()=>{

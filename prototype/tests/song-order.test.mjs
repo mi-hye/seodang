@@ -1,3 +1,4 @@
+import {mainLessons,baselineCatalog,mainStops} from './main-lesson-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {freshState} from '../src/engine.js';
@@ -6,7 +7,7 @@ import {studyCatalog} from '../src/study-catalog.js';
 import {renderAllLearningMap} from './map-pagination-fixtures.mjs';
 import {lessonTitle} from '../src/lesson-title.js';
 import {songLessons,songsForCourse} from '../src/song-state.js';
-import {videosForCourse,freshVideo,lessonNumberWithVideo} from '../src/video-lesson-state.js';
+import {videoLessons,videosForCourse,freshVideo,lessonNumberWithVideo} from '../src/video-lesson-state.js';
 import {freshScenario} from '../src/scenario-state.js';
 import {freshSentence} from '../src/sentence-state.js';
 import {freshKoreanProgress} from '../src/korean-state.js';
@@ -15,33 +16,33 @@ const courseState=direction=>({...freshState(),courseDirection:direction,onboard
 const levelTwo=state=>studyCatalog(state).filter(l=>l.position.startsWith('2-'));
 const previewSongs=state=>songLessons.filter(l=>l.direction===state.courseDirection&&l.level===2).map(l=>({...l,kind:'song',key:`${l.direction}:song:${l.id}`,completed:false}));
 const previewOrder=state=>{
- const original=levelTwo(state),regular=original.filter(l=>l.kind!=='video');
- const special=[...original.filter(l=>l.kind==='video').map(l=>({...l,number:Number(l.position.split('-')[1])})),...previewSongs(state)];
+ const original=baselineCatalog(levelTwo(state)),regular=original.filter(l=>l.kind!=='video');
+ const special=[...original.filter(l=>l.kind==='video').map(l=>({...l,number:videoLessons.find(v=>v.id===l.id).number})),...previewSongs(state)];
  return {original,regular,special,ordered:orderLessons(regular,special)};
 };
 
 for(const direction of ['ko-ja','ja-ko']){
- test(`${direction} production keeps all 14 existing lessons while unreleased songs are hidden`,()=>{
+ test(`${direction} production keeps existing lessons and two additions while unreleased songs are hidden`,()=>{
   const s=courseState(direction),catalog=levelTwo(s),map=renderAllLearningMap(s);
-  assert.equal(catalog.length,14);
+  assert.equal(catalog.length,direction==='ja-ko'?23:16);
   assert.deepEqual(songsForCourse(s),[]);
   assert.equal(catalog.filter(l=>l.kind==='song').length,0);
   assert.doesNotMatch(map,/data-action="song"/);
   const mapKeys=[...map.matchAll(/class="map-choice" data-action="([^"]+)" data-id="([^"]+)"/g)].map(([,kind,id])=>`${direction}:${kind}:${id}`);
   assert.deepEqual(mapKeys,catalog.map(l=>l.key));
-  assert.deepEqual(catalog.filter(l=>l.kind==='video').map(l=>l.position),['2-3','2-6','2-9','2-12']);
+  assert.deepEqual(catalog.filter(l=>l.kind==='video').map(l=>l.position),direction==='ja-ko'?['2-5','2-9','2-13','2-19','2-22']:['2-3','2-6','2-9','2-12','2-15']);
  });
 
  test(`${direction} preview reserves songs at 5, 10 and 15 without replacing an existing lesson`,()=>{
   const s=courseState(direction),{original,regular,special,ordered}=previewOrder(s);
   const inputs=structuredClone({regular,special});
-  assert.equal(ordered.length,17);
-  assert.equal(new Set(ordered.map(l=>l.key)).size,17);
+  assert.equal(ordered.length,20);
+  assert.equal(new Set(ordered.map(l=>l.key)).size,20);
   assert.deepEqual(ordered.filter(l=>l.kind!=='song').map(l=>l.key).sort(),original.map(l=>l.key).sort());
   assert.deepEqual(ordered.filter(l=>!['song','video'].includes(l.kind)).map(l=>l.key),regular.map(l=>l.key));
-  assert.deepEqual(ordered.flatMap((l,i)=>l.kind==='song'?[i+1]:[]),[5,10,15]);
-  assert.deepEqual(ordered.flatMap((l,i)=>l.kind==='video'?[i+1]:[]),[3,6,9,12]);
-  assert.deepEqual(regular.map((_,i)=>lessonNumberWithSpecials(i+1,special)),[1,2,4,7,8,11,13,14,16,17]);
+  assert.deepEqual(ordered.flatMap((l,i)=>l.kind==='song'?[i+1]:[]),[5,10,15,20]);
+  assert.deepEqual(ordered.flatMap((l,i)=>l.kind==='video'?[i+1]:[]),[3,6,9,12,18]);
+  assert.deepEqual(regular.map((_,i)=>lessonNumberWithSpecials(i+1,special)),[1,2,4,7,8,11,13,14,16,17,19]);
   assert.deepEqual(orderLessons(regular,[...special].reverse()),ordered);
   assert.deepEqual({regular,special},inputs);
   for(let i=0;i<regular.length;i++)assert.equal(ordered[lessonNumberWithSpecials(i+1,special)-1].key,regular[i].key);
@@ -79,9 +80,9 @@ for(const direction of ['ko-ja','ja-ko']){
  });
 }
 
-test('six independent preview song IDs cover both language directions',()=>{
- const levelTwoSongs=songLessons.filter(l=>l.level===2);assert.equal(levelTwoSongs.length,6);
- assert.equal(new Set(levelTwoSongs.map(l=>l.id)).size,6);
+test('eight independent preview song IDs cover both language directions',()=>{
+ const levelTwoSongs=songLessons.filter(l=>l.level===2);assert.equal(levelTwoSongs.length,8);
+ assert.equal(new Set(levelTwoSongs.map(l=>l.id)).size,8);
  assert.ok(levelTwoSongs.every(l=>l.level===2&&l.released===false));
- for(const direction of ['ko-ja','ja-ko'])assert.deepEqual(previewSongs(courseState(direction)).map(l=>l.number).sort((a,b)=>a-b),[5,10,15]);
+ for(const direction of ['ko-ja','ja-ko'])assert.deepEqual(previewSongs(courseState(direction)).map(l=>l.number).sort((a,b)=>a-b),[5,10,15,20]);
 });
