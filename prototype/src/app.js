@@ -113,7 +113,7 @@ function commit(action) {
   state=practiceModule&&reviewKinds.includes(view)?practiceModule.interceptCompletion(state,next,view,action):next;
   completionUI?.transition(analyticsBefore,learningSnapshot(state,view));
   state=recordStudyCompletion(state,analyticsBefore,learningSnapshot(state,view));
-  learningTracker.transition(analyticsBefore,learningSnapshot(state,view),action.type,learningSnapshot(next,view));
+  learningTracker.transition(analyticsBefore,learningSnapshot(state,view),action,learningSnapshot(next,view));
   if (!blocked) storageError = save(storage, state);
 }
 function navigate(next) {
