@@ -9,7 +9,11 @@ export function learningSnapshot(s,kind){
   const p=songProgress(s),key=`${l.direction}:song:${l.id}`;
   return {lesson_id:key,course_direction:l.direction,level:displayLevel(l.level),phase:p.phase,item_index:0,round_index:0,mode_index:0,match_count:0,_selected:p.selected!==null,_attempts:0,_retry:Boolean(p.retry),_checked:Boolean(p.checked),done:p.phase==='done',position:JSON.stringify([p.phase,p.resume]),practice:false};
  }
- if(kind==='video'){const p=videoProgress(s),key=`${s.courseDirection}:video:${videoLesson(s)?.id}`,r=s.practices?.[key];return {lesson_id:key,course_direction:s.courseDirection,level:displayLevel(s.onboardingLevel),phase:r?'practice':p.phase,item_index:r?.index??p.index,round_index:0,mode_index:0,match_count:0,_selected:p.selected!=null,_attempts:0,_retry:Boolean(p.retry),_checked:Boolean(p.checked),done:!r&&p.phase==='done',position:JSON.stringify(r?['practice',r.index]:[p.phase,p.index]),practice:Boolean(r)};}
+ if(kind==='video'){
+  const l=videoLesson(s);if(!l)return null;
+  const p=videoProgress(s,l.id),key=`${l.direction}:video:${l.id}`,r=s.practices?.[key];
+  return {lesson_id:key,course_direction:l.direction,level:displayLevel(l.level),phase:r?'practice':p.phase,item_index:r?.index??p.index,round_index:0,mode_index:0,match_count:0,_selected:p.selected!=null,_attempts:0,_retry:Boolean(p.retry),_checked:Boolean(p.checked),done:!r&&p.phase==='done',position:JSON.stringify(r?['practice',r.index]:[p.phase,p.index]),practice:Boolean(r)};
+ }
  if(kind==='expert'){const p=expertProgress(s);return {lesson_id:expertKey(s),course_direction:s.courseDirection,level:5,phase:p.phase,item_index:p.discussionVersion?p.part:p.phase==='review'?p.sentence:p.index,round_index:0,mode_index:0,match_count:0,_selected:p.selected!==null,_attempts:p.attempts,_retry:p.retry,_checked:p.checked,done:p.phase==='done',position:JSON.stringify([p.phase,p.index,p.sentence,p.part]),practice:false};}
  if(!['scenario','kana','basic','korean','sentence','reading','dialogue','labels','listening','play'].includes(kind))return null;
  const id=kind==='scenario'?s.scenarioActive:kind==='basic'?s.basics?.active:kind==='korean'?s.korean?.active:kind==='kana'?s.kana?.active:kind==='reading'?s.onboardingLevel:kind==='sentence'?(s.sentenceActive??0):0;
@@ -57,11 +61,14 @@ export function createLearningTracker(analytics,uuid=()=>crypto.randomUUID(),now
  function answer(correct){if(active&&!active.finished&&typeof correct==='boolean')analytics.capture('answer_checked',{...active.snapshot,attempt_id:active.id,correct});}
  function transition(before,after,action='',judged=after){
   if(!before||!after||before.lesson_id!==after.lesson_id)return;
-  if(['restart','kana-restart','labels-restart','sentence-restart'].includes(action)){leave('restart');return;}
-  if(/(?:^|-)start$/.test(action))return;
+  const type=typeof action==='string'?action:action?.type??'';
+  // Media restarts stay in the same view, so navigation will not enter a new attempt.
+  if(action?.restart&&['video-start','song-start'].includes(type)){leave('restart');enter(after);return;}
+  if(['restart','kana-restart','labels-restart','sentence-restart'].includes(type)){leave('restart');return;}
+  if(/(?:^|-)start$/.test(type))return;
   if(!active||active.key!==after.lesson_id||active.installation!==analytics.installationId)enter(before);
   if(!active||before.done||active.finished)return;
-  const result=checkedAnswer(before,judged,action);if(result!==null)answer(result);
+  const result=checkedAnswer(before,judged,type);if(result!==null)answer(result);
   if(before.position!==after.position){
    tick();if(!active)return;active.snapshot=after;engaged=now();
    analytics.capture('learning_progress',{...after,attempt_id:active.id});
