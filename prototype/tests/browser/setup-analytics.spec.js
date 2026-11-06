@@ -73,3 +73,15 @@ test('previous participants see expanded disclosure once and nothing is sent bef
  await page.reload();await expect(page.locator('.analytics-consent')).toHaveCount(0);expect(sent).toHaveLength(0);
  expect(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).consent,key)).toBe(false);
 });
+
+test('setup cannot submit before its module is ready',async({page})=>{
+ let release;const gate=new Promise(resolve=>release=resolve);
+ await page.route('**/src/setup.js',async route=>{await gate;await route.continue();});
+ try{
+  await page.goto('/setup.html',{waitUntil:'commit'});
+  await expect(page.locator('button[type=submit]')).toBeDisabled();
+  release();await expect(page.locator('button[type=submit]')).toBeEnabled();
+  await page.locator('button[type=submit]').click();
+  await expect(page.locator('[name=analyticsSharing]')).toBeChecked();
+ }finally{release();}
+});
