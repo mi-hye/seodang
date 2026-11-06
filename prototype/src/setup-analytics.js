@@ -6,7 +6,7 @@ export function mountSetupAnalytics(root,isJapanese){
  root.className='setup-analytics';
  function update(){
   const jp=isJapanese();root.lang=jp?'ja':'ko';
-  root.innerHTML=`<label class="analytics-choice"><input type="checkbox" name="analyticsSharing" aria-describedby="analytics-description" ${checked?'checked':''}><span>${jp?'学習統計の共有に同意する（任意）':'학습 통계 공유 동의 (선택)'}</span></label><p id="analytics-description">${jp?'学習統計は、アプリをより使いやすくするために利用します。同意しなくてもすべての授業を利用でき、設定でいつでも停止できます。':'학습 통계는 앱을 더 편리하게 개선하는 데 사용해요. 동의하지 않아도 모든 수업을 이용할 수 있고 설정에서 언제든 끌 수 있어요.'}</p>`;
+  root.innerHTML=`<label class="analytics-choice"><input type="checkbox" name="analyticsSharing" aria-describedby="analytics-description" ${checked?'checked':''}><span>${jp?'学習統計の共有に同意する（任意）':'학습 통계 공유 동의 (선택)'}</span></label><p id="analytics-description">${jp?'学習統計は、アプリをより使いやすくするために利用します。同意しなくてもすべての授業を利用でき、設定でいつでも停止できます。発話・会話機能の利用結果、所要時間、エラーも含みます。メッセージ内容や録音は送りません。':'학습 통계는 앱을 더 편리하게 개선하는 데 사용해요. 동의하지 않아도 모든 수업을 이용할 수 있고 설정에서 언제든 끌 수 있어요. 말하기·대화 기능의 이용 결과, 걸린 시간, 오류도 포함해요. 메시지 내용이나 녹음은 보내지 않아요.'} <a href="analytics-privacy.html" target="_blank" rel="noopener noreferrer">${jp?'詳しく見る':'자세히 보기'}</a></p>`;
   root.querySelector('input').addEventListener('change',event=>{checked=event.target.checked;touched=true;});
  }
  update();

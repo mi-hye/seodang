@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';import {freshState} from '../../src
 for(const width of [320,390])test(`first answer opens speaking and skip continues at ${width}px`,async({page})=>{
  await page.setViewportSize({width,height:844});const s={...freshState(),onboarded:true,koreanGuideSeenVersion:1,courseDirection:'ja-ko',onboardingLevel:2,settings:{sound:false,motion:'off',textScale:1.2,audioRate:1},korean:{version:4,active:'3-1',lessons:{'3-1':{...freshKoreanProgress('3-1'),phase:'quiz',started:true,caseSeen:true}}}};
  await page.addInitScript(s=>{localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},s);
- await page.goto('/playable.html');await page.locator('[data-action="korean"][data-id="3-1"]').first().click();await page.locator('[data-choice="resume"]').click();
+ await page.goto('/playable.html');await page.locator('[data-action="korean"][data-id="3-1"]').first().click();
  await page.locator('[data-action="korean-select"][data-id="0"]').click();await page.locator('[data-action="korean-check"]').click();
  await expect(page.locator('.korean-speaking h1')).toHaveText('スキップして進もう');await expect(page.locator('[data-speaking-next]')).toBeDisabled();await expect(page.locator('[data-speaking-next]')).toBeHidden();const tops=await page.locator('.speaking-navigation button:visible').evaluateAll(xs=>xs.map(x=>x.getBoundingClientRect().top));expect(tops).toHaveLength(2);expect(Math.abs(tops[0]-tops[1])).toBeLessThan(2);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
@@ -40,4 +40,23 @@ for(const width of [320,390])test(`both languages use current sentence and nativ
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
   if(index===17)await page.screenshot({path:`output/speaking-${locale}-${width}-${test.info().project.name}.png`,fullPage:true});
  }
+});
+
+
+test('speech operation logs separate mismatch, empty recognition, denial and cancellation',async({page})=>{
+ await page.route('**/speech-logs',r=>r.fulfill({contentType:'text/html',body:'<html><body><main id="root"></main></body></html>'}));await page.goto('/speech-logs');
+ await page.evaluate(async()=>{
+  const {createAnalytics}=await import('/src/analytics-core.js'),{createOperationLogger}=await import('/src/analytics-operations.js'),m=await import('/src/korean-speaking.js');
+  window.logs=[];window.a=createAnalytics({storage:localStorage,send:async b=>{window.logs.push(...b);return {ok:true};}});window.a.setConsent(true);
+  const logger=createOperationLogger(window.a),root=document.querySelector('#root');root.innerHTML=m.renderKoreanSpeaking(()=> '');
+  window.dispose=m.mountKoreanSpeaking(root,{stop(){},advance(){},observe:()=>logger.start('speech_recognition',{lesson_id:'ja-ko:korean:3-1'}),recognize:()=>new Promise((resolve,reject)=>{window.resolveSpeech=resolve;window.rejectSpeech=reject;}),cancel:async()=>{},end:async()=>{}});
+ });
+ const mic=page.locator('[data-speaking-record]');
+ await mic.click();await page.evaluate(()=>window.resolveSpeech({text:'secret unmatched transcript'}));await expect(mic).toHaveAttribute('aria-pressed','false');
+ await mic.click();await page.evaluate(()=>window.resolveSpeech({text:''}));await expect(mic).toHaveAttribute('aria-pressed','false');
+ await mic.click();await page.evaluate(()=>window.rejectSpeech({code:'PERMISSION_DENIED',message:'private error'}));await expect(mic).toHaveAttribute('aria-pressed','false');
+ await mic.click();await page.evaluate(async()=>{window.dispose();window.resolveSpeech({text:'late private response'});await window.a.flush();});
+ const events=await page.evaluate(()=>window.logs.filter(e=>e.event==='feature_operation'));
+ expect(events.filter(e=>['succeeded','failed','cancelled'].includes(e.properties.result)).map(e=>[e.properties.result,e.properties.error_code||e.properties.recognition_result||''])).toEqual([['succeeded','different'],['failed','no_speech'],['failed','permission_denied'],['cancelled','']]);
+ expect(JSON.stringify(events)).not.toMatch(/secret|private/);
 });

@@ -14,8 +14,8 @@ def dt(d): return "toDateTime('%s', 'UTC')"%stamp(d)
 filters="properties.client = 'seodang-capacitor' AND properties.environment = 'production'"
 window=f"timestamp >= {dt(start)} AND timestamp < {dt(end)} AND {filters}"
 queries={}
-# v3 adds acquisition/consent changes; answer and active-time semantics match v2.
-learning_schema="properties.schema_version IN (2, 3)"
+# v3/v4 add acquisition/operation diagnostics; existing answer/time semantics match v2.
+learning_schema="properties.schema_version IN (2, 3, 4)"
 # Keep all versions visible so a future schema cannot silently disappear.
 queries['schema_coverage']=f"""SELECT toStartOfWeek(toTimeZone(timestamp,'Asia/Seoul'),1) AS week,
 event,properties.schema_version AS schema_version,uniq(uuid) AS events

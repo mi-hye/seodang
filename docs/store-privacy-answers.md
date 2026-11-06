@@ -1,3 +1,11 @@
+## 2026-11-06 feature diagnostics — implementation inventory, not released
+
+- Analytics consent/schema v4 adds explicit feature operations: speech recognition readiness/result, conversation loading/opening/matching, reply/profile save, manual refresh, and bounded JavaScript failure categories. Fields are a random per-attempt ID, allowlisted result/error code, elapsed milliseconds, and existing lesson/platform/app-version metadata. Recognition agreement is an enum, never the recognized sentence.
+- No message body, nickname, recording, transcript, arbitrary error text/stack, URL, account/room IDs or push tokens are sent to PostHog. Existing analytics identifiers and provider remain unchanged. Old affirmative consent is paused until the user accepts the new notice; prior refusal remains refusal.
+- Before releasing this code, publish the revised public policy and reconcile store diagnostics/performance and interaction disclosures against these fields. Local document edits do not update either store console or the public policy URL. Native crashes/ANRs are not captured by this JavaScript event logger.
+- PostHog dashboard: https://us.posthog.com/project/650471/dashboard/2312018 . Development verification events are excluded from its production views. See `prototype/docs/feature-logs.md` for operation definitions and limits.
+- Release target is 1.2.7 (Android 31 / iOS 46); store submission status must be verified separately. Current profile UI no longer exposes account deletion; the public policy contact remains the request route. Historical inventory below describes earlier versions.
+
 ## 2026-11-06 push notification release gate — not submitted to stores
 
 - Before enabling `prototype/src/message-push-config.js`, publish the updated public policy and update both store consoles. Local policy files are prepared; the public URL and store declarations are not updated by these file edits. Installed builds and the server worker are not disabled by the local config flag.
@@ -6,7 +14,7 @@
 - Delivery uses Apple APNs / Google FCM. Payload contains generic notification text and room/message IDs, not message body or nickname. Server registration data is held by Supabase in Mumbai. Provider processing may include the US; see the policy's provider links.
 - OS permission is requested on first eligible conversation entry; denied users get a settings hint once. In-app opt-out removes server registration; OS revocation is detected on a later app startup/resume. Offline failures may delay deletion.
 - A token not refreshed for 90 days is excluded from new deliveries, not automatically deleted. Outbox entries older than 7 days are deleted on the next delivery-result processing call; this is not a guaranteed 7-day maximum. Account deletion cascades to token/outbox records.
-- Numeric release version has not been changed or assumed: local app metadata is 1.2.5 while prior store work references later versions. Policy applicability is explicitly the build including message notifications. Set the actual release version/date in the release workflow.
+- Policy applicability is the build including message notifications. Set the actual release version/date in the release workflow; current metadata is listed above.
 
 # Store privacy — 1.2.0
 

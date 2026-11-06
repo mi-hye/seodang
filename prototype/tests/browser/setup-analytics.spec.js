@@ -32,26 +32,26 @@ for(const width of [320,390])for(const language of ['ja','ko'])test(`setup analy
  await page.screenshot({path:`test-results/setup-analytics-${language}-${width}.png`});
 });
 test('setup preserves existing consent and identity',async({page})=>{
- await page.goto('/setup.html');await page.evaluate(key=>localStorage.setItem(key,JSON.stringify({consent:true,consent_version:3,id:'11111111-1111-4111-8111-111111111111',queue:[]})),key);
+ await page.goto('/setup.html');await page.evaluate(key=>localStorage.setItem(key,JSON.stringify({consent:true,consent_version:4,id:'11111111-1111-4111-8111-111111111111',queue:[]})),key);
  await page.route('https://us.i.posthog.com/**',route=>route.fulfill({status:200,body:'{}'}));await page.reload();await page.locator('button[type=submit]').click();await expect(page.locator('[name=analyticsSharing]')).toBeChecked();await finish(page);
  const saved=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);expect(saved.consent).toBe(true);expect(saved.id).toBe('11111111-1111-4111-8111-111111111111');
 });
 test('setup preserves an existing refusal',async({page})=>{
  const sent=[];await page.route('https://us.i.posthog.com/**',route=>{sent.push(route.request().url());return route.fulfill({status:200,body:'{}'});});
- await page.goto('/setup.html');await page.evaluate(key=>localStorage.setItem(key,JSON.stringify({consent:false,consent_version:3,queue:[]})),key);
+ await page.goto('/setup.html');await page.evaluate(key=>localStorage.setItem(key,JSON.stringify({consent:false,consent_version:4,queue:[]})),key);
  await page.reload();await page.locator('button[type=submit]').click();await expect(page.locator('[name=analyticsSharing]')).not.toBeChecked();await finish(page);
  expect(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).consent,key)).toBe(false);expect(sent).toHaveLength(0);
 });
 test('default selection does not overwrite a refusal made while setup is open',async({page})=>{
  const sent=[];await page.route('https://us.i.posthog.com/**',route=>{sent.push(route.request().url());return route.fulfill({status:200,body:'{}'});});
  await page.goto('/setup.html');await page.locator('button[type=submit]').click();await expect(page.locator('[name=analyticsSharing]')).toBeChecked();
- await page.evaluate(key=>localStorage.setItem(key,JSON.stringify({consent:false,consent_version:3,queue:[]})),key);await finish(page);
+ await page.evaluate(key=>localStorage.setItem(key,JSON.stringify({consent:false,consent_version:4,queue:[]})),key);await finish(page);
  expect(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).consent,key)).toBe(false);expect(sent).toHaveLength(0);
 });
 for(const share of [false,true])test(`reset restores checked onboarding choice, then saves ${share}`,async({page})=>{
  const sent=[];await page.route('https://us.i.posthog.com/**',route=>{sent.push(route.request().url());return route.fulfill({status:200,body:'{}'});});
  await page.goto('/setup.html');await page.evaluate(([key,state])=>{
-  localStorage.setItem(key,JSON.stringify({consent:false,consent_version:3,queue:[]}));
+  localStorage.setItem(key,JSON.stringify({consent:false,consent_version:4,queue:[]}));
   localStorage.setItem('seodang.web-prototype.v1',JSON.stringify({...state,onboarded:true,onboardingLevel:2}));
  },[key,freshState()]);
  await page.goto('/playable.html');await page.locator('[data-action=my]').first().click();
@@ -62,4 +62,26 @@ for(const share of [false,true])test(`reset restores checked onboarding choice, 
  if(!share)await input.uncheck();await finish(page);
  expect(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).consent,key)).toBe(share);
  if(share)await expect.poll(()=>sent.length).toBeGreaterThan(0);else expect(sent).toHaveLength(0);
+});
+
+
+test('previous participants see expanded disclosure once and nothing is sent before choosing',async({page})=>{
+ const sent=[];await page.route('https://us.i.posthog.com/**',async r=>{sent.push(...r.request().postDataJSON().batch);await r.fulfill({json:{status:1}});});
+ await page.addInitScript(({state,key})=>{if(!localStorage.getItem('renewal-seeded')){localStorage.setItem('renewal-seeded','1');localStorage.setItem('seodang.web-prototype.v1',JSON.stringify({...state,onboarded:true,koreanGuideSeenVersion:1,onboardingLevel:2}));localStorage.setItem(key,JSON.stringify({consent:true,consent_version:3,queue:[]}));}},{state:freshState(),key});
+ await page.goto('/playable.html');await expect(page.locator('.analytics-consent')).toBeVisible();expect(sent).toHaveLength(0);
+ await expect(page.locator('.analytics-consent')).toContainText('오류 코드');await page.locator('[data-consent=false]').click();
+ await page.reload();await expect(page.locator('.analytics-consent')).toHaveCount(0);expect(sent).toHaveLength(0);
+ expect(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).consent,key)).toBe(false);
+});
+
+test('setup cannot submit before its module is ready',async({page})=>{
+ let release;const gate=new Promise(resolve=>release=resolve);
+ await page.route('**/src/setup.js',async route=>{await gate;await route.continue();});
+ try{
+  await page.goto('/setup.html',{waitUntil:'commit'});
+  await expect(page.locator('button[type=submit]')).toBeDisabled();
+  release();await expect(page.locator('button[type=submit]')).toBeEnabled();
+  await page.locator('button[type=submit]').click();
+  await expect(page.locator('[name=analyticsSharing]')).toBeChecked();
+ }finally{release();}
 });
