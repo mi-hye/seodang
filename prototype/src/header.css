@@ -52,3 +52,6 @@ html[data-input-modality=pointer] :focus-visible,
 html[data-input-modality=pointer] .option:has(input:focus-visible){outline:none!important}
 
 .app-header-title.app-header-lesson{display:flex;flex:1;flex-direction:row;align-items:baseline;gap:6px;min-width:0;font-size:calc(18px * var(--text-scale,1));line-height:1.45}.header-lesson-number{flex:none;white-space:nowrap;font-variant-numeric:tabular-nums}.header-lesson-name{flex:1;min-width:0;word-break:keep-all;overflow-wrap:anywhere}html[lang=ja] .header-lesson-name{word-break:normal;line-break:strict}
+
+.app-header .app-header-letters{margin-left:auto}.app-header .app-header-letters + .app-header-settings{margin-left:0}
+.app-header-letter-tile{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;width:26px;height:26px;flex:none;border:1.5px solid currentColor;border-radius:5px;font-family:inherit;font-size:18px;font-weight:600;line-height:1;letter-spacing:0}

@@ -1,14 +1,14 @@
 /* A winding stage route; reading and keyboard order remain lesson order. */
 .learning-map{margin-top:0}
-.map-overview{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:8px;position:relative;z-index:3;padding:12px 14px;border:1px solid var(--line);border-radius:20px;background:var(--stage-panel);box-shadow:0 6px 20px color-mix(in srgb,var(--stage) 80%,transparent)}
-.map-heading{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;min-width:0}
+.map-overview{display:grid;grid-template-columns:minmax(0,1fr) 44px;align-items:center;gap:8px;position:relative;z-index:3;padding:10px 14px;border:1px solid var(--line);border-radius:20px;background:var(--stage-panel);box-shadow:0 6px 20px color-mix(in srgb,var(--stage) 80%,transparent)}
+.map-heading{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;min-width:0}
 .map-overview h1{font-size:calc(16px * var(--text-scale));line-height:1.4;min-width:0;margin:0}
 .map-heading>span{font-size:14px;color:var(--amber-light);white-space:nowrap;font-variant-numeric:tabular-nums}
-.map-locate{display:grid;place-items:center;width:44px;height:44px;padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--stage-raised);color:var(--amber)}
-.map-locate svg{width:21px;height:21px}
+.map-locate{display:grid;place-items:center;width:44px;height:44px;padding:13px;border:0;border-radius:14px;background:transparent;color:var(--amber)}
+.map-locate svg{width:18px;height:18px}
 .map-progress{grid-column:1/-1;height:6px;overflow:hidden;border-radius:10px;background:var(--stage)}
 .map-progress>span{display:block;height:100%;border-radius:inherit;background:var(--amber)}
-.map-layout{--route-height:calc(178px + (var(--text-scale) - 1) * 200px);position:relative;isolation:isolate;padding:76px 0 26px;background:radial-gradient(ellipse at 30% 8%,color-mix(in srgb,var(--amber) 7%,transparent),transparent 30%),radial-gradient(ellipse at 80% 70%,color-mix(in srgb,var(--muted) 6%,transparent),transparent 45%)}
+.map-layout{--route-height:calc(178px + (var(--text-scale) - 1) * 200px);position:relative;isolation:isolate;padding:76px 0 26px}
 .map-grid{list-style:none;margin:0;padding:0}
 .map-stop{position:relative;min-width:0;height:var(--route-height)}
 .map-choice{position:relative;left:var(--stop-x);transform:translateX(-50%);width:56%;max-width:220px;display:flex;flex-direction:column;align-items:center;gap:10px;padding:0 4px 8px;background:transparent;color:var(--text);border-radius:18px;scroll-margin-block:150px 70px}
@@ -59,7 +59,6 @@
 .map-overview{background:linear-gradient(125deg,color-mix(in srgb,var(--amber) 10%,var(--stage-panel)),var(--stage-panel) 65%);border-color:color-mix(in srgb,var(--amber) 26%,var(--line));box-shadow:inset 0 1px 0 color-mix(in srgb,var(--amber-light) 15%,transparent),0 8px 24px color-mix(in srgb,var(--stage) 60%,transparent)}
 .map-progress{height:5px;box-shadow:inset 0 1px 3px var(--stage)}
 .map-progress>span{background:linear-gradient(90deg,var(--amber),var(--amber-light));box-shadow:0 0 8px var(--amber)}
-.map-layout{background:radial-gradient(circle at 15% 40px,color-mix(in srgb,var(--amber-light) 15%,transparent) 1px,transparent 2px) 0 0/94px 139px,radial-gradient(ellipse at 70% 15%,color-mix(in srgb,var(--amber) 9%,transparent),transparent 40%),linear-gradient(90deg,transparent,color-mix(in srgb,var(--stage-raised) 36%,transparent) 50%,transparent)}
 .map-trail-edge{stroke:color-mix(in srgb,var(--amber) 11%,var(--stage-panel));stroke-width:20px}
 .map-trail-fill{stroke:color-mix(in srgb,var(--amber) 36%,var(--stage-panel));stroke-width:5px;stroke-dasharray:1 12}
 .is-travelled .map-trail-fill{stroke:var(--amber);stroke-dasharray:none}
@@ -69,21 +68,16 @@
 .is-current .map-node::before{border-color:color-mix(in srgb,var(--button-ink) 18%,transparent)}
 .is-complete .map-node{background:var(--selected)}
 .map-title{background:color-mix(in srgb,var(--stage) 92%,transparent)}
-.map-village{position:absolute;left:var(--scenery-x);top:12px;width:36%;max-width:128px;transform:translateX(-50%);pointer-events:none;opacity:.85}
+.map-village{position:absolute;left:var(--scenery-x);top:18px;width:30%;max-width:108px;transform:translateX(-50%);pointer-events:none;opacity:.8}
 .map-village svg{display:block;width:100%;height:auto;overflow:visible}
-.scenery-ground{fill:color-mix(in srgb,var(--amber) 7%,var(--stage-raised))}
-.scenery-wall{fill:color-mix(in srgb,var(--amber) 30%,var(--stage-panel))}
-.scenery-roof{fill:color-mix(in srgb,var(--muted) 25%,var(--stage-panel));stroke:color-mix(in srgb,var(--amber) 28%,var(--stage-panel));stroke-width:1.5;stroke-linejoin:round}
-.scenery-roof-line,.scenery-line{stroke:color-mix(in srgb,var(--amber) 40%,var(--stage-panel));stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.scenery-door{fill:var(--stage-panel)}
-.scenery-window{fill:var(--amber);opacity:.65}
-.scenery-trunk{stroke:color-mix(in srgb,var(--amber) 40%,var(--stage-panel));stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
-.scenery-leaves{fill:color-mix(in srgb,var(--muted) 32%,var(--stage-panel));stroke:color-mix(in srgb,var(--amber) 18%,var(--stage-panel));stroke-width:1.5}
-.scenery-stone{fill:color-mix(in srgb,var(--muted) 24%,var(--stage-panel));stroke:color-mix(in srgb,var(--muted) 35%,var(--stage-panel));stroke-width:1;stroke-linejoin:round}
-.scenery-lamp{fill:var(--amber);opacity:.8;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--amber) 35%,transparent))}
-.scenery-lamp-line{stroke:var(--amber-light);stroke-width:1;opacity:.6}
-.scenery-water{fill:color-mix(in srgb,var(--muted) 15%,var(--stage-panel));stroke:color-mix(in srgb,var(--muted) 30%,var(--stage-panel));stroke-width:1.5}
-.scenery-water-line{stroke:color-mix(in srgb,var(--muted) 45%,var(--stage-panel));stroke-width:2;stroke-linecap:round}
+.scenery-drawing{stroke:color-mix(in srgb,var(--muted) 58%,var(--stage-panel));stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.scenery-earth{fill:color-mix(in srgb,var(--amber) 14%,var(--stage-panel))}
+.scenery-paper{fill:color-mix(in srgb,var(--amber-light) 17%,var(--stage-panel))}
+.scenery-roof{fill:color-mix(in srgb,var(--muted) 22%,var(--stage-panel))}
+.scenery-foliage{fill:color-mix(in srgb,var(--jade) 21%,var(--stage-panel));stroke:color-mix(in srgb,var(--jade) 42%,var(--muted))}
+.scenery-water{fill:color-mix(in srgb,var(--jade) 10%,var(--stage-panel));stroke:color-mix(in srgb,var(--muted) 40%,var(--stage-panel))}
+.scenery-light{fill:color-mix(in srgb,var(--amber) 55%,var(--stage-panel));stroke:none}
+.scenery-detail{opacity:.6}
 
 /* Only the current node owns a mascot; each fallback matches its pose. */
 .map-mascot[data-pose=sitting] .map-mascot-still{background:none;overflow:hidden}
@@ -111,12 +105,15 @@
 .map-page{min-width:0}
 .map-page .map-layout{padding-inline:8px}
 .map-page .map-choice{scroll-margin-top:calc(var(--map-header-height,64px) + 16px);scroll-margin-bottom:100px}
-.map-load-edge + .map-page .map-layout:has(.map-stop:first-child .map-mascot[data-placement=top]){padding-top:98px}
 .map-load-edge{position:absolute;width:1px;height:1px;padding:0;border:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .map-load-edge[data-map-load=previous]{top:0}
 .map-load-edge[data-map-load=next]{bottom:0}
 .map-load-edge:focus-visible{z-index:5;left:0;width:100%;height:44px;clip-path:none;outline:2px solid var(--amber);background:var(--stage);color:var(--text)}
 .map-load-edge[hidden]{display:none}
 .map-page:has(+ .map-page) .map-layout{padding-bottom:0}
-.map-page + .map-page .map-layout{padding-top:0}
+
+/* Keep the current route clear of the header; later sections continue the path. */
+.map-page .map-layout{padding-top:0}
+.map-load-edge + .map-page .map-layout{padding-top:32px}
+.map-load-edge + .map-page .map-layout:has(.map-stop:first-child .map-mascot[data-placement=top]){padding-top:98px}
 .map-page:not(:has(+ .map-page)) .map-stop:last-child .map-trail{visibility:hidden}

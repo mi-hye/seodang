@@ -1,0 +1,59 @@
+dialog.dog-chat-panel{position:fixed;inset:0;width:min(100%,520px);height:100dvh;max-width:100%;max-height:100dvh;margin:auto;padding:0;border:0;border-radius:0;background:var(--stage,#18131d);color:var(--text,#f4eee5);overflow:hidden}
+.dog-chat-panel[open]{display:flex;flex-direction:column}
+.dog-chat-panel::backdrop{background:#0009}
+.dog-chat-panel[lang=ja]{word-break:normal;line-break:strict}
+.dog-chat-panel [lang=ko]{word-break:keep-all;overflow-wrap:break-word}
+.dog-chat-body h2[tabindex="-1"]:focus,.dog-chat-prompt:focus{outline:none}
+.dog-chat-header{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 12px 8px 20px;flex:none;border-bottom:1px solid var(--line)}
+.dog-chat-header h1{flex:1;min-width:0;font-size:calc(19px * var(--text-scale));line-height:1.45}
+.dog-chat-header .icon-button{margin:0;flex:none}
+.dog-chat-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:20px 20px calc(24px + env(safe-area-inset-bottom));scroll-padding:12px}
+.dog-chat-body h2{font-size:calc(22px * var(--text-scale));line-height:1.5;margin:8px 0 12px}
+.dog-chat-body p{line-height:1.65}
+.dog-chat-body .primary,.dog-chat-body .secondary{min-height:48px;white-space:normal;overflow-wrap:anywhere;margin:0;padding:12px 10px}
+.dog-chat-body .button-pair{display:flex;flex-flow:row nowrap;gap:10px;width:100%}
+.dog-chat-body .button-pair>button{flex:1;min-width:0;margin:0}
+.dog-chat-dog{width:80px;height:80px;object-fit:contain;margin:0 auto 8px;flex:none}
+.dog-chat-intro{display:grid;gap:16px;text-align:left}
+.dog-chat-intro h2{text-align:center;margin:0}
+.dog-chat-intro .dog-chat-limit{color:var(--muted);font-size:calc(14px * var(--text-scale))}
+.dog-chat-consent{padding:16px;background:var(--stage-raised);border-radius:16px}
+.dog-chat-consent>p,.dog-chat-consent label{font-size:calc(14px * var(--text-scale));line-height:1.7}
+.dog-chat-consent label{display:flex;align-items:flex-start;gap:12px;margin-top:16px;cursor:pointer;min-height:44px}
+.dog-chat-consent input{flex:none;width:22px;height:22px;margin:3px 0;accent-color:var(--amber)}
+.dog-chat-panel .lesson-progress{margin:0 0 20px;height:5px;background:var(--line);border-radius:99px;overflow:hidden}
+.dog-chat-panel .lesson-progress span{display:block;height:100%;background:var(--amber)}
+.dog-chat-log{display:grid;gap:24px}
+.dog-chat-turn{scroll-margin:12px}
+.dog-chat-prompt{display:flex;gap:10px;align-items:flex-start}
+.dog-chat-prompt>.dog-chat-dog{width:44px;height:44px;margin:0}
+.dog-chat-prompt>div{flex:1;min-width:0;background:var(--stage-raised);border-radius:0 16px 16px;padding:14px}
+.dog-chat-prompt p,.dog-chat-answer,.dog-chat-quote{font-size:calc(20px * var(--text-scale));line-height:1.65;overflow-wrap:anywhere}
+.dog-chat-prompt small,.dog-chat-choices small{display:block;color:var(--muted);font-size:calc(13px * var(--text-scale));line-height:1.6;margin-top:6px}
+.dog-chat-answer{background:var(--selected);border:1px solid var(--line);border-radius:16px 0 16px 16px;margin:14px 0 0 44px;padding:12px 14px}
+.dog-chat-compose{margin-top:24px}
+.dog-chat-compose h2{font-size:calc(14px * var(--text-scale));color:var(--muted);margin:0 0 8px}
+.dog-chat-choices{display:grid;gap:8px}
+.dog-chat-choices>button{display:block;text-align:left;font-size:calc(17px * var(--text-scale));min-width:0}
+.dog-chat-choices>button>span{display:block}
+.dog-chat-hint{margin:10px 0 14px;color:var(--muted);font-size:calc(14px * var(--text-scale))}
+.dog-chat-hint summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px}
+.dog-chat-hint summary:before{content:'›';display:inline-block;transform:rotate(0deg)}
+.dog-chat-hint[open] summary:before{transform:rotate(90deg)}
+.dog-chat-compose>label{display:block;font-size:calc(14px * var(--text-scale));margin-bottom:6px}
+.dog-chat-compose textarea{font:inherit;font-size:calc(19px * var(--text-scale));line-height:1.6;color:var(--text);background:var(--stage-panel);width:100%;max-width:100%;min-height:92px;border:1px solid var(--line);border-radius:12px;padding:12px;resize:vertical;user-select:text;overflow-wrap:anywhere}
+.dog-chat-compose textarea:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.dog-chat-compose>.primary{width:100%;margin-top:12px}
+.dog-chat-error{color:var(--rose);font-size:calc(14px * var(--text-scale));margin-top:8px}
+.dog-chat-error:empty{display:none}
+.dog-chat-feedback,.dog-chat-status{display:grid;gap:20px}
+.dog-chat-feedback h2,.dog-chat-status h2{text-align:center}
+.dog-chat-feedback article{background:var(--stage-raised);border-radius:16px;padding:16px;display:grid;gap:12px}
+.dog-chat-feedback h3{color:var(--amber);font-size:calc(15px * var(--text-scale))}
+.dog-chat-original{color:var(--muted);font-size:calc(16px * var(--text-scale));overflow-wrap:anywhere}
+.dog-chat-notice{color:var(--muted);font-size:calc(13px * var(--text-scale))}
+.dog-chat-spinner{justify-self:center;width:24px;height:24px;border:3px solid var(--line);border-top-color:var(--amber);border-radius:50%;animation:dog-chat-spin 1s linear infinite}
+.dog-chat-announcement{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@keyframes dog-chat-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.dog-chat-spinner{animation:none}}
+html[data-motion=off] .dog-chat-spinner{animation:none}

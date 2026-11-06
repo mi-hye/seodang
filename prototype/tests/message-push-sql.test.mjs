@@ -1,0 +1,23 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {execFile} from 'node:child_process';import {promisify} from 'node:util';
+test('push queue authorization, deduplication, leases, reads, blocks, ownership and account deletion',{skip:!process.env.PUSH_SQL_CONTAINER},async()=>{
+ assert.equal(process.env.PUSH_SQL_CONTAINER,'seodang-push-test');const exec=promisify(execFile),sql=async q=>(await exec('docker',['exec','seodang-push-test','psql','-U','postgres','-Atq','-v','ON_ERROR_STOP=1','-c',q])).stdout.trim();
+ const id=n=>`20000000-0000-4000-8000-${String(n).padStart(12,'0')}`,as=(n,q)=>sql(`begin;set local role authenticated;set local "request.jwt.claim.sub"='${id(n)}';${q};commit;`);
+ const register=(n,d=100+n)=>as(n,`select public.community_push_device('register','${id(d)}','android','${String(n).repeat(64)}','production','ko')`);
+ const claim=async()=>JSON.parse(await sql("set role service_role;select public.community_push_claim(array['android'])"));
+ await sql('truncate auth.users cascade');for(let n=1;n<=3;n++)await sql(`insert into auth.users values('${id(n)}');insert into public.community_profiles(id,nickname,native_language,learning_language,rules_version) values('${id(n)}','test${n}','${n===2?'ja':'ko'}','${n===2?'ko':'ja'}',1)`);
+ await register(1);await register(2);await assert.rejects(register(3,101),/push_forbidden/);
+ await assert.rejects(as(1,'select * from community_private.push_devices'),/permission denied/);
+ await assert.rejects(as(1,"select public.community_push_claim(array['android'])"),/permission denied/);
+ await assert.rejects(sql("set role anon;select public.community_push_device('register',null)"),/permission denied/);
+ const rid=await sql(`insert into public.community_rooms(requester_id,recipient_id,status) values('${id(1)}','${id(2)}','accepted') returning id`);const room=rid.split('\n')[0];
+ const message=async n=>sql(`insert into public.community_messages(id,room_id,author_id,body) values('${id(1000+n)}','${room}','${id(1)}','hello') returning id`);
+ await message(1);let jobs=await claim();assert.equal(jobs.length,1);assert.equal(jobs[0].token,'2'.repeat(64));assert.equal(jobs[0].room_id,room);assert.ok(!JSON.stringify(jobs).includes('hello'));assert.equal((await claim()).length,0);
+ await sql(`set role service_role;select public.community_push_finish(${jobs[0].id},'${id(999)}','sent')`);assert.equal(await sql('select status from community_private.push_outbox'),'pending');
+ await sql(`set role service_role;select public.community_push_finish(${jobs[0].id},'${jobs[0].lease}','sent')`);assert.equal(await sql('select status from community_private.push_outbox'),'sent');
+ await message(2);await as(2,`select public.community_match('read',p_message=>'${id(1002)}')`);assert.equal((await claim()).length,0);
+ await message(3);await as(2,`insert into public.community_blocks(owner_id,blocked_id) values('${id(2)}','${id(1)}')`);assert.equal((await claim()).length,0);await sql('delete from public.community_blocks');
+ await message(4);jobs=await claim();assert.equal(jobs.length,1);await sql(`set role service_role;select public.community_push_finish(${jobs[0].id},'${jobs[0].lease}','invalid')`);assert.equal(await sql(`select count(*) from community_private.push_devices where user_id='${id(2)}'`),'0');
+ await register(2);await message(5);await as(2,`select public.community_push_device('remove','${id(102)}')`);assert.equal((await claim()).length,0);
+ await sql(`delete from auth.users where id='${id(1)}'`);assert.equal(await sql(`select count(*) from community_private.push_devices where user_id='${id(1)}'`),'0');
+ assert.equal(await sql("select count(*) from pg_class where relname in('push_devices','push_outbox') and not relrowsecurity"),'0');
+});

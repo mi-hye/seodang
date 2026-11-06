@@ -1,0 +1,98 @@
+.exchange{padding:12px 20px 110px;color:var(--text);min-height:65vh;word-break:keep-all;overflow-wrap:anywhere;line-height:1.6}
+.exchange[lang=ja]{word-break:normal;line-break:strict}.exchange h2{font-size:1.1em;margin:12px 0}.exchange p{margin:8px 0}.exchange-button{min-height:44px;padding:9px 16px;border:1px solid var(--line);border-radius:14px;background:var(--stage-panel);font:inherit;font-size:.85em;color:var(--text)}.exchange .primary,.exchange-send{background:var(--amber-light);color:var(--ink,#211b13);font-weight:700}.exchange .danger{color:var(--rose)}.exchange button:disabled{opacity:.55}.exchange :focus-visible{outline:2px solid var(--amber-light);outline-offset:3px}
+.exchange-feedback:empty{display:none}.exchange-feedback{font-size:.85em;color:var(--jade)}.exchange-feedback[role=alert]{color:var(--rose)}.exchange-muted,.exchange-rules{font-size:.8em;color:var(--muted)}
+.exchange-empty{display:grid;place-items:center;min-height:48vh;text-align:center;padding:24px 8px}.exchange-empty p{font-size:.9em;color:var(--muted)}.exchange-inbox{padding-bottom:calc(var(--exchange-bottom,72px) + 96px)}.exchange-fab{position:fixed;right:max(16px,calc((100vw - 480px)/2 + 16px));bottom:calc(var(--exchange-bottom,72px) + 16px);z-index:12;display:grid;place-items:center;width:56px;height:56px;border:0;border-radius:50%;padding:0;box-shadow:0 4px 14px #0003}.exchange-fab svg{width:26px;height:26px}
+.exchange-waiting{display:flex;align-items:center;gap:12px;padding:16px 0;margin:0 0 8px;border-bottom:1px solid var(--line)}.exchange-waiting-mark{display:grid;place-items:center;flex:none;width:40px;height:40px;color:var(--amber);border:1px solid var(--line);border-radius:50%}.exchange-waiting-mark svg{width:22px;height:22px}.exchange-waiting>div{flex:1;min-width:0}.exchange-waiting strong{display:block;font-size:.85em;font-weight:600}.exchange-waiting blockquote{margin:4px 0 0;padding:0;border:0;font-style:normal;line-height:1.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:.8em}.exchange-waiting button{flex:none;min-width:44px;padding:9px 6px;background:none;border:0;font-size:.75em;color:var(--muted)}
+.exchange-room{display:flex;align-items:center;gap:12px;width:100%;text-align:start;padding:18px 0;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--text)}.exchange-avatar{display:flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;border-radius:50%;background:var(--stage-panel);color:var(--amber-light);font-weight:700}.exchange-preview{flex:1;min-width:0}.exchange-preview strong{display:block;font-size:.95em;font-weight:600}.exchange-preview small{display:block;font-size:.66em;color:var(--muted)}.exchange-preview>span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.85em;color:var(--muted);margin-top:4px}.exchange-room.unread strong{font-weight:800}.exchange-room.unread .exchange-preview>span{color:var(--text)}.exchange-meta{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:none;max-width:25%}.exchange-meta time{font-size:.7em;color:var(--muted)}.exchange-unread{font-size:.65em;background:var(--amber-light);color:var(--ink);padding:0 6px;border-radius:12px;min-width:20px;text-align:center}
+.exchange form{display:grid;gap:16px;margin:16px 0}.exchange label{display:grid;gap:7px;font-size:.9em}.exchange input,.exchange textarea,.exchange select{width:100%;min-width:0;max-width:100%;box-sizing:border-box;background:var(--stage);color:var(--text);border:1px solid var(--line);border-radius:14px;padding:12px;font:inherit;font-size:max(16px,.9em);line-height:1.6}.exchange textarea{resize:none}.exchange-agree{display:flex!important;align-items:center;min-height:44px}.exchange-agree input{width:22px;height:22px;flex:none;accent-color:var(--amber-light)}.exchange-block{display:flex;gap:12px;justify-content:space-between;align-items:center;margin:16px 0}
+.exchange-menu{position:relative}.exchange-menu summary{list-style:none;display:grid;place-items:center;width:44px;height:44px;cursor:pointer;font-size:1.4em}.exchange-menu summary::-webkit-details-marker{display:none}.exchange-menu>div{position:absolute;right:0;top:44px;z-index:5;min-width:135px;padding:8px;background:var(--stage-panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 24px #0003}.exchange-menu button{width:100%;border:0;text-align:start;background:none}
+.exchange-chat{padding-top:4px;padding-bottom:calc(var(--exchange-composer-height,80px) + 105px)}
+.exchange-messages{display:flex;flex-direction:column;gap:12px;padding:0 0 16px}
+.exchange-day{align-self:center;margin:12px 0;color:var(--muted);font-size:.66em;font-weight:400}.exchange-day:first-child{margin-top:0}
+.exchange-message{display:flex;flex-direction:column;align-items:flex-start;align-self:flex-start;max-width:87%;min-width:0;gap:4px}
+.exchange-message.is-mine{align-self:flex-end;align-items:flex-end}.exchange-message.is-joined{margin-top:-6px}
+.exchange-bubble{min-width:0;max-width:100%;padding:10px 14px;border-radius:18px 18px 18px 5px;background:var(--stage-panel);border:0}
+.exchange-bubble.mine{border-radius:18px 18px 5px 18px;background:color-mix(in srgb,var(--amber-light) 15%,var(--stage-panel))}
+.exchange-bubble p{white-space:pre-wrap;margin:0;font-size:.95em;font-weight:400;line-height:1.55}
+.exchange-message-time{padding-inline:4px;color:var(--muted);font-size:.66em;line-height:1.4;font-variant-numeric:tabular-nums}
+.exchange-outbox .exchange-bubble{max-width:87%}.exchange-outbox small{font-size:.7em;color:var(--muted)}
+.exchange .exchange-composer{position:fixed;left:50%;transform:translateX(-50%);bottom:var(--exchange-bottom,72px);z-index:12;width:min(100%,480px);box-sizing:border-box;display:flex;flex-flow:row nowrap;align-items:flex-end;gap:8px;padding:8px 12px;background:var(--stage);border-top:1px solid color-mix(in srgb,var(--line) 60%,transparent);margin:0}.exchange-composer textarea{flex:1;min-width:0;min-height:44px;max-height:140px;overflow-y:auto;padding:10px 14px;border:0;border-radius:22px;background:var(--stage-panel);line-height:1.45}.exchange-send{border:0;border-radius:50%;height:44px;width:44px;flex:none;display:grid;place-items:center}.exchange-send svg{width:22px;height:22px}.exchange-send:disabled{background:var(--stage-panel);color:var(--muted);opacity:1}
+
+
+.view-community .app-header [hidden]{display:none!important}
+
+.exchange-outbox{display:flex;justify-content:flex-end}.exchange-outbox .exchange-button{display:block;margin-top:10px}
+
+.exchange-loading{display:grid;place-items:center;min-height:48vh}
+.exchange-spinner{display:block;width:26px;height:26px;border:2px solid var(--line);border-top-color:var(--amber);border-radius:50%;animation:audio-loading-turn .8s linear infinite}
+.exchange-writing .tabs,.exchange-writing .app-header-letters,.exchange-writing .app-header-settings{display:none}
+.exchange-compose-header{position:sticky;top:0;background:var(--stage);z-index:12}
+.exchange-compose-header .app-header-title{flex:1;font-size:calc(18px * var(--text-scale,1))}
+.app-header .exchange-first-send{width:auto;min-width:68px;margin-left:auto;padding:10px 14px;border-radius:22px;background:var(--amber-light);font:inherit;font-size:calc(15px * var(--text-scale,1));font-weight:650;color:var(--button-ink,var(--ink))}
+.exchange-compose{box-sizing:border-box;display:flex;flex-direction:column;min-height:180px;height:var(--exchange-writing-height,calc(100dvh - 74px));padding:12px 20px max(20px,env(safe-area-inset-bottom))}
+.exchange-compose .exchange-first{display:flex;flex:1;min-height:0;flex-direction:column;gap:12px;margin:0}
+.exchange-first textarea{flex:1;min-height:96px;padding:8px 0;border:0;border-radius:0;background:transparent;line-height:1.7;overflow-y:auto}
+.exchange-first .exchange-recipient{flex:none;margin:0;padding:16px 0 6px;border-top:1px solid var(--line);font-size:.85em;font-weight:400;line-height:1.6;color:var(--muted)}
+.app-header .exchange-first-send:disabled{opacity:1;background:var(--stage-panel);color:var(--muted)}
+@media(prefers-reduced-motion:reduce){.exchange-spinner{animation:none}}
+html[data-motion=off] .exchange-spinner{animation:none}
+
+.exchange-chat-header .app-header-letters,.exchange-chat-header .app-header-settings{display:none}
+.exchange-chat-header .app-header-title{flex:1;min-width:0;font-size:calc(17px * var(--text-scale,1));line-height:1.3}
+.exchange-chat-header .app-header-title strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:650}
+.exchange-chat-header .app-header-title small{display:block;margin-top:3px;font-size:calc(11px * var(--text-scale,1));font-weight:400;letter-spacing:0;color:var(--muted)}
+.exchange-header-tools{margin-left:auto;flex:none}.exchange-header-tools .exchange-menu>div{min-width:150px}
+.exchange-header-tools .exchange-menu button{justify-content:flex-start;padding:9px 12px;height:auto;font-size:14px;font-weight:400}
+
+
+
+.exchange-recipient strong{display:block;color:var(--text);font-size:1.05em;font-weight:600}.exchange-recipient p{margin:6px 0 0;font-size:.88em;line-height:1.65}
+
+.exchange-notification{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:.88em;line-height:1.5}.exchange-notification>span{flex:1;min-width:0}.exchange-notification button{flex:none;min-width:44px;min-height:44px;margin:0}
+
+.exchange-permission{box-sizing:border-box;width:min(420px,calc(100% - 32px));margin:auto;padding:24px;border:1px solid var(--line);border-radius:24px;background:var(--stage-panel);color:var(--text);word-break:keep-all;overflow-wrap:anywhere}
+.exchange-permission h2{margin:0 0 12px;font-size:calc(20px * var(--text-scale,1))}
+.exchange-permission p{margin:0 0 24px;font-size:calc(16px * var(--text-scale,1));line-height:1.6}
+.exchange-permission .button-pair{display:flex;flex-flow:row nowrap;gap:10px}
+.exchange-permission .button-pair>button{flex:1;min-width:0;min-height:44px;margin:0;padding:14px 8px}
+
+.exchange-pull{position:fixed;left:50%;transform:translateX(-50%);z-index:14;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--stage-panel);box-shadow:0 2px 10px #0002;pointer-events:none}
+.exchange-pull[hidden]{display:none}.exchange-pull .exchange-spinner{width:22px;height:22px;animation:none;opacity:.5}.exchange-pull.is-ready .exchange-spinner{opacity:1}.exchange-pull.is-loading .exchange-spinner{opacity:1;animation:audio-loading-turn .8s linear infinite}
+@media(prefers-reduced-motion:reduce){.exchange-pull.is-loading .exchange-spinner{animation:none}}
+html[data-motion=off] .exchange-pull.is-loading .exchange-spinner{animation:none}
+
+.exchange-typing .tabs{visibility:hidden;pointer-events:none}
+
+/* Profile overview and inline nickname editing; registration keeps its consent form. */
+.exchange-profile form{margin:8px 0 24px;gap:20px}
+.exchange-profile-summary{padding:28px 0 24px;text-align:center}
+.exchange-profile-summary>.exchange-avatar{width:72px;height:72px;margin:0 auto 12px;background:var(--amber);color:var(--button-ink);font-size:28px}
+.exchange-profile-name{display:inline-flex;align-items:center;justify-content:center;gap:8px;max-width:100%;min-height:44px;margin:0;padding:4px 0;border:0;background:transparent;color:var(--text);font-size:calc(20px * var(--text-scale));font-weight:700;line-height:1.4}
+.exchange-profile-name span{min-width:0;overflow-wrap:anywhere}
+.exchange-profile-name svg{flex:none;width:16px;height:16px;color:var(--muted)}
+.exchange-profile-summary>.exchange-profile-language{margin:4px 0 0;color:var(--muted);font-size:calc(14px * var(--text-scale));line-height:1.5}
+.exchange-profile-summary .exchange-feedback{margin:0 0 12px;font-size:calc(14px * var(--text-scale))}
+.exchange-profile form.exchange-profile-edit{max-width:320px;margin:16px auto 12px;gap:12px}
+.exchange .exchange-profile-edit input{text-align:center;border-radius:12px;padding:10px 14px;font-size:calc(16px * var(--text-scale))}
+.exchange-profile-language dl{margin:0}
+.exchange-profile-language dl>div{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;padding:12px 0;font-size:calc(15px * var(--text-scale))}
+.exchange-profile-language dt{color:var(--text)}
+.exchange-profile-language dd{margin:0;text-align:end;color:var(--muted);font-weight:400}
+.exchange-profile-panel{margin-top:8px;background:var(--stage-panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.exchange-profile-guide{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:60px;padding:12px 16px;border:0;border-radius:0;background:transparent;color:var(--text);font-size:calc(15px * var(--text-scale));text-align:start}
+.exchange-profile-guide svg{flex:none;width:18px;height:18px;color:var(--muted)}
+.exchange-profile-panel .exchange-notification{border-bottom:0;min-height:60px;margin:0 16px;padding:8px 0;font-size:calc(15px * var(--text-scale))}
+.exchange-profile-panel .exchange-notification button{background:transparent;border:0;color:var(--amber-light);padding:0 4px 0 12px}
+.exchange-profile:has(.exchange-profile-summary){display:flex;flex-direction:column;min-height:var(--exchange-profile-height,calc(100dvh - 80px));padding-bottom:calc(var(--exchange-nav-height,72px) + 16px);box-sizing:border-box}
+.exchange-profile-footer{margin-top:auto;padding-top:24px}
+.exchange-profile-footer .exchange-profile-guide{min-height:44px;padding:8px 0;color:var(--muted);font-size:calc(14px * var(--text-scale))}
+.exchange .exchange-rules{border-top:1px solid var(--line);padding:20px 0 0;margin:24px 0 0;font-size:calc(14px * var(--text-scale));line-height:1.7}
+.exchange .exchange-rules h2{margin:0 0 10px;color:var(--text);font-size:inherit;font-weight:600}
+.exchange .exchange-rules p{margin:8px 0}
+.exchange-rules a{display:inline-flex;align-items:center;min-height:44px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.exchange-profile form>.exchange-rules{margin:0}
+.exchange-guide .exchange-rules{margin:0;padding:0;border:0;font-size:calc(16px * var(--text-scale));line-height:1.75}
+.exchange-guide .exchange-rules p{margin:0 0 20px}
+
+.exchange-profile-edit-header .app-header-letters,.exchange-profile-edit-header .app-header-settings{display:none}
+.exchange-profile-edit-header .app-header-title{flex:1;font-size:calc(18px * var(--text-scale,1))}

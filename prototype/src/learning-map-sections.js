@@ -61,7 +61,10 @@ export function mountMapSections(root,{renderPage,snapshot}={}){
   if(rect.top<headerHeight+12||rect.bottom>innerHeight-100)target.scrollIntoView({block:'center',behavior:'instant'});
  }
  measureHeader();
- if(snapshot?.course===map.dataset.course){load(snapshot.first,{preserve:false});load(snapshot.last,{preserve:false});window.scrollTo({top:snapshot.y,behavior:'instant'});}
+ if(snapshot?.course===map.dataset.course){
+  load(snapshot.first,{preserve:false});load(snapshot.last,{preserve:false});
+  window.scrollTo({top:Math.max(0,Math.min(snapshot.y,document.documentElement.scrollHeight-innerHeight)),behavior:'instant'});
+ }
  edges();
  const resize=new ResizeObserver(()=>{measureHeader();schedule();});if(header)resize.observe(header);
  const listeners=[['scroll',schedule],['resize',schedule],['wheel',wheel],['touchstart',touchStart],['touchmove',touchMove],['touchend',touchEnd],['touchcancel',touchEnd],['keydown',keyboard]];

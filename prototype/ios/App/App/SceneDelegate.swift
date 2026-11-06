@@ -257,7 +257,7 @@ class SeodangAudioPlugin: CAPPlugin, CAPBridgedPlugin {
 class SeodangRecognitionPlugin: CAPPlugin, CAPBridgedPlugin {
     let identifier = "SeodangRecognitionPlugin"
     let jsName = "SeodangRecognition"
-    let pluginMethods: [CAPPluginMethod] = ["status", "recognize", "finish", "cancel"].map {
+    let pluginMethods: [CAPPluginMethod] = ["status", "requestPermissions", "openSettings", "recognize", "finish", "cancel"].map {
         CAPPluginMethod(name: $0, returnType: CAPPluginReturnPromise)
     }
     private let engine = AVAudioEngine()
@@ -273,6 +273,21 @@ class SeodangRecognitionPlugin: CAPPlugin, CAPBridgedPlugin {
     private var ending = false
     private var waitingToBegin: UUID?
     @objc func status(_ call: CAPPluginCall) { call.resolve(["readyEvents": true]) }
+    // Ask before the timed AI session starts; never open the microphone here.
+    @objc override func requestPermissions(_ call: CAPPluginCall) {
+        SFSpeechRecognizer.requestAuthorization { status in
+            guard status == .authorized else { call.resolve(["microphone": "denied"]); return }
+            AVAudioSession.sharedInstance().requestRecordPermission { allowed in
+                call.resolve(["microphone": allowed ? "granted" : "denied"])
+            }
+        }
+    }
+    @objc func openSettings(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            guard let url = URL(string: UIApplication.openSettingsURLString) else { call.reject("Settings unavailable"); return }
+            UIApplication.shared.open(url); call.resolve()
+        }
+    }
     override func load() {
         NotificationCenter.default.addObserver(self, selector: #selector(interrupted(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(interrupted(_:)), name: AVAudioSession.interruptionNotification, object: nil)
