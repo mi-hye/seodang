@@ -18,6 +18,14 @@ expo-env.d.ts
 *.key
 *.mobileprovision
 
+# Local Firebase app configuration (included separately in EAS build archives).
+/prototype/android/app/google-services.json
+/prototype/ios/App/App/GoogleService-Info.plist
+# Server credentials must never enter Git or app build inputs.
+**/*firebase-adminsdk*.json
+**/*service-account*.json
+**/seodang-8641a-*.json
+
 # Metro
 .metro-health-check*
 

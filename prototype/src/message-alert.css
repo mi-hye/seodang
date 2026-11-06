@@ -1,0 +1,5 @@
+.message-alert{position:fixed;z-index:220;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 88px);width:calc(100% - 32px);max-width:448px;display:flex;align-items:center;background:var(--stage-panel);color:var(--text);border:1px solid var(--line);border-radius:18px;box-shadow:0 6px 22px #0003;padding:4px 6px}
+.message-alert button{min-height:44px;border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;margin:0;padding:8px 12px}
+.message-alert button:first-child{flex:1;text-align:left;font-size:calc(16px * var(--text-scale,1));word-break:keep-all;overflow-wrap:anywhere}
+.message-alert button:last-child{flex:none;width:44px;font-size:24px}
+.message-alert button:focus-visible{outline:2px solid var(--amber);border-radius:10px}

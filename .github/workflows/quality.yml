@@ -72,4 +72,4 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: deno check --config supabase/functions/deno.json supabase/functions/community-delete-account/index.ts supabase/functions/community-photo-cleanup/index.ts
+      - run: deno check --config supabase/functions/deno.json supabase/functions/community-delete-account/index.ts supabase/functions/community-photo-cleanup/index.ts supabase/functions/dog-chat/index.ts supabase/functions/voice-conversation/index.ts supabase/functions/message-push/index.ts

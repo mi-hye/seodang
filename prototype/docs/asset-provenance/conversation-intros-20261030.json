@@ -1,0 +1,168 @@
+{
+  "created": "2026-10-30",
+  "purpose": "Bundled free topic introductions before the conversation timer starts",
+  "validation": "AAC decoded with afconvert; independent local Whisper transcription. Not human listening verification.",
+  "voiceLicenses": "Same app voices and license/attribution terms as course-expansion-20261022.json; VOICEVOX Nemo 男声1 and Supertonic 3 M1.",
+  "entries": [
+    {
+      "topic": "daily",
+      "locale": "ko-KR",
+      "text": "오늘은 하루 이야기를 해 봐요. 오늘 뭐 했어요?",
+      "file": "assets/course-voices/ko-KR-535f4f18218ad872.m4a",
+      "sha256": "cada87cb79f253d382f9996115f60226195a1fcb371a2738d6f3442db58f4954",
+      "bytes": 41445,
+      "duration": 4.528,
+      "voice": "Supertonic 3 M1",
+      "synthesisAdjustment": {
+        "input": "오늘은 하루 이야기를 해 봐요. 오늘 뭐 했어요?",
+        "speed": 0.95,
+        "vowelFloor": 0,
+        "consonantFloor": 0,
+        "reason": "Original AI conversation topic introduction; reuse established app voices.",
+        "displayedTextChanged": false
+      },
+      "asrText": "오늘은 하루 이야기를 해봐요. 오늘 뭐 했어요?",
+      "asrExactNormalized": true
+    },
+    {
+      "topic": "daily",
+      "locale": "ja-JP",
+      "text": "今日は一日のことを話しましょう。今日は何をしましたか？",
+      "file": "assets/course-voices/ja-JP-a4236f6bf0bb5735.m4a",
+      "sha256": "2ffbcd4212ced21514dfa664aa1560e5b19f6e803ca94d7a08b47cff2e566134",
+      "bytes": 33931,
+      "duration": 3.435,
+      "voice": "VOICEVOX Nemo 男声1",
+      "synthesisAdjustment": {
+        "input": "今日は一日のことを話しましょう。今日は何をしましたか？",
+        "speed": 0.95,
+        "vowelFloor": 0,
+        "consonantFloor": 0,
+        "reason": "Original AI conversation topic introduction; reuse established app voices.",
+        "displayedTextChanged": false
+      },
+      "asrText": "今日は一日のことを話しましょう。今日は何をしましたか?",
+      "asrExactNormalized": true
+    },
+    {
+      "topic": "cafe",
+      "locale": "ko-KR",
+      "text": "카페에 왔어요. 어떤 음료를 좋아해요?",
+      "file": "assets/course-voices/ko-KR-ae1cc5351001b80b.m4a",
+      "sha256": "c9a7ec34f28ee0eb6efef00bcbd92416f44b0d6c143c49610e8002448097e12d",
+      "bytes": 34018,
+      "duration": 3.762,
+      "voice": "Supertonic 3 M1",
+      "synthesisAdjustment": {
+        "input": "카페에 왔어요. 어떤 음료를 좋아해요?",
+        "speed": 0.95,
+        "vowelFloor": 0,
+        "consonantFloor": 0,
+        "reason": "Original AI conversation topic introduction; reuse established app voices.",
+        "displayedTextChanged": false
+      },
+      "asrText": "카페에 왔어요. 어떤 음료를 좋아해요?",
+      "asrExactNormalized": true
+    },
+    {
+      "topic": "cafe",
+      "locale": "ja-JP",
+      "text": "カフェに来ました。どんな飲み物が好きですか？",
+      "file": "assets/course-voices/ja-JP-8b079048b7040f7e.m4a",
+      "sha256": "b9d669d6a17bac0e6be9e6d421f0b26e22e4da8c7c2a3a7e9e14b995cb1a5087",
+      "bytes": 26243,
+      "duration": 2.624,
+      "voice": "VOICEVOX Nemo 男声1",
+      "synthesisAdjustment": {
+        "input": "カフェに来ました。どんな飲み物が好きですか？",
+        "speed": 0.95,
+        "vowelFloor": 0,
+        "consonantFloor": 0,
+        "reason": "Original AI conversation topic introduction; reuse established app voices.",
+        "displayedTextChanged": false
+      },
+      "asrText": "カフェに来ました。どんな飲み物が好きですか?",
+      "asrExactNormalized": true
+    },
+    {
+      "topic": "travel",
+      "locale": "ko-KR",
+      "text": "여행 이야기를 해 봐요. 어디에 가 보고 싶어요?",
+      "file": "assets/course-voices/ko-KR-d6bd129786634b9d.m4a",
+      "sha256": "57153827732605dc7c45d994cf31d5125439e1c6521406a9392bb212f5516092",
+      "bytes": 41427,
+      "duration": 4.528,
+      "voice": "Supertonic 3 M1",
+      "synthesisAdjustment": {
+        "input": "여행 이야기를 해 봐요. 어디에 가 보고 싶어요?",
+        "speed": 0.95,
+        "vowelFloor": 0,
+        "consonantFloor": 0,
+        "reason": "Original AI conversation topic introduction; reuse established app voices.",
+        "displayedTextChanged": false
+      },
+      "asrText": "여행 이야기를 해봐요. 어디에 가보고 싶어요?",
+      "asrExactNormalized": true
+    },
+    {
+      "topic": "travel",
+      "locale": "ja-JP",
+      "text": "旅行の話をしましょう。どこに行ってみたいですか？",
+      "file": "assets/course-voices/ja-JP-14fbe7043b5278de.m4a",
+      "sha256": "1e4f69b553cef980dbbdfc4b6b042607cd03188898741ecaff84f192df1951c0",
+      "bytes": 29399,
+      "duration": 2.976,
+      "voice": "VOICEVOX Nemo 男声1",
+      "synthesisAdjustment": {
+        "input": "旅行の話をしましょう。どこに行ってみたいですか？",
+        "speed": 0.95,
+        "vowelFloor": 0,
+        "consonantFloor": 0,
+        "reason": "Original AI conversation topic introduction; reuse established app voices.",
+        "displayedTextChanged": false
+      },
+      "asrText": "旅行の話をしましょう。どこに行ってみたいですか?",
+      "asrExactNormalized": true
+    },
+    {
+      "topic": "hobby",
+      "locale": "ko-KR",
+      "text": "좋아하는 걸 이야기해 봐요. 쉬는 날에는 주로 뭘 해요?",
+      "file": "assets/course-voices/ko-KR-f240e4595e32ba37.m4a",
+      "sha256": "5f25332aa12cf87575878cd80bec3c90c24ee4d23c566861751a714d009f58c1",
+      "bytes": 45725,
+      "duration": 5.085,
+      "voice": "Supertonic 3 M1",
+      "synthesisAdjustment": {
+        "input": "좋아하는 걸 이야기해 봐요. 쉬는 날에는 주로 뭘 해요?",
+        "speed": 0.95,
+        "vowelFloor": 0,
+        "consonantFloor": 0,
+        "reason": "Original AI conversation topic introduction; reuse established app voices.",
+        "displayedTextChanged": false
+      },
+      "asrText": "좋아하는 걸 이야기해 봐요. 쉬는 날에는 주로 뭘 해요?",
+      "asrExactNormalized": true
+    },
+    {
+      "topic": "hobby",
+      "locale": "ja-JP",
+      "text": "好きなことを話しましょう。休みの日はよく何をしますか？",
+      "file": "assets/course-voices/ja-JP-a998c9105f34a102.m4a",
+      "sha256": "039e12cedf8282c2a96c7f15d1d39a74ddf4c9c4377d834b07e3d41a76423ebf",
+      "bytes": 32722,
+      "duration": 3.285,
+      "voice": "VOICEVOX Nemo 男声1",
+      "synthesisAdjustment": {
+        "input": "好きなことを話しましょう。休みの日はよく何をしますか？",
+        "speed": 0.95,
+        "vowelFloor": 0,
+        "consonantFloor": 0,
+        "reason": "Original AI conversation topic introduction; reuse established app voices.",
+        "displayedTextChanged": false
+      },
+      "asrText": "好きなことを話しましょう。休みの日はよく何をしますか?",
+      "asrExactNormalized": true
+    }
+  ]
+}

@@ -17,7 +17,9 @@ http
       if (!file.startsWith(root + path.sep)) throw Error();
       const data = name === '/src/build-config.js'
         ? `export const developmentMode = true;\nexport const appVersion = ${JSON.stringify(appVersion)};\n`
-        : await readFile(file);
+        : name === '/src/dog-chat-lessons.js'
+          ? await readFile(new URL('../supabase/functions/dog-chat/lessons.mjs',import.meta.url))
+          : await readFile(file);
       res.writeHead(200, {
         "Content-Type":
           {

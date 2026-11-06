@@ -1,5 +1,6 @@
 import {createPhotoCache} from './community-photo-cache.js';
 import {communityConfig} from './community-config.js';
+const sharedRefreshes=new WeakMap();
 export const SESSION_KEY='seodang.community.session.v1';
 export const validText=(value,max)=>typeof value==='string'&&value.trim().length>0&&[...value.trim()].length<=max;
 export const uuid=value=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value)?value:(()=>{throw Error('invalid_id');})();
@@ -15,9 +16,24 @@ export function createCommunityAPI({storage=globalThis.localStorage,fetcher=glob
   if(!response.ok){const error=Error(data?.message||data?.msg||data?.error_description||'network_error');error.status=response.status;error.code=data?.code||data?.error_code;throw error;}return data;
  }
  async function access(){
+  // The badge, AI voice and message screens share one stored account. Adopt newer
+  // credentials before refreshing so a long-lived screen cannot erase a rotated session.
+  try{const saved=JSON.parse(storage.getItem(SESSION_KEY));if(saved?.user?.id===session?.user?.id&&typeof saved.access_token==='string'&&typeof saved.refresh_token==='string'&&Number.isFinite(saved.expires_at)&&saved.expires_at>=session.expires_at)session=saved;}catch{}
   if(!session?.access_token)throw Error('device_session_required');
   if(session.expires_at*1000>Date.now()+60000)return session.access_token;
-  refreshing ||= request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:session.refresh_token}}).then(s=>{setSession(s);return s.access_token;}).catch(e=>{if(e.status===400||e.status===401)setSession(null);throw e;}).finally(()=>{refreshing=null;});
+  if(!refreshing){
+   let pool=sharedRefreshes.get(storage);if(!pool){pool=new Map();sharedRefreshes.set(storage,pool);}
+   const refreshingToken=session.refresh_token,refreshingUser=session.user.id;const key=config.url+':'+refreshingToken;
+   let pending=pool.get(key);if(!pending){pending=request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:session.refresh_token}}).finally(()=>pool.delete(key));pool.set(key,pending);}
+   refreshing=pending.then(s=>{setSession(s);return s.access_token;}).catch(e=>{
+    if(e.status===400||e.status===401){
+     let saved;try{saved=JSON.parse(storage.getItem(SESSION_KEY));}catch{}
+     if(saved?.refresh_token===refreshingToken)setSession(null);
+     else if(saved?.user?.id===refreshingUser&&typeof saved.access_token==='string'&&saved.expires_at*1000>Date.now()){session=saved;return saved.access_token;}
+     else {session=null;clearPhotos();}
+    }throw e;
+   }).finally(()=>{refreshing=null;});
+  }
   return refreshing;
  }
  async function rest(table,query='',options={}){return request(`/rest/v1/community_${table}${query?'?'+query:''}`,{...options,token:await access()});}
@@ -40,6 +56,16 @@ export function createCommunityAPI({storage=globalThis.localStorage,fetcher=glob
  }
  return {
   get session(){return session;},
+  incomingMessages:()=>rest('messages',`author_id=neq.${uuid(session.user.id)}&select=id,room_id,created_at&order=created_at.desc,id.desc&limit=30`),
+  async pushDevice(payload){return request('/rest/v1/rpc/community_push_device',{method:'POST',body:payload,token:await access()});},
+  async unread(){return request('/rest/v1/rpc/community_unread',{method:'POST',body:{},token:await access()});},
+  async conversations(offset=0,roomId=null){return request('/rest/v1/rpc/community_conversations',{method:'POST',body:{p_offset:Math.max(0,Number(offset)||0),...(roomId?{p_room:uuid(roomId)}:{})},token:await access()});},
+  async match(action,{id,body,message}={}){return request('/rest/v1/rpc/community_match',{method:'POST',body:{p_action:action,...(id?{p_request:uuid(id)}:{}),...(body!==undefined?{p_body:body}:{}),...(message?{p_message:uuid(message)}:{})},token:await access()});},
+  conversationMessages:(id,before=null)=>{
+   let cursor='';
+   if(before){if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$/.test(before.created_at)||!Number.isFinite(Date.parse(before.created_at)))throw Error('invalid_cursor');const stamp=encodeURIComponent(before.created_at);cursor=`&or=(created_at.lt.${stamp},and(created_at.eq.${stamp},id.lt.${uuid(before.id)}))`;}
+   return rest('messages',`room_id=eq.${uuid(id)}&order=created_at.desc,id.desc&limit=50${cursor}`);
+  },
   get photoCacheVersion(){return photoCacheVersion;},
   async ensureDeviceSession(){
    const probe=SESSION_KEY+'.probe';try{storage.setItem(probe,'1');if(storage.getItem(probe)!=='1')throw Error();storage.removeItem(probe);}catch{throw Error('device_storage_unavailable');}

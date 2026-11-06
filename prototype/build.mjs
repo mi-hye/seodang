@@ -46,6 +46,7 @@ async function build() {
       return ['assets/audio/catalog.json','assets/audio/NOTICE.txt','assets/audio/LICENSE-Supertonic-3.txt'].includes(source);
     } });
   const developmentMode = process.env.SEODANG_DEV_MODE === '1';
+  await cp('../supabase/functions/dog-chat/lessons.mjs','dist/src/dog-chat-lessons.js');
   await writeFile('dist/src/build-config.js', `export const developmentMode = ${developmentMode};\nexport const appVersion = ${JSON.stringify(JSON.parse(await readFile('app.json','utf8')).expo.version)};\n`);
   // Pending lyric permissions: local previews never enter production assets.
   if(!developmentMode){

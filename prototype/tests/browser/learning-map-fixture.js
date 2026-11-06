@@ -24,7 +24,8 @@ export async function findMapLesson(page,{kind,id}){
    await loadMapSection(page,i);if(await lesson.count())break;
   }
  }
- await expect(lesson).toHaveCount(1);await lesson.scrollIntoViewIfNeeded();return lesson;
+ await expect(lesson).toHaveCount(1);
+ await lesson.scrollIntoViewIfNeeded();return lesson;
 }
 export async function openMapLesson(page,target){await (await findMapLesson(page,target)).click();}
 export async function collectMapLessons(page){

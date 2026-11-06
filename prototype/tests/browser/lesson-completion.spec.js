@@ -1,3 +1,6 @@
+import {mapCourseLessons} from '../../src/learning-map.js';
+import {mapLessonSections} from '../../src/learning-map-page.js';
+import {completeMapLesson} from '../completed-lesson-fixtures.mjs';
 import {test,expect} from '@playwright/test';
 import {freshState} from '../../src/engine.js';
 import {valid} from '../../src/storage.js';
@@ -121,4 +124,17 @@ for(const width of [320,390])test(`parent completion opens the next numbered com
  await page.reload();await expect(page.locator('.home-start-card')).toContainText(/特別学習.*助詞/s);await expect(page.locator('.map-comparison-resume')).toHaveCount(0);
  await page.screenshot({path:`output/comparison-resume-${width}-${test.info().project.name}.png`});
  await page.locator('.home-start-card').click();await expect(page.locator('.particle-course')).toBeVisible();
+});
+
+for(const direction of ['ko-ja','ja-ko'])test(`section boundary keeps normal completion and opens next lesson ${direction}`,async({page})=>{
+ const s=initial(direction,4),flags=songLessons.map(l=>l.released);let sections;
+ try{songLessons.forEach(l=>l.released=true);sections=mapLessonSections(mapCourseLessons(s));}finally{songLessons.forEach((l,i)=>l.released=flags[i]);}
+ const section=sections[0],last=section.lessons.at(-1),next=sections[1].lessons[0];expect(last.action).toBe('song');
+ section.lessons.forEach(l=>completeMapLesson(s,l));s.songActive=last.id;s.songs[last.id]={...s.songs[last.id],completed:false,phase:'encore'};
+ await setup(page,s,'song',last.id);await page.locator('[data-action="song-next"]').click();
+ await expect(page.locator('.practice-complete h1')).toHaveText(direction==='ja-ko'?'学習が完了しました':'학습을 완료하셨습니다');
+ await expect(page.locator('.practice-fireworks')).toBeVisible();expect(await tones(page)).toBe(6);
+ await expect(page.locator('[data-action="completed-next"]')).toHaveText(direction==='ja-ko'?'次のレッスン':'다음 수업');
+ await page.screenshot({path:`output/section-complete-${direction}-${test.info().project.name}.png`});
+ await page.locator('[data-action="completed-next"]').click();await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('seodang.web-prototype.v1')).scenarioActive)).toBe(next.id);
 });

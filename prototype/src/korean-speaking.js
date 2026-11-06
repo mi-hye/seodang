@@ -21,7 +21,7 @@ export function renderKoreanSpeaking(top,target=speakingTarget,locale='ko-KR',au
  const coach=`${speakingCoach({text:options.prompt||t('話してみよう'),lang:uiLang,dogLabel:t('ソダン犬')})}<button class="primary speaking-microphone" type="button" data-speaking-record aria-label="${t('話す')}" aria-pressed="false">${microphone()}</button>`,targetMarkup=`<div class="audio-text-row"><h2 lang="${lang}">${phraseText(target,parts)}</h2>${button(icon('sound'),audioAction,'icon-button',`aria-label="${t('お手本を聞く')}" data-id="${esc(audioId)}" data-speaking-example`)}</div>`;
  return `${top(t('話してみよう'))}<main class="page korean-speaking speaking-page${options.extraClass?` ${esc(options.extraClass)}`:''}" data-speaking-locale="${locale}" data-speaking-ui="${uiLang}" data-speaking-free="${Boolean(options.freeSpeech)}" data-speaking-practice="${Boolean(options.practice)}" data-speaking-spoken="${esc(options.spoken||target)}">${options.targetFirst?targetMarkup+coach:coach+targetMarkup}<p data-speaking-transcript lang="${lang}" hidden></p><div data-speaking-permission hidden><p data-speaking-permission-help lang="${uiLang}"></p><button class="secondary" type="button" data-speaking-settings>${t('設定を開く')}</button></div>${options.targetFirst?options.extra||'':''}<div class="speaking-actions"><div class="button-pair speaking-navigation">${button(t('戻る'),previousAction,'text-button')}<button class="text-button" type="button" data-speaking-skip>${t('スキップ')}</button><button class="primary" type="button" data-speaking-next disabled hidden>${t('次へ')}</button></div></div>${options.targetFirst?'':options.extra||''}</main>`;
 }
-export function mountKoreanSpeaking(root,{stop,advance,recognize,cancel,end,onBusyChange=()=>{},blocked=()=>false}={}){
+export function mountKoreanSpeaking(root,{stop,advance,recognize,cancel,end,onBusyChange=()=>{},onRecognized,onRecordingChange=()=>{},allowNetwork=false,blocked=()=>false}={}){
  const page=root.querySelector('.korean-speaking');if(!page)return()=>{};
  const locale=page.dataset.speakingLocale||'ko-KR',localize=text=>page.dataset.speakingUi==='ko'||locale==='ja-JP'?(koCopy[text]||text):text;
  const cap=globalThis.Capacitor,android=Boolean(cap?.isNativePlatform?.()&&cap.getPlatform?.()==='android');
@@ -29,7 +29,7 @@ export function mountKoreanSpeaking(root,{stop,advance,recognize,cancel,end,onBu
  const supported=Boolean(recognize||cap?.isNativePlatform?.()&&['ios','android'].includes(cap.getPlatform?.()));
  const call=(method,options={})=>cap.nativePromise('SeodangRecognition',method,{locale,...options});
  const customRecognition=Boolean(recognize);
- let serviceConsent=false,preferSystem=false,consentDialog,resolveConsent,readyEvents=false,readyListener,activeAttempt='';
+ let serviceConsent=allowNetwork,preferSystem=false,consentDialog,resolveConsent,readyEvents=false,readyListener,activeAttempt='';
  recognize ||= ()=>call('recognize',{allowNetwork:serviceConsent,preferSystem,...(activeAttempt?{requestId:activeAttempt}:{})});cancel ||= ()=>call('cancel');end ||= ()=>call('finish');
  const record=page.querySelector('[data-speaking-record]'),next=page.querySelector('[data-speaking-next]'),status=page.querySelector('[data-speaking-status]'),transcript=page.querySelector('[data-speaking-transcript]'),example=page.querySelector('[data-speaking-example]');
  const permission=page.querySelector('[data-speaking-permission]'),permissionHelp=page.querySelector('[data-speaking-permission-help]'),settings=page.querySelector('[data-speaking-settings]');
@@ -57,7 +57,7 @@ export function mountKoreanSpeaking(root,{stop,advance,recognize,cancel,end,onBu
  };
  const listen=async id=>{
   releaseReadyListener();
-  const listening=()=>{preparing=false;recording=true;record.disabled=false;micState(true);tell('聞いているよ','listening');};
+  const listening=()=>{preparing=false;recording=true;onRecordingChange(true);record.disabled=false;micState(true);tell('聞いているよ','listening');};
   if(readyEvents){
    preparing=true;recording=false;record.disabled=true;micState(false);tell('マイクを準備しているよ','idle');
    const attempt=activeAttempt=String(++recognitionSerial);
@@ -69,7 +69,7 @@ export function mountKoreanSpeaking(root,{stop,advance,recognize,cancel,end,onBu
   try{return await recognize();}finally{if(attempt&&activeAttempt===attempt)releaseReadyListener();}
  };
  const cancelRecording=()=>{releaseReadyListener();
-  const id=++request;recording=false;preparing=false;closeConsent(false);record.disabled=true;micState(false);example.disabled=false;
+  const id=++request;recording=false;preparing=false;onRecordingChange(false);closeConsent(false);record.disabled=true;micState(false);example.disabled=false;
   if(!supported){onBusyChange(false);return;}
   onBusyChange(true);
   // Keep the optional recorder locked until the native microphone is released.
@@ -130,6 +130,7 @@ export function mountKoreanSpeaking(root,{stop,advance,recognize,cancel,end,onBu
    const {text:heard,matched}=speakingResult(result,[page.querySelector('h2').textContent,page.dataset.speakingSpoken],free);
    transcript.textContent=heard?`${localize('聞き取った文：')}${heard}`:'';transcript.hidden=!heard;
    if(!heard){tell('声が聞き取れなかったよ。もう一度話してみてね。','idle');return;}
+   if(onRecognized){onRecognized(heard);return;}
    showNext(matched);
    tell(practice?(matched?'聞き取れたよ':'お手本と聞き比べてみよう'):matched?(free?'생각을 들려줘서 고마워요':'よくできたね！'):'もう一度、話してみよう',matched?'happy':practice?'idle':'retry');
   }catch(error){
@@ -141,7 +142,7 @@ export function mountKoreanSpeaking(root,{stop,advance,recognize,cancel,end,onBu
    else if(error.code==='START_FAILED')tell('音声認識を開始できなかったよ。もう一度試してね。');
    else if(error.code==='LANGUAGE_UNAVAILABLE')tell('端末でこの言語の音声認識を準備してね。');
    else tell(error.code==='ON_DEVICE_UNAVAILABLE'?(practice?'お手本を聞いて、声に出してみよう':'スキップして進もう'):'もう一度、話してみよう');
-  }finally{if(alive&&id===request){preparing=false;recording=false;record.disabled=blocked();micState(false);example.disabled=false;onBusyChange(false);}}
+  }finally{if(alive&&id===request){preparing=false;recording=false;onRecordingChange(false);record.disabled=blocked();micState(false);example.disabled=false;onBusyChange(false);}}
  };
  // Android cancels the mic natively on pause; its permission prompt must remain usable.
  const hidden=()=>{if(document.hidden&&!android&&(recording||preparing&&!nativeIos)){cancelRecording();tell('もう一度、話してみよう');}else if(!document.hidden)void refreshPermission();};

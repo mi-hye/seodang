@@ -1,0 +1,40 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {execFile} from 'node:child_process';import {promisify} from 'node:util';import {readFile} from 'node:fs/promises';
+test('voice quota SQL: concurrency, both languages, elapsed time, expiry, replay, budget and permissions',{skip:!process.env.VOICE_SQL_CONTAINER},async()=>{
+ const container=process.env.VOICE_SQL_CONTAINER;assert.match(container,/^seodang-conversation-test$/);const exec=promisify(execFile);
+ const sql=async q=>(await exec('docker',['exec',container,'psql','-U','postgres','-At','-v','ON_ERROR_STOP=1','-c',q])).stdout.trim();
+ const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
+ const op=async(user,action,session=null,extra='')=>JSON.parse(await sql(`select public.voice_conversation_op('${id(user)}','${action}',${session?`'${id(session)}'`:'null'}${extra});`));
+ await sql(`truncate public.voice_conversation_requests, public.voice_conversation_sessions,public.voice_conversation_days, public.voice_conversation_global_days;insert into auth.users(id) values('${id(1)}'),('${id(2)}') on conflict do nothing;update public.voice_conversation_budget set enabled=true,model='test',verified_until=now()+interval '1 day',lifetime_micro_usd=1000000,reserved_micro_usd=0,input_price=1000000,output_price=1000000,daily_turn_cap=100;`);
+ const start=await Promise.all(Array.from({length:8},(_,i)=>op(1,'start',100+i,",p_direction=>'ko-ja',p_model=>'test'")));
+ assert.equal(start.filter(r=>r.sessionId).length,1);assert.equal(start.filter(r=>r.error==='session_active').length,7);
+ const active=start.find(r=>r.sessionId).sessionId;
+ await sql(`update public.voice_conversation_sessions set started_at=now()-interval '120 seconds',deadline=now()+interval '480 seconds' where id='${active}';`);
+ let r=JSON.parse(await sql(`select public.voice_conversation_op('${id(1)}','end','${active}');`));assert.ok(r.remainingSeconds>=478&&r.remainingSeconds<=480);
+ r=await op(1,'start',200,",p_direction=>'ja-ko',p_model=>'test'");assert.ok(r.remainingSeconds<=480);assert.ok(r.remainingSeconds>475);
+ const reserve=()=>op(1,'reserve',200,`,p_direction=>'ja-ko',p_request=>'${id(300)}',p_hash=>'fingerprint',p_model=>'test',p_input=>1000`);
+ const reserved=await Promise.all(Array.from({length:8},reserve));assert.equal(reserved.filter(r=>r.reserved).length,1);
+ await op(1,'finish',200,`,p_direction=>'ja-ko',p_request=>'${id(300)}',p_hash=>'fingerprint',p_model=>'test',p_reply=>'{"text":"안녕하세요","meaning":"こんにちは"}'`);
+ assert.equal((await reserve()).cached,true);assert.equal(await sql('select reserved_micro_usd from public.voice_conversation_budget;'),'1800');
+ r=await op(2,'reserve',200,`,p_direction=>'ja-ko',p_request=>'${id(300)}',p_hash=>'fingerprint',p_model=>'test',p_input=>1000`);assert.equal(r.error,'session_expired');
+ await sql(`update public.voice_conversation_sessions set started_at=now()-interval '600 seconds',deadline=now()-interval '1 second' where id='${id(200)}';`);
+ assert.equal((await op(1,'status',null,",p_model=>'test'")).remainingSeconds,0);assert.equal((await op(1,'start',201,",p_direction=>'ko-ja',p_model=>'test'")).error,'daily_limit');
+ await sql(`update public.voice_conversation_days set day=day-1 where user_id='${id(1)}';`);
+ assert.equal((await op(1,'status',null,",p_model=>'test'")).remainingSeconds,600);
+ await op(1,'start',202,",p_direction=>'ko-ja',p_model=>'test'");await sql('update public.voice_conversation_budget set daily_turn_cap=1;');
+ assert.equal((await op(1,'reserve',202,`,p_direction=>'ko-ja',p_request=>'${id(302)}',p_hash=>'second',p_model=>'test',p_input=>1000`)).error,'in_progress');
+ await sql(`update public.voice_conversation_requests set created_at=now()-interval '10 seconds';`);
+ assert.equal((await op(1,'reserve',202,`,p_direction=>'ko-ja',p_request=>'${id(302)}',p_hash=>'second',p_model=>'test',p_input=>1000`)).error,'capacity_limit');
+ await sql(`update public.voice_conversation_budget set daily_turn_cap=100;`);
+ // Cancellation can overtake a start and must prevent a late orphan session.
+ await op(2,'end',204);assert.equal((await op(2,'start',204,",p_direction=>'ko-ja',p_model=>'test'")).error,'session_expired');
+ await op(2,'start',206,",p_direction=>'ko-ja',p_model=>'test'");
+ assert.ok((await op(2,'heartbeat',206,",p_direction=>'ko-ja',p_model=>'test'")).remainingSeconds>590);
+ // App disappeared after one minute. Charge only activity plus 35s grace.
+ await sql(`update public.voice_conversation_sessions set started_at=now()-interval '360 seconds',last_activity_at=now()-interval '300 seconds',deadline=now()+interval '240 seconds' where id='${id(206)}';`);
+ const recovered=await op(2,'status',null,",p_model=>'test'");assert.ok(recovered.remainingSeconds>=503&&recovered.remainingSeconds<=505);
+ await sql(`update public.voice_conversation_budget set verified_until=now()-interval '1 second';`);
+ assert.equal((await op(2,'start',205,",p_direction=>'ko-ja',p_model=>'test'")).error,'unavailable');
+ await assert.rejects(sql(`set role authenticated;select public.voice_conversation_op('${id(1)}','status');`),/permission denied/);
+ await assert.rejects(sql('set role anon;select * from public.voice_conversation_days;'),/permission denied/);
+ assert.equal(await sql("select count(*) from pg_class where relname like 'voice_conversation_%' and relkind='r' and not relrowsecurity;"),'0');
+});

@@ -20,3 +20,5 @@
 html[lang=ja] .map-title,html[lang=ja] .setting,html[lang=ja] .home-start-card .home-card-title{word-break:normal;line-break:strict}
 
 .usage-notice{border-top:1px solid var(--line);margin-top:16px;padding-top:8px;overflow-wrap:anywhere}.usage-notice summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-size:16px}.usage-notice summary::after{content:"+";margin-left:auto}.usage-notice[open] summary::after{content:"−"}.usage-notice h3{font-size:15px;margin:12px 0 8px}.usage-notice p{font-size:14px;line-height:1.6;color:var(--muted)}.usage-notice a{color:var(--amber-light);display:inline-block;padding-block:8px}
+
+.tabs [data-action=community]{position:relative}.tab-unread{position:absolute;top:7px;left:calc(50% + 10px);width:7px;height:7px;border-radius:50%;background:var(--amber);pointer-events:none}

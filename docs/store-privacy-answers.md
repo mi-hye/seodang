@@ -1,3 +1,13 @@
+## 2026-11-06 push notification release gate — not submitted to stores
+
+- Before enabling `prototype/src/message-push-config.js`, publish the updated public policy and update both store consoles. Local policy files are prepared; the public URL and store declarations are not updated by these file edits. Installed builds and the server worker are not disabled by the local config flag.
+- Optional message notifications: APNs/FCM registration token, random installation ID, community user ID, platform, notification locale and last refresh timestamp; linked to the community account. Purpose: app functionality/new-message delivery. No advertising or cross-app tracking.
+- Apple: review **Identifiers → Device ID** for notification/installation identifiers, linked to user, app functionality (separate from analytics use). Google: review **Device or other IDs**, collected optionally, for app functionality. Assess provider processing under each console's service-provider definitions; do not label delivery as advertising sharing.
+- Delivery uses Apple APNs / Google FCM. Payload contains generic notification text and room/message IDs, not message body or nickname. Server registration data is held by Supabase in Mumbai. Provider processing may include the US; see the policy's provider links.
+- OS permission is requested on first eligible conversation entry; denied users get a settings hint once. In-app opt-out removes server registration; OS revocation is detected on a later app startup/resume. Offline failures may delay deletion.
+- A token not refreshed for 90 days is excluded from new deliveries, not automatically deleted. Outbox entries older than 7 days are deleted on the next delivery-result processing call; this is not a guaranteed 7-day maximum. Account deletion cascades to token/outbox records.
+- Numeric release version has not been changed or assumed: local app metadata is 1.2.5 while prior store work references later versions. Policy applicability is explicitly the build including message notifications. Set the actual release version/date in the release workflow.
+
 # Store privacy — 1.2.0
 
 2026-10-19. Capacitor application in prototype/. This is an implementation inventory for truthful store declarations, not proof that the consoles have been updated.

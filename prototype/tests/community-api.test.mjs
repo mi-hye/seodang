@@ -57,3 +57,22 @@ test('private photo cache is reused and cleared by blocks, removal and account d
  await api.removePhotos([path]);await api.downloadPhoto(path);assert.equal(downloads,3);
  await api.deleteAccount();await assert.rejects(api.downloadPhoto(path),/device_session_required/);assert.equal(downloads,3);
 });
+test('conversation RPC authenticates, limits its scope and preserves microsecond cursors',async()=>{
+ const calls=[],api=createCommunityAPI({config,storage:storage(session()),fetcher:async(url,opts)=>{calls.push({url,opts});return response([]);}});
+ await api.conversations(50,user);await api.match('start',{id:user,body:'hello'});await api.conversationMessages(user,{id:user,created_at:'2026-11-05T10:20:30.123456+00:00'});
+ assert.deepEqual(JSON.parse(calls[0].opts.body),{p_offset:50,p_room:user});assert.deepEqual(JSON.parse(calls[1].opts.body),{p_action:'start',p_request:user,p_body:'hello'});
+ assert.ok(calls.every(c=>c.opts.headers.Authorization==='Bearer access'));assert.match(decodeURIComponent(calls[2].url),/created_at.lt.2026-11-05T10:20:30.123456\+00:00/);
+ assert.throws(()=>api.conversationMessages(user,{id:user,created_at:'2026-11-05&select=*'}),/invalid_cursor/);
+});
+test('message and unread clients coordinate token refresh and adopt stored rotation',async()=>{
+ const s=storage(session(true));let refreshed=0;const fetcher=async(url,opts)=>{if(url.includes('/token?')){refreshed++;await new Promise(r=>setTimeout(r,5));return response({...session(),access_token:'new-access',refresh_token:'new-refresh'});}assert.equal(opts.headers.Authorization,'Bearer new-access');return response([]);};
+ const first=createCommunityAPI({config,storage:s,fetcher}),second=createCommunityAPI({config,storage:s,fetcher}),inactive=createCommunityAPI({config,storage:s,fetcher});
+ await Promise.all([first.conversations(),second.unread()]);assert.equal(refreshed,1);await first.conversations();assert.equal(refreshed,1);
+ await inactive.conversations();assert.equal(refreshed,1);
+});
+test('failed stale refresh cannot erase a newer session written by another client',async()=>{
+ const s=storage(session(true));const api=createCommunityAPI({config,storage:s,fetcher:async(url,opts)=>{
+  if(url.includes('/token?')){s.setItem(SESSION_KEY,JSON.stringify({...session(),access_token:'rotated-access',refresh_token:'rotated-refresh'}));return response({message:'already used'},400);}
+  assert.equal(opts.headers.Authorization,'Bearer rotated-access');return response([]);
+ }});await api.conversations();assert.equal(JSON.parse(s.getItem(SESSION_KEY)).refresh_token,'rotated-refresh');assert.equal(api.session.access_token,'rotated-access');
+});

@@ -96,3 +96,11 @@ yarn-error.*
 /prototype/test-results/
 /prototype/_workspace/
 /prototype/audio-review/
+
+# Public Firebase client configuration is required by the native app build.
+!/prototype/android/app/google-services.json
+!/prototype/ios/App/App/GoogleService-Info.plist
+# Private server credentials are never app build inputs.
+**/*firebase-adminsdk*.json
+**/*service-account*.json
+**/seodang-8641a-*.json

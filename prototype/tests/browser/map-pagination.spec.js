@@ -29,7 +29,7 @@ for(const direction of ['ko-ja','ja-ko'])for(const width of [320,390])test(`lazy
  await wheelIntent(page,-80);await expect(pages).toHaveCount(2);
  expect(Math.abs((await overview.boundingBox()).y-before.y)).toBeLessThan(2);
  expect(await anchor.evaluate(e=>e===window.mapAnchor)).toBe(true);
- expect((await collectMapLessons(page)).map(l=>l.number)).toEqual(Array.from({length:20},(_,i)=>i+1));
+ expect((await collectMapLessons(page)).map(l=>l.number)).toEqual(Array.from({length:direction==='ja-ko'?26:20},(_,i)=>i+1));
  await scrollMapSection(page,0);await wheelIntent(page,-80);await expect(pages).toHaveCount(2);
  await page.locator('[data-action="map-locate"]').click();await expect(anchor).toBeFocused();
  const located=await anchor.boundingBox();expect(located.y).toBeGreaterThan(64);expect(located.y+located.height).toBeLessThan(640);
@@ -39,9 +39,11 @@ for(const direction of ['ko-ja','ja-ko'])for(const width of [320,390])test(`lazy
 for(const direction of ['ko-ja','ja-ko'])test(`lazy append ${direction}: downwards input adds next section once`,async({page})=>{
  await setup(page,direction,390);
  const pages=page.locator('[data-map-page]');await expect(pages).toHaveCount(1);await expect(pages).toHaveAttribute('data-map-page','0');
+ await expect(pages.locator('.map-stop').last().locator('.map-trail')).toBeHidden();
  await page.evaluate(()=>{window.firstMapNode=document.querySelector('.map-choice');scrollTo(0,document.documentElement.scrollHeight);});
  await expect(pages).toHaveCount(1);const before=await page.locator('.map-choice').nth(9).boundingBox();
  await wheelIntent(page,100);await expect(pages).toHaveCount(2);
+ await expect(pages.first().locator('.map-stop').last().locator('.map-trail')).toBeVisible();
  expect(Math.abs((await page.locator('.map-choice').nth(9).boundingBox()).y-before.y)).toBeLessThan(2);
  expect(await page.evaluate(()=>window.firstMapNode===document.querySelector('.map-choice'))).toBe(true);
  await page.evaluate(()=>scrollTo(0,document.documentElement.scrollHeight));await wheelIntent(page,100);await expect(pages).toHaveCount(2);
@@ -99,7 +101,7 @@ test('prepending while overview is offscreen preserves the visible lesson positi
  await expect(page.locator('[data-map-page="0"] .map-stop').last().locator('.map-trail')).toBeVisible();
 });
 
-const cases=[['ko-ja','course3-8',4,'video','scene-jp3-9'],['ja-ko','course3-8',4,'video','scene-ko3-9'],['ko-ja','course4-11',5,'video','scene-jp4-12'],['ja-ko','course4-17',5,'video','scene-ko4-18'],['ko-ja','course5-16',7,'scenario','course5-17'],['ko-ja','course5-17',7,'video','scene-jp5-18']];
+const cases=[['ko-ja','course3-8',4,'video','scene-jp3-9'],['ja-ko','course3-8',4,'korean','25-5'],['ko-ja','course4-11',5,'video','scene-jp4-12'],['ja-ko','course4-17',5,'video','scene-ko4-18'],['ko-ja','course5-16',7,'scenario','course5-17'],['ko-ja','course5-17',7,'video','scene-jp5-18']];
 for(const [direction,id,level,nextKind,nextId]of cases)test(`completion follows map ${direction} ${id}`,async({page})=>{
  await prepareCourseExpansion(id);const progressKey=`${direction}:scenario:${id}`,tasks=courseExpansionReview(progressKey),last=tasks.at(-1);
  const scenarios={[progressKey]:{...freshScenario(id),started:true,phase:'quiz',index:2,checked:true,selected:0}},practices={[progressKey]:{version:1,caseVersion:1,count:6,index:5,round:0,mode:0,action:{type:'scenario-next'}}};
@@ -110,4 +112,13 @@ for(const [direction,id,level,nextKind,nextId]of cases)test(`completion follows 
  await expect(next).toHaveText(nextKind?(direction==='ja-ko'?'次のレッスン':'다음 수업'):(direction==='ja-ko'?'学習ホームへ':'학습 홈으로'));
  await next.click();await expect(page.locator(`.view-${nextKind==='video'?'scenario':nextKind||'home'}`)).toBeVisible();
  if(nextKind)await expect.poll(async()=>{const state=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);return nextKind==='korean'?state.korean.active:nextKind==='expert'?state.expertActive:nextKind==='video'?state.videoActive:state.scenarioActive;}).toBe(nextId);
+});
+
+test('route continues across sections without chapter UI at 320px',async({page})=>{
+ await setup(page,'ja-ko',320,{onboardingLevel:5,...resume('ja-ko','course4-11')});
+ await expect(page.locator('[data-map-page]')).toHaveAttribute('data-map-page','1');await wheelIntent(page,-80);await expect(page.locator('[data-map-page]')).toHaveCount(2);
+ const section=page.locator('[data-map-page="1"]');
+ await expect(page.locator('.map-chapter,[data-map-toggle]')).toHaveCount(0);
+ await expect(page.locator('[data-map-page="0"] .map-stop').last().locator('.map-trail')).toBeVisible();
+ await section.locator('.map-choice').first().scrollIntoViewIfNeeded();await page.screenshot({path:`output/map-continuous-${test.info().project.name}.png`});
 });
