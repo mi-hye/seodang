@@ -43,7 +43,7 @@ for(const kind of ['video','song'])for(const direction of ['ko-ja','ja-ko']){
   await page.setViewportSize({width:390,height:844});
   await page.addInitScript(s=>{
    localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));
-   localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:true,consent_version:3,queue:[]}));
+   localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:true,consent_version:4,queue:[]}));
   },{...freshState(),onboarded:true,onboardingLevel:lesson.level,courseDirection:direction,koreanGuideSeenVersion:1,settings:{sound:false,motion:'off',textScale:1,audioRate:1}});
   // The local server enables preview songs; the production release gate is untouched.
   await page.goto('/playable.html');
@@ -61,7 +61,7 @@ for(const kind of ['video','song'])for(const direction of ['ko-ja','ja-ko']){
   const phases=kind==='video'?['watch','meaning','learn','use','done']:['listen','gap','learn','apply','encore','done'];
   expect(new Set(events.map(e=>e.properties.phase))).toEqual(new Set(phases));
   for(const e of events){
-   expect(e.properties).toMatchObject({lesson_id:key,course_direction:direction,client:'seodang-capacitor',environment:'development',schema_version:3});
+   expect(e.properties).toMatchObject({lesson_id:key,course_direction:direction,client:'seodang-capacitor',environment:'development',schema_version:4});
    expect(starts.some(start=>start.properties.attempt_id===e.properties.attempt_id)).toBe(true);
    for(const name of ['answer','lyrics','target','translation','quote','selected','position','_selected','_checked','_retry'])expect(e.properties).not.toHaveProperty(name);
   }

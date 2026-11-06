@@ -37,7 +37,7 @@ not mapped onto unrelated new lessons. Existing prototype saves continue to use
 `seodang.web-prototype.v1`, but a separately installed `.prototype` app has a different
 container and is not the store app.
 
-The replacement has no ads or subscriptions. Version 1.2.0 adds device-bound community accounts, posts/photos, corrections and accepted private conversations. Optional analytics consent v3 includes Android Play install attribution; iOS attribution is unsupported. Update store privacy and UGC declarations for this release.
+The replacement has no ads or subscriptions. Version 1.2.0 adds device-bound community accounts, posts/photos, corrections and accepted private conversations. Optional analytics consent v4 includes Android Play install attribution and allowlisted feature outcomes, timing and error categories; iOS attribution is unsupported. Previous participants must accept the expanded scope before collection resumes. See `feature-logs.md`. Update store privacy and UGC declarations for this release.
 Store listing screenshots and privacy disclosures should reflect the new app.
 EAS iOS submission uploads to App Store Connect; review submission and public
 release are separate steps. Check each console for the final review/release state.

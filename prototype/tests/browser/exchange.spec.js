@@ -379,3 +379,18 @@ for(const width of [320,390])test(`nickname keyboard does not lift the profile g
  await page.evaluate(()=>{window.profileKeyboardInset=0;window.dispatchEvent(new Event('keyboardDidHide'));});
  expect(Math.abs((await guide.boundingBox()).y-before.y)).toBeLessThanOrEqual(1);
 });
+
+
+test('operation logs distinguish failed reply and retry without message or account data',async({page})=>{
+ const c=await setup(page,{existing:true}),batches=[];
+ await page.route('https://us.i.posthog.com/batch/',async r=>{batches.push(...r.request().postDataJSON().batch);await r.fulfill({json:{status:1}});});
+ await page.evaluate(async()=>{const {analytics}=await import('/src/analytics.js');analytics.setConsent(true);});
+ await page.locator('[data-exchange=room]').click();c.failSend=true;
+ await page.locator('[name=body]').fill('private-message-for-telemetry-test');await page.locator('.exchange-send').click();
+ await expect(page.locator('[data-exchange=retry-message]')).toBeVisible();await page.locator('[data-exchange=retry-message]').click();await expect(page.locator('.exchange-outbox')).toBeEmpty();
+ await page.evaluate(async()=>{const {analytics}=await import('/src/analytics.js');await analytics.flush();});
+ const events=batches.filter(e=>e.event==='feature_operation'&&e.properties.operation==='message_send');
+ expect(events.map(e=>e.properties.result)).toEqual(['started','failed','started','succeeded']);
+ expect(events[1].properties.error_code).toBe('unavailable');expect(events[0].properties.operation_id).not.toBe(events[2].properties.operation_id);
+ const log=JSON.stringify(batches);for(const privateValue of ['private-message-for-telemetry-test',id,other,rid,mid,'서당친구'])expect(log).not.toContain(privateValue);
+});

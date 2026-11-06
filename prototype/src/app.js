@@ -6,7 +6,7 @@ import {recordStudyCompletion} from './study-state.js';
 import {videoLesson,videoProgress,resumeVideoLesson,lessonNumberWithVideo} from './video-lesson-state.js';
 import {expertCatalog,expertProgress} from './expert-state.js';
 import {scenarioProgress,scenarioLessons,scenarioTitle,scenarioAvailable} from './scenario-state.js';
-import {analytics,openAnalytics} from './analytics.js';
+import {analytics,openAnalytics,operations} from './analytics.js';
 import {learningSnapshot,createLearningTracker} from './analytics-learning.js';
 const learningTracker=createLearningTracker(analytics);
 learningTracker.visibility(!document.hidden);
@@ -476,10 +476,10 @@ function render(scroll = false) {
   if(pendingPractice())disposePractice=practiceModule.mountPractice(app,state,view,{play:(entry,onError)=>player.play(entry,true,onError),stop:()=>player.stop(),onAnswer:correct=>learningTracker.answer(correct),advance:finishPracticeStep});
   if(!completedKind&&!pendingPractice()&&view==='basic'&&basicProgress(state,state.basics.active).phase==='write')disposePractice=practiceModule.mountPractice(app,basicModule.basicWritingState(state),'basic',{play:(entry,onError)=>player.play(entry,true,onError),stop:()=>player.stop(),advance:()=>{player.stop();commit({type:'basic-next'});if(basicProgress(state,state.basics.active).phase==='done')completedKind='basic';render(true);if(!completedKind&&!pendingPractice())speakBasic();}});
   if(!completedKind&&!pendingPractice()&&view === "korean")disposeKoreanWriting=koreanModule.mountKoreanWriting(app);
-  if(view==='expert'&&expertProgress(state).phase==='speak')disposeSpeaking=expertModule.mountExpertSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'expert-next'});render(true);}});
-  if(!pendingPractice()&&view==='scenario'&&scenarioProgress(state).phase==='speak')disposeSpeaking=scenarioModule.mountScenarioSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'scenario-speak-next'});render(true);speakScenario();}});
-  if(!pendingPractice()&&view==='sentence'&&sentenceProgress(state).phase==='speak')disposeSpeaking=sentenceModule.mountSentenceSpeaking(app,{stop:()=>player.stop(),advance:()=>{commit({type:'sentence-speak-next'});render(true);speakSentence();}});
-  if(!pendingPractice()&&view==='korean'&&koreanProgress(state,state.korean.active).phase==='speak')disposeSpeaking=(isPronunciationCourse(state.korean.active)?koreanModule.mountPronunciationSpeaking:koreanModule.mountKoreanSpeaking)(app,{stop:()=>player.stop(),advance:()=>{commit({type:'korean-speak-next'});if(isPronunciationCourse(state.korean.active)&&koreanProgress(state,state.korean.active).phase==='done')completedKind='korean';render(true);if(!completedKind)speakKorean();}});
+  if(view==='expert'&&expertProgress(state).phase==='speak')disposeSpeaking=expertModule.mountExpertSpeaking(app,{observe:()=>operations.start('speech_recognition',learningSnapshot(state,view)||{}),stop:()=>player.stop(),advance:()=>{commit({type:'expert-next'});render(true);}});
+  if(!pendingPractice()&&view==='scenario'&&scenarioProgress(state).phase==='speak')disposeSpeaking=scenarioModule.mountScenarioSpeaking(app,{observe:()=>operations.start('speech_recognition',learningSnapshot(state,view)||{}),stop:()=>player.stop(),advance:()=>{commit({type:'scenario-speak-next'});render(true);speakScenario();}});
+  if(!pendingPractice()&&view==='sentence'&&sentenceProgress(state).phase==='speak')disposeSpeaking=sentenceModule.mountSentenceSpeaking(app,{observe:()=>operations.start('speech_recognition',learningSnapshot(state,view)||{}),stop:()=>player.stop(),advance:()=>{commit({type:'sentence-speak-next'});render(true);speakSentence();}});
+  if(!pendingPractice()&&view==='korean'&&koreanProgress(state,state.korean.active).phase==='speak')disposeSpeaking=(isPronunciationCourse(state.korean.active)?koreanModule.mountPronunciationSpeaking:koreanModule.mountKoreanSpeaking)(app,{observe:()=>operations.start('speech_recognition',learningSnapshot(state,view)||{}),stop:()=>player.stop(),advance:()=>{commit({type:'korean-speak-next'});if(isPronunciationCourse(state.korean.active)&&koreanProgress(state,state.korean.active).phase==='done')completedKind='korean';render(true);if(!completedKind)speakKorean();}});
   if (!completedKind&&!pendingPractice()&&view === "kana") {
     disposeWriting = kanaModule.mountWriting(app);
     disposeMatching = kanaModule.mountMatching(app, ({keyboard,...action})=>{
@@ -1102,4 +1102,11 @@ installAndroidBack(()=>{
 
 if(state.onboarded&&!needsKoreanGuide){
  openAnalytics(state);learningTracker.enter(learningSnapshot(state,view));
+}
+
+// Ask previous participants once before collecting the expanded diagnostics.
+if(state.onboarded&&!needsKoreanGuide&&analytics.needsRenewal){
+ void import('./analytics-consent.js').then(async({askAnalyticsConsent})=>{
+  await askAnalyticsConsent(state);openAnalytics(state);learningTracker.enter(learningSnapshot(state,view));
+ }).catch(()=>{});
 }

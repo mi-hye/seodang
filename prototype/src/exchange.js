@@ -1,3 +1,4 @@
+import {operations} from './analytics.js';
 import {mountPullRefresh} from './exchange-pull-refresh.js';
 import {esc,icon,phraseText} from './ui.js';
 import {showSheet,closeSheet} from './sheet.js';
@@ -7,6 +8,7 @@ import {getMessagePush} from './message-push.js';
 import {exchangeCopy,reportReasons} from './exchange-copy.js';
 let sharedAPI;
 export function mountCommunity(host,state,{api=(sharedAPI ||= createCommunityAPI()),initialScreen='inbox',initialRoom=null,pollMs=10000}={}){
+ const track=(name,work,result)=>operations.run(name,{course_direction:state.courseDirection},work,result);
  const locale=japaneseLessonUI(state)?'ja':'ko',t=exchangeCopy(locale),me=()=>api.session?.user?.id;
  // Keep the iOS page full size; lift only the reply dock by the OS keyboard height.
  // Web/Android retain visualViewport fallback.
@@ -116,13 +118,37 @@ export function mountCommunity(host,state,{api=(sharedAPI ||= createCommunityAPI
  function friendly(e){if(/match_daily_limit/.test(e.message))return t('limit');if(/community_rate_limit/.test(e.message)||e.status===429)return t('rate');if(e.status===403||e.code==='42501')return t('unavailable');return t('failed');}
  async function run(fn,{showLoading=false}={}){if(busy||!live)return;busy=true;epoch++;error='';notice='';const previous=screen,wasWriting=writingScreen(),wasEditing=!!profile&&!!profileDraft;if(showLoading){loading=true;draw();}firstSend.disabled=true;firstSend.setAttribute('aria-busy','true');if(screen==='compose')firstSend.textContent=t('sending');backButton.disabled=true;host.querySelectorAll('input,select,textarea,button').forEach(x=>x.disabled=true);try{await fn();}catch(e){if(live)error=friendly(e);}finally{busy=false;if(showLoading)loading=false;if(live){draw();if(screen==='profile'&&profile){if(profileDraft&&!wasEditing){const field=host.querySelector('[name=nickname]');field?.focus();field?.select();}else if(wasEditing&&!profileDraft)host.querySelector('[data-exchange=edit-profile]')?.focus({preventScroll:true});}if(screen!==previous){scrollWindow(wasWriting&&screen==='inbox'?inboxScroll:0);if(screen==='compose')host.querySelector('[name=body]')?.focus({preventScroll:true});if(wasWriting&&screen==='inbox')host.querySelector('[data-exchange=new],[data-exchange=cancel]')?.focus({preventScroll:true});}if(screen==='chat'&&screen!==previous)bottom();void askNotifications();}}}
  async function refreshList(){const [list,status]=await Promise.all([api.conversations(),api.match('status')]);if(!live)return;rooms=list;roomMore=list.length===50;pending=status.pending;if(pending&&pending.id===draft('new').id)saveDraft({body:''},'new');}
- async function openRoom(id){const target=(await api.conversations(0,id))[0];if(!live)return;if(!target){notice=t('unavailable');screen='inbox';return;}const latest=target.status==='accepted'?await api.conversationMessages(id):[];if(!live)return;room=target;screen='chat';messages=latest.reverse();more=latest.length===50;if(room.status==='accepted'){const queued=draft('outbox:'+id);if(messages.some(m=>m.id===queued.id))saveDraft({body:''},'outbox:'+id);await markRead();}}
+ async function openRoom(id){
+  const log=operations.start('conversation_open',{course_direction:state.courseDirection});
+  try{
+   const target=(await api.conversations(0,id))[0];if(!live){log.finish('cancelled');return;}
+   if(!target){log.fail({code:'conversation_unavailable'});notice=t('unavailable');screen='inbox';return;}
+   const latest=target.status==='accepted'?await api.conversationMessages(id):[];
+   if(!live){log.finish('cancelled');return;}
+   room=target;screen='chat';messages=latest.reverse();more=latest.length===50;
+   if(room.status==='accepted'){const queued=draft('outbox:'+id);if(messages.some(m=>m.id===queued.id))saveDraft({body:''},'outbox:'+id);await markRead();}
+   log.finish();
+  }catch(e){log.fail(e);throw e;}
+ }
+
  async function markRead(){if(!live||document.hidden||screen!=='chat'||!messages.length)return;await api.match('read',{message:messages.at(-1).id});if(room){room.unread=0;window.dispatchEvent(new CustomEvent('seodang:message-read',{detail:{room_id:room.id}}));}window.dispatchEvent(new Event('seodang:conversation-change'));}
  // WKWebView can keep an out-of-range programmatic offset even for a short page.
  const scrollLimit=()=>{const root=document.scrollingElement||document.documentElement;return Math.max(0,root.scrollHeight-root.clientHeight);};
  function scrollWindow(y){window.scrollTo(0,Math.min(scrollLimit(),Math.max(0,y)));}
  function bottom(){requestAnimationFrame(()=>{if(live&&screen==='chat')scrollWindow(scrollLimit());});}
- async function initialize(){loading=true;draw();try{await api.ensureDeviceSession();await api.verify();const p=await api.profile();if(!live)return;profile=p;window.dispatchEvent(new Event('seodang:conversation-change'));if(profile){void push.sync(locale);await refreshList();if(initialRoom){const id=initialRoom;initialRoom=null;await openRoom(id);}}}catch(e){if(live)error=friendly(e);}finally{loading=false;draw();void askNotifications();}}
+ async function initialize(){
+  loading=true;draw();const log=operations.start('conversation_load',{course_direction:state.courseDirection});
+  try{
+   await api.ensureDeviceSession();await api.verify();const p=await api.profile();
+   if(!live){log.finish('cancelled');return;}
+   profile=p;window.dispatchEvent(new Event('seodang:conversation-change'));
+   if(profile){void push.sync(locale);await refreshList();}
+   log.finish(live?'succeeded':'cancelled');
+   if(live&&initialRoom){const id=initialRoom;initialRoom=null;await openRoom(id);}
+  }catch(e){log.fail(e);if(live)error=friendly(e);}
+  finally{loading=false;draw();void askNotifications();}
+ }
+
  async function action(a,id){
   if(a==='notifications-on'){await push.enable(locale);return;}
   if(a==='notifications-off'){await push.disable();return;}
@@ -145,7 +171,7 @@ export function mountCommunity(host,state,{api=(sharedAPI ||= createCommunityAPI
   if(a==='delete'){if(!window.confirm(t('deleteConfirm')))return;const owner=me();await api.deleteAccount();try{Object.keys(localStorage).filter(k=>k.startsWith(`seodang.exchange.draft.${owner}.`)).forEach(k=>localStorage.removeItem(k));}catch{}profile=null;rooms=[];messages=[];pending=null;room=null;drafts.clear();screen='inbox';await initialize();}
  }
  async function submit(kind,data){
-  if(kind==='profile'){const existing=!!profile,nickname=String(data.get('nickname')||'').trim();if(!validText(nickname,20)||nickname.length<2)return;profile=await api.saveProfile({nickname,...matchingLanguages,bio:profile?.bio||'',rules_version:1});profileDraft=null;await refreshList();screen=existing?'profile':startAfterProfile&&!pending?'compose':'inbox';startAfterProfile=false;notice=screen!=='compose'?t('saved'):'';return;}
+  if(kind==='profile'){const existing=!!profile,nickname=String(data.get('nickname')||'').trim();if(!validText(nickname,20)||nickname.length<2)return;profile=await track('profile_save',()=>api.saveProfile({nickname,...matchingLanguages,bio:profile?.bio||'',rules_version:1}));profileDraft=null;await refreshList();screen=existing?'profile':startAfterProfile&&!pending?'compose':'inbox';startAfterProfile=false;notice=screen!=='compose'?t('saved'):'';return;}
   if(kind==='report'){await api.report({reported_user_id:room.peer.id,message_id:data.get('message_id'),reason:data.get('reason')});screen='chat';notice=t('reported');return;}
   const key=draftKey(),d=draft(key),body=String(data.get('body')||'').trim();if(!validText(body,1000))return;
   const payload={body,id:d.id||crypto.randomUUID()};saveDraft(payload,key);
@@ -156,7 +182,7 @@ export function mountCommunity(host,state,{api=(sharedAPI ||= createCommunityAPI
     profile=await api.saveProfile({nickname:profile.nickname,...matchingLanguages,bio:profile.bio||'',rules_version:profile.rules_version||1});
     if(!live)return;
    }
-   const result=await api.match('start',payload);
+   const result=await track('conversation_match',()=>api.match('start',payload),value=>value.status==='waiting'?'waiting':value.status==='cancelled'?'cancelled':'succeeded');
    if(result.status==='cancelled'){saveDraft({body},key);notice=t('cancelled');return;}
    saveDraft({body:''},key);await refreshList();screen='inbox';if(result.status==='matched')await openRoom(result.room_id);
   }catch(e){if(/already_waiting/.test(e.message)){await refreshList();screen='inbox';notice=t('waiting');}else throw e;}
@@ -173,7 +199,7 @@ export function mountCommunity(host,state,{api=(sharedAPI ||= createCommunityAPI
   busy=true;epoch++;error='';notice='';const send=host.querySelector('.exchange-send');send.disabled=true;send.setAttribute('aria-busy','true');
   showFeedback();updateOutbox();resize();position();bottom();
   try{
-   const sent=await api.message(payload);saveDraft({body:''},outboxKey);
+   const sent=await track('message_send',()=>api.message(payload));saveDraft({body:''},outboxKey);
    if(!live||room?.id!==key)return;
    messages=[...new Map([...messages,sent].map(m=>[m.id,m])).values()];updateLog();updateOutbox();
    bottom();await markRead().catch(()=>{});
@@ -223,9 +249,9 @@ export function mountCommunity(host,state,{api=(sharedAPI ||= createCommunityAPI
   if(busy||!live)return;busy=true;epoch++;error='';notice='';
   let redraw=false;const previous=screen,id=room?.id,offset=Math.max(0,window.scrollY);updateSendButton();showFeedback();
   try{
-   if(screen==='inbox'){await refreshList();redraw=true;}
+   if(screen==='inbox'){await track('conversation_refresh',()=>refreshList());redraw=true;}
    else{
-    const [list,latest]=await Promise.all([api.conversations(0,id),api.conversationMessages(id)]);
+    const [list,latest]=await track('conversation_refresh',()=>Promise.all([api.conversations(0,id),api.conversationMessages(id)]));
     if(!live)return;const current=list.find(r=>r.id===id);
     if(!current){screen='inbox';room=null;messages=[];await refreshList();notice=t('unavailable');redraw=true;return;}
     const changed=room.status!==current.status;room=current;
