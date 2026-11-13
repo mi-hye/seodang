@@ -55,3 +55,5 @@ html[data-input-modality=pointer] .option:has(input:focus-visible){outline:none!
 
 .app-header .app-header-letters{margin-left:auto}.app-header .app-header-letters + .app-header-settings{margin-left:0}
 .app-header-letter-tile{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;width:26px;height:26px;flex:none;border:1.5px solid currentColor;border-radius:5px;font-family:inherit;font-size:18px;font-weight:600;line-height:1;letter-spacing:0}
+
+.audio-rate-trigger{display:grid;place-items:center;flex:none;width:44px;min-width:44px;min-height:44px;height:44px;margin:0;padding:9px;border:0;border-radius:8px;background:transparent;color:var(--text);cursor:pointer}.audio-rate-trigger svg{width:26px;height:26px}.app-header>.audio-rate-trigger{margin-left:auto}.app-header>.audio-rate-trigger+.app-header-settings,.app-header>.audio-rate-trigger+.app-header-letters{margin-left:0}.panel-head .audio-rate-trigger{color:var(--ink);margin-left:auto}.audio-rate-trigger:focus-visible{outline:2px solid var(--amber);outline-offset:2px}

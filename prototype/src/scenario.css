@@ -17,7 +17,7 @@
 .scenario-choices button{display:block}
 .view-scenario .toast{pointer-events:none}
 
-.scenario-page .passage-speed{display:grid;gap:8px;font-size:14px;color:var(--muted)}.scenario-page .passage-speed input{width:100%;min-height:44px;margin:0}
+
 
 .scenario-page.scenario-illustrated{justify-content:flex-start;gap:12px;padding-top:12px}
 .scenario-illustrated .scenario-image{flex:none;height:clamp(88px,16svh,140px)}

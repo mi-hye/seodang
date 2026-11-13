@@ -1,3 +1,4 @@
+import {chooseAudioRate} from './audio-rate-fixture.js';
 import {test,expect} from '@playwright/test';
 import {freshState} from '../../src/engine.js';
 import {openMapLesson,collectMapLessons} from './learning-map-fixture.js';
@@ -30,7 +31,7 @@ for(const direction of ['ko-ja','ja-ko'])test(`level four reading playback contr
  await useCatalogWithoutPacks(page);await page.goto('/playable.html');const kind=direction==='ko-ja'?'reading':'korean';await openMapLesson(page,{kind,id:kind==='reading'?5:'5-1'});await page.locator(`[data-action="${kind}-next"]`).click();
  const row=page.locator('.reading-document .audio-text-row'),sound=row.locator('button');await expect(sound).toHaveCount(1);await expect(sound).toHaveAttribute('data-action',`${kind}-audio`);
  const boxes=await row.evaluate(e=>({label:e.querySelector('h2').getBoundingClientRect().right,sound:e.querySelector('button').getBoundingClientRect().left}));expect(boxes.sound).toBeGreaterThanOrEqual(boxes.label);
- const speed=page.locator('.reading-playback input');await expect(speed).toBeHidden();await page.locator('.reading-playback summary').click();await expect(speed).toBeVisible();await speed.fill('0.8');await speed.dispatchEvent('change');
+ const speed=page.locator('.app-header [data-audio-rate]');await expect(speed).toBeVisible();await chooseAudioRate(page,speed,0.8);await expect(page.locator('.reading-playback summary')).toHaveCount(0);
  await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('seodang.web-prototype.v1')).settings.audioRate)).toBe(0.8);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
 });

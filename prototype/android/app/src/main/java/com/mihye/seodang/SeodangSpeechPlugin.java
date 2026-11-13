@@ -55,7 +55,8 @@ public class SeodangSpeechPlugin extends Plugin {
                 call.reject("Install a voice for this language in device settings");
                 return;
             }
-            speech.setSpeechRate(0.9f);
+            double requestedRate = call.getDouble("rate", 1.0);
+            speech.setSpeechRate((float)(Double.isFinite(requestedRate) ? Math.max(0.3, Math.min(1.0, requestedRate)) : 1.0));
             String id = UUID.randomUUID().toString();
             pending.put(id, call);
             if (speech.speak(text, TextToSpeech.QUEUE_FLUSH, null, id) == TextToSpeech.ERROR) finish(id, true);

@@ -35,9 +35,9 @@ test('replacement clips reset only obsolete detective progress and retain other 
   const other={version:1,started:true,completed:false,index:0,phase:'learn'};
   const s={...freshState(),courseDirection:l.direction,onboardingLevel:7,videoActive:l.id,videoLessons:{[l.id]:legacy,'frieren-wait':other}};
   assert.equal(valid(s),true);
-  assert.equal(videoProgress(s).phase,'watch');assert.equal(videoProgress(s).completed,false);
+  assert.equal(videoProgress(s).phase,l.id==='misaeng-subtext'?'done':'watch');assert.equal(videoProgress(s).completed,l.id==='misaeng-subtext');
   const next=reduce(s,{type:'video-start',id:l.id});
-  assert.equal(next.videoLessons[l.id].version,2);assert.equal(next.videoLessons[l.id].started,true);
+  assert.equal(next.videoLessons[l.id].version,l.revision);assert.equal(next.videoLessons[l.id].started,true);
   assert.deepEqual(next.videoLessons['frieren-wait'],other);
  }
 });

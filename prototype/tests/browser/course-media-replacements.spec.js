@@ -1,3 +1,4 @@
+import {mainLessons} from '../main-lesson-fixture.mjs';
 import {test,expect} from '@playwright/test';
 import {freshState} from '../../src/engine.js';
 import {freshScenario} from '../../src/scenario-state.js';
@@ -12,7 +13,7 @@ for(const direction of ['ko-ja','ja-ko'])for(const level of [4,7])test(`replaced
  expect(valid(state)).toBe(true);
  await page.addInitScript(s=>{localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},state);
  await page.goto('/playable.html');
- const lessons=await collectMapLessons(page);expect(lessons).toHaveLength(20);expect(lessons.some(l=>l.kind===kind&&String(l.id)===String(id))).toBe(false);
+ const lessons=await collectMapLessons(page);expect(mainLessons(lessons)).toHaveLength(20);expect(lessons.some(l=>l.kind===kind&&String(l.id)===String(id))).toBe(false);
  const card=page.locator('.home-start-card');await expect(card).not.toHaveAttribute('data-action','practice-resume');
  const current=page.locator('.map-choice[aria-current="step"]');expect(await card.getAttribute('data-action')).toBe(await current.getAttribute('data-action'));
  expect((await page.evaluate(()=>JSON.parse(localStorage.getItem('seodang.web-prototype.v1'))))[level===4?'scenarios':'experts'][key].started).toBe(true);

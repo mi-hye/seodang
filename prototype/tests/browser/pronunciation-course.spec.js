@@ -1,3 +1,4 @@
+import {chooseAudioRate} from './audio-rate-fixture.js';
 import {test,expect} from '@playwright/test';
 import {freshState} from '../../src/engine.js';
 import {freshKoreanProgress,koreanLessons} from '../../src/korean-state.js';
@@ -9,7 +10,7 @@ async function setup(page,width=390,extra={}){
  await page.setViewportSize({width,height:width===320?640:844});
  await page.addInitScript(({key,state})=>{
   if(!localStorage.getItem(key))localStorage.setItem(key,JSON.stringify(state));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));
-  window.clips=[];window.Audio=class{constructor(src){this.src=src;}play(){window.clips.push(this.src);queueMicrotask(()=>this.onended?.());return Promise.resolve();}pause(){}};
+  window.clips=[];window.Audio=class{constructor(src){this.src=src;}play(){window.clips.push(this.src);window.lastModelSound=this;window.modelRates=(window.modelRates||[]).concat(this.playbackRate);if(!window.holdModel)queueMicrotask(()=>this.onended?.());return Promise.resolve();}pause(){}};
  },{key,state});
  await useCatalogWithoutPacks(page);await page.goto('/playable.html');
  await page.evaluate(()=>{window.recognitionCalls=[];window.Capacitor={isNativePlatform:()=>true,getPlatform:()=> 'android',nativePromise:async(plugin,method,args)=>{window.recognitionCalls.push({method,args});if(method==='finish'&&window.failFinish)throw new Error('finish failed');if(method==='cancel'&&window.holdCancel)return new Promise(resolve=>window.releaseCancel=resolve);if(method==='status')return window.recognitionStatus||{onDevice:true,available:true,permission:'granted'};if(method==='recognize')return new Promise((resolve,reject)=>{window.resolveRecognition=resolve;window.rejectRecognition=reject;});return {};}};});
@@ -247,4 +248,21 @@ test('pronunciation 1.5 waits for Android microphone readiness and distinguishes
  await mic.click();await page.evaluate(()=>window.rejectRecognition({code:'START_FAILED'}));await expect(mic).toBeEnabled();
  await expect(page.locator('[data-speaking-status]')).toHaveText('音声認識を開始できなかったよ。もう一度試してね。');
  await next.click();expect((await saved(page)).korean.lessons['15-1'].index).toBe(1);
+});
+
+for(const width of [320,390])test(`pronunciation speed follows model audio, survives reload and leaves recording intact ${width}`,async({page})=>{
+ const id='15-4';await setup(page,width,{korean:{version:4,active:id,lessons:{[id]:{...freshKoreanProgress(id),index:2,started:true}}}});
+ await openMapLesson(page,{kind:'korean',id});await page.locator('[data-choice="resume"]').click();
+ const speed=page.locator('.app-header [data-audio-rate]');
+ const change=async value=>{await chooseAudioRate(page,speed,value);expect((await saved(page)).settings.audioRate).toBe(value);};
+ await expect(speed).toHaveAttribute('data-audio-rate','1');await change(.8);await action(page,'korean-contrast-audio').click();await expect.poll(()=>page.evaluate(()=>window.modelRates.at(-1))).toBe(.8);
+ await action(page,'korean-next').click();await expect(page.locator('.pronunciation-speaking')).toBeVisible();await expect(speed).toHaveAttribute('data-audio-rate','0.8');
+ await page.evaluate(()=>window.holdModel=true);await page.locator('[data-speaking-example]').click();await expect.poll(()=>page.evaluate(()=>window.modelRates.at(-1))).toBe(.8);
+ const count=await page.evaluate(()=>window.clips.length);await change(.3);expect(await page.evaluate(()=>window.lastModelSound.playbackRate)).toBe(.3);expect(await page.evaluate(()=>window.clips.length)).toBe(count);
+ await page.screenshot({path:`output/pronunciation-speed-${width}-${test.info().project.name}.png`,fullPage:true});
+ const row=await page.locator('.pronunciation-speaking>.audio-text-row').evaluate(el=>{const a=el.querySelector('h2').getBoundingClientRect(),b=el.querySelector('button').getBoundingClientRect();return {textRight:a.right,buttonLeft:b.left,height:b.height};});expect(row.buttonLeft).toBeGreaterThanOrEqual(row.textRight);expect(row.height).toBeGreaterThanOrEqual(44);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ await page.locator('[data-speaking-record]').click();await expect.poll(()=>page.evaluate(()=>typeof window.resolveRecognition)).toBe('function');const cancels=await page.evaluate(()=>window.recognitionCalls.filter(x=>x.method==='cancel').length);await change(.7);await expect(page.locator('[data-speaking-record]')).toHaveAttribute('aria-pressed','true');expect(await page.evaluate(()=>window.recognitionCalls.filter(x=>x.method==='cancel').length)).toBe(cancels);
+ await page.evaluate(()=>window.resolveRecognition({text:'다른 문장'}));await expect(page.locator('[data-speaking-transcript]')).toBeVisible();await expect(page.locator('[data-speaking-next]')).toBeEnabled();
+ await page.reload();await openMapLesson(page,{kind:'korean',id});await page.locator('[data-choice="resume"]').click();await expect(speed).toHaveAttribute('data-audio-rate','0.7');await page.locator('[data-speaking-example]').click();await expect.poll(()=>page.evaluate(()=>window.modelRates.at(-1))).toBe(.7);
+ await change(1);await page.locator('[data-speaking-next]').click();await expect(speed).toHaveAttribute('data-audio-rate','1');expect((await saved(page)).settings.audioRate).toBe(1);
 });

@@ -13,7 +13,6 @@ import {caseLesson} from './case-lesson.js';
 import {lessonExplanation} from './lesson-explanation.js';
 import {renderKoreanSpeaking} from './korean-speaking.js';
 export {mountKoreanSpeaking as mountScenarioSpeaking} from './korean-speaking.js';
-import {normalizeAudioRate} from './media.js';
 import {scenarioLessons,scenarioProgress,scenarioTitle,scenarioHasSpeaking,scenarioLearnsFirst} from './scenario-state.js';
 import {scenarioContent,scenarioAudio,scenarioChoiceAudio,scenarioRoleAudio,scenarioTokenAudio} from './scenario-content.js';
 import {japaneseLessonUI} from './curriculum.js';
@@ -53,9 +52,7 @@ export function renderScenario(s,top){
  }
  const audio=button(icon('sound'),'scenario-audio','icon-button',`aria-label="${label('다시 듣기','もう一度聞く')}"`);
  const pause=['4','5'].includes(l.id)?button(icon('pause'),'passage-pause','icon-button',`data-passage-pause data-pause-label="${label('일시정지','一時停止')}" data-resume-label="${label('이어서 재생','続きから再生')}" aria-label="${label('일시정지','一時停止')}" disabled`):'';
- const rate=normalizeAudioRate(s.settings?.audioRate),rateLabel=`${rate===1?label('일반','標準')+' ':''}${rate.toFixed(1)}×`;
- const speed=['4','5'].includes(l.id)?`<label class="passage-speed"><span>${label('재생 속도','再生速度')} <output data-audio-rate-label data-normal-label="${label('일반','標準')}">${rateLabel}</output></span><input type="range" data-audio-rate min="0.5" max="2" step="0.1" value="${rate}" aria-label="${label('재생 속도','再生速度')}" aria-valuetext="${rateLabel}"></label>`:'';
- const article=`<div class="audio-text-row"><div lang="${lang}" class="scenario-text"><p>${x.phrases?phraseText(x.text,x.phrases):text(x.text)}</p></div><div class="scenario-audio-buttons">${audio}${pause}</div></div>${speed}`;
+ const article=`<div class="audio-text-row"><div lang="${lang}" class="scenario-text"><p>${x.phrases?phraseText(x.text,x.phrases):text(x.text)}</p></div><div class="scenario-audio-buttons">${audio}${pause}</div></div>`;
  let body;
  if(p.phase==='intro')body=`<h1>${esc(title)}</h1><p>${text(c.scene)}</p>${l.id==='2'?`<div class="audio-text-row"><p>${label('배울 문장을 들어요','これから学ぶ文を聞く')}</p>${audio}</div>`:''}${button(label('학습 시작하기','学習を始める'),'scenario-next')}`;
  else if(p.phase==='learn')body=`${article}${x.meaning?`<p class="scenario-meaning">${esc(x.meaning).replaceAll('\n','<br>')}</p>`:''}${x.words.length?`<section class="scenario-words"><h2>${label('문장 속 단어','文の中の単語')}</h2><dl>${x.words.map(([w,m])=>`<div><dt lang="${lang}">${esc(w)}</dt><dd>${esc(m)}</dd></div>`).join('')}</dl></section>`:''}${lessonExplanation(x.hint,jp)}${s.courseDirection==='ko-ja'&&['3','4','5'].includes(l.id)?button(label('한자 뜻과 쓰기','漢字の意味と書き方'),'lesson-kanji','secondary',`data-id="scenario:${l.id}:${p.index}"`):''}<div class="button-pair">${button(label('이전','戻る'),'scenario-previous','secondary')}${button(label('연습하기','練習する'),'scenario-next')}</div>`;

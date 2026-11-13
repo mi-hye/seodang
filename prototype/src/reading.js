@@ -19,7 +19,7 @@ export function currentReadingAudio(state){
 export function renderReading(state){
  const level=selectedLevel(state),jp=japaneseLessonUI(state),course=level===7?advanced.advancedCourse:readingCourses[level],p=readingProgress(state,level);
  const text=t=>level===7?ja(t):esc(t),passage=course.passages[Math.floor(p.index/2)],q=passage.questions[p.index%2];
- const header=renderHeader(lessonTitle(state,'reading',course.title),{backLabel:jp?'ホームへ':'학습 홈으로',settingsHidden:jp});
+ const header=renderHeader(lessonTitle(state,'reading',course.title),{backLabel:jp?'ホームへ':'학습 홈으로',settingsHidden:jp,audioRate:state.settings?.audioRate??1});
  const spokenPassage=readingPassage(state,{title:text(passage.title),content:(passage.paragraphs||[]).map(t=>`<p>${ja(t)}</p>`).join(''),lang:'ja',action:'reading-audio',japanese:jp,compact:level!==7});
  let body;
  if(p.phase==='learn')body=`${level!==7?`<h1>${jp?'読んで表現を覚える':'읽고 표현 익히기'}</h1>`:''}${spokenPassage}<section class="case-words"><h2>${level===7?'글 속 단어':jp?'文の中の単語':'문장 속 단어'}</h2><p lang="${level===7?'ko':jp?'ja':'ko'}">${esc(passage.words||readingWords6[Math.floor(p.index/2)]||'')}</p></section>${button(jp?'漢字の意味と書き方':'한자 뜻과 쓰기','lesson-kanji','secondary',`data-id="reading:${level}:${Math.floor(p.index/2)}"`)}${level===7?button('사건 해결하기','reading-next'):`<div class="button-pair">${button(jp?'戻る':'이전','reading-previous','secondary')}${button(jp?'練習する':'연습하기','reading-next')}</div>`}`;

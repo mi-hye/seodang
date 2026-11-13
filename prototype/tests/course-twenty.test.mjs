@@ -54,9 +54,10 @@ test('new taught answers, choices and review positions are coherent in each lang
 
 test('all 16 new media clips have source evidence and preserve separate lyric release restrictions',()=>{
  const provenance=JSON.parse(readFileSync(new URL('../docs/asset-provenance/course-twenty-20261027.json',import.meta.url)));
+ const replacements=JSON.parse(readFileSync(new URL('../docs/asset-provenance/video-japan-replacements-20261112.json',import.meta.url)));
  assert.equal(provenance.entries.length,16);assert.equal(courseTwentyVideos.length,8);assert.equal(courseTwentySongs.length,8);
  for(const meta of [...courseTwentyVideos,...courseTwentySongs]){
-  const video=meta.mode==='scene',c=video?courseTwentyVideoContent[meta.id][0]:courseTwentySongContent[meta.id],source=provenance.entries.find(e=>e.lessonId===meta.id);
+  const video=meta.mode==='scene',c=video?courseTwentyVideoContent[meta.id][0]:courseTwentySongContent[meta.id],source=replacements.entries.find(e=>e.lessonId===meta.id)||provenance.entries.find(e=>e.lessonId===meta.id);
   assert.equal(source.videoId,c.videoId);assert.equal(source.startSeconds,c.startSeconds);assert.equal(source.endSeconds,c.endSeconds);
   assert.equal(source.playableInEmbed,true);assert.equal(source.availability,'public');assert.equal(source.humanListening,false);
   assert.ok(Number.isInteger(c.startSeconds)&&Number.isInteger(c.endSeconds)&&c.endSeconds>c.startSeconds);

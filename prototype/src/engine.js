@@ -1,3 +1,4 @@
+import {normalizeAudioRate} from './audio-rate.js';
 import {comparisonAttachment} from './comparison-attachments.js';
 import {reduceVideo} from './video-lesson-state.js';
 import {reduceSong} from './song-state.js';
@@ -173,7 +174,7 @@ function reduceCore(state, action) {
           : "まどの そば는 창문 옆이에요. 오른쪽 창문 옆 물건을 골라 주세요.";
       break;
     case "setting":
-      if (action.key === "audioRate" && Number.isFinite(action.value)) s.settings.audioRate = Math.round(Math.max(0.5,Math.min(2,action.value))*10)/10;
+      if (action.key === "audioRate" && Number.isFinite(action.value)) s.settings.audioRate = normalizeAudioRate(action.value);
       else if (Object.hasOwn(s.settings, action.key))
         s.settings[action.key] = action.value;
       break;
