@@ -1,3 +1,4 @@
+import {normalizeAudioRate,audioRateLabel} from './audio-rate.js';
 import {isComparisonCourse} from './comparison-course-catalog.js';
 import {mountAudioLoading} from './audio-loading.js';
 import {isPronunciationCourse} from './pronunciation-course-catalog.js';
@@ -69,6 +70,7 @@ let view = enteringCase ? (selectedLevel(state) === 7 ? "expert" : selectedLevel
   lastAdvance = -Infinity,
   toast = "";
 const player = new AudioPlayer();
+player.rateProvider=()=>normalizeAudioRate(state.settings.audioRate);
 player.onPlayback=source=>learningTracker.audio(source);
 document.addEventListener('visibilitychange',()=>learningTracker.visibility(!document.hidden));
 window.addEventListener('pagehide',()=>learningTracker.visibility(false));
@@ -90,7 +92,7 @@ async function loadScenario(id=state.scenarioActive){
  await Promise.all([scenarioStyles,loadPractice('scenario')]);
 }
 function scenario(){return scenarioProgress(state).phase==='done'?renderCompletion('scenario'):scenarioModule.renderScenario(state,top);}
-function speakScenario(part){if(pendingPractice())return;const sequence=scenarioModule?.scenarioIntroAudio(state);if(sequence){void player.playSequence(sequence,state.settings.sound,message=>{toast=message;render();},{rate:0.8*(state.settings.audioRate??1)});return;}const entry=scenarioModule?.currentScenarioAudio(state,part);if(entry){disposePractice?.stopSound?.();void player.play(entry,state.settings.sound,message=>{toast=message;render();},{rate:entry.playbackRate*(state.settings.audioRate??1)});}}
+function speakScenario(part){if(pendingPractice())return;const sequence=scenarioModule?.scenarioIntroAudio(state);if(sequence){void player.playSequence(sequence,state.settings.sound,message=>{toast=message;render();});return;}const entry=scenarioModule?.currentScenarioAudio(state,part);if(entry){disposePractice?.stopSound?.();void player.play(entry,state.settings.sound,message=>{toast=message;render();});}}
 let practiceModule,practiceStyles,disposePractice,lessonSession,completionUI,entryBusy=false,answerAcknowledgement=null;
 document.addEventListener('visibilitychange',()=>{if(document.hidden)completionUI?.cancel();});
 const practiceKinds=['kana','basic','labels','listening','play','sentence','dialogue','reading','korean'];
@@ -150,7 +152,7 @@ function speakEpisodeAudio() {
 }
 function top(title, back = true) {
   if(!completedKind&&reviewKinds.includes(view))title=lessonTitle(state,view,title);
-  return renderHeader(title || "서당", { backAction: "home", backLabel: "학습 홈으로", backDisabled: !back, backHidden: !back, letters: ['home','my','community','conversation'].includes(view), lettersLanguage: state.courseDirection==='ja-ko'?'ko':'ja', titleParts: !completedKind&&view==='korean'&&!/^(25|35)-/.test(state.korean?.active)?koreanLessons.find(l=>l.id===state.korean?.active)?.titleParts:undefined });
+  return renderHeader(title || "서당", { backAction: "home", backLabel: "학습 홈으로", backDisabled: !back, backHidden: !back, letters: ['home','my','community','conversation'].includes(view), lettersLanguage: state.courseDirection==='ja-ko'?'ko':'ja', audioRate:!completedKind&&[...practiceKinds,'scenario','expert','review','conversation','home','my','community'].includes(view)?state.settings.audioRate??1:undefined, titleParts: !completedKind&&view==='korean'&&!/^(25|35)-/.test(state.korean?.active)?koreanLessons.find(l=>l.id===state.korean?.active)?.titleParts:undefined });
 }
 let conversationModule,disposeConversation;
 async function loadConversation(){conversationModule ||= await import('./voice-conversation.js');await conversationModule.loadConversationStyles();}
@@ -287,8 +289,8 @@ async function loadSong(){
 function song(){return songProgress(state).phase==='done'?renderCompletion('song'):songModule.renderSongLesson(state,title=>renderHeader(lessonTitle(state,'song',title),{backLabel:t('학습 홈으로')}));}
 let expertModule;
 async function loadExpert(){expertModule ||= await import('./expert.js');await Promise.all([loadReading(),loadPractice('reading'),expertModule.prepareExpert()]);}
-function expert(){return expertProgress(state).phase==='done'?renderCompletion('expert'):expertModule.renderExpert(state,title=>renderHeader(title,{backLabel:t('학습 홈으로')}));}
-function speakExpert(force=false){const entry=expertModule?.expertAudio(state);if(entry)void player.play(entry,force||state.settings.sound,message=>{toast=message;render();},{rate:state.settings.audioRate??1});}
+function expert(){return expertProgress(state).phase==='done'?renderCompletion('expert'):expertModule.renderExpert(state,title=>renderHeader(title,{backLabel:t('학습 홈으로'),audioRate:state.settings.audioRate??1}));}
+function speakExpert(force=false){const entry=expertModule?.expertAudio(state);if(entry)void player.play(entry,force||state.settings.sound,message=>{toast=message;render();});}
 let readingModule,readingStyles;
 async function loadReading(){
  readingModule ||= await import('./reading.js');
@@ -297,7 +299,7 @@ async function loadReading(){
  await readingModule.prepareReading(selectedLevel(state));
 }
 function reading(){return readingModule.renderReading(state);}
-function speakReading(rate=state.settings.audioRate??1){if(pendingPractice())return;const entry=readingModule.currentReadingAudio(state);if(entry)void player.play(entry,state.settings.sound,()=>{toast='音声を再生できませんでした。もう一度お試しください。';render();},{rate});}
+function speakReading(){if(pendingPractice())return;const entry=readingModule.currentReadingAudio(state);if(entry)void player.play(entry,state.settings.sound,()=>{toast='音声を再生できませんでした。もう一度お試しください。';render();});}
 let dialogueModule,dialogueStyles;
 async function loadDialogue(){
  dialogueModule ||= await import('./dialogue.js');
@@ -337,7 +339,7 @@ async function loadKorean(){
 }
 function korean(){return koreanModule.renderKorean(state,top);}
 function speakKoreanIntro(){const entries=koreanModule.koreanIntroAudio(state);if(entries.length)void player.playSequence(entries,state.settings.sound,()=>{toast='音声を再生できませんでした。もう一度お試しください。';render();});}
-function speakKorean(){if(pendingPractice()||isComparisonCourse(state.korean.active))return;const phase=koreanProgress(state,state.korean.active).phase;if(phase==='scenario'){speakKoreanIntro();return;}if(phase==='intro'||isPronunciationCourse(state.korean.active)&&phase==='learn')return;const entry=koreanStageZero(state.korean.active)&&koreanProgress(state,state.korean.active).phase==='learn'?koreanModule.koreanExampleAudio(state)||koreanModule.koreanAudio(state):koreanModule.koreanAudio(state);void player.play(entry,state.settings.sound,()=>{toast='音声を再生できませんでした。もう一度お試しください。';render();},{rate:entry?.playbackRate??state.settings.audioRate??1});}
+function speakKorean(){if(pendingPractice()||isComparisonCourse(state.korean.active))return;const phase=koreanProgress(state,state.korean.active).phase;if(phase==='scenario'){speakKoreanIntro();return;}if(phase==='intro'||isPronunciationCourse(state.korean.active)&&phase==='learn')return;const entry=koreanStageZero(state.korean.active)&&koreanProgress(state,state.korean.active).phase==='learn'?koreanModule.koreanExampleAudio(state)||koreanModule.koreanAudio(state):koreanModule.koreanAudio(state);void player.play(entry,state.settings.sound,()=>{toast='音声を再生できませんでした。もう一度お試しください。';render();});}
 let basicModule,basicStyles;
 async function loadBasics(){
  basicModule ||= await import('./basics.js');
@@ -468,7 +470,7 @@ function render(scroll = false) {
   if(view==='video')disposeVideo=videoModule.mountVideoPlayer(app,state);
   if(view==='song')disposeVideo=songModule.mountSongPlayer(app,state);
   if(preservedConversation)app.querySelector('[data-conversation-root]').replaceWith(preservedConversation);
-  else if(view==='conversation')disposeConversation=conversationModule.mountConversation(app.querySelector('[data-conversation-root]'),state);
+  else if(view==='conversation')disposeConversation=conversationModule.mountConversation(app.querySelector('[data-conversation-root]'),state,{getRate:()=>state.settings.audioRate});
   if(view==='community'){disposeCommunity=communityModule.mountCommunity(app.querySelector('[data-community-root]'),state,{initialScreen:communityScreen,initialRoom:communityRoom});communityRoom=null;}
   watchExchangeUnread();
   void mountMapCharacter();
@@ -661,7 +663,7 @@ async function handle(event, answerConfirmed=false) {
   if(a==='pronunciation'){
     if(state.courseDirection!=='ja-ko')return;
     el.disabled=true;
-    try{const {openPronunciation}=await import('./korean-pronunciation.js');await openPronunciation(id,{position:el.dataset.position,trigger:el,stop:()=>player.stop(),play:(entry,onError)=>{if(!state.settings.sound)commit({type:'setting',key:'sound',value:true});return player.play(entry,true,onError);}});}
+    try{const {openPronunciation}=await import('./korean-pronunciation.js');await openPronunciation(id,{getRate:()=>state.settings.audioRate,position:el.dataset.position,trigger:el,stop:()=>player.stop(),play:(entry,onError)=>{if(!state.settings.sound)commit({type:'setting',key:'sound',value:true});return player.play(entry,true,onError);}});}
     catch{toast='発音ガイドを開けませんでした。もう一度お試しください。';render();}
     finally{el.disabled=false;}return;
   }
@@ -692,7 +694,7 @@ async function handle(event, answerConfirmed=false) {
     if(choiceAudio&&!state.settings.sound)commit({type:'setting',key:'sound',value:true});
     const tokenAudio=a==='scenario-token'?scenarioModule?.currentScenarioTokenAudio(state,id):null;
     const before=scenarioProgress(state),moving=['scenario-next','scenario-previous'].includes(a);
-    if(moving)player.stop();commit({type:a,id});render(moving);if(a==='scenario-check'&&(courseGroup(selectedLevel(state))>=4||scenarioLessons.find(l=>l.id===state.scenarioActive)?.extended)&&!before.checked&&scenarioProgress(state).checked){player.stop();disposePractice=scenarioModule.mountCourseCorrect(app,state);if(state.scenarioActive==='8'){const cue=disposePractice;setTimeout(()=>{if(disposePractice===cue)speakScenario('reply');},300);}}if(choiceAudio)speakScenario(choiceAudio);if(tokenAudio)void player.play(tokenAudio,state.settings.sound,message=>{toast=message;render();},{rate:state.settings.audioRate??1});if(moving&&scenarioProgress(state).phase!=='speak')speakScenario();return;
+    if(moving)player.stop();commit({type:a,id});render(moving);if(a==='scenario-check'&&(courseGroup(selectedLevel(state))>=4||scenarioLessons.find(l=>l.id===state.scenarioActive)?.extended)&&!before.checked&&scenarioProgress(state).checked){player.stop();disposePractice=scenarioModule.mountCourseCorrect(app,state);if(state.scenarioActive==='8'){const cue=disposePractice;setTimeout(()=>{if(disposePractice===cue)speakScenario('reply');},300);}}if(choiceAudio)speakScenario(choiceAudio);if(tokenAudio)void player.play(tokenAudio,state.settings.sound,message=>{toast=message;render();});if(moving&&scenarioProgress(state).phase!=='speak')speakScenario();return;
   }
   if(a==='korean'){
     const lesson=id||nextKorean(state).id;if(state.courseDirection!=='ja-ko'||!koreanUnlocked(state,lesson))return;
@@ -701,7 +703,7 @@ async function handle(event, answerConfirmed=false) {
   if(a==='particle-audio'){
     if(view!=='korean'||!isComparisonCourse(state.korean?.active))return;
     disposePractice?.stopSound?.();if(!state.settings.sound)commit({type:'setting',key:'sound',value:true});
-    const audio=koreanModule.particleAudio(state,id);if(audio)void player.play(audio,true,()=>{toast='音声を再生できませんでした。もう一度お試しください。';render();},{rate:state.settings.audioRate??1});return;
+    const audio=koreanModule.particleAudio(state,id);if(audio)void player.play(audio,true,()=>{toast='音声を再生できませんでした。もう一度お試しください。';render();});return;
   }
   if(a.startsWith('korean-')){
     if(view!=='korean'||state.courseDirection!=='ja-ko')return;
@@ -709,7 +711,7 @@ async function handle(event, answerConfirmed=false) {
     if(a==='korean-contrast-audio'){const audio=koreanModule.pronunciationContrastAudio(state,id);if(audio){disposePractice?.stopSound?.();void player.play(audio,true,()=>{});}return;}
     if(a==='korean-stop'){player.stop();return;}
     if(a==='korean-intro-audio'){if(!state.settings.sound)commit({type:'setting',key:'sound',value:true});speakKoreanIntro();return;}
-    if(['korean-audio','korean-example-audio'].includes(a)){disposePractice?.stopSound?.();if(!state.settings.sound)commit({type:'setting',key:'sound',value:true});const entry=a==='korean-example-audio'?koreanModule.koreanExampleAudio(state):koreanModule.koreanAudio(state);if(entry)void player.play(entry,true,()=>{},{rate:entry?.playbackRate??state.settings.audioRate??1});return;}
+    if(['korean-audio','korean-example-audio'].includes(a)){disposePractice?.stopSound?.();if(!state.settings.sound)commit({type:'setting',key:'sound',value:true});const entry=a==='korean-example-audio'?koreanModule.koreanExampleAudio(state):koreanModule.koreanAudio(state);if(entry)void player.play(entry,true,()=>{});return;}
     const moving=['korean-next','korean-check','korean-previous'].includes(a);
     if(moving){const now=performance.now();if(!answerConfirmed&&now-lastAdvance<450)return;lastAdvance=now;player.stop();}
     if(a==='korean-next'&&koreanProgress(state,state.korean.active).phase==='write')koreanModule.clearKoreanDraft(state);
@@ -1089,7 +1091,15 @@ else if(enteringCase && view==='dialogue')speakDialogue();
 else if (enteringCase && view==='sentence') speakSentence();
 else if (enteringCase && view==='play') speakEpisodeAudio();
 
-app.addEventListener('input',event=>{const input=event.target;if(!input.matches('[data-audio-rate]'))return;const rate=Number(input.value);commit({type:'setting',key:'audioRate',value:rate});player.setRate(rate);const output=input.closest('.passage-speed').querySelector('[data-audio-rate-label]');const label=`${rate===1?output.dataset.normalLabel+' ':''}${rate.toFixed(1)}×`;output.textContent=label;input.setAttribute('aria-valuetext',label);});
+document.addEventListener('click',async event=>{
+ const trigger=event.target.closest('[data-audio-rate]');if(!trigger)return;
+ const {openAudioRateSheet}=await import('./audio-rate-sheet.js');
+ if(!trigger.isConnected)return;
+ openAudioRateSheet({trigger,value:state.settings.audioRate,onSelect:value=>{
+  const rate=normalizeAudioRate(value);commit({type:'setting',key:'audioRate',value:rate});player.setRate(rate);disposeConversation?.setRate?.(rate);
+  for(const control of document.querySelectorAll('[data-audio-rate]')){control.dataset.audioRate=String(rate);control.setAttribute('aria-label',audioRateLabel(rate,control.dataset.audioRateLanguage==='ja'));}
+ }});
+});
 
 installAndroidBack(()=>{
  if(entryBusy)return true;

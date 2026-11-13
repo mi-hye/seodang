@@ -13,9 +13,10 @@ const copy={
  ja:{title:'ソダン犬と話そう',preview:'話題を聞く',other:'別の話題',beforeTime:'話題を聞いている間は時間が減りません。',intro:'1日10分、習った言葉で気軽に話してみよう。',paid:'無料体験中 · 今後有料化予定',remaining:'今日の残り時間',start:'話し始める',end:'会話を終える',done:'今日の10分を使い切りました。明日また話しましょう。',preparing:'AI会話を準備しています',unavailable:'接続の準備ができたら、ここで会話できます。',privacy:'話した内容は音声認識サービスで文字に変換され、会話のためにOpenAIへ送られます。AIの返事には誤りがある場合があります。',retention:'会話はこの画面を離れると消えます。重複したリクエストを防ぐため、AIの返事をサーバーに最大24時間保存します。OpenAIには独自のデータ保存方針が適用されます。',consent:'会話内容をOpenAIへ送信することに同意します。',details:'利用について',clock:'韓国・日本時間の毎日午前0時に10分に戻ります。会話中は聞く時間・考える時間も含まれます。',connecting:'会話につないでいます',thinking:'ソダン犬が返事を考えています',speak:'話してみよう',send:'送る',write:'文字で答える',retry:'もう一度確認',error:'接続を確認してください。残り時間は再接続後に確認できます。',capacity:'今はAI会話を利用できません。しばらくしてからお試しください。',finished:'会話が終わりました',home:'学習へ',listen:'返事を聞く',translation:'意味を見る',voiceError:'音声を再生できませんでした。返事の右側からもう一度聞けます。',resumed:'前の会話を終了しました。残り時間で新しく始められます。',placeholder:'話したいことを書いてください',expired:'今日の会話時間が終了しました。'}
 };
 export const conversationTime=seconds=>`${Math.floor(Math.max(0,seconds)/60)}:${String(Math.floor(Math.max(0,seconds)%60)).padStart(2,'0')}`;
-export function mountConversation(root,state,{api=createConversationAPI(),player=new AudioPlayer(),now=()=>performance.now(),tickMs=250}={}){
+export function mountConversation(root,state,{api=createConversationAPI(),player=new AudioPlayer(),getRate=()=>state.settings?.audioRate??1,now=()=>performance.now(),tickMs=250}={}){
  const japanese=state.courseDirection==='ja-ko',c=copy[japanese?'ja':'ko'],locale=japanese?'ko-KR':'ja-JP',lang=japanese?'ko':'ja';
  let alive=true,stage=api.enabled?'loading':'unavailable',remaining=null,deadline=0,sessionId=null,consented=false,busy=false,error='',messages=[],pending=null,draft='',disposeSpeech,controller,secondsTimer,requestVersion=0,startingId=null,micBusy=false,micRecording=false,paused=false,heartbeatBusy=false,heartbeatTimer,topic=conversationTopics[0],introSpeaking=false,introVersion=0;
+ player.rateProvider=getRate;
  root.dataset.direction=state.courseDirection;
  const native=Boolean(globalThis.Capacitor?.isNativePlatform?.());
  const left=()=>sessionId?Math.max(0,Math.ceil((deadline-now())/1000)):remaining;
@@ -119,5 +120,5 @@ export function mountConversation(root,state,{api=createConversationAPI(),player
  heartbeatTimer=setInterval(async()=>{if(!alive||!sessionId||heartbeatBusy||document.hidden)return;heartbeatBusy=true;const id=sessionId;try{const data=await api.request('heartbeat',{sessionId:id,direction:state.courseDirection});if(alive&&sessionId===id)sync(data);}catch(e){if(alive&&sessionId===id&&['session_expired','daily_limit','unauthorized'].includes(e.message))void end();}finally{heartbeatBusy=false;}},15000);
  secondsTimer=setInterval(updateTime,tickMs);render();if(api.enabled)void refresh();
  const dispose=()=>{alive=false;requestVersion++;controller?.abort();stopMedia();clearInterval(secondsTimer);clearInterval(heartbeatTimer);if(sessionId||startingId)void api.request('end',{sessionId:sessionId||startingId},{keepalive:true}).catch(()=>{});sessionId=null;messages=[];pending=null;root.removeEventListener('click',click);root.removeEventListener('change',change);root.removeEventListener('input',input);root.removeEventListener('submit',submit);document.removeEventListener('visibilitychange',hidden);window.removeEventListener('pagehide',pagehide);};
- dispose.pause=()=>{paused=true;stopMedia();};dispose.resume=()=>{paused=false;render();};return dispose;
+ dispose.setRate=rate=>player.setRate?.(rate);dispose.pause=()=>{paused=true;stopMedia();};dispose.resume=()=>{paused=false;render();};return dispose;
 }

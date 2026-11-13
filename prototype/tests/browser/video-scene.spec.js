@@ -1,3 +1,4 @@
+import {mainLessons} from '../main-lesson-fixture.mjs';
 import {findMapLesson,openMapLesson,collectMapLessons} from './learning-map-fixture.js';
 import {test,expect} from '@playwright/test';
 import {freshState} from '../../src/engine.js';
@@ -19,8 +20,8 @@ for(const {l,width}of scenes.flatMap((l,index)=>(l.level===4&&l.number===6?[320,
  await page.setViewportSize({width,height:844});
  await page.addInitScript(s=>{if(!localStorage.getItem('seodang.web-prototype.v1'))localStorage.setItem('seodang.web-prototype.v1',JSON.stringify(s));localStorage.setItem('seodang.analytics.v1',JSON.stringify({consent:false,queue:[]}));},fixture(l));
  await page.route('https://www.youtube.com/embed/**',r=>r.fulfill({contentType:'text/html',body:'<body style="background:#111;color:#fff">Official player fixture</body>'}));
- await page.goto('/playable.html');expect((await collectMapLessons(page))[l.number-1]).toMatchObject({kind:'video',id:l.id,number:l.number});await enter(page,l.id);
- await expect(page.locator('.app-header-title')).toContainText(`${l.number}.`);await expect(page.locator('.video-scene')).toHaveAttribute('lang',l.direction==='ko-ja'?'ko':'ja');await layout(page);
+ await page.goto('/playable.html');const mapLessons=await collectMapLessons(page),mapNumber=mapLessons.find(x=>x.kind==='video'&&x.id===l.id).number;expect(mainLessons(mapLessons)[l.number-1]).toMatchObject({kind:'video',id:l.id});await enter(page,l.id);
+ await expect(page.locator('.app-header-title')).toContainText(`${mapNumber}.`);await expect(page.locator('.video-scene')).toHaveAttribute('lang',l.direction==='ko-ja'?'ko':'ja');await layout(page);
  const src=new URL(await page.locator('iframe.lesson-youtube').getAttribute('src'));
  expect(src.pathname).toBe(`/embed/${x.videoId}`);expect(src.searchParams.get('start')).toBe(String(x.startSeconds));expect(src.searchParams.get('end')).toBe(String(x.endSeconds));expect(src.searchParams.get('cc_load_policy')).toBe('0');
  await expect(page.locator('.video-scene')).not.toContainText(x.translation);await expect(page.locator('.video-example')).toHaveCount(0);

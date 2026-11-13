@@ -8,7 +8,7 @@ import {lessonPercent} from '../src/lesson-session.js';
 import {learningSnapshot} from '../src/analytics-learning.js';
 import {recordStudyCompletion} from '../src/study-state.js';
 import {valid,load} from '../src/storage.js';
-import {freshVideo} from '../src/video-lesson-state.js';
+import {freshVideo,videoLessons} from '../src/video-lesson-state.js';
 import {freshSong} from '../src/song-state.js';
 import {freshExpert,expertKey} from '../src/expert-state.js';
 import {reviewFixture} from './level-two-review-fixtures.mjs';
@@ -110,7 +110,7 @@ test('generic learning history does not mutate either input when they share hist
 for(const direction of ['ko-ja','ja-ko'])for(const kind of ['video','song','expert'])test(`${direction} ${kind}: final history recording remains isolated`,()=>{
  let before=withHistory({...freshState(),courseDirection:direction,onboardingLevel:kind==='expert'?7:2}),after;
  if(kind==='video'){
-  const id=direction==='ko-ja'?'frieren-reaction':'hospital-reassurance',p={...freshVideo(3,'scene'),started:true,phase:'use',selected:0,checked:true};
+  const id=direction==='ko-ja'?'frieren-reaction':'hospital-reassurance',p={...freshVideo(videoLessons.find(l=>l.id===id).revision,'scene'),started:true,phase:'use',selected:0,checked:true};
   before={...before,videoActive:id,videoLessons:{[id]:p}};after={...before,videoLessons:{[id]:{...p,phase:'done',completed:true}}};
  }else if(kind==='song'){
   const id=direction==='ko-ja'?'jp-arigatou':'ko-night-letter',p={...freshSong(),started:true,phase:'encore'};

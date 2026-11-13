@@ -111,7 +111,7 @@ test('records count completed lessons from the active catalog, including videos 
   const keys=completedLessons(s).map(l=>l.key);
   assert.ok(keys.includes(`${direction}:video:${plain.id}`),`${direction} video`);
   assert.ok(keys.includes(`${direction}:expert:0`),`${direction} expert`);
-  assert.ok(!keys.includes(`${direction}:video:${revised.id}`),`${direction} obsolete revision is not counted`);
+  assert.equal(keys.includes(`${direction}:video:${revised.id}`),revised.id==='misaeng-subtext',`${direction} regional replacement preserves completion; older Japanese replacement resets it`);
   assert.ok(keys.every(k=>k.startsWith(direction+':')));
  }
 });

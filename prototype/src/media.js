@@ -1,4 +1,5 @@
-export const normalizeAudioRate=value=>Number.isFinite(Number(value))?Math.round(Math.max(0.5,Math.min(2,Number(value)))*10)/10:1;
+import {normalizeAudioRate} from './audio-rate.js';
+export {normalizeAudioRate} from './audio-rate.js';
 import { episode } from "./content.js";
 export const assets = {
   hanok: { src: "assets/hanok-dusk-v2.jpg", status: "temporary" },
@@ -44,12 +45,12 @@ const deviceSpeech = {
   },
   speak(entry) {
     const cap = globalThis.Capacitor;
-    if (cap?.isNativePlatform?.()) return cap.nativePromise("SeodangSpeech", "speak", { text: entry.text, locale: entry.locale });
+    if (cap?.isNativePlatform?.()) return cap.nativePromise("SeodangSpeech", "speak", { text: entry.text, locale: entry.locale, rate: normalizeAudioRate(entry.playbackRate) });
     if (!globalThis.speechSynthesis || !globalThis.SpeechSynthesisUtterance) throw Error("Speech unavailable");
     return new Promise((resolve, reject) => {
       const utterance = new SpeechSynthesisUtterance(entry.text);
       utterance.lang = entry.locale;
-      utterance.rate = 0.9;
+      utterance.rate = normalizeAudioRate(entry.playbackRate);
       const voice = speechSynthesis.getVoices().find(v => v.lang.replace('_', '-') === entry.locale);
       if (voice) utterance.voice = voice;
       utterance.onend = resolve;
@@ -89,7 +90,7 @@ export class AudioPlayer {
     this.changeState('playing');
     try {await sound.play();}catch{if(token===this.generation&&this.current===sound)sound.onerror?.();}
   }
-  setRate(rate) { if(this.current)this.current.playbackRate=normalizeAudioRate(rate); }
+  setRate(rate) { this.playbackRate=normalizeAudioRate(rate);if(this.current)this.current.playbackRate=this.playbackRate; }
   async playSequence(entries,enabled,onError,options={}) {
     const stopped=this.stop();let generation=this.generation;
     await stopped;
@@ -111,10 +112,11 @@ export class AudioPlayer {
     const end=result=>{if(ended)return;ended=true;emit(result);if(this.endPlayback===end)this.endPlayback=null;};
     this.endPlayback=end;return end;
   }
-  async play(entry, enabled, onError, { rate = entry?.playbackRate ?? 1 } = {}) {
+  async play(entry, enabled, onError, { rate = this.rateProvider?.() ?? entry?.playbackRate ?? 1 } = {}) {
     const key=entry?.audioFile||`${entry?.locale}:${entry?.text}`;
     if(enabled&&this.state==='loading'&&this.loadingKey===key)return;
     const stopped = this.stop();
+    this.playbackRate=normalizeAudioRate(rate);
     const token = this.generation;
     const loading=()=>{this.loadingKey=key;this.changeState('loading');};
     if (entry?.status === "device-tts") {
@@ -128,7 +130,7 @@ export class AudioPlayer {
         if (token !== this.generation) return;
         if (readiness?.proceed === false) { await this.stop(); return; }
         this.changeState('playing');
-        const result=await this.speech.speak(entry);
+        const result=await this.speech.speak({...entry,playbackRate:this.playbackRate});
         if(token===this.generation)end(result?.cancelled?'cancelled':'completed');
       }
       catch { if (token === this.generation) {end('failed');onError("기기 음성을 재생하지 못했어요. 휴대폰의 음성 설정을 확인해 주세요.");} }
@@ -153,7 +155,7 @@ export class AudioPlayer {
       sound = this.factory(source);
     }
     catch { if(token===this.generation){this.release?.();this.release=null;this.changeState('idle');end('failed');onError("음성을 내려받지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.");} return; }
-    sound.playbackRate = normalizeAudioRate(rate);
+    sound.playbackRate = this.playbackRate;
     sound.preservesPitch = true;
     if ("webkitPreservesPitch" in sound) sound.webkitPreservesPitch = true;
     this.current = sound;

@@ -52,7 +52,7 @@ test('all eight legacy video progress records remain readable without changing c
  for(const l of legacyScenes)for(const phase of ['watch','learn','speak','done']){
   const legacy={version:l.id==='frieren-just-right'?2:1,started:true,completed:phase==='done',index:0,phase};
   const s=reload({...fixture(l),videoLessons:{[l.id]:legacy}}),p=videoProgress(s);
-  assert.equal(p.version,3);assert.equal(p.phase,phase==='done'?'done':'watch');assert.equal(p.completed,legacy.completed);
+  assert.equal(p.version,l.revision);assert.equal(p.phase,phase==='done'?'done':'watch');assert.equal(p.completed,legacy.completed);
   assert.deepEqual(s.videoLessons[l.id],legacy);
  }
 });
@@ -77,13 +77,13 @@ test('malformed scene selections, resume phases and versions cannot enter the sa
 
 test('level 3-6 upgrades old watch/learn/speak/done saves without losing completion',()=>{
  for(const id of ['frieren-permission','blackdog-confirmation','frieren-uncertainty','frieren-realization','queen-condition','queen-belief']){
-  const l=videoLessons.find(l=>l.id===id);assert.equal(l.mode,'scene');assert.equal(l.revision,2);
+  const l=videoLessons.find(l=>l.id===id);assert.equal(l.mode,'scene');assert.equal(l.revision,['queen-condition','queen-belief'].includes(id)?3:2);
   for(const phase of ['watch','learn','speak','done'])for(const completed of [false,true]){
    if(phase==='done'&&!completed)continue;
    const old={version:1,started:true,completed,index:0,phase};
    let s=reload({...fixture(l),videoLessons:{[id]:old}});
    assert.equal(videoProgress(s).completed,completed);assert.equal(videoProgress(s).phase,phase==='done'?'done':'watch');
-   s=reduce(s,{type:'video-start',id});assert.ok(valid(s));assert.equal(videoProgress(s).version,2);assert.equal(videoProgress(s).phase,'watch');assert.equal(videoProgress(s).completed,completed);
+   s=reduce(s,{type:'video-start',id});assert.ok(valid(s));assert.equal(videoProgress(s).version,l.revision);assert.equal(videoProgress(s).phase,'watch');assert.equal(videoProgress(s).completed,completed);
    for(const phase of ['meaning','use'])assert.equal(valid({...s,videoLessons:{[id]:{...old,phase}}}),false);
   }
  }
